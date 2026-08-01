@@ -1,0 +1,14 @@
+{
+  "_comment": "Jeu d'origine et annee de sortie de chaque generation. 'first'/'last' bornent le numero national.",
+  "generations": {
+    "1": { "label": "Génération I", "game": "Pokémon Rouge / Bleu / Jaune", "year": "1996", "first": 1, "last": 151 },
+    "2": { "label": "Génération II", "game": "Pokémon Or / Argent / Cristal", "year": "1999", "first": 152, "last": 251 },
+    "3": { "label": "Génération III", "game": "Pokémon Rubis / Saphir / Émeraude", "year": "2002", "first": 252, "last": 386 },
+    "4": { "label": "Génération IV", "game": "Pokémon Diamant / Perle / Platine", "year": "2006", "first": 387, "last": 493 },
+    "5": { "label": "Génération V", "game": "Pokémon Noir / Blanc", "year": "2010", "first": 494, "last": 649 },
+    "6": { "label": "Génération VI", "game": "Pokémon X / Y", "year": "2013", "first": 650, "last": 721 },
+    "7": { "label": "Génération VII", "game": "Pokémon Soleil / Lune", "year": "2016", "first": 722, "last": 809 },
+    "8": { "label": "Génération VIII", "game": "Pokémon Épée / Bouclier", "year": "2019", "first": 810, "last": 905 },
+    "9": { "label": "Génération IX", "game": "Pokémon Écarlate / Violet", "year": "2022", "first": 906, "last": 1025 }
+  }
+}

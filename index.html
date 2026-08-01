@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NéoDex — collection perso</title>
+<meta name="description" content="Pokédex personnel : suivi de collection, formes ♂ / ♀, chromatiques et quêtes de shiny hunt.">
+<meta name="color-scheme" content="dark light">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/layout.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+
+<!-- Ecran de chargement, remplace des que les donnees sont pretes. -->
+<div id="boot" class="boot">
+  <div class="boot__ball" aria-hidden="true"></div>
+  <p class="boot__text">Chargement du Pokédex…</p>
+  <p id="boot-error" class="boot__error" hidden></p>
+</div>
+
+<div id="app" class="app" hidden>
+
+  <button type="button" id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="sidebar">
+    <span aria-hidden="true">☰</span> Filtres
+  </button>
+
+  <!-- ============================= BARRE LATERALE ============================= -->
+  <aside id="sidebar" class="sidebar" aria-label="Filtres et progression">
+    <div class="brand">
+      <span class="brand__ball" aria-hidden="true"></span>
+      <span class="brand__text">
+        <strong class="brand__title">NéoDex</strong>
+        <span class="brand__sub">Collection perso</span>
+      </span>
+      <button type="button" id="theme-toggle" class="icon-btn" title="Basculer clair / sombre" aria-label="Basculer entre le thème clair et sombre">◐</button>
+    </div>
+
+    <section class="panel progress-card" aria-label="Progression">
+      <h2 class="panel__label">Progression</h2>
+      <p class="progress-card__pct"><span id="stat-pct">0</span><span class="progress-card__unit">%</span></p>
+      <p class="progress-card__count"><span id="stat-owned">0</span> / <span id="stat-total">0</span> capturés</p>
+      <div class="bar" role="progressbar" aria-labelledby="stat-pct" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
+        <div class="bar__fill" id="progress-fill"></div>
+      </div>
+      <ul class="progress-card__extra">
+        <li><span class="ico ico--shiny" aria-hidden="true">✦</span><span id="stat-shiny">0</span> shiny obtenus</li>
+        <li><span class="ico ico--pair" aria-hidden="true">♂♀</span><span id="stat-pair">0</span> paires complètes</li>
+      </ul>
+    </section>
+
+    <section class="field" aria-label="Filtre par statut">
+      <h2 class="panel__label">Statut</h2>
+      <div id="status-pills" class="pills"></div>
+    </section>
+
+    <section class="field">
+      <label class="panel__label" for="filter-gen">Génération</label>
+      <select id="filter-gen" class="select"></select>
+    </section>
+
+    <section class="field">
+      <label class="panel__label" for="filter-game">Disponible dans</label>
+      <select id="filter-game" class="select"></select>
+    </section>
+
+    <section class="field">
+      <label class="panel__label" for="filter-sort">Trier par</label>
+      <select id="filter-sort" class="select">
+        <option value="num">Numéro national</option>
+        <option value="name">Nom (A → Z)</option>
+        <option value="type">Type</option>
+        <option value="stats">Total des stats</option>
+      </select>
+    </section>
+
+    <section class="panel legend" aria-label="Légende du tableau de disponibilité">
+      <h2 class="panel__label">Légende du tableau</h2>
+      <ul class="legend__list">
+        <li><span class="legend__swatch" style="--c:#3f8f60"></span>Présent + shiny huntable</li>
+        <li><span class="legend__swatch" style="--c:#e08a4e"></span>Présent, shiny impossible</li>
+        <li><span class="legend__swatch" style="--c:#ab6ac8"></span>Événement + shiny huntable</li>
+        <li><span class="legend__swatch" style="--c:#4d90d5"></span>Événement, shiny impossible</li>
+        <li><span class="legend__swatch legend__swatch--empty"></span>Absent du jeu</li>
+      </ul>
+    </section>
+
+    <section class="field" aria-label="Sauvegarde de la collection">
+      <h2 class="panel__label">Ma sauvegarde</h2>
+      <p id="dirty-note" class="dirty-note" hidden></p>
+      <div class="btn-row">
+        <button type="button" id="export-btn" class="btn btn--ghost">Exporter</button>
+        <button type="button" id="import-btn" class="btn btn--ghost">Importer</button>
+        <button type="button" id="reset-btn" class="btn btn--ghost btn--danger">Réinitialiser</button>
+      </div>
+      <input type="file" id="import-file" accept="application/json" hidden>
+    </section>
+
+    <p class="footnote">Emplacements et méthodes sourcés sur Poképédia (FR) et Bulbapedia (EN). Sprites : PokeAPI.</p>
+  </aside>
+
+  <!-- ================================ CONTENU ================================ -->
+  <main class="main">
+    <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+
+    <!-- ------------------------------ POKEDEX ------------------------------ -->
+    <section id="tab-dex" class="tabpanel" aria-label="Pokédex">
+      <div class="toolbar">
+        <div class="search">
+          <span class="search__icon" aria-hidden="true">⌕</span>
+          <input type="search" id="search" class="search__input" placeholder="Rechercher un Pokémon…" autocomplete="off" aria-label="Rechercher un Pokémon">
+        </div>
+        <select id="filter-type" class="select select--inline" aria-label="Filtrer par type"></select>
+        <div class="segmented" id="view-toggle" role="group" aria-label="Image affichée"></div>
+        <p class="toolbar__count" id="result-count" aria-live="polite"></p>
+      </div>
+
+      <div class="dex">
+        <div class="dex__list">
+          <div id="grid" class="grid" role="list"></div>
+          <p id="grid-empty" class="empty" hidden>Aucun Pokémon ne correspond à ces filtres.</p>
+          <div id="grid-sentinel" class="sentinel" aria-hidden="true"></div>
+        </div>
+
+        <div id="detail" class="detail panel" aria-label="Fiche détaillée" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ------------------------------- QUETES ------------------------------- -->
+    <section id="tab-quest" class="tabpanel" aria-label="Quêtes de shiny hunt" hidden>
+      <div class="quest-layout">
+        <div id="quest-card" class="panel quest"></div>
+        <div class="quest-side">
+          <div class="panel stat-card">
+            <h2 class="panel__label">Quêtes accomplies</h2>
+            <p class="stat-card__value" id="quest-done">0</p>
+            <p class="stat-card__note"><span id="quest-skipped">0</span> quêtes passées</p>
+          </div>
+          <div class="panel">
+            <h2 class="panel__label">Journal de chasse</h2>
+            <div id="quest-log"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

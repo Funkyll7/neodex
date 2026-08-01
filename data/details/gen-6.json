@@ -1,0 +1,14 @@
+{
+ "658": {
+  "where": "Évolution de Croâporal au niveau 36 (X/Y).",
+  "gm": "xy sm usum swsh sv"
+ },
+ "681": {
+  "where": "Faire évoluer Dimoclès avec une Pierre Stase (X/Y).",
+  "gm": "xy oras sm usum swsh sv"
+ },
+ "700": {
+  "where": "Évoli avec 2 cœurs d'affection et une capacité Fée.",
+  "gm": "xy oras sm usum swsh bdsp sv"
+ }
+}

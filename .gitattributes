@@ -1,0 +1,7 @@
+# Fins de ligne normalisees en LF dans le depot, quelle que soit la machine.
+* text=auto eol=lf
+
+# Binaires : ne jamais toucher.
+*.jpg  binary
+*.png  binary
+*.svg  text eol=lf

@@ -1,0 +1,187 @@
+{
+  "_comment": "Tout ce qui concerne la chasse au chromatique. 'byGame' = methode par defaut dans chaque jeu. 'templates' = methodes generiques, avec des variables {cible}, {nom}, {jeu} remplacees a l'affichage. 'rules' = listes d'exceptions.",
+
+  "byGame": {
+    "gs": { "name": "Rencontre sauvage patiente", "odds": "1/8192", "steps": [
+      "Va sur la zone d'apparition et enregistre la partie juste avant.",
+      "Enchaîne les rencontres dans les hautes herbes : le chromatique est visible dès le scintillement d'apparition.",
+      "Garde des Balls et un Pokémon avec Hypnose / Cage-Éclair pour sécuriser la capture."
+    ]},
+    "c": { "name": "Rencontre sauvage patiente", "odds": "1/8192", "steps": [
+      "Repère la zone d'apparition et sauvegarde à côté.",
+      "Enchaîne les rencontres : le cri et le scintillement diffèrent pour un chromatique.",
+      "Prévois un Pokémon endormeur pour ne pas rater la capture."
+    ]},
+    "rs": { "name": "Rencontres sauvages en boucle", "odds": "1/8192", "steps": [
+      "Sauvegarde sur la zone où l'espèce apparaît.",
+      "Enfile les rencontres en boucle ; le sprite chromatique brille à l'entrée du combat.",
+      "Avec un Pokémon niveau bas en tête, tu allonges les chaînes sans KO."
+    ]},
+    "e": { "name": "Rencontres sauvages en boucle", "odds": "1/8192", "steps": [
+      "Sauvegarde sur la zone d'apparition.",
+      "Enchaîne les combats sauvages ; regarde bien le scintillement d'entrée.",
+      "Vole / Course pour re-régénérer les herbes plus vite."
+    ]},
+    "frlg": { "name": "Rencontres sauvages en boucle", "odds": "1/8192", "steps": [
+      "Sauvegarde à l'entrée de la zone.",
+      "Enchaîne les rencontres sauvages jusqu'au scintillement chromatique.",
+      "Utilise un Repousse adapté au niveau pour filtrer les espèces indésirables."
+    ]},
+    "col": { "name": "Soft reset avant capture", "odds": "1/8192", "steps": [
+      "Sauvegarde juste avant le combat où le Pokémon apparaît.",
+      "Lance le combat : si le sprite n'est pas chromatique, soft reset (B + X + Start).",
+      "Répète ; pense à activer le mode rapide de la console si possible."
+    ]},
+    "dp": { "name": "Poké Radar — chaîne de 40", "odds": "~1/200", "steps": [
+      "Obtiens le Poké Radar auprès du Prof. Sorbier après le Pokédex national.",
+      "Active le radar dans une grande zone d'herbe et vise toujours la touffe la plus éloignée qui tremble.",
+      "Monte la chaîne à 40 : les touffes brillantes contiennent le chromatique.",
+      "Ne cours pas dans l'herbe et évite le vélo, tu casserais la chaîne."
+    ]},
+    "pt": { "name": "Poké Radar — chaîne de 40", "odds": "~1/200", "steps": [
+      "Récupère le Poké Radar après le Pokédex national.",
+      "Chaîne la même espèce en visant les touffes lointaines.",
+      "À partir de 40 maillons, guette les touffes qui brillent."
+    ]},
+    "bdsp": { "name": "Poké Radar + Charme Chroma", "odds": "~1/99", "steps": [
+      "Termine le Pokédex national pour débloquer le Charme Chroma, puis prends le Poké Radar.",
+      "Chaîne l'espèce en visant les touffes les plus éloignées.",
+      "Au-delà de 40 maillons, les touffes scintillantes sont des chromatiques garantis."
+    ]},
+    "hgss": { "name": "Méthode Masuda (œufs)", "odds": "1/2048", "steps": [
+      "Récupère un parent de langue étrangère (échange GTS / ami).",
+      "Dépose-le à la Pension avec un Métamorph de ta langue.",
+      "Fais éclore les œufs en boucle sur le Chemin Multi ou en vélo."
+    ]},
+    "bw": { "name": "Méthode Masuda", "odds": "1/1365", "steps": [
+      "Obtiens un parent de langue étrangère via la GTS.",
+      "Reproduis-le avec un Métamorph de ta langue à la Pension.",
+      "Fais éclore les œufs en boucle ; un Pokémon à talent Corps Ardent accélère l'éclosion."
+    ]},
+    "b2w2": { "name": "Masuda + essaim", "odds": "1/1365", "steps": [
+      "Reproduis avec un parent de langue étrangère pour la Masuda.",
+      "Ou surveille les essaims quotidiens du Poké Transfert / de la radio.",
+      "Fais éclore ou enchaîne les rencontres sans t'arrêter."
+    ]},
+    "xy": { "name": "Chaîne Poké Radar / Hordes", "odds": "~1/200", "steps": [
+      "Termine le Pokédex national pour le Charme Chroma si possible.",
+      "Utilise le Poké Radar (après le jeu) et chaîne la même espèce, ou attaque des hordes de 5 avec Vampigraine / Ronflement.",
+      "Le DexNav de ROSA n'existe pas ici : privilégie le radar sur une zone dégagée."
+    ]},
+    "oras": { "name": "Chaîne DexNav", "odds": "~1/512", "steps": [
+      "Ouvre le DexNav et repère l'espèce qui dépasse de l'herbe.",
+      "Approche accroupi sans faire de bruit et enfile les captures / KO de la même espèce.",
+      "À partir de 30 de chaîne, les chances grimpent nettement ; ne quitte jamais la zone."
+    ]},
+    "sm": { "name": "Chaîne d'appels SOS", "odds": "~1/315", "steps": [
+      "Équipe un Pokémon avec Faux-Chage et une capacité pour mettre la cible à bas PV.",
+      "Tiens un Adréna Orbe pour que la cible appelle des renforts en boucle.",
+      "Maintiens la chaîne au-delà de 30 appels sans jamais KO l'appelant."
+    ]},
+    "usum": { "name": "Chaîne d'appels SOS", "odds": "~1/315", "steps": [
+      "Faux-Chage + Adréna Orbe pour déclencher les appels à l'aide en continu.",
+      "Chaîne 31 appels ou plus : les chances plafonnent ensuite.",
+      "Garde des Balls Rapides pour ne pas casser la chaîne par un KO accidentel."
+    ]},
+    "lgpe": { "name": "Chaîne d'attrapage + Leurre", "odds": "~1/273", "steps": [
+      "Utilise un Parfum Attirance et un Leurre pour faire apparaître l'espèce en boucle.",
+      "Attrape 31 fois la même espèce d'affilée sans en attraper d'autre.",
+      "Le chromatique apparaît directement sur la carte, avec ses scintillements."
+    ]},
+    "swsh": { "name": "Combo KO + Terres Sauvages", "odds": "~1/512", "steps": [
+      "Fais 500 KO de la même espèce pour maximiser la chance de Pokémon étincelant.",
+      "Chasse dans les Terres Sauvages avec la météo qui fait apparaître l'espèce.",
+      "Le Charme Chroma (Pokédex de Galar complet) triple les chances."
+    ]},
+    "pla": { "name": "Essaim massif + recherche parfaite", "odds": "~1/128", "steps": [
+      "Complète la recherche Pokédex de l'espèce jusqu'au niveau 10 (recherche parfaite).",
+      "Attends une apparition massive / massive rare et emporte des Baies et Bombes Fumigènes.",
+      "KO ou capture les 15 individus pour déclencher les vagues supplémentaires."
+    ]},
+    "sv": { "name": "Apparition massive + sandwich", "odds": "~1/512", "steps": [
+      "Trouve une apparition massive de l'espèce sur la carte.",
+      "KO 60 individus pour atteindre le meilleur palier de chance.",
+      "Prépare un sandwich Encens Éclatant du bon type, puis reviens sur l'essaim sans changer de zone."
+    ]}
+  },
+
+  "fallback": { "name": "Rencontres en boucle", "odds": "1/4096", "steps": [
+    "Sauvegarde près de la zone d'apparition.",
+    "Enchaîne les rencontres jusqu'au chromatique."
+  ]},
+
+  "templates": {
+    "dynamax": { "name": "Raids Dynamax — DLC Couronneige", "odds": "1/100", "steps": [
+      "Termine le Pokédex de Galar pour obtenir le Charme Chroma : il fait passer les raids Dynamax de 1/300 à 1/100.",
+      "Va au Repaire Dynamax de Couronneige et lance une expédition (seul avec des PNJ, c'est le plus rapide).",
+      "Enchaîne les quatre combats jusqu'au légendaire final ; si ce n'est pas ta cible, choisis-la quand même pour la retenir, ou recommence.",
+      "Si le légendaire n'est pas chromatique, refuse-le et relance une expédition — c'est le meilleur taux existant pour ces légendaires, sans soft reset."
+    ]},
+    "wormhole": { "name": "Failles d'Ultra-Chimie", "odds": "1/100", "steps": [
+      "Chevauche Solgaleo / Lunala et entre dans les failles d'Ultra-Chimie depuis l'Ultra-Sas.",
+      "Vise les anneaux blancs et évite les obstacles : plus tu vas loin (10 000 al et plus), plus le taux de chromatique et de rares monte.",
+      "La couleur et le nombre d'anneaux indiquent la famille de légendaires : repère celle de ta cible avant d'entrer.",
+      "Le légendaire réapparaît indéfiniment : sors et relance une faille jusqu'au chromatique, sans soft reset."
+    ]},
+    "softReset": { "name": "Soft reset avant la rencontre", "odds": { "old": "1/8192", "new": "1/4096" }, "steps": [
+      "Sauvegarde juste devant le Pokémon, avant de déclencher le combat.",
+      "Lance la rencontre et regarde le sprite d'entrée : pas de scintillement doré = ce n'est pas le bon.",
+      "Soft reset (L + R + Start / Select selon la console) et recommence — la rencontre est unique, aucune chaîne ni reproduction n'est possible.",
+      "Prépare Ball Filet / Chrono, Faux-Chage et un endormeur : tu n'auras qu'une seule chance de capture."
+    ]},
+    "gift": { "name": "Soft reset sur le don", "odds": { "old": "1/8192", "new": "1/4096" }, "steps": [
+      "Cette espèce ne se rencontre pas dans la nature ici : elle est remise une seule fois.",
+      "Sauvegarde juste avant de récupérer le Pokémon.",
+      "Récupère-le, ouvre sa fiche pour voir s'il est chromatique.",
+      "Sinon, soft reset et recommence — aucune chaîne ni reproduction n'est possible sur un don."
+    ]},
+    "giftLine": { "name": "Soft reset sur {cible}", "steps": [
+      "{nom} ne se rencontre pas à l'état sauvage, et sa lignée remonte à {cible}, qui est un Pokémon offert.",
+      "Sauvegarde juste avant de recevoir {cible}.",
+      "Récupère-le et vérifie sa fiche : soft reset tant qu'il n'est pas chromatique.",
+      "Fais-le évoluer ensuite — l'aspect chromatique est conservé à chaque évolution."
+    ]},
+    "wildFallback": { "name": "Rencontres sauvages en boucle", "odds": { "old": "1/8192", "new": "1/4096" }, "steps": [
+      "Aucune méthode de chaîne ne s'applique ici : cette forme ne se croise pas dans les hautes herbes.",
+      "Sauvegarde sur le lieu d'apparition (eau, grotte ou pêche selon l'espèce).",
+      "Enchaîne les rencontres jusqu'au scintillement chromatique."
+    ]},
+    "evolution": { "name": "{base} sur {cible}", "intro":
+      "{nom} ne se rencontre pas à l'état sauvage : la chasse se fait sur {cible}, la première forme de la lignée réellement rencontrable.",
+      "outro": "Une fois ton {cible} chromatique obtenu, fais-le évoluer — l'évolution conserve toujours l'aspect chromatique."
+    },
+    "masuda": { "name": "Méthode Masuda sur {cible}", "steps": [
+      "Récupère un {cible} par le moyen habituel — même verrouillé en chromatique à l'obtention, sa descendance peut l'être.",
+      "Échange un Métamorph de langue étrangère (GTS / échanges en ligne) : c'est lui qui déclenche le bonus Masuda.",
+      "Reproduis les deux à la Pension{charme}.",
+      "Fais éclore les œufs en boucle{evolution}."
+    ],
+    "charme": " et porte le Charme Chroma (Pokédex complet) : le taux tombe à 1/512",
+    "evolution": ", puis fais évoluer le chromatique en {nom}"
+    }
+  },
+
+  "masudaOdds": {
+    "dp": "1/1638", "pt": "1/1638", "hgss": "1/1638",
+    "bw": "1/1365", "b2w2": "1/1365",
+    "xy": "1/512", "oras": "1/512", "sm": "1/512", "usum": "1/512",
+    "swsh": "1/512", "bdsp": "1/512", "sv": "1/512"
+  },
+
+  "generalMethods": [
+    { "odds": "1/4096",  "name": "Rencontre normale (Gén. VI+)", "how": "Taux de base. 1/8192 de la Gén. II à V." },
+    { "odds": "1/683",   "name": "Méthode Masuda", "how": "Reproduire deux parents de langues de jeu différentes ; cumulable avec le Charme Chroma." },
+    { "odds": "1/1365",  "name": "Charme Chroma", "how": "Obtenu après avoir complété le Pokédex national — triple les chances partout." },
+    { "odds": "~1/315",  "name": "Chaînes (SOS, pêche, Poké Radar, sandwichs)", "how": "Selon le jeu : appels SOS (SL / USUL), Poké Radar (DP / BDSP), sandwichs à l'Encens Éclatant (EV), essaims massifs (LA)." }
+  ],
+
+  "rules": {
+    "_comment": "giftLocked = jeux ou les Pokemon offerts sont shiny-locked. grassOnly = jeux dont la methode par defaut ne marche que dans les hautes herbes. staticSoftResetOk = jeux ou un legendaire statique peut vraiment etre soft-reset en chromatique. dynamaxRaid / ultraWormhole = numeros nationaux accessibles par ces methodes. grassEncounter = especes qu'on croise vraiment dans les hautes herbes.",
+    "giftLocked": ["swsh", "sv", "pla", "lgpe", "bdsp"],
+    "grassOnly": ["dp", "pt", "bdsp", "xy"],
+    "staticSoftResetOk": ["gs", "c", "rs", "e", "frlg", "col", "dp", "pt", "hgss", "bw", "b2w2", "sm", "usum", "bdsp"],
+    "dynamaxRaid": [144, 145, 146, 150, 243, 244, 245, 249, 250, 377, 378, 379, 380, 381, 382, 383, 384, 480, 481, 482, 483, 484, 485, 486, 487, 488, 638, 639, 640, 641, 642, 643, 644, 645, 646, 716, 717, 718, 772, 773, 785, 786, 787, 788, 789, 790, 791, 792, 800, 803, 804, 805, 806],
+    "ultraWormhole": [144, 145, 146, 150, 243, 244, 245, 249, 250, 377, 378, 379, 380, 381, 382, 383, 384, 480, 481, 482, 483, 484, 485, 486, 487, 488, 638, 639, 640, 641, 642, 643, 644, 645, 646, 716, 717, 718],
+    "grassEncounter": ["Pikachu", "Goupix", "Caninos", "Abra", "Évoli", "Tarsal", "Zorua", "Rondoudou", "Miaouss", "Absol", "Mimiqui", "Nidoran♀", "Nidoran♂", "Chuchmur", "Poichigeon"]
+  }
+}

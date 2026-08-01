@@ -1,0 +1,23 @@
+{
+  "_comment": "Couleur d'accent de chaque type. Le nom sert de cle et doit correspondre exactement au nom francais renvoye par PokeAPI (voir data/pokemon/gen-*.json).",
+  "types": {
+    "Normal": "#9099a1",
+    "Feu": "#ff9c54",
+    "Eau": "#4d90d5",
+    "Plante": "#63bb5b",
+    "Électrik": "#f3d23b",
+    "Glace": "#74cec0",
+    "Combat": "#ce4069",
+    "Poison": "#ab6ac8",
+    "Sol": "#d97746",
+    "Vol": "#8fa8dd",
+    "Psy": "#f97176",
+    "Insecte": "#90c12c",
+    "Roche": "#c7b78b",
+    "Spectre": "#5269ac",
+    "Dragon": "#0a6dc4",
+    "Ténèbres": "#5a5366",
+    "Acier": "#5a8ea1",
+    "Fée": "#ec8fe6"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "_comment": "Series principales, dans l'ordre de sortie. 'code' est la cle utilisee par les champs gm / ev / nsh de data/details/*.json. shinyOk:false = le jeu ne connait pas les chromatiques (Gen. I).",
+  "games": [
+    { "code": "rb",   "name": "Rouge / Bleu",                              "gen": 1, "shinyOk": false },
+    { "code": "y",    "name": "Jaune",                                     "gen": 1, "shinyOk": false },
+    { "code": "gs",   "name": "Or / Argent",                               "gen": 2 },
+    { "code": "c",    "name": "Cristal",                                   "gen": 2 },
+    { "code": "rs",   "name": "Rubis / Saphir",                            "gen": 3 },
+    { "code": "e",    "name": "Émeraude",                                  "gen": 3 },
+    { "code": "frlg", "name": "Rouge Feu / Vert Feuille",                  "gen": 3 },
+    { "code": "col",  "name": "Colosseum / XD",                            "gen": 3 },
+    { "code": "dp",   "name": "Diamant / Perle",                           "gen": 4 },
+    { "code": "pt",   "name": "Platine",                                   "gen": 4 },
+    { "code": "hgss", "name": "HeartGold / SoulSilver",                    "gen": 4 },
+    { "code": "bw",   "name": "Noir / Blanc",                              "gen": 5 },
+    { "code": "b2w2", "name": "Noir 2 / Blanc 2",                          "gen": 5 },
+    { "code": "xy",   "name": "X / Y",                                     "gen": 6 },
+    { "code": "oras", "name": "Rubis Oméga / Saphir Alpha",                "gen": 6 },
+    { "code": "sm",   "name": "Soleil / Lune",                             "gen": 7 },
+    { "code": "usum", "name": "Ultra-Soleil / Ultra-Lune",                 "gen": 7 },
+    { "code": "lgpe", "name": "Let's Go Pikachu / Évoli",                  "gen": 7 },
+    { "code": "swsh", "name": "Épée / Bouclier",                           "gen": 8 },
+    { "code": "bdsp", "name": "Diamant Étincelant / Perle Scintillante",   "gen": 8 },
+    { "code": "pla",  "name": "Légendes Arceus",                           "gen": 8 },
+    { "code": "sv",   "name": "Écarlate / Violet",                         "gen": 9 }
+  ]
+}

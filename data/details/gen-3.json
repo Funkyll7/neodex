@@ -1,0 +1,35 @@
+{
+ "257": {
+  "where": "Évolution de Galifeu au niveau 36 (Rubis/Saphir).",
+  "gm": "rs e col oras sv",
+  "ev": "xy",
+  "variant": {
+   "name": "Méga-Braségali",
+   "id": 10050,
+   "where": "Méga-Évolution avec la Braségalite (ROSA)."
+  }
+ },
+ "282": {
+  "where": "Évolution de Kirlia au niveau 30.",
+  "gm": "rs e col dp pt bw b2w2 xy oras sm usum swsh bdsp sv",
+  "variant": {
+   "name": "Méga-Gardevoir",
+   "id": 10051,
+   "where": "Méga-Évolution avec la Gardevoirite (X/Y, ROSA)."
+  }
+ },
+ "359": {
+  "where": "Route 120, Hoenn (Rubis/Saphir/Émeraude).",
+  "gm": "rs e col dp pt bw b2w2 xy oras sm usum swsh sv"
+ },
+ "384": {
+  "where": "Sommet de la Tour Céleste, Hoenn (niveau 70).",
+  "gm": "rs e oras usum swsh",
+  "nsh": "oras",
+  "variant": {
+   "name": "Méga-Rayquaza",
+   "id": 10079,
+   "where": "Connaître Ascension Draconique + aucun objet tenu (ROSA)."
+  }
+ }
+}

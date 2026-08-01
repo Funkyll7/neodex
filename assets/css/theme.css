@@ -1,0 +1,109 @@
+/* =============================================================================
+   theme.css — jetons de design
+   Toutes les couleurs du site passent par ces variables. Pour retoucher
+   l'apparence, c'est ici et nulle part ailleurs.
+   Le theme est pilote par l'attribut data-theme sur <html> (voir ui/theme.js).
+   ========================================================================== */
+
+:root {
+  /* --- Rayons, ombres, rythme --- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 22px;
+  --sp-6: 30px;
+
+  --sidebar-w: 268px;
+  --detail-w: 420px;
+
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Baloo 2", var(--font-body);
+
+  /* --- Couleurs semantiques communes aux deux themes --- */
+  --gold: #ffcb05;
+  --gold-soft: #ff9c3d;
+  --pair: #6fb7ff;
+  --female: #ff8fd0;
+  --danger: #ff6b6b;
+
+  /* Etats du tableau de disponibilite par jeu */
+  --avail-ok: #3f8f60;
+  --avail-nolock: #e08a4e;
+  --avail-event: #ab6ac8;
+  --avail-event-lock: #4d90d5;
+}
+
+/* ----------------------------- THEME SOMBRE ------------------------------ */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0a0d17;
+  --bg-raised: #141a2b;
+  --bg-sunken: #0e1424;
+  --bg-inset: #161d31;
+  --bg-hover: #182038;
+
+  --border: #222a40;
+  --border-strong: #2a3350;
+
+  --text: #eef1f8;
+  --text-soft: #aeb8cf;
+  --text-muted: #7f8aa3;
+  --text-faint: #5b6480;
+  --text-ghost: #3f4763;
+
+  --accent: var(--gold);
+  --accent-ink: #3a2e00;
+  --accent-glow: rgba(255, 203, 5, .45);
+  --accent-wash: rgba(255, 203, 5, .13);
+  --accent-border: #3a3208;
+
+  --shadow-panel: none;
+  --sprite-dim: grayscale(1) brightness(.65);
+}
+
+/* ------------------------------ THEME CLAIR ------------------------------ */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #f2f4f9;
+  --bg-raised: #ffffff;
+  --bg-sunken: #f7f9fd;
+  --bg-inset: #eceff7;
+  --bg-hover: #e8edf9;
+
+  --border: #dde2ee;
+  --border-strong: #c6cede;
+
+  --text: #171d2b;
+  --text-soft: #45506a;
+  --text-muted: #5f6a84;
+  --text-faint: #7b859c;
+  --text-ghost: #9aa3b6;
+
+  --accent: #c98f00;
+  --accent-ink: #ffffff;
+  --accent-glow: rgba(201, 143, 0, .35);
+  --accent-wash: rgba(201, 143, 0, .12);
+  --accent-border: #e6d091;
+
+  --gold: #c98f00;
+  --pair: #2b7fd0;
+  --female: #d0559b;
+
+  --avail-ok: #2f7a4f;
+  --avail-nolock: #c06a24;
+  --avail-event: #8b47ac;
+  --avail-event-lock: #2f74b8;
+
+  --shadow-panel: 0 1px 2px rgba(23, 29, 43, .05), 0 6px 18px rgba(23, 29, 43, .05);
+  --sprite-dim: grayscale(1) brightness(1.05) opacity(.55);
+}

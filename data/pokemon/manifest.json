@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-08-01T13:14:25Z",
+  "source": "PokeAPI (data/v2/csv)",
+  "generator": "tools/build_dataset.py",
+  "total": 1025,
+  "statLabels": [
+    "PV",
+    "Attaque",
+    "Defense",
+    "Atq. Spe.",
+    "Def. Spe.",
+    "Vitesse"
+  ],
+  "generations": [
+    {
+      "gen": 1,
+      "file": "gen-1.json",
+      "count": 151,
+      "first": 1,
+      "last": 151
+    },
+    {
+      "gen": 2,
+      "file": "gen-2.json",
+      "count": 100,
+      "first": 152,
+      "last": 251
+    },
+    {
+      "gen": 3,
+      "file": "gen-3.json",
+      "count": 135,
+      "first": 252,
+      "last": 386
+    },
+    {
+      "gen": 4,
+      "file": "gen-4.json",
+      "count": 107,
+      "first": 387,
+      "last": 493
+    },
+    {
+      "gen": 5,
+      "file": "gen-5.json",
+      "count": 156,
+      "first": 494,
+      "last": 649
+    },
+    {
+      "gen": 6,
+      "file": "gen-6.json",
+      "count": 72,
+      "first": 650,
+      "last": 721
+    },
+    {
+      "gen": 7,
+      "file": "gen-7.json",
+      "count": 88,
+      "first": 722,
+      "last": 809
+    },
+    {
+      "gen": 8,
+      "file": "gen-8.json",
+      "count": 96,
+      "first": 810,
+      "last": 905
+    },
+    {
+      "gen": 9,
+      "file": "gen-9.json",
+      "count": 120,
+      "first": 906,
+      "last": 1025
+    }
+  ]
+}

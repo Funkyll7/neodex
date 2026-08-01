@@ -1,0 +1,2839 @@
+[
+ {
+  "id": 906,
+  "name": "Poussacha",
+  "en": "Sprigatito",
+  "cat": "Chat Plante",
+  "gen": 9,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   40,
+   61,
+   54,
+   45,
+   45,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 907,
+  "name": "Matourgeon",
+  "en": "Floragato",
+  "cat": "Chat Plante",
+  "gen": 9,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   61,
+   80,
+   63,
+   60,
+   63,
+   83
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 906
+ },
+ {
+  "id": 908,
+  "name": "Miascarade",
+  "en": "Meowscarada",
+  "cat": "Magicien",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Ténèbres"
+  ],
+  "stats": [
+   76,
+   110,
+   70,
+   81,
+   70,
+   123
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 907
+ },
+ {
+  "id": 909,
+  "name": "Chochodile",
+  "en": "Fuecoco",
+  "cat": "Croco Feu",
+  "gen": 9,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   67,
+   45,
+   59,
+   63,
+   40,
+   36
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 910,
+  "name": "Crocogril",
+  "en": "Crocalor",
+  "cat": "Croco Feu",
+  "gen": 9,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   81,
+   55,
+   78,
+   90,
+   58,
+   49
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 909
+ },
+ {
+  "id": 911,
+  "name": "Flâmigator",
+  "en": "Skeledirge",
+  "cat": "Chanteur",
+  "gen": 9,
+  "types": [
+   "Feu",
+   "Spectre"
+  ],
+  "stats": [
+   104,
+   75,
+   100,
+   110,
+   75,
+   66
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 910
+ },
+ {
+  "id": 912,
+  "name": "Coiffeton",
+  "en": "Quaxly",
+  "cat": "Caneton",
+  "gen": 9,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   55,
+   65,
+   45,
+   50,
+   45,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 913,
+  "name": "Canarbello",
+  "en": "Quaxwell",
+  "cat": "Leçon",
+  "gen": 9,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   70,
+   85,
+   65,
+   65,
+   60,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 912
+ },
+ {
+  "id": 914,
+  "name": "Palmaval",
+  "en": "Quaquaval",
+  "cat": "Danseur",
+  "gen": 9,
+  "types": [
+   "Eau",
+   "Combat"
+  ],
+  "stats": [
+   85,
+   120,
+   80,
+   85,
+   75,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 913
+ },
+ {
+  "id": 915,
+  "name": "Gourmelet",
+  "en": "Lechonk",
+  "cat": "Pourceau",
+  "gen": 9,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   54,
+   45,
+   40,
+   35,
+   45,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 916,
+  "name": "Fragroin",
+  "en": "Oinkologne",
+  "cat": "Pourceau",
+  "gen": 9,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   110,
+   100,
+   75,
+   59,
+   80,
+   65
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 915
+ },
+ {
+  "id": 917,
+  "name": "Tissenboule",
+  "en": "Tarountula",
+  "cat": "Boule de Fil",
+  "gen": 9,
+  "types": [
+   "Insecte"
+  ],
+  "stats": [
+   35,
+   41,
+   45,
+   29,
+   40,
+   20
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 918,
+  "name": "Filentrappe",
+  "en": "Spidops",
+  "cat": "Piège",
+  "gen": 9,
+  "types": [
+   "Insecte"
+  ],
+  "stats": [
+   60,
+   79,
+   92,
+   52,
+   86,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 917
+ },
+ {
+  "id": 919,
+  "name": "Lilliterelle",
+  "en": "Nymble",
+  "cat": "Sauterelle",
+  "gen": 9,
+  "types": [
+   "Insecte"
+  ],
+  "stats": [
+   33,
+   46,
+   40,
+   21,
+   25,
+   45
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 920,
+  "name": "Gambex",
+  "en": "Lokix",
+  "cat": "Sauterelle",
+  "gen": 9,
+  "types": [
+   "Insecte",
+   "Ténèbres"
+  ],
+  "stats": [
+   71,
+   102,
+   78,
+   52,
+   55,
+   92
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 919
+ },
+ {
+  "id": 921,
+  "name": "Pohm",
+  "en": "Pawmi",
+  "cat": "Souris",
+  "gen": 9,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   45,
+   50,
+   20,
+   40,
+   25,
+   60
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 922,
+  "name": "Pohmotte",
+  "en": "Pawmo",
+  "cat": "Souris",
+  "gen": 9,
+  "types": [
+   "Électrik",
+   "Combat"
+  ],
+  "stats": [
+   60,
+   75,
+   40,
+   50,
+   40,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 921
+ },
+ {
+  "id": 923,
+  "name": "Pohmarmotte",
+  "en": "Pawmot",
+  "cat": "Pose Paume",
+  "gen": 9,
+  "types": [
+   "Électrik",
+   "Combat"
+  ],
+  "stats": [
+   70,
+   115,
+   70,
+   70,
+   60,
+   105
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 922
+ },
+ {
+  "id": 924,
+  "name": "Compagnol",
+  "en": "Tandemaus",
+  "cat": "Couple",
+  "gen": 9,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   50,
+   50,
+   45,
+   40,
+   45,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 925,
+  "name": "Famignol",
+  "en": "Maushold",
+  "cat": "Famille",
+  "gen": 9,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   74,
+   75,
+   70,
+   65,
+   75,
+   111
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 924
+ },
+ {
+  "id": 926,
+  "name": "Pâtachiot",
+  "en": "Fidough",
+  "cat": "Chiot",
+  "gen": 9,
+  "types": [
+   "Fée"
+  ],
+  "stats": [
+   37,
+   55,
+   70,
+   30,
+   55,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 927,
+  "name": "Briochien",
+  "en": "Dachsbun",
+  "cat": "Chien",
+  "gen": 9,
+  "types": [
+   "Fée"
+  ],
+  "stats": [
+   57,
+   80,
+   115,
+   50,
+   80,
+   95
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 926
+ },
+ {
+  "id": 928,
+  "name": "Olivini",
+  "en": "Smoliv",
+  "cat": "Olive",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Normal"
+  ],
+  "stats": [
+   41,
+   35,
+   45,
+   58,
+   51,
+   30
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 929,
+  "name": "Olivado",
+  "en": "Dolliv",
+  "cat": "Olive",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Normal"
+  ],
+  "stats": [
+   52,
+   53,
+   60,
+   78,
+   78,
+   33
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 928
+ },
+ {
+  "id": 930,
+  "name": "Arboliva",
+  "en": "Arboliva",
+  "cat": "Olive",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Normal"
+  ],
+  "stats": [
+   78,
+   69,
+   90,
+   125,
+   109,
+   39
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 929
+ },
+ {
+  "id": 931,
+  "name": "Tapatoès",
+  "en": "Squawkabilly",
+  "cat": "Perroquet",
+  "gen": 9,
+  "types": [
+   "Normal",
+   "Vol"
+  ],
+  "stats": [
+   82,
+   96,
+   51,
+   45,
+   51,
+   92
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 932,
+  "name": "Selutin",
+  "en": "Nacli",
+  "cat": "Halite",
+  "gen": 9,
+  "types": [
+   "Roche"
+  ],
+  "stats": [
+   55,
+   55,
+   75,
+   35,
+   35,
+   25
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 933,
+  "name": "Amassel",
+  "en": "Naclstack",
+  "cat": "Halite",
+  "gen": 9,
+  "types": [
+   "Roche"
+  ],
+  "stats": [
+   60,
+   60,
+   100,
+   35,
+   65,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 932
+ },
+ {
+  "id": 934,
+  "name": "Gigansel",
+  "en": "Garganacl",
+  "cat": "Halite",
+  "gen": 9,
+  "types": [
+   "Roche"
+  ],
+  "stats": [
+   100,
+   100,
+   130,
+   45,
+   90,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 933
+ },
+ {
+  "id": 935,
+  "name": "Charbambin",
+  "en": "Charcadet",
+  "cat": "Enfant Feu",
+  "gen": 9,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   40,
+   50,
+   40,
+   50,
+   40,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 936,
+  "name": "Carmadura",
+  "en": "Armarouge",
+  "cat": "Feu Guerrier",
+  "gen": 9,
+  "types": [
+   "Feu",
+   "Psy"
+  ],
+  "stats": [
+   85,
+   60,
+   100,
+   125,
+   80,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 935
+ },
+ {
+  "id": 937,
+  "name": "Malvalame",
+  "en": "Ceruledge",
+  "cat": "Feu Bretteur",
+  "gen": 9,
+  "types": [
+   "Feu",
+   "Spectre"
+  ],
+  "stats": [
+   75,
+   125,
+   80,
+   60,
+   100,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 935
+ },
+ {
+  "id": 938,
+  "name": "Têtampoule",
+  "en": "Tadbulb",
+  "cat": "Électêtard",
+  "gen": 9,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   61,
+   31,
+   41,
+   59,
+   35,
+   45
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 939,
+  "name": "Ampibidou",
+  "en": "Bellibolt",
+  "cat": "Élecrapaud",
+  "gen": 9,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   109,
+   64,
+   91,
+   103,
+   83,
+   45
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 938
+ },
+ {
+  "id": 940,
+  "name": "Zapétrel",
+  "en": "Wattrel",
+  "cat": "Océanite",
+  "gen": 9,
+  "types": [
+   "Électrik",
+   "Vol"
+  ],
+  "stats": [
+   40,
+   40,
+   35,
+   55,
+   40,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 941,
+  "name": "Fulgulairo",
+  "en": "Kilowattrel",
+  "cat": "Frégate",
+  "gen": 9,
+  "types": [
+   "Électrik",
+   "Vol"
+  ],
+  "stats": [
+   70,
+   70,
+   60,
+   105,
+   60,
+   125
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 940
+ },
+ {
+  "id": 942,
+  "name": "Grondogue",
+  "en": "Maschiff",
+  "cat": "Jeunot",
+  "gen": 9,
+  "types": [
+   "Ténèbres"
+  ],
+  "stats": [
+   60,
+   78,
+   60,
+   40,
+   51,
+   51
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 943,
+  "name": "Dogrino",
+  "en": "Mabosstiff",
+  "cat": "Parrain",
+  "gen": 9,
+  "types": [
+   "Ténèbres"
+  ],
+  "stats": [
+   80,
+   120,
+   90,
+   60,
+   70,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 942
+ },
+ {
+  "id": 944,
+  "name": "Gribouraigne",
+  "en": "Shroodle",
+  "cat": "Souris Venin",
+  "gen": 9,
+  "types": [
+   "Poison",
+   "Normal"
+  ],
+  "stats": [
+   40,
+   65,
+   35,
+   40,
+   35,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 945,
+  "name": "Tag-Tag",
+  "en": "Grafaiai",
+  "cat": "Singe Venin",
+  "gen": 9,
+  "types": [
+   "Poison",
+   "Normal"
+  ],
+  "stats": [
+   63,
+   95,
+   65,
+   80,
+   72,
+   110
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 944
+ },
+ {
+  "id": 946,
+  "name": "Virovent",
+  "en": "Bramblin",
+  "cat": "Virevoltant",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Spectre"
+  ],
+  "stats": [
+   40,
+   65,
+   30,
+   45,
+   35,
+   60
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 947,
+  "name": "Virevorreur",
+  "en": "Brambleghast",
+  "cat": "Virevoltant",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Spectre"
+  ],
+  "stats": [
+   55,
+   115,
+   70,
+   80,
+   70,
+   90
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 946
+ },
+ {
+  "id": 948,
+  "name": "Terracool",
+  "en": "Toedscool",
+  "cat": "Champiméduse",
+  "gen": 9,
+  "types": [
+   "Sol",
+   "Plante"
+  ],
+  "stats": [
+   40,
+   40,
+   35,
+   50,
+   100,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 949,
+  "name": "Terracruel",
+  "en": "Toedscruel",
+  "cat": "Champiméduse",
+  "gen": 9,
+  "types": [
+   "Sol",
+   "Plante"
+  ],
+  "stats": [
+   80,
+   70,
+   65,
+   80,
+   120,
+   100
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 948
+ },
+ {
+  "id": 950,
+  "name": "Craparoi",
+  "en": "Klawf",
+  "cat": "Embuscade",
+  "gen": 9,
+  "types": [
+   "Roche"
+  ],
+  "stats": [
+   70,
+   100,
+   115,
+   35,
+   55,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 951,
+  "name": "Pimito",
+  "en": "Capsakid",
+  "cat": "Habanero",
+  "gen": 9,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   50,
+   62,
+   40,
+   62,
+   40,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 952,
+  "name": "Scovilain",
+  "en": "Scovillain",
+  "cat": "Habanero",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Feu"
+  ],
+  "stats": [
+   65,
+   108,
+   65,
+   108,
+   65,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 951
+ },
+ {
+  "id": 953,
+  "name": "Léboulérou",
+  "en": "Rellor",
+  "cat": "Rouleur",
+  "gen": 9,
+  "types": [
+   "Insecte"
+  ],
+  "stats": [
+   41,
+   50,
+   60,
+   31,
+   58,
+   30
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 954,
+  "name": "Bérasca",
+  "en": "Rabsca",
+  "cat": "Rouleur",
+  "gen": 9,
+  "types": [
+   "Insecte",
+   "Psy"
+  ],
+  "stats": [
+   75,
+   50,
+   85,
+   115,
+   100,
+   45
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 953
+ },
+ {
+  "id": 955,
+  "name": "Flotillon",
+  "en": "Flittle",
+  "cat": "Froufrou",
+  "gen": 9,
+  "types": [
+   "Psy"
+  ],
+  "stats": [
+   30,
+   35,
+   30,
+   55,
+   30,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 956,
+  "name": "Cléopsytra",
+  "en": "Espathra",
+  "cat": "Autruche",
+  "gen": 9,
+  "types": [
+   "Psy"
+  ],
+  "stats": [
+   95,
+   60,
+   60,
+   101,
+   60,
+   105
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 955
+ },
+ {
+  "id": 957,
+  "name": "Forgerette",
+  "en": "Tinkatink",
+  "cat": "Forge",
+  "gen": 9,
+  "types": [
+   "Fée",
+   "Acier"
+  ],
+  "stats": [
+   50,
+   45,
+   45,
+   35,
+   64,
+   58
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 958,
+  "name": "Forgella",
+  "en": "Tinkatuff",
+  "cat": "Marteau",
+  "gen": 9,
+  "types": [
+   "Fée",
+   "Acier"
+  ],
+  "stats": [
+   65,
+   55,
+   55,
+   45,
+   82,
+   78
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 957
+ },
+ {
+  "id": 959,
+  "name": "Forgelina",
+  "en": "Tinkaton",
+  "cat": "Marteau",
+  "gen": 9,
+  "types": [
+   "Fée",
+   "Acier"
+  ],
+  "stats": [
+   85,
+   75,
+   77,
+   70,
+   105,
+   94
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 958
+ },
+ {
+  "id": 960,
+  "name": "Taupikeau",
+  "en": "Wiglett",
+  "cat": "Congre",
+  "gen": 9,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   10,
+   55,
+   25,
+   35,
+   25,
+   95
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 961,
+  "name": "Triopikeau",
+  "en": "Wugtrio",
+  "cat": "Congre",
+  "gen": 9,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   35,
+   100,
+   50,
+   50,
+   70,
+   120
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 960
+ },
+ {
+  "id": 962,
+  "name": "Lestombaile",
+  "en": "Bombirdier",
+  "cat": "Délesteur",
+  "gen": 9,
+  "types": [
+   "Vol",
+   "Ténèbres"
+  ],
+  "stats": [
+   70,
+   103,
+   85,
+   60,
+   85,
+   82
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 963,
+  "name": "Dofin",
+  "en": "Finizen",
+  "cat": "Dauphin",
+  "gen": 9,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   70,
+   45,
+   40,
+   45,
+   40,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 964,
+  "name": "Superdofin",
+  "en": "Palafin",
+  "cat": "Dauphin/Super Héros",
+  "gen": 9,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   100,
+   70,
+   72,
+   53,
+   62,
+   100
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 963
+ },
+ {
+  "id": 965,
+  "name": "Vrombi",
+  "en": "Varoom",
+  "cat": "Monocylindre",
+  "gen": 9,
+  "types": [
+   "Acier",
+   "Poison"
+  ],
+  "stats": [
+   45,
+   70,
+   63,
+   30,
+   45,
+   47
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 966,
+  "name": "Vrombotor",
+  "en": "Revavroom",
+  "cat": "Polycylindre",
+  "gen": 9,
+  "types": [
+   "Acier",
+   "Poison"
+  ],
+  "stats": [
+   80,
+   119,
+   90,
+   54,
+   67,
+   90
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 965
+ },
+ {
+  "id": 967,
+  "name": "Motorizard",
+  "en": "Cyclizar",
+  "cat": "Monture",
+  "gen": 9,
+  "types": [
+   "Dragon",
+   "Normal"
+  ],
+  "stats": [
+   70,
+   95,
+   65,
+   85,
+   65,
+   121
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 968,
+  "name": "Ferdeter",
+  "en": "Orthworm",
+  "cat": "Ver de Terre",
+  "gen": 9,
+  "types": [
+   "Acier"
+  ],
+  "stats": [
+   70,
+   85,
+   145,
+   60,
+   55,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 969,
+  "name": "Germéclat",
+  "en": "Glimmet",
+  "cat": "Minerai",
+  "gen": 9,
+  "types": [
+   "Roche",
+   "Poison"
+  ],
+  "stats": [
+   48,
+   35,
+   42,
+   105,
+   60,
+   60
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 970,
+  "name": "Floréclat",
+  "en": "Glimmora",
+  "cat": "Minerai",
+  "gen": 9,
+  "types": [
+   "Roche",
+   "Poison"
+  ],
+  "stats": [
+   83,
+   55,
+   90,
+   130,
+   81,
+   86
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 969
+ },
+ {
+  "id": 971,
+  "name": "Toutombe",
+  "en": "Greavard",
+  "cat": "Fantôchien",
+  "gen": 9,
+  "types": [
+   "Spectre"
+  ],
+  "stats": [
+   50,
+   61,
+   60,
+   30,
+   55,
+   34
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 972,
+  "name": "Tomberro",
+  "en": "Houndstone",
+  "cat": "Fantôchien",
+  "gen": 9,
+  "types": [
+   "Spectre"
+  ],
+  "stats": [
+   72,
+   101,
+   100,
+   50,
+   97,
+   68
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 971
+ },
+ {
+  "id": 973,
+  "name": "Flamenroule",
+  "en": "Flamigo",
+  "cat": "Synchro",
+  "gen": 9,
+  "types": [
+   "Vol",
+   "Combat"
+  ],
+  "stats": [
+   82,
+   115,
+   74,
+   75,
+   64,
+   90
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 974,
+  "name": "Piétacé",
+  "en": "Cetoddle",
+  "cat": "Baleinapied",
+  "gen": 9,
+  "types": [
+   "Glace"
+  ],
+  "stats": [
+   108,
+   68,
+   45,
+   30,
+   40,
+   43
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 975,
+  "name": "Balbalèze",
+  "en": "Cetitan",
+  "cat": "Baleinapied",
+  "gen": 9,
+  "types": [
+   "Glace"
+  ],
+  "stats": [
+   170,
+   113,
+   65,
+   45,
+   55,
+   73
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 974
+ },
+ {
+  "id": 976,
+  "name": "Délestin",
+  "en": "Veluza",
+  "cat": "Décharné",
+  "gen": 9,
+  "types": [
+   "Eau",
+   "Psy"
+  ],
+  "stats": [
+   90,
+   102,
+   73,
+   78,
+   65,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 977,
+  "name": "Oyacata",
+  "en": "Dondozo",
+  "cat": "Grand Silure",
+  "gen": 9,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   150,
+   100,
+   115,
+   65,
+   65,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 978,
+  "name": "Nigirigon",
+  "en": "Tatsugiri",
+  "cat": "Mimétisme",
+  "gen": 9,
+  "types": [
+   "Dragon",
+   "Eau"
+  ],
+  "stats": [
+   68,
+   50,
+   60,
+   120,
+   95,
+   82
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 979,
+  "name": "Courrousinge",
+  "en": "Annihilape",
+  "cat": "Singe Furax",
+  "gen": 9,
+  "types": [
+   "Combat",
+   "Spectre"
+  ],
+  "stats": [
+   110,
+   115,
+   80,
+   50,
+   90,
+   90
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 57
+ },
+ {
+  "id": 980,
+  "name": "Terraiste",
+  "en": "Clodsire",
+  "cat": "Poissépine",
+  "gen": 9,
+  "types": [
+   "Poison",
+   "Sol"
+  ],
+  "stats": [
+   130,
+   75,
+   60,
+   45,
+   100,
+   20
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 194
+ },
+ {
+  "id": 981,
+  "name": "Farigiraf",
+  "en": "Farigiraf",
+  "cat": "Long-Cou",
+  "gen": 9,
+  "types": [
+   "Normal",
+   "Psy"
+  ],
+  "stats": [
+   120,
+   90,
+   70,
+   110,
+   70,
+   60
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 203
+ },
+ {
+  "id": 982,
+  "name": "Deusolourdo",
+  "en": "Dudunsparce",
+  "cat": "Serpent",
+  "gen": 9,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   125,
+   100,
+   80,
+   85,
+   75,
+   55
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 206
+ },
+ {
+  "id": 983,
+  "name": "Scalpereur",
+  "en": "Kingambit",
+  "cat": "Pourfendant",
+  "gen": 9,
+  "types": [
+   "Ténèbres",
+   "Acier"
+  ],
+  "stats": [
+   100,
+   135,
+   120,
+   60,
+   85,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 625
+ },
+ {
+  "id": 984,
+  "name": "Fort-Ivoire",
+  "en": "Great Tusk",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Sol",
+   "Combat"
+  ],
+  "stats": [
+   115,
+   131,
+   131,
+   53,
+   53,
+   87
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 985,
+  "name": "Hurle-Queue",
+  "en": "Scream Tail",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Fée",
+   "Psy"
+  ],
+  "stats": [
+   115,
+   65,
+   99,
+   65,
+   115,
+   111
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 986,
+  "name": "Fongus-Furie",
+  "en": "Brute Bonnet",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Ténèbres"
+  ],
+  "stats": [
+   111,
+   127,
+   99,
+   79,
+   99,
+   55
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 987,
+  "name": "Flotte-Mèche",
+  "en": "Flutter Mane",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Spectre",
+   "Fée"
+  ],
+  "stats": [
+   55,
+   55,
+   55,
+   135,
+   135,
+   135
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 988,
+  "name": "Rampe-Ailes",
+  "en": "Slither Wing",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Insecte",
+   "Combat"
+  ],
+  "stats": [
+   85,
+   135,
+   79,
+   85,
+   105,
+   81
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 989,
+  "name": "Pelage-Sablé",
+  "en": "Sandy Shocks",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Électrik",
+   "Sol"
+  ],
+  "stats": [
+   85,
+   81,
+   97,
+   121,
+   85,
+   101
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 990,
+  "name": "Roue-de-Fer",
+  "en": "Iron Treads",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Sol",
+   "Acier"
+  ],
+  "stats": [
+   90,
+   112,
+   120,
+   72,
+   70,
+   106
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 991,
+  "name": "Hotte-de-Fer",
+  "en": "Iron Bundle",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Glace",
+   "Eau"
+  ],
+  "stats": [
+   56,
+   80,
+   114,
+   124,
+   60,
+   136
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 992,
+  "name": "Paume-de-Fer",
+  "en": "Iron Hands",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Combat",
+   "Électrik"
+  ],
+  "stats": [
+   154,
+   140,
+   108,
+   50,
+   68,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 993,
+  "name": "Têtes-de-Fer",
+  "en": "Iron Jugulis",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Ténèbres",
+   "Vol"
+  ],
+  "stats": [
+   94,
+   80,
+   86,
+   122,
+   80,
+   108
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 994,
+  "name": "Mite-de-Fer",
+  "en": "Iron Moth",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Feu",
+   "Poison"
+  ],
+  "stats": [
+   80,
+   70,
+   60,
+   140,
+   110,
+   110
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 995,
+  "name": "Épine-de-Fer",
+  "en": "Iron Thorns",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Roche",
+   "Électrik"
+  ],
+  "stats": [
+   100,
+   134,
+   110,
+   70,
+   84,
+   72
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 996,
+  "name": "Frigodo",
+  "en": "Frigibax",
+  "cat": "Glaçaileron",
+  "gen": 9,
+  "types": [
+   "Dragon",
+   "Glace"
+  ],
+  "stats": [
+   65,
+   75,
+   45,
+   35,
+   45,
+   55
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 997,
+  "name": "Cryodo",
+  "en": "Arctibax",
+  "cat": "Glaçaileron",
+  "gen": 9,
+  "types": [
+   "Dragon",
+   "Glace"
+  ],
+  "stats": [
+   90,
+   95,
+   66,
+   45,
+   65,
+   62
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 996
+ },
+ {
+  "id": 998,
+  "name": "Glaivodo",
+  "en": "Baxcalibur",
+  "cat": "Dragon Glace",
+  "gen": 9,
+  "types": [
+   "Dragon",
+   "Glace"
+  ],
+  "stats": [
+   115,
+   145,
+   92,
+   75,
+   86,
+   87
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 997
+ },
+ {
+  "id": 999,
+  "name": "Mordudor",
+  "en": "Gimmighoul",
+  "cat": "Coffrotrésor/Chassotrésor",
+  "gen": 9,
+  "types": [
+   "Spectre"
+  ],
+  "stats": [
+   45,
+   30,
+   70,
+   75,
+   70,
+   10
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1000,
+  "name": "Gromago",
+  "en": "Gholdengo",
+  "cat": "Trésor Animé",
+  "gen": 9,
+  "types": [
+   "Acier",
+   "Spectre"
+  ],
+  "stats": [
+   87,
+   60,
+   95,
+   133,
+   91,
+   84
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 999
+ },
+ {
+  "id": 1001,
+  "name": "Chongjian",
+  "en": "Wo-Chien",
+  "cat": "Fléau",
+  "gen": 9,
+  "types": [
+   "Ténèbres",
+   "Plante"
+  ],
+  "stats": [
+   85,
+   85,
+   100,
+   95,
+   135,
+   70
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1002,
+  "name": "Baojian",
+  "en": "Chien-Pao",
+  "cat": "Fléau",
+  "gen": 9,
+  "types": [
+   "Ténèbres",
+   "Glace"
+  ],
+  "stats": [
+   80,
+   120,
+   80,
+   90,
+   65,
+   135
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1003,
+  "name": "Dinglu",
+  "en": "Ting-Lu",
+  "cat": "Fléau",
+  "gen": 9,
+  "types": [
+   "Ténèbres",
+   "Sol"
+  ],
+  "stats": [
+   155,
+   110,
+   125,
+   55,
+   80,
+   45
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1004,
+  "name": "Yuyu",
+  "en": "Chi-Yu",
+  "cat": "Fléau",
+  "gen": 9,
+  "types": [
+   "Ténèbres",
+   "Feu"
+  ],
+  "stats": [
+   55,
+   80,
+   80,
+   135,
+   120,
+   100
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1005,
+  "name": "Rugit-Lune",
+  "en": "Roaring Moon",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Dragon",
+   "Ténèbres"
+  ],
+  "stats": [
+   105,
+   139,
+   71,
+   55,
+   101,
+   119
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1006,
+  "name": "Garde-de-Fer",
+  "en": "Iron Valiant",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Fée",
+   "Combat"
+  ],
+  "stats": [
+   74,
+   130,
+   90,
+   120,
+   60,
+   116
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1007,
+  "name": "Koraidon",
+  "en": "Koraidon",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Combat",
+   "Dragon"
+  ],
+  "stats": [
+   100,
+   135,
+   115,
+   85,
+   100,
+   135
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1008,
+  "name": "Miraidon",
+  "en": "Miraidon",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Électrik",
+   "Dragon"
+  ],
+  "stats": [
+   100,
+   85,
+   100,
+   135,
+   115,
+   135
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1009,
+  "name": "Serpente-Eau",
+  "en": "Walking Wake",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Eau",
+   "Dragon"
+  ],
+  "stats": [
+   99,
+   83,
+   91,
+   125,
+   83,
+   109
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1010,
+  "name": "Vert-de-Fer",
+  "en": "Iron Leaves",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Psy"
+  ],
+  "stats": [
+   90,
+   130,
+   88,
+   70,
+   108,
+   104
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1011,
+  "name": "Pomdramour",
+  "en": "Dipplin",
+  "cat": "Sirop Pomme",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Dragon"
+  ],
+  "stats": [
+   80,
+   80,
+   110,
+   95,
+   80,
+   40
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 840
+ },
+ {
+  "id": 1012,
+  "name": "Poltchageist",
+  "en": "Poltchageist",
+  "cat": "Matcha",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Spectre"
+  ],
+  "stats": [
+   40,
+   45,
+   45,
+   74,
+   54,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1013,
+  "name": "Théffroyable",
+  "en": "Sinistcha",
+  "cat": "Matcha",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Spectre"
+  ],
+  "stats": [
+   71,
+   60,
+   106,
+   121,
+   80,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 1012
+ },
+ {
+  "id": 1014,
+  "name": "Félicanis",
+  "en": "Okidogi",
+  "cat": "Serviteur",
+  "gen": 9,
+  "types": [
+   "Poison",
+   "Combat"
+  ],
+  "stats": [
+   88,
+   128,
+   115,
+   58,
+   86,
+   80
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1015,
+  "name": "Fortusimia",
+  "en": "Munkidori",
+  "cat": "Serviteur",
+  "gen": 9,
+  "types": [
+   "Poison",
+   "Psy"
+  ],
+  "stats": [
+   88,
+   75,
+   66,
+   130,
+   90,
+   106
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1016,
+  "name": "Favianos",
+  "en": "Fezandipiti",
+  "cat": "Serviteur",
+  "gen": 9,
+  "types": [
+   "Poison",
+   "Fée"
+  ],
+  "stats": [
+   88,
+   91,
+   82,
+   70,
+   125,
+   99
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1017,
+  "name": "Ogerpon",
+  "en": "Ogerpon",
+  "cat": "Masque",
+  "gen": 9,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   80,
+   120,
+   84,
+   60,
+   96,
+   110
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1018,
+  "name": "Pondralugon",
+  "en": "Archaludon",
+  "cat": "Alliage",
+  "gen": 9,
+  "types": [
+   "Acier",
+   "Dragon"
+  ],
+  "stats": [
+   90,
+   105,
+   130,
+   125,
+   65,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 884
+ },
+ {
+  "id": 1019,
+  "name": "Pomdorochi",
+  "en": "Hydrapple",
+  "cat": "Hydre Pomme",
+  "gen": 9,
+  "types": [
+   "Plante",
+   "Dragon"
+  ],
+  "stats": [
+   106,
+   80,
+   110,
+   120,
+   80,
+   44
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 1011
+ },
+ {
+  "id": 1020,
+  "name": "Feu-Perçant",
+  "en": "Gouging Fire",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Feu",
+   "Dragon"
+  ],
+  "stats": [
+   105,
+   115,
+   121,
+   65,
+   93,
+   91
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1021,
+  "name": "Ire-Foudre",
+  "en": "Raging Bolt",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Électrik",
+   "Dragon"
+  ],
+  "stats": [
+   125,
+   73,
+   91,
+   137,
+   89,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1022,
+  "name": "Roc-de-Fer",
+  "en": "Iron Boulder",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Roche",
+   "Psy"
+  ],
+  "stats": [
+   90,
+   120,
+   80,
+   68,
+   108,
+   124
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1023,
+  "name": "Chef-de-Fer",
+  "en": "Iron Crown",
+  "cat": "Paradoxe",
+  "gen": 9,
+  "types": [
+   "Acier",
+   "Psy"
+  ],
+  "stats": [
+   90,
+   72,
+   100,
+   122,
+   108,
+   98
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1024,
+  "name": "Terapagos",
+  "en": "Terapagos",
+  "cat": "Téracristal",
+  "gen": 9,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   90,
+   65,
+   85,
+   65,
+   85,
+   60
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 1025,
+  "name": "Pêchaminus",
+  "en": "Pecharunt",
+  "cat": "Emprise",
+  "gen": 9,
+  "types": [
+   "Poison",
+   "Spectre"
+  ],
+  "stats": [
+   88,
+   88,
+   160,
+   88,
+   88,
+   88
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 1,
+  "baby": 0,
+  "evolvesFrom": null
+ }
+]

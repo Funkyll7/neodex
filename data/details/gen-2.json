@@ -1,0 +1,45 @@
+{
+ "155": {
+  "where": "Pokémon de départ remis par le Prof. Orme, Bourg Geon (Or/Argent).",
+  "gm": "gs c hgss pla",
+  "gift": 1
+ },
+ "157": {
+  "where": "Évolution de Feurisson au niveau 36.",
+  "gm": "gs c hgss pla",
+  "variant": {
+   "name": "Typhlosion de Hisui",
+   "id": 10233,
+   "where": "Légendes Pokémon : Arceus. Feu/Spectre."
+  }
+ },
+ "196": {
+  "where": "Évoli avec un haut niveau de bonheur, le jour.",
+  "gm": "gs c col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
+  "nsh": "lgpe"
+ },
+ "197": {
+  "where": "Évoli avec un haut niveau de bonheur, la nuit.",
+  "gm": "gs c col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
+  "nsh": "lgpe"
+ },
+ "212": {
+  "where": "Insécateur échangé en tenant la Pince Métal.",
+  "gm": "gs c rs e col dp pt hgss bw b2w2 xy oras sm usum swsh bdsp pla sv",
+  "variant": {
+   "name": "Méga-Cizayox",
+   "id": 10046,
+   "where": "Méga-Évolution avec la Cizayoxite (X/Y, ROSA)."
+  }
+ },
+ "249": {
+  "where": "Îles Tourbillon (niveau 40 dans Argent, accessible après Ho-Oh dans Or).",
+  "gm": "gs c hgss oras usum swsh bdsp",
+  "ev": "rs e col"
+ },
+ "250": {
+  "where": "Tour Étincelle, Rosalia (Pokémon Or), niveau 40.",
+  "gm": "gs c hgss oras usum swsh bdsp",
+  "ev": "rs e col"
+ }
+}

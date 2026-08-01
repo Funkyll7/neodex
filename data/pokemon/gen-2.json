@@ -1,0 +1,2351 @@
+[
+ {
+  "id": 152,
+  "name": "Germignon",
+  "en": "Chikorita",
+  "cat": "Pokémon Feuille",
+  "gen": 2,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   45,
+   49,
+   65,
+   49,
+   65,
+   45
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 153,
+  "name": "Macronium",
+  "en": "Bayleef",
+  "cat": "Pokémon Feuille",
+  "gen": 2,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   60,
+   62,
+   80,
+   63,
+   80,
+   60
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 152
+ },
+ {
+  "id": 154,
+  "name": "Méganium",
+  "en": "Meganium",
+  "cat": "Pokémon Herbe",
+  "gen": 2,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   80,
+   82,
+   100,
+   83,
+   100,
+   80
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 153
+ },
+ {
+  "id": 155,
+  "name": "Héricendre",
+  "en": "Cyndaquil",
+  "cat": "Pokémon Souris Feu",
+  "gen": 2,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   39,
+   52,
+   43,
+   60,
+   50,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 156,
+  "name": "Feurisson",
+  "en": "Quilava",
+  "cat": "Pokémon Volcan",
+  "gen": 2,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   58,
+   64,
+   58,
+   80,
+   65,
+   80
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 155
+ },
+ {
+  "id": 157,
+  "name": "Typhlosion",
+  "en": "Typhlosion",
+  "cat": "Pokémon Volcan",
+  "gen": 2,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   78,
+   84,
+   78,
+   109,
+   85,
+   100
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 156
+ },
+ {
+  "id": 158,
+  "name": "Kaiminus",
+  "en": "Totodile",
+  "cat": "Pokémon Mâchoire",
+  "gen": 2,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   50,
+   65,
+   64,
+   44,
+   48,
+   43
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 159,
+  "name": "Crocrodil",
+  "en": "Croconaw",
+  "cat": "Pokémon Mâchoire",
+  "gen": 2,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   65,
+   80,
+   80,
+   59,
+   63,
+   58
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 158
+ },
+ {
+  "id": 160,
+  "name": "Aligatueur",
+  "en": "Feraligatr",
+  "cat": "Pokémon Mâchoire",
+  "gen": 2,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   85,
+   105,
+   100,
+   79,
+   83,
+   78
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 159
+ },
+ {
+  "id": 161,
+  "name": "Fouinette",
+  "en": "Sentret",
+  "cat": "Pokémon Espion",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   35,
+   46,
+   34,
+   35,
+   45,
+   20
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 162,
+  "name": "Fouinar",
+  "en": "Furret",
+  "cat": "Pokémon Allongé",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   85,
+   76,
+   64,
+   45,
+   55,
+   90
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 161
+ },
+ {
+  "id": 163,
+  "name": "Hoothoot",
+  "en": "Hoothoot",
+  "cat": "Pokémon Hibou",
+  "gen": 2,
+  "types": [
+   "Normal",
+   "Vol"
+  ],
+  "stats": [
+   60,
+   30,
+   30,
+   36,
+   56,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 164,
+  "name": "Noarfang",
+  "en": "Noctowl",
+  "cat": "Pokémon Hibou",
+  "gen": 2,
+  "types": [
+   "Normal",
+   "Vol"
+  ],
+  "stats": [
+   100,
+   50,
+   50,
+   86,
+   96,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 163
+ },
+ {
+  "id": 165,
+  "name": "Coxy",
+  "en": "Ledyba",
+  "cat": "Pokémon 5 Étoiles",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Vol"
+  ],
+  "stats": [
+   40,
+   20,
+   30,
+   40,
+   80,
+   55
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 166,
+  "name": "Coxyclaque",
+  "en": "Ledian",
+  "cat": "Pokémon 5 Étoiles",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Vol"
+  ],
+  "stats": [
+   55,
+   35,
+   50,
+   55,
+   110,
+   85
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 165
+ },
+ {
+  "id": 167,
+  "name": "Mimigal",
+  "en": "Spinarak",
+  "cat": "Pokémon Crache Fil",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Poison"
+  ],
+  "stats": [
+   40,
+   60,
+   40,
+   40,
+   40,
+   30
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 168,
+  "name": "Migalos",
+  "en": "Ariados",
+  "cat": "Pokémon Long-Patte",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Poison"
+  ],
+  "stats": [
+   70,
+   90,
+   70,
+   60,
+   70,
+   40
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 167
+ },
+ {
+  "id": 169,
+  "name": "Nostenfer",
+  "en": "Crobat",
+  "cat": "Pokémon Chovsouris",
+  "gen": 2,
+  "types": [
+   "Poison",
+   "Vol"
+  ],
+  "stats": [
+   85,
+   90,
+   80,
+   70,
+   80,
+   130
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 42
+ },
+ {
+  "id": 170,
+  "name": "Loupio",
+  "en": "Chinchou",
+  "cat": "Pokémon Poisson",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Électrik"
+  ],
+  "stats": [
+   75,
+   38,
+   38,
+   56,
+   56,
+   67
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 171,
+  "name": "Lanturn",
+  "en": "Lanturn",
+  "cat": "Pokémon Lumière",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Électrik"
+  ],
+  "stats": [
+   125,
+   58,
+   58,
+   76,
+   76,
+   67
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 170
+ },
+ {
+  "id": 172,
+  "name": "Pichu",
+  "en": "Pichu",
+  "cat": "Pokémon Minisouris",
+  "gen": 2,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   20,
+   40,
+   15,
+   35,
+   35,
+   60
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 1,
+  "evolvesFrom": null
+ },
+ {
+  "id": 173,
+  "name": "Mélo",
+  "en": "Cleffa",
+  "cat": "Pokémon Étoile",
+  "gen": 2,
+  "types": [
+   "Fée"
+  ],
+  "stats": [
+   50,
+   25,
+   28,
+   45,
+   55,
+   15
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 1,
+  "evolvesFrom": null
+ },
+ {
+  "id": 174,
+  "name": "Toudoudou",
+  "en": "Igglybuff",
+  "cat": "Pokémon Bouboule",
+  "gen": 2,
+  "types": [
+   "Normal",
+   "Fée"
+  ],
+  "stats": [
+   90,
+   30,
+   15,
+   40,
+   20,
+   15
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 1,
+  "evolvesFrom": null
+ },
+ {
+  "id": 175,
+  "name": "Togepi",
+  "en": "Togepi",
+  "cat": "Pokémon Balle Pic",
+  "gen": 2,
+  "types": [
+   "Fée"
+  ],
+  "stats": [
+   35,
+   20,
+   65,
+   40,
+   65,
+   20
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 1,
+  "evolvesFrom": null
+ },
+ {
+  "id": 176,
+  "name": "Togetic",
+  "en": "Togetic",
+  "cat": "Pokémon Bonheur",
+  "gen": 2,
+  "types": [
+   "Fée",
+   "Vol"
+  ],
+  "stats": [
+   55,
+   40,
+   85,
+   80,
+   105,
+   40
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 175
+ },
+ {
+  "id": 177,
+  "name": "Natu",
+  "en": "Natu",
+  "cat": "Pokémon Minoiseau",
+  "gen": 2,
+  "types": [
+   "Psy",
+   "Vol"
+  ],
+  "stats": [
+   40,
+   50,
+   45,
+   70,
+   45,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 178,
+  "name": "Xatu",
+  "en": "Xatu",
+  "cat": "Pokémon Mystique",
+  "gen": 2,
+  "types": [
+   "Psy",
+   "Vol"
+  ],
+  "stats": [
+   65,
+   75,
+   70,
+   95,
+   70,
+   95
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 177
+ },
+ {
+  "id": 179,
+  "name": "Wattouat",
+  "en": "Mareep",
+  "cat": "Pokémon Laine",
+  "gen": 2,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   55,
+   40,
+   40,
+   65,
+   45,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 180,
+  "name": "Lainergie",
+  "en": "Flaaffy",
+  "cat": "Pokémon Laine",
+  "gen": 2,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   70,
+   55,
+   55,
+   80,
+   60,
+   45
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 179
+ },
+ {
+  "id": 181,
+  "name": "Pharamp",
+  "en": "Ampharos",
+  "cat": "Pokémon Lumière",
+  "gen": 2,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   90,
+   75,
+   85,
+   115,
+   90,
+   55
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 180
+ },
+ {
+  "id": 182,
+  "name": "Joliflor",
+  "en": "Bellossom",
+  "cat": "Pokémon Fleur",
+  "gen": 2,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   75,
+   80,
+   95,
+   90,
+   100,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 44
+ },
+ {
+  "id": 183,
+  "name": "Marill",
+  "en": "Marill",
+  "cat": "Pokémon Aquasouris",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Fée"
+  ],
+  "stats": [
+   70,
+   20,
+   50,
+   20,
+   50,
+   40
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 298
+ },
+ {
+  "id": 184,
+  "name": "Azumarill",
+  "en": "Azumarill",
+  "cat": "Pokémon Aqualapin",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Fée"
+  ],
+  "stats": [
+   100,
+   50,
+   80,
+   60,
+   80,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 183
+ },
+ {
+  "id": 185,
+  "name": "Simularbre",
+  "en": "Sudowoodo",
+  "cat": "Pokémon Imitation",
+  "gen": 2,
+  "types": [
+   "Roche"
+  ],
+  "stats": [
+   70,
+   100,
+   115,
+   30,
+   65,
+   30
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 438
+ },
+ {
+  "id": 186,
+  "name": "Tarpaud",
+  "en": "Politoed",
+  "cat": "Pokémon Grenouille",
+  "gen": 2,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   90,
+   75,
+   75,
+   90,
+   100,
+   70
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 61
+ },
+ {
+  "id": 187,
+  "name": "Granivol",
+  "en": "Hoppip",
+  "cat": "Pokémon Pissenlit",
+  "gen": 2,
+  "types": [
+   "Plante",
+   "Vol"
+  ],
+  "stats": [
+   35,
+   35,
+   40,
+   35,
+   55,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 188,
+  "name": "Floravol",
+  "en": "Skiploom",
+  "cat": "Pokémon Pissenlit",
+  "gen": 2,
+  "types": [
+   "Plante",
+   "Vol"
+  ],
+  "stats": [
+   55,
+   45,
+   50,
+   45,
+   65,
+   80
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 187
+ },
+ {
+  "id": 189,
+  "name": "Cotovol",
+  "en": "Jumpluff",
+  "cat": "Pokémon Pissenlit",
+  "gen": 2,
+  "types": [
+   "Plante",
+   "Vol"
+  ],
+  "stats": [
+   75,
+   55,
+   70,
+   55,
+   95,
+   110
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 188
+ },
+ {
+  "id": 190,
+  "name": "Capumain",
+  "en": "Aipom",
+  "cat": "Pokémon Longqueue",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   55,
+   70,
+   55,
+   40,
+   55,
+   85
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 191,
+  "name": "Tournegrin",
+  "en": "Sunkern",
+  "cat": "Pokémon Graine",
+  "gen": 2,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   30,
+   30,
+   30,
+   30,
+   30,
+   30
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 192,
+  "name": "Héliatronc",
+  "en": "Sunflora",
+  "cat": "Pokémon Soleil",
+  "gen": 2,
+  "types": [
+   "Plante"
+  ],
+  "stats": [
+   75,
+   75,
+   55,
+   105,
+   85,
+   30
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 191
+ },
+ {
+  "id": 193,
+  "name": "Yanma",
+  "en": "Yanma",
+  "cat": "Pokémon Translaile",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Vol"
+  ],
+  "stats": [
+   65,
+   65,
+   45,
+   75,
+   45,
+   95
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 194,
+  "name": "Axoloto",
+  "en": "Wooper",
+  "cat": "Pokémon Poisson",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Sol"
+  ],
+  "stats": [
+   55,
+   45,
+   45,
+   25,
+   25,
+   15
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 195,
+  "name": "Maraiste",
+  "en": "Quagsire",
+  "cat": "Pokémon Poisson",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Sol"
+  ],
+  "stats": [
+   95,
+   85,
+   85,
+   65,
+   65,
+   35
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 194
+ },
+ {
+  "id": 196,
+  "name": "Mentali",
+  "en": "Espeon",
+  "cat": "Pokémon Soleil",
+  "gen": 2,
+  "types": [
+   "Psy"
+  ],
+  "stats": [
+   65,
+   65,
+   60,
+   130,
+   95,
+   110
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 133
+ },
+ {
+  "id": 197,
+  "name": "Noctali",
+  "en": "Umbreon",
+  "cat": "Pokémon Lune",
+  "gen": 2,
+  "types": [
+   "Ténèbres"
+  ],
+  "stats": [
+   95,
+   65,
+   110,
+   60,
+   130,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 133
+ },
+ {
+  "id": 198,
+  "name": "Cornèbre",
+  "en": "Murkrow",
+  "cat": "Pokémon Obscurité",
+  "gen": 2,
+  "types": [
+   "Ténèbres",
+   "Vol"
+  ],
+  "stats": [
+   60,
+   85,
+   42,
+   85,
+   42,
+   91
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 199,
+  "name": "Roigada",
+  "en": "Slowking",
+  "cat": "Pokémon Royal",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Psy"
+  ],
+  "stats": [
+   95,
+   75,
+   80,
+   100,
+   110,
+   30
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 79
+ },
+ {
+  "id": 200,
+  "name": "Feuforêve",
+  "en": "Misdreavus",
+  "cat": "Pokémon Strident",
+  "gen": 2,
+  "types": [
+   "Spectre"
+  ],
+  "stats": [
+   60,
+   60,
+   60,
+   85,
+   85,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 201,
+  "name": "Zarbi",
+  "en": "Unown",
+  "cat": "Pokémon Symbolique",
+  "gen": 2,
+  "types": [
+   "Psy"
+  ],
+  "stats": [
+   48,
+   72,
+   48,
+   72,
+   48,
+   48
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 202,
+  "name": "Qulbutoké",
+  "en": "Wobbuffet",
+  "cat": "Pokémon Patient",
+  "gen": 2,
+  "types": [
+   "Psy"
+  ],
+  "stats": [
+   190,
+   33,
+   58,
+   33,
+   58,
+   33
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 360
+ },
+ {
+  "id": 203,
+  "name": "Girafarig",
+  "en": "Girafarig",
+  "cat": "Pokémon Long-Cou",
+  "gen": 2,
+  "types": [
+   "Normal",
+   "Psy"
+  ],
+  "stats": [
+   70,
+   80,
+   65,
+   90,
+   65,
+   85
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 204,
+  "name": "Pomdepik",
+  "en": "Pineco",
+  "cat": "Pokémon Ver Caché",
+  "gen": 2,
+  "types": [
+   "Insecte"
+  ],
+  "stats": [
+   50,
+   65,
+   90,
+   35,
+   35,
+   15
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 205,
+  "name": "Foretress",
+  "en": "Forretress",
+  "cat": "Pokémon Ver Caché",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Acier"
+  ],
+  "stats": [
+   75,
+   90,
+   140,
+   60,
+   60,
+   40
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 204
+ },
+ {
+  "id": 206,
+  "name": "Insolourdo",
+  "en": "Dunsparce",
+  "cat": "Pokémon Serpent",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   100,
+   70,
+   70,
+   65,
+   65,
+   45
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 207,
+  "name": "Scorplane",
+  "en": "Gligar",
+  "cat": "Pokémon Scorpivol",
+  "gen": 2,
+  "types": [
+   "Sol",
+   "Vol"
+  ],
+  "stats": [
+   65,
+   75,
+   105,
+   35,
+   65,
+   85
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 208,
+  "name": "Steelix",
+  "en": "Steelix",
+  "cat": "Pokémon Serpenfer",
+  "gen": 2,
+  "types": [
+   "Acier",
+   "Sol"
+  ],
+  "stats": [
+   75,
+   85,
+   200,
+   55,
+   65,
+   30
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 95
+ },
+ {
+  "id": 209,
+  "name": "Snubbull",
+  "en": "Snubbull",
+  "cat": "Pokémon Fée",
+  "gen": 2,
+  "types": [
+   "Fée"
+  ],
+  "stats": [
+   60,
+   80,
+   50,
+   40,
+   40,
+   30
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 210,
+  "name": "Granbull",
+  "en": "Granbull",
+  "cat": "Pokémon Fée",
+  "gen": 2,
+  "types": [
+   "Fée"
+  ],
+  "stats": [
+   90,
+   120,
+   75,
+   60,
+   60,
+   45
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 209
+ },
+ {
+  "id": 211,
+  "name": "Qwilfish",
+  "en": "Qwilfish",
+  "cat": "Pokémon Bouboule",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Poison"
+  ],
+  "stats": [
+   65,
+   95,
+   85,
+   55,
+   55,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 212,
+  "name": "Cizayox",
+  "en": "Scizor",
+  "cat": "Pokémon Pince",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Acier"
+  ],
+  "stats": [
+   70,
+   130,
+   100,
+   55,
+   80,
+   65
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 123
+ },
+ {
+  "id": 213,
+  "name": "Caratroc",
+  "en": "Shuckle",
+  "cat": "Pokémon Pourri",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Roche"
+  ],
+  "stats": [
+   20,
+   10,
+   230,
+   10,
+   230,
+   5
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 214,
+  "name": "Scarhino",
+  "en": "Heracross",
+  "cat": "Pokémon Unicorne",
+  "gen": 2,
+  "types": [
+   "Insecte",
+   "Combat"
+  ],
+  "stats": [
+   80,
+   125,
+   75,
+   40,
+   95,
+   85
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 215,
+  "name": "Farfuret",
+  "en": "Sneasel",
+  "cat": "Pokémon Grifacérée",
+  "gen": 2,
+  "types": [
+   "Ténèbres",
+   "Glace"
+  ],
+  "stats": [
+   55,
+   95,
+   55,
+   35,
+   75,
+   115
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 216,
+  "name": "Teddiursa",
+  "en": "Teddiursa",
+  "cat": "Pokémon Mini Ours",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   60,
+   80,
+   50,
+   50,
+   50,
+   40
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 217,
+  "name": "Ursaring",
+  "en": "Ursaring",
+  "cat": "Pokémon Hibernant",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   90,
+   130,
+   75,
+   75,
+   75,
+   55
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 216
+ },
+ {
+  "id": 218,
+  "name": "Limagma",
+  "en": "Slugma",
+  "cat": "Pokémon Lave",
+  "gen": 2,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   40,
+   40,
+   40,
+   70,
+   40,
+   20
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 219,
+  "name": "Volcaropod",
+  "en": "Magcargo",
+  "cat": "Pokémon Lave",
+  "gen": 2,
+  "types": [
+   "Feu",
+   "Roche"
+  ],
+  "stats": [
+   60,
+   50,
+   120,
+   90,
+   80,
+   30
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 218
+ },
+ {
+  "id": 220,
+  "name": "Marcacrin",
+  "en": "Swinub",
+  "cat": "Pokémon Cochon",
+  "gen": 2,
+  "types": [
+   "Glace",
+   "Sol"
+  ],
+  "stats": [
+   50,
+   50,
+   40,
+   30,
+   30,
+   50
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 221,
+  "name": "Cochignon",
+  "en": "Piloswine",
+  "cat": "Pokémon Porc",
+  "gen": 2,
+  "types": [
+   "Glace",
+   "Sol"
+  ],
+  "stats": [
+   100,
+   100,
+   80,
+   60,
+   60,
+   50
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 220
+ },
+ {
+  "id": 222,
+  "name": "Corayon",
+  "en": "Corsola",
+  "cat": "Pokémon Corail",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Roche"
+  ],
+  "stats": [
+   65,
+   55,
+   95,
+   65,
+   95,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 223,
+  "name": "Rémoraid",
+  "en": "Remoraid",
+  "cat": "Pokémon Jet",
+  "gen": 2,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   35,
+   65,
+   35,
+   65,
+   35,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 224,
+  "name": "Octillery",
+  "en": "Octillery",
+  "cat": "Pokémon Jet",
+  "gen": 2,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   75,
+   105,
+   75,
+   105,
+   75,
+   45
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 223
+ },
+ {
+  "id": 225,
+  "name": "Cadoizo",
+  "en": "Delibird",
+  "cat": "Pokémon Livraison",
+  "gen": 2,
+  "types": [
+   "Glace",
+   "Vol"
+  ],
+  "stats": [
+   45,
+   55,
+   45,
+   65,
+   45,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 226,
+  "name": "Démanta",
+  "en": "Mantine",
+  "cat": "Pokémon Cervolant",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Vol"
+  ],
+  "stats": [
+   85,
+   40,
+   70,
+   80,
+   140,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 458
+ },
+ {
+  "id": 227,
+  "name": "Airmure",
+  "en": "Skarmory",
+  "cat": "Pokémon Armoiseau",
+  "gen": 2,
+  "types": [
+   "Acier",
+   "Vol"
+  ],
+  "stats": [
+   65,
+   80,
+   140,
+   40,
+   70,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 228,
+  "name": "Malosse",
+  "en": "Houndour",
+  "cat": "Pokémon Sombre",
+  "gen": 2,
+  "types": [
+   "Ténèbres",
+   "Feu"
+  ],
+  "stats": [
+   45,
+   60,
+   30,
+   80,
+   50,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 229,
+  "name": "Démolosse",
+  "en": "Houndoom",
+  "cat": "Pokémon Sombre",
+  "gen": 2,
+  "types": [
+   "Ténèbres",
+   "Feu"
+  ],
+  "stats": [
+   75,
+   90,
+   50,
+   110,
+   80,
+   95
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 228
+ },
+ {
+  "id": 230,
+  "name": "Hyporoi",
+  "en": "Kingdra",
+  "cat": "Pokémon Dragon",
+  "gen": 2,
+  "types": [
+   "Eau",
+   "Dragon"
+  ],
+  "stats": [
+   75,
+   95,
+   95,
+   95,
+   95,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 117
+ },
+ {
+  "id": 231,
+  "name": "Phanpy",
+  "en": "Phanpy",
+  "cat": "Pokémon Long-Nez",
+  "gen": 2,
+  "types": [
+   "Sol"
+  ],
+  "stats": [
+   90,
+   60,
+   60,
+   40,
+   40,
+   40
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 232,
+  "name": "Donphan",
+  "en": "Donphan",
+  "cat": "Pokémon Armure",
+  "gen": 2,
+  "types": [
+   "Sol"
+  ],
+  "stats": [
+   90,
+   120,
+   120,
+   60,
+   60,
+   50
+  ],
+  "gd": 1,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 231
+ },
+ {
+  "id": 233,
+  "name": "Porygon2",
+  "en": "Porygon2",
+  "cat": "Pokémon Virtuel",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   85,
+   80,
+   90,
+   105,
+   95,
+   60
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 137
+ },
+ {
+  "id": 234,
+  "name": "Cerfrousse",
+  "en": "Stantler",
+  "cat": "Pokémon Maxi Corne",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   73,
+   95,
+   62,
+   85,
+   65,
+   85
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 235,
+  "name": "Queulorior",
+  "en": "Smeargle",
+  "cat": "Pokémon Peintre",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   55,
+   20,
+   35,
+   20,
+   45,
+   75
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 236,
+  "name": "Debugant",
+  "en": "Tyrogue",
+  "cat": "Pokémon Bagarreur",
+  "gen": 2,
+  "types": [
+   "Combat"
+  ],
+  "stats": [
+   35,
+   35,
+   35,
+   35,
+   35,
+   35
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 1,
+  "evolvesFrom": null
+ },
+ {
+  "id": 237,
+  "name": "Kapoera",
+  "en": "Hitmontop",
+  "cat": "Pokémon Poirier",
+  "gen": 2,
+  "types": [
+   "Combat"
+  ],
+  "stats": [
+   50,
+   95,
+   95,
+   35,
+   110,
+   70
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 236
+ },
+ {
+  "id": 238,
+  "name": "Lippouti",
+  "en": "Smoochum",
+  "cat": "Pokémon Bisou",
+  "gen": 2,
+  "types": [
+   "Glace",
+   "Psy"
+  ],
+  "stats": [
+   45,
+   30,
+   15,
+   85,
+   65,
+   65
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 1,
+  "evolvesFrom": null
+ },
+ {
+  "id": 239,
+  "name": "Élekid",
+  "en": "Elekid",
+  "cat": "Pokémon Électrique",
+  "gen": 2,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   45,
+   63,
+   37,
+   65,
+   55,
+   95
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 1,
+  "evolvesFrom": null
+ },
+ {
+  "id": 240,
+  "name": "Magby",
+  "en": "Magby",
+  "cat": "Pokémon Charbon",
+  "gen": 2,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   45,
+   75,
+   37,
+   70,
+   55,
+   83
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 1,
+  "evolvesFrom": null
+ },
+ {
+  "id": 241,
+  "name": "Écrémeuh",
+  "en": "Miltank",
+  "cat": "Pokémon Vachalait",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   95,
+   80,
+   105,
+   40,
+   70,
+   100
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 242,
+  "name": "Leuphorie",
+  "en": "Blissey",
+  "cat": "Pokémon Bonheur",
+  "gen": 2,
+  "types": [
+   "Normal"
+  ],
+  "stats": [
+   255,
+   10,
+   10,
+   75,
+   135,
+   55
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 113
+ },
+ {
+  "id": 243,
+  "name": "Raikou",
+  "en": "Raikou",
+  "cat": "Pokémon Foudre",
+  "gen": 2,
+  "types": [
+   "Électrik"
+  ],
+  "stats": [
+   90,
+   85,
+   75,
+   115,
+   100,
+   115
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 244,
+  "name": "Entei",
+  "en": "Entei",
+  "cat": "Pokémon Volcan",
+  "gen": 2,
+  "types": [
+   "Feu"
+  ],
+  "stats": [
+   115,
+   115,
+   85,
+   90,
+   75,
+   100
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 245,
+  "name": "Suicune",
+  "en": "Suicune",
+  "cat": "Pokémon Aurore",
+  "gen": 2,
+  "types": [
+   "Eau"
+  ],
+  "stats": [
+   100,
+   75,
+   115,
+   90,
+   115,
+   85
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 246,
+  "name": "Embrylex",
+  "en": "Larvitar",
+  "cat": "Pokémon Peaupierre",
+  "gen": 2,
+  "types": [
+   "Roche",
+   "Sol"
+  ],
+  "stats": [
+   50,
+   64,
+   50,
+   45,
+   50,
+   41
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 247,
+  "name": "Ymphect",
+  "en": "Pupitar",
+  "cat": "Pokémon Carapadure",
+  "gen": 2,
+  "types": [
+   "Roche",
+   "Sol"
+  ],
+  "stats": [
+   70,
+   84,
+   70,
+   65,
+   70,
+   51
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 246
+ },
+ {
+  "id": 248,
+  "name": "Tyranocif",
+  "en": "Tyranitar",
+  "cat": "Pokémon Armure",
+  "gen": 2,
+  "types": [
+   "Roche",
+   "Ténèbres"
+  ],
+  "stats": [
+   100,
+   134,
+   110,
+   95,
+   100,
+   61
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": 247
+ },
+ {
+  "id": 249,
+  "name": "Lugia",
+  "en": "Lugia",
+  "cat": "Pokémon Plongeon",
+  "gen": 2,
+  "types": [
+   "Psy",
+   "Vol"
+  ],
+  "stats": [
+   106,
+   90,
+   130,
+   90,
+   154,
+   110
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 250,
+  "name": "Ho-Oh",
+  "en": "Ho-Oh",
+  "cat": "Pokémon Arcenciel",
+  "gen": 2,
+  "types": [
+   "Feu",
+   "Vol"
+  ],
+  "stats": [
+   106,
+   130,
+   90,
+   110,
+   154,
+   90
+  ],
+  "gd": 0,
+  "legend": 1,
+  "mythic": 0,
+  "baby": 0,
+  "evolvesFrom": null
+ },
+ {
+  "id": 251,
+  "name": "Celebi",
+  "en": "Celebi",
+  "cat": "Pokémon Temporel",
+  "gen": 2,
+  "types": [
+   "Psy",
+   "Plante"
+  ],
+  "stats": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "gd": 0,
+  "legend": 0,
+  "mythic": 1,
+  "baby": 0,
+  "evolvesFrom": null
+ }
+]

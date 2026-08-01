@@ -1,0 +1,36 @@
+{
+ "392": {
+  "where": "Évolution de Chimpenfeu au niveau 36 (Diamant/Perle).",
+  "gm": "dp pt bdsp sv"
+ },
+ "445": {
+  "where": "Évolution de Carmache au niveau 48.",
+  "gm": "dp pt bw b2w2 xy oras usum swsh bdsp pla sv",
+  "variant": {
+   "name": "Méga-Carchacrok",
+   "id": 10058,
+   "where": "Méga-Évolution avec la Carchacrokite (X/Y, ROSA)."
+  }
+ },
+ "448": {
+  "where": "Riolu (œuf offert à l'Île de Fer) élevé de jour avec bonheur.",
+  "gm": "dp pt bw b2w2 xy oras sm usum swsh bdsp pla sv",
+  "variant": {
+   "name": "Méga-Lucario",
+   "id": 10059,
+   "where": "Méga-Évolution avec la Lucarite (X/Y, ROSA)."
+  }
+ },
+ "483": {
+  "where": "Sommet de la Colonne Lance (Pokémon Diamant), niveau 47.",
+  "gm": "dp pt bdsp swsh",
+  "ev": "pla",
+  "nsh": "bdsp pla"
+ },
+ "493": {
+  "where": "Colonne Spatiale via la Flûte Azurée (événement).",
+  "ev": "dp pt hgss bw b2w2 oras usum swsh bdsp pla",
+  "nsh": "dp pt hgss bw b2w2 oras usum swsh bdsp pla",
+  "note": "Distribution événementielle, ou obtenu en fin d'histoire dans Légendes Arceus. Toujours shiny-locked."
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "812": {
+  "where": "Évolution de Badabouin au niveau 35 (Épée/Bouclier).",
+  "gm": "swsh sv",
+  "variant": {
+   "name": "Gorythmic Gigamax",
+   "id": 10217,
+   "where": "Raid Gigamax dans les Terres Sauvages (Épée/Bouclier)."
+  }
+ },
+ "887": {
+  "where": "Évolution de Dispareptil au niveau 60 (Épée/Bouclier).",
+  "gm": "swsh sv"
+ },
+ "888": {
+  "where": "Temple de l'Épée, Couronneige — intrigue principale (Pokémon Épée).",
+  "gm": "swsh",
+  "ev": "sv",
+  "nsh": "swsh"
+ }
+}

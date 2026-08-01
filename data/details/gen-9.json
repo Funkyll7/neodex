@@ -1,0 +1,25 @@
+{
+ "906": {
+  "where": "Pokémon de départ remis chez soi à Poco Path (Écarlate/Violet).",
+  "gm": "sv",
+  "gift": 1
+ },
+ "911": {
+  "where": "Évolution de Crocogril au niveau 36 (Écarlate/Violet).",
+  "gm": "sv"
+ },
+ "1000": {
+  "where": "Faire évoluer Mordudor en possédant 999 Pièces Gigéas.",
+  "gm": "sv"
+ },
+ "1017": {
+  "where": "Kitakami — intrigue du DLC « Le Masque Turquoise ».",
+  "gm": "sv",
+  "nsh": "sv"
+ },
+ "1024": {
+  "where": "Zone Zéro — intrigue du DLC « Le Disque Indigo ».",
+  "gm": "sv",
+  "nsh": "sv"
+ }
+}

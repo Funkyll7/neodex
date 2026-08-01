@@ -1,0 +1,16 @@
+{
+ "722": {
+  "where": "Pokémon de départ remis par le Prof. Euphorbe, Alola (Soleil/Lune).",
+  "gm": "sm usum pla",
+  "gift": 1
+ },
+ "778": {
+  "where": "Supermarché Abandonné, Route 14 d'Alola.",
+  "gm": "sm usum swsh sv"
+ },
+ "800": {
+  "where": "Colline Carat / Autel du Soleil ou de la Lune selon la version (Soleil/Lune).",
+  "gm": "sm usum swsh",
+  "nsh": "sm usum swsh"
+ }
+}

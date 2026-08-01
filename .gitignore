@@ -1,0 +1,19 @@
+# Cache des outils : CSV PokeAPI et ~2700 sprites (plus de 300 Mo).
+# Entierement reconstructible avec tools/fetch_sprites.py et tools/build_dataset.py.
+tools/.cache/
+
+# Reglages locaux de l'outillage, propres a une machine
+.claude/settings.local.json
+
+# Systeme / editeurs
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
