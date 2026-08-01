@@ -73,16 +73,14 @@ git push -u origin main
 Le fichier `.nojekyll` est déjà présent : sans lui, GitHub Pages ignorerait
 certains dossiers.
 
-### Ce qui part sur GitHub
+### Ce qui ne part pas sur GitHub
 
-`photo/` contient 61 captures d'écran de Pokémon HOME (8 Mo). Elles sont la
-source de la collection et sont donc versionnées. Le dépôt étant privé, elles
-ne sont pas exposées — mais l'URL Pages, elle, sert le dossier : si tu préfères
-qu'elles ne soient pas accessibles, ajoute `photo/` à `.gitignore` et
-conserve-les hors du dépôt.
-
-`tools/.cache/` (plus de 300 Mo de sprites) est déjà ignoré et se reconstruit
-avec `fetch_sprites.py`.
+- `photo/` — les captures d'écran de Pokémon HOME. GitHub Pages sert le dépôt
+  tel quel : les versionner reviendrait à les publier. Elles restent en local ;
+  seul leur résultat, `data/collection.json`, est versionné. Pour relancer
+  `tools/read_screenshots.py`, remets tes captures dans ce dossier.
+- `tools/.cache/` — plus de 300 Mo de sprites et de CSV, reconstruits par
+  `fetch_sprites.py` et `build_dataset.py`.
 
 ---
 

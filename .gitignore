@@ -2,6 +2,12 @@
 # Entierement reconstructible avec tools/fetch_sprites.py et tools/build_dataset.py.
 tools/.cache/
 
+# Captures d'ecran de Pokemon HOME : elles restent en local.
+# GitHub Pages sert le depot tel quel, meme prive — les versionner reviendrait
+# a les publier. tools/read_screenshots.py les relit depuis ce dossier ;
+# data/collection.json, lui, est bien versionne.
+photo/
+
 # Reglages locaux de l'outillage, propres a une machine
 .claude/settings.local.json
 

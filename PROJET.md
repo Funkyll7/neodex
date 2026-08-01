@@ -74,7 +74,7 @@ Projet Poke/
 │   ├── read_screenshots.py     lit photo/ et en déduit data/collection.json
 │   └── .cache/                 (ignoré par git) CSV PokeAPI, sprites, rapport
 │
-└── photo/                      61 captures d'écran de Pokémon HOME (source)
+└── photo/                      (ignoré par git) captures Pokémon HOME à relire
 ```
 
 Légende : **▲ GÉNÉRÉ** = écrasé par un script, **✎** = édité à la main.
@@ -156,6 +156,11 @@ Les codes de `gm` / `ev` / `nsh` sont ceux de `data/reference/games.json`
 ---
 
 ## 4. Les outils
+
+`photo/` et `tools/.cache/` sont **hors dépôt** : GitHub Pages sert le dossier
+tel quel, publier les captures d'écran reviendrait à les exposer. Seul leur
+résultat, `data/collection.json`, est versionné. Pour relancer une lecture,
+remets les captures dans `photo/`.
 
 Ordre normal la première fois :
 
