@@ -16,9 +16,15 @@ import { isMega } from "./dex-grid.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
+  const singleColumn = window.matchMedia("(max-width: 1180px)");
 
   return {
-    render(species) {
+    /**
+     * @param {object} species
+     * @param {boolean} reveal  vrai quand l'utilisateur vient de choisir une
+     *   vignette : en une colonne la fiche est sous la grille, il faut y aller.
+     */
+    render(species, reveal = false) {
       const { dataset } = ctx;
       const c1 = dataset.types[species.types[0]] || "#8b8b8b";
       const c2 = dataset.types[species.types[1]] || c1;
@@ -36,6 +42,9 @@ export function createDetailPanel(ctx) {
         statsSection(species, ctx)
       );
       root.scrollTop = 0;
+      if (reveal && singleColumn.matches) {
+        root.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     },
   };
 }

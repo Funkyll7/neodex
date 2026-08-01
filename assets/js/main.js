@@ -109,9 +109,9 @@ function start(dataset) {
     grid.render(applyFilters(dataset.species, store.state, collection));
   }
 
-  function renderDetail() {
+  function renderDetail(reveal = false) {
     const species = dataset.byId.get(store.state.selectedId) || dataset.species[0];
-    detail.render(species);
+    detail.render(species, reveal);
   }
 
   function renderCounts() {
@@ -141,7 +141,7 @@ function start(dataset) {
     if (changed.has("selectedId")) {
       grid.setSelected(state.selectedId, previousSelected);
       previousSelected = state.selectedId;
-      renderDetail();
+      renderDetail(true);
     }
 
     if (changed.has("tab")) renderTabs();

@@ -104,10 +104,13 @@
 /* ------------------------- Tablette et paysage --------------------------- */
 @media (max-width: 1180px) {
   .dex { grid-template-columns: minmax(0, 1fr); }
+  /* En une colonne la fiche passe sous la grille : on garde la liste en tete,
+     et ui/detail-panel.js fait defiler jusqu'a la fiche quand on choisit une
+     vignette. */
   .detail {
     position: static;
     max-height: none;
-    order: -1;
+    scroll-margin-top: var(--sp-3);
   }
   .quest-layout { grid-template-columns: minmax(0, 1fr); }
 }
