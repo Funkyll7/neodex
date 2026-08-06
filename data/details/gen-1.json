@@ -2,224 +2,127 @@
  "1": {
   "where": "Pokémon de départ remis par le Prof. Chen au Bourg Palette.",
   "gm": "rb y frlg hgss xy lgpe swsh",
-  "nsh": "lgpe",
   "gift": 1
  },
  "3": {
   "where": "Évolution d'Herbizarre au niveau 32.",
-  "gm": "rb y frlg hgss xy lgpe swsh",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Méga-Florizarre",
-   "id": 10033,
-   "where": "Méga-Évolution avec la Florizarite (X/Y, ROSA)."
-  }
+  "gm": "rb y frlg hgss xy lgpe swsh"
  },
  "4": {
   "where": "Pokémon de départ remis par le Prof. Chen au Bourg Palette.",
   "gm": "rb y frlg hgss xy lgpe swsh",
-  "nsh": "lgpe",
   "gift": 1
  },
  "6": {
   "where": "Évolution de Reptincel au niveau 36.",
-  "gm": "rb y frlg hgss xy lgpe swsh sv",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Méga-Dracaufeu X",
-   "id": 10034,
-   "where": "Méga-Évolution avec la Dracaufite X (X/Y, ROSA). Devient Feu/Dragon."
-  }
+  "gm": "rb y frlg hgss xy lgpe swsh sv"
  },
  "7": {
   "where": "Pokémon de départ remis par le Prof. Chen au Bourg Palette.",
   "gm": "rb y frlg hgss xy lgpe swsh",
-  "nsh": "lgpe",
   "gift": 1
  },
  "9": {
   "where": "Évolution de Carabaffe au niveau 36.",
-  "gm": "rb y frlg hgss xy lgpe swsh",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Méga-Tortank",
-   "id": 10036,
-   "where": "Méga-Évolution avec la Tortankite (X/Y, ROSA)."
-  }
+  "gm": "rb y frlg hgss xy lgpe swsh"
  },
  "25": {
   "where": "Forêt de Jade (Rouge/Bleu) · Pokémon de départ dans Jaune.",
-  "gm": "rb y gs c rs e frlg col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "variant": {
-   "name": "Pikachu Gigamax",
-   "id": 10199,
-   "where": "Raid Gigamax ou Pikachu de Let's Go transféré (Épée/Bouclier)."
-  }
+  "gm": "rb y gs c rs e frlg col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv"
  },
  "26": {
   "where": "Évolution de Pikachu avec une Pierre Foudre.",
-  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "variant": {
-   "name": "Raichu d'Alola",
-   "id": 10100,
-   "where": "Faire évoluer un Pikachu d'Alola avec une Pierre Foudre (Soleil/Lune). Électrik/Psy."
-  }
+  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv"
  },
  "37": {
   "where": "Routes 7 et 8, Kanto (Pokémon Bleu).",
-  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp sv",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Goupix d'Alola",
-   "id": 10103,
-   "where": "Mont Lanakila, Alola (Soleil/Lune). Type Glace."
-  }
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp sv"
  },
  "38": {
   "where": "Évolution de Goupix avec une Pierre Feu.",
-  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp sv",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Feunard d'Alola",
-   "id": 10104,
-   "where": "Goupix d'Alola + Pierre Glace (Soleil/Lune). Glace/Fée."
-  }
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp sv"
  },
  "39": {
   "where": "Route 3 et Mont Sélénite, Kanto.",
-  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp sv",
-  "nsh": "lgpe"
+  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp sv"
  },
  "52": {
   "where": "Routes 5 à 8 de Kanto (Pokémon Bleu).",
-  "gm": "rb y gs c rs e frlg col dp pt hgss xy oras sm usum lgpe swsh bdsp sv",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Miaouss de Galar",
-   "id": 10161,
-   "where": "Route 1 et Terres Sauvages (Épée/Bouclier). Type Acier."
-  }
+  "gm": "rb y gs c rs e frlg col dp pt hgss xy oras sm usum lgpe swsh bdsp sv"
  },
  "59": {
   "where": "Évolution de Caninos avec une Pierre Feu.",
-  "gm": "rb y gs c rs e frlg dp pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe"
+  "gm": "rb y gs c rs e frlg dp pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla sv"
  },
  "65": {
   "where": "Échange d'un Kadabra (évolution par échange).",
-  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp sv",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Méga-Alakazam",
-   "id": 10037,
-   "where": "Méga-Évolution avec l'Alakazamite (X/Y, ROSA)."
-  }
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp sv"
  },
  "68": {
   "where": "Échange d'un Machopeur (évolution par échange).",
-  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp sv",
-  "nsh": "lgpe"
+  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp sv"
  },
  "76": {
   "where": "Échange d'un Gravalanch.",
-  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp sv",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Grolem de Galar",
-   "id": 10167,
-   "where": "Échange d'un Gravalanch de Galar (Épée/Bouclier). Roche/Électrik."
-  }
+  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp sv"
  },
  "94": {
   "where": "Échange d'un Spectrum (Tour Pokémon, Lavanville).",
-  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp sv",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Ectoplasma Gigamax",
-   "id": 10196,
-   "where": "Raids Gigamax dans les Terres Sauvages (Épée/Bouclier)."
-  }
+  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp sv"
  },
  "95": {
   "where": "Mont Sélénite et Chenal Roc, Kanto.",
   "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe",
   "hab": "grotte"
  },
  "112": {
   "where": "Île Cramois'Île et Chenal Roc.",
   "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe",
   "hab": "grotte"
  },
  "130": {
   "where": "Évolution de Magicarpe au niveau 20.",
-  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe",
-  "variant": {
-   "name": "Méga-Léviator",
-   "id": 10041,
-   "where": "Méga-Évolution avec la Léviatorite (X/Y, ROSA). Eau/Ténèbres."
-  }
+  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv"
  },
  "131": {
   "where": "Offert par un employé de la Sylphe SARL à Safrania.",
   "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe",
   "hab": "eau",
   "wild": 1
  },
  "133": {
   "where": "Offert à l'étage de la Poké Tour de Céladopole.",
   "gm": "rb y gs c rs e frlg col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe",
-  "wild": 1,
-  "variant": {
-   "name": "Évoli Gigamax",
-   "id": 10205,
-   "where": "Raids Gigamax ou Évoli de Let's Go transféré (Épée/Bouclier)."
-  }
+  "wild": 1
  },
  "143": {
   "where": "Bloque les Routes 12 et 16 — réveiller avec la Poké Flûte.",
   "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe",
   "stat": 1
  },
  "144": {
   "where": "Îles Écume, sous-sol le plus profond (unique).",
-  "gm": "rb y frlg hgss lgpe bdsp swsh",
-  "nsh": "lgpe"
+  "gm": "rb y frlg hgss lgpe bdsp swsh"
  },
  "145": {
   "where": "Centrale électrique abandonnée, Kanto (unique).",
-  "gm": "rb y frlg hgss lgpe bdsp swsh",
-  "nsh": "lgpe"
+  "gm": "rb y frlg hgss lgpe bdsp swsh"
  },
  "146": {
   "where": "Grotte Victoire, avant-dernier étage (unique).",
-  "gm": "rb y frlg hgss lgpe bdsp swsh",
-  "nsh": "lgpe"
+  "gm": "rb y frlg hgss lgpe bdsp swsh"
  },
  "149": {
   "where": "Évolution de Draco au niveau 55.",
-  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe"
+  "gm": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv"
  },
  "150": {
   "where": "Caverne Azurée, après le Conseil 4 (niveau 70).",
-  "gm": "rb y frlg hgss xy lgpe swsh",
-  "nsh": "xy lgpe",
-  "variant": {
-   "name": "Méga-Mewtwo Y",
-   "id": 10044,
-   "where": "Méga-Évolution avec la Mewtwoïte Y (X/Y, ROSA)."
-  }
+  "gm": "rb y frlg hgss xy lgpe swsh"
  },
  "151": {
   "where": "Distribution événementielle uniquement (jamais capturable en jeu).",
   "ev": "rb y gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh sv",
-  "nsh": "gs c rs e frlg dp pt hgss bw b2w2 xy oras sm usum lgpe swsh sv",
   "note": "Uniquement par distribution officielle ou via la Poké Ball Plus (Let's Go). Toujours shiny-locked."
  }
 }

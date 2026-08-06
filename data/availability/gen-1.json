@@ -1,0 +1,605 @@
+{
+ "1": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "lgpe bdsp sv za"
+ },
+ "2": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "xy swsh bdsp sv za"
+ },
+ "3": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "swsh bdsp sv za"
+ },
+ "4": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "lgpe swsh bdsp sv za"
+ },
+ "5": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "xy swsh bdsp sv za"
+ },
+ "6": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "lgpe swsh bdsp sv za"
+ },
+ "7": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "lgpe bdsp sv za"
+ },
+ "8": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "xy swsh bdsp sv za"
+ },
+ "9": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp sv za",
+  "wild": "swsh bdsp sv za"
+ },
+ "10": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp"
+ },
+ "11": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp"
+ },
+ "12": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp",
+  "wild": "gs c hgss xy sm usum lgpe swsh bdsp"
+ },
+ "13": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp za",
+  "wild": "rb gs c frlg hgss xy lgpe bdsp za"
+ },
+ "14": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp za",
+  "wild": "rb gs c frlg hgss xy lgpe bdsp za"
+ },
+ "15": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp za",
+  "wild": "gs c hgss lgpe bdsp za"
+ },
+ "16": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp za",
+  "wild": "rb y gs c frlg hgss xy lgpe bdsp za"
+ },
+ "17": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp za",
+  "wild": "rb y gs c frlg hgss lgpe bdsp za"
+ },
+ "18": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp za",
+  "wild": "lgpe bdsp za"
+ },
+ "19": {
+  "gm": "rb y gs c frlg hgss b2w2 sm usum lgpe bdsp",
+  "wild": "rb y gs c frlg hgss b2w2 sm usum lgpe bdsp"
+ },
+ "20": {
+  "gm": "rb y gs c frlg hgss b2w2 sm usum lgpe bdsp",
+  "wild": "rb y gs c frlg hgss b2w2 sm usum lgpe bdsp"
+ },
+ "21": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe bdsp",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe bdsp"
+ },
+ "22": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe bdsp",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe bdsp"
+ },
+ "23": {
+  "gm": "rb y gs c frlg hgss xy usum lgpe bdsp sv za",
+  "wild": "rb gs c frlg hgss xy usum lgpe bdsp sv za"
+ },
+ "24": {
+  "gm": "rb y gs c frlg hgss xy usum lgpe bdsp sv za",
+  "wild": "rb gs c frlg hgss xy bdsp sv za"
+ },
+ "25": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla sv za",
+  "wild": "rb gs c rs e frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv za"
+ },
+ "26": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla sv za",
+  "wild": "rb swsh bdsp pla sv za"
+ },
+ "27": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 xy oras sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c rs e frlg hgss b2w2 xy oras sm usum lgpe swsh bdsp sv"
+ },
+ "28": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 xy oras sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss b2w2 xy swsh bdsp sv"
+ },
+ "29": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "rb y gs c frlg hgss xy lgpe swsh bdsp"
+ },
+ "30": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "rb y gs c frlg hgss xy lgpe swsh bdsp"
+ },
+ "31": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "lgpe swsh bdsp"
+ },
+ "32": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "rb y gs c frlg hgss xy lgpe swsh bdsp"
+ },
+ "33": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "rb y gs c frlg hgss xy lgpe swsh bdsp"
+ },
+ "34": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "lgpe swsh bdsp"
+ },
+ "35": {
+  "gm": "rb y gs c frlg dp pt hgss b2w2 sm usum lgpe swsh bdsp pla sv za",
+  "wild": "rb y gs c frlg dp pt hgss b2w2 sm usum lgpe swsh bdsp pla sv za"
+ },
+ "36": {
+  "gm": "rb y gs c frlg dp pt hgss b2w2 sm usum lgpe swsh bdsp pla sv za",
+  "wild": "b2w2 lgpe swsh bdsp pla sv za"
+ },
+ "37": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 oras sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb gs rs e frlg hgss b2w2 oras sm usum lgpe swsh bdsp pla sv"
+ },
+ "38": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 oras sm usum lgpe swsh bdsp pla sv",
+  "wild": "b2w2 lgpe swsh bdsp pla sv"
+ },
+ "39": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 xy oras sm usum lgpe swsh bdsp sv za",
+  "wild": "rb y gs c rs e frlg hgss b2w2 xy sm usum lgpe swsh bdsp sv za"
+ },
+ "40": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 xy oras sm usum lgpe swsh bdsp sv za",
+  "wild": "rb b2w2 swsh bdsp sv za"
+ },
+ "41": {
+  "gm": "rb y gs c rs e frlg dp pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla za",
+  "wild": "rb y gs c rs e frlg dp pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla za"
+ },
+ "42": {
+  "gm": "rb y gs c rs e frlg dp pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla za",
+  "wild": "rb y gs c rs e frlg dp pt hgss b2w2 oras sm usum lgpe swsh bdsp pla za"
+ },
+ "43": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe swsh bdsp sv",
+  "wild": "rb y gs c rs e frlg hgss xy oras lgpe swsh bdsp sv"
+ },
+ "44": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe swsh bdsp sv",
+  "wild": "rb y gs c rs e frlg hgss xy lgpe swsh bdsp sv"
+ },
+ "45": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe swsh bdsp sv",
+  "wild": "lgpe swsh bdsp sv"
+ },
+ "46": {
+  "gm": "rb y gs c frlg hgss sm usum lgpe bdsp pla",
+  "wild": "rb y gs c frlg hgss sm usum lgpe bdsp pla"
+ },
+ "47": {
+  "gm": "rb y gs c frlg hgss sm usum lgpe bdsp pla",
+  "wild": "rb y c frlg hgss usum bdsp pla"
+ },
+ "48": {
+  "gm": "rb y gs c frlg hgss lgpe bdsp sv",
+  "wild": "rb y gs c frlg hgss lgpe bdsp sv"
+ },
+ "49": {
+  "gm": "rb y gs c frlg hgss lgpe bdsp sv",
+  "wild": "rb y gs c frlg hgss lgpe bdsp sv"
+ },
+ "50": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss sm usum lgpe swsh bdsp sv"
+ },
+ "51": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv"
+ },
+ "52": {
+  "gm": "rb y gs c frlg hgss sm usum lgpe swsh bdsp sv za",
+  "wild": "rb gs c frlg hgss sm usum lgpe swsh bdsp sv za"
+ },
+ "53": {
+  "gm": "rb y gs c frlg hgss sm usum lgpe swsh bdsp sv za",
+  "wild": "gs c frlg hgss usum swsh bdsp sv za"
+ },
+ "54": {
+  "gm": "rb y gs c rs e frlg dp pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb y gs c rs e frlg dp pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla sv"
+ },
+ "55": {
+  "gm": "rb y gs c rs e frlg dp pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb y gs c rs e frlg dp pt hgss b2w2 sm usum lgpe swsh bdsp pla sv"
+ },
+ "56": {
+  "gm": "rb y gs c frlg hgss sm usum lgpe bdsp sv za",
+  "wild": "rb y gs frlg hgss sm usum lgpe bdsp sv za"
+ },
+ "57": {
+  "gm": "rb y gs c frlg hgss sm usum lgpe bdsp sv za",
+  "wild": "y gs frlg hgss sm usum bdsp sv za"
+ },
+ "58": {
+  "gm": "rb y gs c frlg hgss b2w2 sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb y gs c frlg hgss b2w2 sm usum lgpe swsh bdsp pla sv"
+ },
+ "59": {
+  "gm": "rb y gs c frlg hgss b2w2 sm usum lgpe swsh bdsp pla sv",
+  "wild": "lgpe swsh bdsp pla sv"
+ },
+ "60": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv"
+ },
+ "61": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv"
+ },
+ "62": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "xy sm usum lgpe swsh bdsp sv"
+ },
+ "63": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla za",
+  "wild": "rb y gs c rs e frlg dp pt hgss xy sm usum lgpe swsh bdsp pla za"
+ },
+ "64": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla za",
+  "wild": "rb y gs c frlg dp pt hgss lgpe swsh bdsp pla za"
+ },
+ "65": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla za",
+  "wild": "swsh bdsp pla za"
+ },
+ "66": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla za",
+  "wild": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla za"
+ },
+ "67": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla za",
+  "wild": "rb y gs c frlg dp pt hgss xy sm usum lgpe swsh bdsp pla za"
+ },
+ "68": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla za",
+  "wild": "swsh bdsp pla za"
+ },
+ "69": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp sv za",
+  "wild": "rb y gs c frlg hgss xy lgpe bdsp sv za"
+ },
+ "70": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp sv za",
+  "wild": "rb y gs c frlg hgss xy lgpe bdsp sv za"
+ },
+ "71": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp sv za",
+  "wild": "lgpe bdsp sv za"
+ },
+ "72": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb y gs c rs e frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv"
+ },
+ "73": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla sv",
+  "wild": "y gs c rs e frlg dp pt hgss sm usum lgpe swsh bdsp pla sv"
+ },
+ "74": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe bdsp pla sv",
+  "wild": "rb y gs c rs e frlg dp pt hgss xy oras sm lgpe bdsp pla sv"
+ },
+ "75": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe bdsp pla sv",
+  "wild": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe bdsp pla sv"
+ },
+ "76": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe bdsp pla sv",
+  "wild": "hgss bdsp pla sv"
+ },
+ "77": {
+  "gm": "rb y gs c frlg dp pt hgss lgpe swsh bdsp pla",
+  "wild": "rb y gs c frlg dp pt hgss lgpe swsh bdsp pla"
+ },
+ "78": {
+  "gm": "rb y gs c frlg dp pt hgss lgpe swsh bdsp pla",
+  "wild": "gs c frlg hgss lgpe swsh bdsp pla"
+ },
+ "79": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv za",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv za"
+ },
+ "80": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv za",
+  "wild": "rb y gs c frlg hgss sm usum lgpe swsh bdsp sv za"
+ },
+ "81": {
+  "gm": "rb y gs c rs e frlg pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb y gs c rs e frlg pt hgss b2w2 oras sm usum lgpe swsh bdsp pla sv"
+ },
+ "82": {
+  "gm": "rb y gs c rs e frlg pt hgss b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb y rs e frlg pt hgss b2w2 xy lgpe swsh bdsp pla sv"
+ },
+ "83": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp za",
+  "wild": "y gs c hgss xy lgpe swsh bdsp za"
+ },
+ "84": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe bdsp sv",
+  "wild": "rb y gs c rs e frlg hgss xy oras lgpe bdsp sv"
+ },
+ "85": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe bdsp sv",
+  "wild": "rb y gs c rs e hgss lgpe bdsp sv"
+ },
+ "86": {
+  "gm": "rb y gs c frlg hgss b2w2 usum lgpe bdsp sv",
+  "wild": "rb y gs c frlg hgss b2w2 usum lgpe bdsp sv"
+ },
+ "87": {
+  "gm": "rb y gs c frlg hgss b2w2 usum lgpe bdsp sv",
+  "wild": "rb y frlg hgss b2w2 lgpe bdsp sv"
+ },
+ "88": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 oras sm usum lgpe bdsp sv",
+  "wild": "rb y gs c rs e frlg hgss b2w2 oras sm usum lgpe bdsp sv"
+ },
+ "89": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 oras sm usum lgpe bdsp sv",
+  "wild": "rb y gs c frlg hgss b2w2 lgpe bdsp sv"
+ },
+ "90": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv"
+ },
+ "91": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "xy lgpe swsh bdsp sv"
+ },
+ "92": {
+  "gm": "rb y gs c frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv za",
+  "wild": "rb y gs c frlg dp pt hgss sm usum lgpe swsh bdsp pla sv za"
+ },
+ "93": {
+  "gm": "rb y gs c frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv za",
+  "wild": "rb y gs c frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv za"
+ },
+ "94": {
+  "gm": "rb y gs c frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv za",
+  "wild": "dp pt sm usum swsh bdsp pla sv za"
+ },
+ "95": {
+  "gm": "rb y gs c frlg dp pt hgss b2w2 xy lgpe swsh bdsp pla za",
+  "wild": "rb y gs c frlg dp pt hgss b2w2 xy lgpe swsh bdsp pla za"
+ },
+ "96": {
+  "gm": "rb y gs c frlg hgss sm usum lgpe bdsp sv",
+  "wild": "rb y gs c frlg hgss sm usum lgpe bdsp sv"
+ },
+ "97": {
+  "gm": "rb y gs c frlg hgss sm usum lgpe bdsp sv",
+  "wild": "rb gs c frlg hgss sm usum bdsp sv"
+ },
+ "98": {
+  "gm": "rb y gs c frlg hgss lgpe swsh bdsp",
+  "wild": "rb y gs c frlg hgss lgpe swsh bdsp"
+ },
+ "99": {
+  "gm": "rb y gs c frlg hgss lgpe swsh bdsp",
+  "wild": "rb y gs c frlg hgss lgpe swsh bdsp"
+ },
+ "100": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe bdsp pla sv",
+  "wild": "rb y gs c rs e frlg hgss oras lgpe bdsp pla sv"
+ },
+ "101": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe bdsp pla sv",
+  "wild": "rb y gs c rs e frlg hgss xy oras lgpe bdsp pla sv"
+ },
+ "102": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv"
+ },
+ "103": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "sm usum lgpe swsh bdsp sv"
+ },
+ "104": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp za",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp za"
+ },
+ "105": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp za",
+  "wild": "rb y gs c frlg hgss xy swsh bdsp za"
+ },
+ "106": {
+  "gm": "rb y gs c frlg hgss lgpe swsh bdsp sv",
+  "wild": "lgpe swsh bdsp sv"
+ },
+ "107": {
+  "gm": "rb y gs c frlg hgss lgpe swsh bdsp sv",
+  "wild": "lgpe swsh bdsp sv"
+ },
+ "108": {
+  "gm": "rb y gs c frlg pt hgss b2w2 xy usum lgpe swsh bdsp pla",
+  "wild": "y gs c pt hgss b2w2 xy usum lgpe swsh bdsp pla"
+ },
+ "109": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 oras lgpe swsh bdsp sv",
+  "wild": "rb gs c rs e frlg hgss b2w2 oras lgpe swsh bdsp sv"
+ },
+ "110": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 oras lgpe swsh bdsp sv",
+  "wild": "rb c frlg hgss b2w2 lgpe swsh bdsp sv"
+ },
+ "111": {
+  "gm": "rb y gs c rs e frlg pt hgss xy oras lgpe swsh bdsp pla sv",
+  "wild": "rb y gs c rs e frlg pt hgss xy lgpe swsh bdsp pla sv"
+ },
+ "112": {
+  "gm": "rb y gs c rs e frlg pt hgss xy oras lgpe swsh bdsp pla sv",
+  "wild": "rb y c pt hgss xy lgpe swsh bdsp pla sv"
+ },
+ "113": {
+  "gm": "rb y gs c frlg dp pt hgss sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb y gs c frlg dp pt hgss sm usum lgpe swsh bdsp pla sv"
+ },
+ "114": {
+  "gm": "rb y gs c frlg pt hgss b2w2 lgpe swsh bdsp pla",
+  "wild": "rb y gs c frlg pt hgss b2w2 lgpe swsh bdsp pla"
+ },
+ "115": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp za",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp za"
+ },
+ "116": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe swsh bdsp sv",
+  "wild": "rb y gs c rs e frlg hgss xy lgpe swsh bdsp sv"
+ },
+ "117": {
+  "gm": "rb y gs c rs e frlg hgss xy oras lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss xy lgpe swsh bdsp sv"
+ },
+ "118": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp",
+  "wild": "rb y gs c rs e frlg dp pt hgss xy sm usum lgpe swsh bdsp"
+ },
+ "119": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp",
+  "wild": "rb y gs c rs e frlg dp pt hgss xy sm usum lgpe swsh bdsp"
+ },
+ "120": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 xy oras sm usum lgpe swsh bdsp za",
+  "wild": "rb y gs c rs e frlg hgss b2w2 xy sm usum lgpe swsh bdsp za"
+ },
+ "121": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 xy oras sm usum lgpe swsh bdsp za",
+  "wild": "b2w2 xy sm usum lgpe swsh bdsp za"
+ },
+ "122": {
+  "gm": "rb y gs c frlg dp pt hgss xy usum lgpe swsh bdsp pla za",
+  "wild": "gs c dp pt hgss xy usum lgpe swsh bdsp pla za"
+ },
+ "123": {
+  "gm": "rb y gs c frlg pt hgss xy sm usum lgpe swsh bdsp pla sv za",
+  "wild": "rb y frlg pt hgss xy sm usum lgpe swsh bdsp pla sv za"
+ },
+ "124": {
+  "gm": "rb y gs c frlg hgss xy usum lgpe swsh bdsp",
+  "wild": "gs c hgss xy usum lgpe swsh bdsp"
+ },
+ "125": {
+  "gm": "rb y gs c frlg pt hgss b2w2 sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb gs c frlg pt hgss sm usum lgpe swsh bdsp pla sv"
+ },
+ "126": {
+  "gm": "rb y gs c frlg pt hgss b2w2 sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb gs c frlg pt hgss sm usum lgpe swsh bdsp pla sv"
+ },
+ "127": {
+  "gm": "rb y gs c rs e frlg hgss b2w2 xy oras sm usum lgpe swsh bdsp za",
+  "wild": "rb y rs e frlg hgss b2w2 xy sm usum lgpe swsh bdsp za"
+ },
+ "128": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv"
+ },
+ "129": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla sv za",
+  "wild": "rb y gs c rs e frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv za"
+ },
+ "130": {
+  "gm": "rb y gs c rs e frlg dp pt hgss xy oras sm usum lgpe swsh bdsp pla sv za",
+  "wild": "y gs c rs e frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv za"
+ },
+ "131": {
+  "gm": "rb y gs c frlg hgss b2w2 xy sm usum lgpe swsh bdsp sv",
+  "wild": "gs c frlg hgss b2w2 xy sm usum lgpe swsh bdsp sv"
+ },
+ "132": {
+  "gm": "rb y gs c frlg hgss b2w2 xy sm usum lgpe swsh bdsp sv",
+  "wild": "rb y gs c frlg hgss b2w2 xy sm usum lgpe swsh bdsp sv"
+ },
+ "133": {
+  "gm": "rb y gs c frlg pt hgss b2w2 xy sm usum lgpe swsh bdsp pla sv za",
+  "wild": "pt b2w2 xy sm usum lgpe swsh bdsp pla sv za"
+ },
+ "134": {
+  "gm": "rb y gs c frlg pt hgss b2w2 xy sm usum lgpe swsh bdsp pla sv za",
+  "wild": "swsh bdsp pla sv za"
+ },
+ "135": {
+  "gm": "rb y gs c frlg pt hgss b2w2 xy sm usum lgpe swsh bdsp pla sv za",
+  "wild": "swsh bdsp pla sv za"
+ },
+ "136": {
+  "gm": "rb y gs c frlg pt hgss b2w2 xy sm usum lgpe swsh bdsp pla sv za",
+  "wild": "swsh bdsp pla sv za"
+ },
+ "137": {
+  "gm": "rb y gs c frlg pt hgss sm usum lgpe swsh bdsp pla sv za",
+  "wild": "lgpe swsh bdsp pla sv za"
+ },
+ "138": {
+  "gm": "rb y gs c frlg hgss usum lgpe swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "139": {
+  "gm": "rb y gs c frlg hgss usum lgpe swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "140": {
+  "gm": "rb y gs c frlg hgss usum lgpe swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "141": {
+  "gm": "rb y gs c frlg hgss usum lgpe swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "142": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp za",
+  "wild": "swsh bdsp za"
+ },
+ "143": {
+  "gm": "rb y gs c frlg dp pt hgss xy sm usum lgpe swsh bdsp pla sv",
+  "wild": "rb y gs c frlg hgss xy sm lgpe swsh bdsp pla sv"
+ },
+ "144": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "rb y frlg hgss xy lgpe swsh"
+ },
+ "145": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "rb y frlg hgss xy lgpe swsh"
+ },
+ "146": {
+  "gm": "rb y gs c frlg hgss xy lgpe swsh bdsp",
+  "wild": "rb y frlg hgss xy lgpe swsh"
+ },
+ "147": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv za",
+  "wild": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv za"
+ },
+ "148": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv za",
+  "wild": "y gs c frlg hgss xy sm usum lgpe swsh bdsp sv za"
+ },
+ "149": {
+  "gm": "rb y gs c frlg hgss xy sm usum lgpe swsh bdsp sv za",
+  "wild": "sm usum lgpe swsh bdsp sv za"
+ },
+ "150": {
+  "gm": "rb y gs c frlg hgss xy lgpe bdsp za",
+  "wild": "rb y frlg hgss xy lgpe"
+ },
+ "151": {
+  "ev": "rb y gs c frlg hgss lgpe"
+ }
+}

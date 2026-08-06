@@ -1,0 +1,622 @@
+{
+ "494": {
+  "ev": "bw b2w2",
+  "wild": "bw"
+ },
+ "495": {
+  "gm": "bw b2w2 sv",
+  "wild": "sv"
+ },
+ "496": {
+  "gm": "bw b2w2 sv",
+  "wild": "sv"
+ },
+ "497": {
+  "gm": "bw b2w2 sv",
+  "wild": "sv"
+ },
+ "498": {
+  "gm": "bw b2w2 sv za",
+  "wild": "sv za"
+ },
+ "499": {
+  "gm": "bw b2w2 sv za",
+  "wild": "sv za"
+ },
+ "500": {
+  "gm": "bw b2w2 sv za",
+  "wild": "sv za"
+ },
+ "501": {
+  "gm": "bw b2w2 pla sv",
+  "wild": "pla sv"
+ },
+ "502": {
+  "gm": "bw b2w2 pla sv",
+  "wild": "pla sv"
+ },
+ "503": {
+  "gm": "bw b2w2 pla sv",
+  "wild": "pla sv"
+ },
+ "504": {
+  "gm": "bw b2w2 xy za",
+  "wild": "bw b2w2 za"
+ },
+ "505": {
+  "gm": "bw b2w2 xy za",
+  "wild": "bw b2w2 xy za"
+ },
+ "506": {
+  "gm": "bw b2w2 sm usum swsh",
+  "wild": "bw b2w2 sm usum swsh"
+ },
+ "507": {
+  "gm": "bw b2w2 sm usum swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "508": {
+  "gm": "bw b2w2 sm usum swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "509": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "bw b2w2 swsh za"
+ },
+ "510": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "bw b2w2 xy swsh za"
+ },
+ "511": {
+  "gm": "bw b2w2 xy za",
+  "wild": "bw b2w2 xy za"
+ },
+ "512": {
+  "gm": "bw b2w2 xy za",
+  "wild": "za"
+ },
+ "513": {
+  "gm": "bw b2w2 xy za",
+  "wild": "bw b2w2 xy za"
+ },
+ "514": {
+  "gm": "bw b2w2 xy za",
+  "wild": "za"
+ },
+ "515": {
+  "gm": "bw b2w2 xy za",
+  "wild": "bw b2w2 xy za"
+ },
+ "516": {
+  "gm": "bw b2w2 xy za",
+  "wild": "za"
+ },
+ "517": {
+  "gm": "bw b2w2 swsh za",
+  "wild": "bw b2w2 swsh za"
+ },
+ "518": {
+  "gm": "bw b2w2 swsh za",
+  "wild": "bw b2w2 swsh za"
+ },
+ "519": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "520": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "521": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "522": {
+  "gm": "bw b2w2 sv",
+  "wild": "bw sv"
+ },
+ "523": {
+  "gm": "bw b2w2 sv",
+  "wild": "bw b2w2 sv"
+ },
+ "524": {
+  "gm": "bw b2w2 xy sm usum swsh",
+  "wild": "bw b2w2 xy sm usum swsh"
+ },
+ "525": {
+  "gm": "bw b2w2 xy sm usum swsh",
+  "wild": "bw b2w2 xy sm usum swsh"
+ },
+ "526": {
+  "gm": "bw b2w2 xy sm usum swsh",
+  "wild": "swsh"
+ },
+ "527": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 xy swsh"
+ },
+ "528": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "swsh"
+ },
+ "529": {
+  "gm": "bw b2w2 swsh sv za",
+  "wild": "bw b2w2 swsh sv za"
+ },
+ "530": {
+  "gm": "bw b2w2 swsh sv za",
+  "wild": "bw b2w2 swsh sv za"
+ },
+ "531": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "bw b2w2 xy swsh za"
+ },
+ "532": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 swsh sv"
+ },
+ "533": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 xy swsh sv"
+ },
+ "534": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "swsh sv"
+ },
+ "535": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw swsh"
+ },
+ "536": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "537": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "538": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "bw b2w2 xy swsh za"
+ },
+ "539": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "bw b2w2 xy swsh za"
+ },
+ "540": {
+  "gm": "bw b2w2 sv",
+  "wild": "bw b2w2 sv"
+ },
+ "541": {
+  "gm": "bw b2w2 sv",
+  "wild": "bw b2w2 sv"
+ },
+ "542": {
+  "gm": "bw b2w2 sv",
+  "wild": "bw b2w2 sv"
+ },
+ "543": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "bw b2w2 xy swsh za"
+ },
+ "544": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "bw b2w2 xy swsh za"
+ },
+ "545": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "b2w2 swsh za"
+ },
+ "546": {
+  "gm": "bw b2w2 sm usum swsh sv",
+  "wild": "bw b2w2 sm usum swsh sv"
+ },
+ "547": {
+  "gm": "bw b2w2 sm usum swsh sv",
+  "wild": "bw b2w2 swsh sv"
+ },
+ "548": {
+  "gm": "bw b2w2 sm usum swsh pla sv",
+  "wild": "bw b2w2 sm usum swsh pla sv"
+ },
+ "549": {
+  "gm": "bw b2w2 sm usum swsh pla sv",
+  "wild": "bw b2w2 swsh pla sv"
+ },
+ "550": {
+  "gm": "bw b2w2 xy usum swsh pla sv",
+  "wild": "bw b2w2 xy usum swsh pla sv"
+ },
+ "551": {
+  "gm": "bw b2w2 xy sm usum swsh sv za",
+  "wild": "bw b2w2 xy sm swsh sv za"
+ },
+ "552": {
+  "gm": "bw b2w2 xy sm usum swsh sv za",
+  "wild": "bw b2w2 usum swsh sv za"
+ },
+ "553": {
+  "gm": "bw b2w2 xy sm usum swsh sv za",
+  "wild": "swsh sv za"
+ },
+ "554": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "555": {
+  "gm": "bw b2w2 swsh",
+  "wild": "swsh"
+ },
+ "556": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "557": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 xy swsh"
+ },
+ "558": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "559": {
+  "gm": "bw b2w2 xy usum swsh sv za",
+  "wild": "bw b2w2 xy usum swsh sv za"
+ },
+ "560": {
+  "gm": "bw b2w2 xy usum swsh sv za",
+  "wild": "b2w2 swsh sv za"
+ },
+ "561": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 xy swsh"
+ },
+ "562": {
+  "gm": "bw b2w2 swsh za",
+  "wild": "bw b2w2 swsh za"
+ },
+ "563": {
+  "gm": "bw b2w2 swsh za",
+  "wild": "bw swsh za"
+ },
+ "564": {
+  "gm": "bw b2w2 sm usum swsh",
+  "wild": "swsh"
+ },
+ "565": {
+  "gm": "bw b2w2 sm usum swsh",
+  "wild": "swsh"
+ },
+ "566": {
+  "gm": "bw b2w2 sm usum swsh",
+  "wild": "swsh"
+ },
+ "567": {
+  "gm": "bw b2w2 sm usum swsh"
+ },
+ "568": {
+  "gm": "bw b2w2 xy sm usum swsh za",
+  "wild": "bw b2w2 xy sm usum swsh za"
+ },
+ "569": {
+  "gm": "bw b2w2 xy sm usum swsh za",
+  "wild": "bw b2w2 xy sm swsh za"
+ },
+ "570": {
+  "gm": "bw b2w2 xy usum swsh pla sv",
+  "wild": "usum swsh pla sv"
+ },
+ "571": {
+  "gm": "bw b2w2 xy usum swsh pla sv",
+  "wild": "bw xy usum swsh pla sv"
+ },
+ "572": {
+  "gm": "bw b2w2 usum swsh sv",
+  "wild": "bw b2w2 usum swsh sv"
+ },
+ "573": {
+  "gm": "bw b2w2 usum swsh sv",
+  "wild": "bw b2w2 swsh sv"
+ },
+ "574": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 swsh sv"
+ },
+ "575": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 xy swsh sv"
+ },
+ "576": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 swsh sv"
+ },
+ "577": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 xy swsh sv"
+ },
+ "578": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 xy swsh sv"
+ },
+ "579": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 swsh sv"
+ },
+ "580": {
+  "gm": "bw b2w2 xy sv",
+  "wild": "bw b2w2 xy sv"
+ },
+ "581": {
+  "gm": "bw b2w2 xy sv",
+  "wild": "bw b2w2 xy sv"
+ },
+ "582": {
+  "gm": "bw b2w2 xy sm usum swsh za",
+  "wild": "bw xy sm usum swsh za"
+ },
+ "583": {
+  "gm": "bw b2w2 xy sm usum swsh za",
+  "wild": "bw b2w2 sm usum swsh za"
+ },
+ "584": {
+  "gm": "bw b2w2 xy sm usum swsh za",
+  "wild": "b2w2 usum swsh za"
+ },
+ "585": {
+  "gm": "bw b2w2 sv",
+  "wild": "bw b2w2 sv"
+ },
+ "586": {
+  "gm": "bw b2w2 sv",
+  "wild": "bw b2w2 sv"
+ },
+ "587": {
+  "gm": "bw b2w2 xy sm usum swsh za",
+  "wild": "bw b2w2 xy sm usum swsh za"
+ },
+ "588": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 xy swsh"
+ },
+ "589": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "swsh"
+ },
+ "590": {
+  "gm": "bw b2w2 xy swsh sv za",
+  "wild": "bw b2w2 xy swsh sv za"
+ },
+ "591": {
+  "gm": "bw b2w2 xy swsh sv za",
+  "wild": "bw b2w2 xy swsh sv za"
+ },
+ "592": {
+  "gm": "bw b2w2 usum swsh",
+  "wild": "bw b2w2 usum swsh"
+ },
+ "593": {
+  "gm": "bw b2w2 usum swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "594": {
+  "gm": "bw b2w2 xy sm usum sv",
+  "wild": "bw b2w2 xy sm usum sv"
+ },
+ "595": {
+  "gm": "bw b2w2 swsh sv",
+  "wild": "bw b2w2 swsh sv"
+ },
+ "596": {
+  "gm": "bw b2w2 swsh sv",
+  "wild": "swsh sv"
+ },
+ "597": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 xy swsh"
+ },
+ "598": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "swsh"
+ },
+ "599": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "600": {
+  "gm": "bw b2w2 swsh",
+  "wild": "b2w2 swsh"
+ },
+ "601": {
+  "gm": "bw b2w2 swsh",
+  "wild": "b2w2 swsh"
+ },
+ "602": {
+  "gm": "bw b2w2 sv za",
+  "wild": "bw b2w2 sv za"
+ },
+ "603": {
+  "gm": "bw b2w2 sv za",
+  "wild": "b2w2 sv za"
+ },
+ "604": {
+  "gm": "bw b2w2 sv za",
+  "wild": "sv za"
+ },
+ "605": {
+  "gm": "bw b2w2 usum swsh",
+  "wild": "bw b2w2 usum swsh"
+ },
+ "606": {
+  "gm": "bw b2w2 usum swsh",
+  "wild": "bw swsh"
+ },
+ "607": {
+  "gm": "bw b2w2 xy swsh sv za",
+  "wild": "bw b2w2 xy swsh sv za"
+ },
+ "608": {
+  "gm": "bw b2w2 xy swsh sv za",
+  "wild": "xy swsh sv za"
+ },
+ "609": {
+  "gm": "bw b2w2 xy swsh sv za",
+  "wild": "swsh sv za"
+ },
+ "610": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 xy swsh sv"
+ },
+ "611": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 xy swsh sv"
+ },
+ "612": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "b2w2 swsh sv"
+ },
+ "613": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 xy swsh sv"
+ },
+ "614": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw b2w2 xy swsh sv"
+ },
+ "615": {
+  "gm": "bw b2w2 xy swsh sv za",
+  "wild": "bw b2w2 xy swsh sv za"
+ },
+ "616": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 xy swsh"
+ },
+ "617": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "swsh"
+ },
+ "618": {
+  "gm": "bw b2w2 xy swsh za",
+  "wild": "bw b2w2 xy swsh za"
+ },
+ "619": {
+  "gm": "bw b2w2 xy usum swsh sv",
+  "wild": "bw b2w2 xy usum swsh sv"
+ },
+ "620": {
+  "gm": "bw b2w2 xy usum swsh sv",
+  "wild": "bw b2w2 swsh sv"
+ },
+ "621": {
+  "gm": "bw b2w2 xy usum swsh",
+  "wild": "bw b2w2 xy usum swsh"
+ },
+ "622": {
+  "gm": "bw b2w2 xy usum swsh sv za",
+  "wild": "bw xy usum swsh sv za"
+ },
+ "623": {
+  "gm": "bw b2w2 xy usum swsh sv za",
+  "wild": "b2w2 xy swsh sv za"
+ },
+ "624": {
+  "gm": "bw b2w2 xy usum swsh sv",
+  "wild": "bw b2w2 xy usum swsh sv"
+ },
+ "625": {
+  "gm": "bw b2w2 xy usum swsh sv",
+  "wild": "bw usum swsh sv"
+ },
+ "626": {
+  "gm": "bw b2w2 swsh",
+  "wild": "bw b2w2 swsh"
+ },
+ "627": {
+  "gm": "bw b2w2 sm usum swsh pla sv",
+  "wild": "bw b2w2 sm usum swsh pla sv"
+ },
+ "628": {
+  "gm": "bw b2w2 sm usum swsh pla sv",
+  "wild": "bw b2w2 sm usum swsh pla sv"
+ },
+ "629": {
+  "gm": "bw b2w2 sm usum swsh sv",
+  "wild": "bw b2w2 sm usum swsh sv"
+ },
+ "630": {
+  "gm": "bw b2w2 sm usum swsh sv",
+  "wild": "bw b2w2 sm usum swsh sv"
+ },
+ "631": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 xy swsh"
+ },
+ "632": {
+  "gm": "bw b2w2 xy swsh",
+  "wild": "bw b2w2 xy swsh"
+ },
+ "633": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "bw swsh sv"
+ },
+ "634": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "b2w2 xy swsh sv"
+ },
+ "635": {
+  "gm": "bw b2w2 xy swsh sv",
+  "wild": "xy swsh sv"
+ },
+ "636": {
+  "gm": "bw b2w2 usum swsh sv",
+  "wild": "usum swsh sv"
+ },
+ "637": {
+  "gm": "bw b2w2 usum swsh sv",
+  "wild": "bw b2w2 usum swsh sv"
+ },
+ "638": {
+  "gm": "bw b2w2 swsh za",
+  "wild": "bw b2w2 swsh"
+ },
+ "639": {
+  "gm": "bw b2w2 swsh za",
+  "wild": "bw b2w2 swsh"
+ },
+ "640": {
+  "gm": "bw b2w2 swsh za",
+  "wild": "bw b2w2 swsh"
+ },
+ "641": {
+  "gm": "bw b2w2 pla",
+  "wild": "bw"
+ },
+ "642": {
+  "gm": "bw b2w2 pla",
+  "wild": "bw"
+ },
+ "643": {
+  "gm": "bw b2w2",
+  "wild": "bw b2w2"
+ },
+ "644": {
+  "gm": "bw b2w2",
+  "wild": "bw b2w2"
+ },
+ "645": {
+  "gm": "bw b2w2 pla",
+  "wild": "bw"
+ },
+ "646": {
+  "gm": "bw b2w2",
+  "wild": "bw b2w2"
+ },
+ "647": {
+  "ev": "bw b2w2 za"
+ },
+ "648": {
+  "ev": "bw b2w2 za"
+ },
+ "649": {
+  "ev": "bw b2w2 za"
+ }
+}

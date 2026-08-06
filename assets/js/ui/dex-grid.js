@@ -126,7 +126,13 @@ function card(species, ctx) {
         el("span.card__num", dexNumber(species.id)),
         el(
           "span.card__flags",
-          species.variant ? el("span.card__flag", { title: species.variant.name }, "VAR") : null,
+          species.forms.length
+            ? el(
+                "span.card__flag",
+                { title: species.forms.map((f) => f.name).join(" · ") },
+                `◈${species.forms.length}`
+              )
+            : null,
           species.gd
             ? el("span.card__flag.card__flag--pair", { title: "Formes ♂ et ♀ distinctes" }, "♂♀")
             : null
@@ -169,10 +175,13 @@ function quickToggles(species, ctx, color) {
         ["sm", "✦", "Marquer le shiny obtenu", true],
       ];
 
-  if (species.variant && !isMega(species)) {
+  // Une seule forme est proposee ici : la principale. Les autres se cochent
+  // dans la fiche, ou elles sont accompagnees de leur sprite et de leur texte.
+  const primary = species.primaryForm;
+  if (primary) {
     definitions.push(
-      ["vo", "◈", `${species.variant.name} — forme normale`, false],
-      ["vs", "✦◈", `${species.variant.name} — shiny`, true]
+      [primary.slot, "◈", `${primary.name} — forme normale`, false],
+      [primary.shinySlot, "✦◈", `${primary.name} — shiny`, true]
     );
   }
 
@@ -199,6 +208,3 @@ function toggleButton(species, slot, label, title, gold, color, ctx) {
     on ? `✓${label === "Normal" || label === "✦" ? "" : label}` : label
   );
 }
-
-export const isMega = (species) =>
-  Boolean(species.variant && /m[ée]ga/i.test(species.variant.name || ""));

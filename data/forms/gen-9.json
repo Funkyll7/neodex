@@ -1,0 +1,586 @@
+{
+ "916": [
+  {
+   "id": 10254,
+   "key": "oinkologne-female",
+   "name": "Fragroin Femelle",
+   "label": "Femelle",
+   "kind": "other",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    115,
+    90,
+    70,
+    59,
+    90,
+    65
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "925": [
+  {
+   "id": 10257,
+   "key": "maushold-family-of-three",
+   "name": "Famignol Famille de Trois",
+   "label": "Famille de Trois",
+   "kind": "other",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    74,
+    75,
+    70,
+    65,
+    75,
+    111
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 0
+   }
+  }
+ ],
+ "931": [
+  {
+   "id": 10260,
+   "key": "squawkabilly-blue-plumage",
+   "name": "Tapatoès Plumage Bleu",
+   "label": "Plumage Bleu",
+   "kind": "other",
+   "types": [
+    "Normal",
+    "Vol"
+   ],
+   "stats": [
+    82,
+    96,
+    51,
+    45,
+    51,
+    92
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10261,
+   "key": "squawkabilly-yellow-plumage",
+   "name": "Tapatoès Plumage Jaune",
+   "label": "Plumage Jaune",
+   "kind": "other",
+   "types": [
+    "Normal",
+    "Vol"
+   ],
+   "stats": [
+    82,
+    96,
+    51,
+    45,
+    51,
+    92
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10262,
+   "key": "squawkabilly-white-plumage",
+   "name": "Tapatoès Plumage Blanc",
+   "label": "Plumage Blanc",
+   "kind": "other",
+   "types": [
+    "Normal",
+    "Vol"
+   ],
+   "stats": [
+    82,
+    96,
+    51,
+    45,
+    51,
+    92
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "952": [
+  {
+   "id": 10320,
+   "key": "scovillain-mega",
+   "name": "Méga-Scovilain",
+   "label": "Méga-Scovilain",
+   "kind": "mega",
+   "types": [
+    "Plante",
+    "Feu"
+   ],
+   "stats": [
+    65,
+    138,
+    85,
+    138,
+    85,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "964": [
+  {
+   "id": 10256,
+   "key": "palafin-hero",
+   "name": "Superdofin Forme Super",
+   "label": "Forme Super",
+   "kind": "battle",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    100,
+    160,
+    97,
+    106,
+    87,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "970": [
+  {
+   "id": 10321,
+   "key": "glimmora-mega",
+   "name": "Méga-Floréclat",
+   "label": "Méga-Floréclat",
+   "kind": "mega",
+   "types": [
+    "Roche",
+    "Poison"
+   ],
+   "stats": [
+    83,
+    90,
+    105,
+    150,
+    96,
+    101
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "978": [
+  {
+   "id": 10322,
+   "key": "tatsugiri-curly-mega",
+   "name": "Méga-Nigirigon Forme Courbée",
+   "label": "Méga-Nigirigon Forme Courbée",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Eau"
+   ],
+   "stats": [
+    68,
+    65,
+    90,
+    135,
+    125,
+    92
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 0,
+    "artShiny": 0
+   }
+  },
+  {
+   "id": 10323,
+   "key": "tatsugiri-droopy-mega",
+   "name": "Méga-Nigirigon Forme Affalée",
+   "label": "Méga-Nigirigon Forme Affalée",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Eau"
+   ],
+   "stats": [
+    68,
+    65,
+    90,
+    135,
+    125,
+    92
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 0,
+    "artShiny": 0
+   }
+  },
+  {
+   "id": 10324,
+   "key": "tatsugiri-stretchy-mega",
+   "name": "Méga-Nigirigon Forme Raide",
+   "label": "Méga-Nigirigon Forme Raide",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Eau"
+   ],
+   "stats": [
+    68,
+    65,
+    90,
+    135,
+    125,
+    92
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10258,
+   "key": "tatsugiri-droopy",
+   "name": "Nigirigon Forme Affalée",
+   "label": "Forme Affalée",
+   "kind": "other",
+   "types": [
+    "Dragon",
+    "Eau"
+   ],
+   "stats": [
+    68,
+    50,
+    60,
+    120,
+    95,
+    82
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10259,
+   "key": "tatsugiri-stretchy",
+   "name": "Nigirigon Forme Raide",
+   "label": "Forme Raide",
+   "kind": "other",
+   "types": [
+    "Dragon",
+    "Eau"
+   ],
+   "stats": [
+    68,
+    50,
+    60,
+    120,
+    95,
+    82
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "982": [
+  {
+   "id": 10255,
+   "key": "dudunsparce-three-segment",
+   "name": "Deusolourdo Forme Triple",
+   "label": "Forme Triple",
+   "kind": "other",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    125,
+    100,
+    80,
+    85,
+    75,
+    55
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 0
+   }
+  }
+ ],
+ "998": [
+  {
+   "id": 10325,
+   "key": "baxcalibur-mega",
+   "name": "Méga-Glaivodo",
+   "label": "Méga-Glaivodo",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Glace"
+   ],
+   "stats": [
+    115,
+    175,
+    117,
+    105,
+    101,
+    87
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "999": [
+  {
+   "id": 10263,
+   "key": "gimmighoul-roaming",
+   "name": "Mordudor Forme Marche",
+   "label": "Forme Marche",
+   "kind": "other",
+   "types": [
+    "Spectre"
+   ],
+   "stats": [
+    45,
+    30,
+    25,
+    75,
+    45,
+    80
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "1017": [
+  {
+   "id": 10273,
+   "key": "ogerpon-wellspring-mask",
+   "name": "Ogerpon du Puits",
+   "label": "Masque du Puits",
+   "kind": "other",
+   "types": [
+    "Plante",
+    "Eau"
+   ],
+   "stats": [
+    80,
+    120,
+    84,
+    60,
+    96,
+    110
+   ],
+   "battleOnly": 0,
+   "since": "the-teal-mask",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10274,
+   "key": "ogerpon-hearthflame-mask",
+   "name": "Ogerpon du Fourneau",
+   "label": "Masque du Fourneau",
+   "kind": "other",
+   "types": [
+    "Plante",
+    "Feu"
+   ],
+   "stats": [
+    80,
+    120,
+    84,
+    60,
+    96,
+    110
+   ],
+   "battleOnly": 0,
+   "since": "the-teal-mask",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10275,
+   "key": "ogerpon-cornerstone-mask",
+   "name": "Ogerpon de la Pierre",
+   "label": "Masque de la Pierre",
+   "kind": "other",
+   "types": [
+    "Plante",
+    "Roche"
+   ],
+   "stats": [
+    80,
+    120,
+    84,
+    60,
+    96,
+    110
+   ],
+   "battleOnly": 0,
+   "since": "the-teal-mask",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "1024": [
+  {
+   "id": 10276,
+   "key": "terapagos-terastal",
+   "name": "Terapagos Téracristal",
+   "label": "Forme Téracristal",
+   "kind": "battle",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    95,
+    95,
+    110,
+    105,
+    110,
+    85
+   ],
+   "battleOnly": 1,
+   "since": "the-indigo-disk",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10277,
+   "key": "terapagos-stellar",
+   "name": "Terapagos Stellaire",
+   "label": "Forme Stellaire",
+   "kind": "battle",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    160,
+    105,
+    110,
+    130,
+    110,
+    85
+   ],
+   "battleOnly": 1,
+   "since": "the-indigo-disk",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 0
+   }
+  }
+ ]
+}

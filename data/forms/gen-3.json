@@ -1,0 +1,908 @@
+{
+ "254": [
+  {
+   "id": 10065,
+   "key": "sceptile-mega",
+   "name": "Méga-Jungko",
+   "label": "Méga-Jungko",
+   "kind": "mega",
+   "types": [
+    "Plante",
+    "Dragon"
+   ],
+   "stats": [
+    70,
+    110,
+    75,
+    145,
+    85,
+    145
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "257": [
+  {
+   "id": 10050,
+   "key": "blaziken-mega",
+   "name": "Méga-Braségali",
+   "label": "Méga-Braségali",
+   "kind": "mega",
+   "types": [
+    "Feu",
+    "Combat"
+   ],
+   "stats": [
+    80,
+    160,
+    80,
+    130,
+    80,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "260": [
+  {
+   "id": 10064,
+   "key": "swampert-mega",
+   "name": "Méga-Laggron",
+   "label": "Méga-Laggron",
+   "kind": "mega",
+   "types": [
+    "Eau",
+    "Sol"
+   ],
+   "stats": [
+    100,
+    150,
+    110,
+    95,
+    110,
+    70
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "263": [
+  {
+   "id": 10174,
+   "key": "zigzagoon-galar",
+   "name": "Zigzaton de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Ténèbres",
+    "Normal"
+   ],
+   "stats": [
+    38,
+    30,
+    41,
+    30,
+    41,
+    60
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "264": [
+  {
+   "id": 10175,
+   "key": "linoone-galar",
+   "name": "Linéon de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Ténèbres",
+    "Normal"
+   ],
+   "stats": [
+    78,
+    70,
+    61,
+    50,
+    61,
+    100
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "282": [
+  {
+   "id": 10051,
+   "key": "gardevoir-mega",
+   "name": "Méga-Gardevoir",
+   "label": "Méga-Gardevoir",
+   "kind": "mega",
+   "types": [
+    "Psy",
+    "Fée"
+   ],
+   "stats": [
+    68,
+    85,
+    65,
+    165,
+    135,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "302": [
+  {
+   "id": 10066,
+   "key": "sableye-mega",
+   "name": "Méga-Ténéfix",
+   "label": "Méga-Ténéfix",
+   "kind": "mega",
+   "types": [
+    "Ténèbres",
+    "Spectre"
+   ],
+   "stats": [
+    50,
+    85,
+    125,
+    85,
+    115,
+    20
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "303": [
+  {
+   "id": 10052,
+   "key": "mawile-mega",
+   "name": "Méga-Mysdibule",
+   "label": "Méga-Mysdibule",
+   "kind": "mega",
+   "types": [
+    "Acier",
+    "Fée"
+   ],
+   "stats": [
+    50,
+    105,
+    125,
+    55,
+    95,
+    50
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "306": [
+  {
+   "id": 10053,
+   "key": "aggron-mega",
+   "name": "Méga-Galeking",
+   "label": "Méga-Galeking",
+   "kind": "mega",
+   "types": [
+    "Acier"
+   ],
+   "stats": [
+    70,
+    140,
+    230,
+    60,
+    80,
+    50
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "308": [
+  {
+   "id": 10054,
+   "key": "medicham-mega",
+   "name": "Méga-Charmina",
+   "label": "Méga-Charmina",
+   "kind": "mega",
+   "types": [
+    "Combat",
+    "Psy"
+   ],
+   "stats": [
+    60,
+    100,
+    85,
+    80,
+    85,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "310": [
+  {
+   "id": 10055,
+   "key": "manectric-mega",
+   "name": "Méga-Élecsprint",
+   "label": "Méga-Élecsprint",
+   "kind": "mega",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    70,
+    75,
+    80,
+    135,
+    80,
+    135
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "319": [
+  {
+   "id": 10070,
+   "key": "sharpedo-mega",
+   "name": "Méga-Sharpedo",
+   "label": "Méga-Sharpedo",
+   "kind": "mega",
+   "types": [
+    "Eau",
+    "Ténèbres"
+   ],
+   "stats": [
+    70,
+    140,
+    70,
+    110,
+    65,
+    105
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "323": [
+  {
+   "id": 10087,
+   "key": "camerupt-mega",
+   "name": "Méga-Camérupt",
+   "label": "Méga-Camérupt",
+   "kind": "mega",
+   "types": [
+    "Feu",
+    "Sol"
+   ],
+   "stats": [
+    70,
+    120,
+    100,
+    145,
+    105,
+    20
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "334": [
+  {
+   "id": 10067,
+   "key": "altaria-mega",
+   "name": "Méga-Altaria",
+   "label": "Méga-Altaria",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Fée"
+   ],
+   "stats": [
+    75,
+    110,
+    110,
+    110,
+    105,
+    80
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "351": [
+  {
+   "id": 10013,
+   "key": "castform-sunny",
+   "name": "Morphéo Solaire",
+   "label": "Forme Solaire",
+   "kind": "battle",
+   "types": [
+    "Feu"
+   ],
+   "stats": [
+    70,
+    70,
+    70,
+    70,
+    70,
+    70
+   ],
+   "battleOnly": 1,
+   "since": "ruby-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10014,
+   "key": "castform-rainy",
+   "name": "Morphéo Eau de Pluie",
+   "label": "Forme Eau de Pluie",
+   "kind": "battle",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    70,
+    70,
+    70,
+    70,
+    70,
+    70
+   ],
+   "battleOnly": 1,
+   "since": "ruby-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10015,
+   "key": "castform-snowy",
+   "name": "Morphéo Blizzard",
+   "label": "Forme Blizzard",
+   "kind": "battle",
+   "types": [
+    "Glace"
+   ],
+   "stats": [
+    70,
+    70,
+    70,
+    70,
+    70,
+    70
+   ],
+   "battleOnly": 1,
+   "since": "ruby-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "354": [
+  {
+   "id": 10056,
+   "key": "banette-mega",
+   "name": "Méga-Branette",
+   "label": "Méga-Branette",
+   "kind": "mega",
+   "types": [
+    "Spectre"
+   ],
+   "stats": [
+    64,
+    165,
+    75,
+    93,
+    83,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "358": [
+  {
+   "id": 10306,
+   "key": "chimecho-mega",
+   "name": "Méga-Éoko",
+   "label": "Méga-Éoko",
+   "kind": "mega",
+   "types": [
+    "Psy",
+    "Acier"
+   ],
+   "stats": [
+    75,
+    50,
+    110,
+    135,
+    120,
+    65
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "359": [
+  {
+   "id": 10057,
+   "key": "absol-mega",
+   "name": "Méga-Absol",
+   "label": "Méga-Absol",
+   "kind": "mega",
+   "types": [
+    "Ténèbres"
+   ],
+   "stats": [
+    65,
+    150,
+    60,
+    115,
+    60,
+    115
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10307,
+   "key": "absol-mega-z",
+   "name": "Méga-Absol Z",
+   "label": "Méga-Absol Z",
+   "kind": "mega",
+   "types": [
+    "Ténèbres",
+    "Spectre"
+   ],
+   "stats": [
+    65,
+    154,
+    60,
+    75,
+    60,
+    151
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "362": [
+  {
+   "id": 10074,
+   "key": "glalie-mega",
+   "name": "Méga-Oniglali",
+   "label": "Méga-Oniglali",
+   "kind": "mega",
+   "types": [
+    "Glace"
+   ],
+   "stats": [
+    80,
+    120,
+    80,
+    120,
+    80,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "373": [
+  {
+   "id": 10089,
+   "key": "salamence-mega",
+   "name": "Méga-Drattak",
+   "label": "Méga-Drattak",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Vol"
+   ],
+   "stats": [
+    95,
+    145,
+    130,
+    120,
+    90,
+    120
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "376": [
+  {
+   "id": 10076,
+   "key": "metagross-mega",
+   "name": "Méga-Métalosse",
+   "label": "Méga-Métalosse",
+   "kind": "mega",
+   "types": [
+    "Acier",
+    "Psy"
+   ],
+   "stats": [
+    80,
+    145,
+    150,
+    105,
+    110,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "380": [
+  {
+   "id": 10062,
+   "key": "latias-mega",
+   "name": "Méga-Latias",
+   "label": "Méga-Latias",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Psy"
+   ],
+   "stats": [
+    80,
+    100,
+    120,
+    140,
+    150,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "381": [
+  {
+   "id": 10063,
+   "key": "latios-mega",
+   "name": "Méga-Latios",
+   "label": "Méga-Latios",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Psy"
+   ],
+   "stats": [
+    80,
+    130,
+    100,
+    160,
+    120,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "382": [
+  {
+   "id": 10077,
+   "key": "kyogre-primal",
+   "name": "Primo-Kyogre",
+   "label": "Primo-Résurgence",
+   "kind": "primal",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    100,
+    150,
+    90,
+    180,
+    160,
+    90
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "383": [
+  {
+   "id": 10078,
+   "key": "groudon-primal",
+   "name": "Primo-Groudon",
+   "label": "Primo-Résurgence",
+   "kind": "primal",
+   "types": [
+    "Sol",
+    "Feu"
+   ],
+   "stats": [
+    100,
+    180,
+    160,
+    150,
+    90,
+    90
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "384": [
+  {
+   "id": 10079,
+   "key": "rayquaza-mega",
+   "name": "Méga-Rayquaza",
+   "label": "Méga-Rayquaza",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Vol"
+   ],
+   "stats": [
+    105,
+    180,
+    100,
+    180,
+    100,
+    115
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "386": [
+  {
+   "id": 10001,
+   "key": "deoxys-attack",
+   "name": "Deoxys Attaque",
+   "label": "Forme Attaque",
+   "kind": "other",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    50,
+    180,
+    20,
+    180,
+    20,
+    150
+   ],
+   "battleOnly": 0,
+   "since": "firered-leafgreen",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10002,
+   "key": "deoxys-defense",
+   "name": "Deoxys Défense",
+   "label": "Forme Défense",
+   "kind": "other",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    50,
+    70,
+    160,
+    70,
+    160,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "firered-leafgreen",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10003,
+   "key": "deoxys-speed",
+   "name": "Deoxys Vitesse",
+   "label": "Forme Vitesse",
+   "kind": "other",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    50,
+    95,
+    90,
+    95,
+    90,
+    180
+   ],
+   "battleOnly": 0,
+   "since": "emerald",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ]
+}

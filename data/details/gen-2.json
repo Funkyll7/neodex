@@ -6,31 +6,19 @@
  },
  "157": {
   "where": "Évolution de Feurisson au niveau 36.",
-  "gm": "gs c hgss pla",
-  "variant": {
-   "name": "Typhlosion de Hisui",
-   "id": 10233,
-   "where": "Légendes Pokémon : Arceus. Feu/Spectre."
-  }
+  "gm": "gs c hgss pla"
  },
  "196": {
   "where": "Évoli avec un haut niveau de bonheur, le jour.",
-  "gm": "gs c col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe"
+  "gm": "gs c col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv"
  },
  "197": {
   "where": "Évoli avec un haut niveau de bonheur, la nuit.",
-  "gm": "gs c col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv",
-  "nsh": "lgpe"
+  "gm": "gs c col dp pt hgss bw b2w2 xy oras sm usum lgpe swsh bdsp pla sv"
  },
  "212": {
   "where": "Insécateur échangé en tenant la Pince Métal.",
-  "gm": "gs c rs e col dp pt hgss bw b2w2 xy oras sm usum swsh bdsp pla sv",
-  "variant": {
-   "name": "Méga-Cizayox",
-   "id": 10046,
-   "where": "Méga-Évolution avec la Cizayoxite (X/Y, ROSA)."
-  }
+  "gm": "gs c rs e col dp pt hgss bw b2w2 xy oras sm usum swsh bdsp pla sv"
  },
  "249": {
   "where": "Îles Tourbillon (niveau 40 dans Argent, accessible après Ho-Oh dans Or).",

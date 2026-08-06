@@ -1,10 +1,14 @@
 /**
  * collection.js — ce que je possede.
  *
- * Modele : marks[id] = { om, of, sm, sf, vo, vs }
- *   om / of  forme normale male / femelle
- *   sm / sf  chromatique male / femelle
- *   vo / vs  variante (forme regionale, Gigamax...) normale / chromatique
+ * Modele : marks[id] = { om, of, sm, sf, f10161, f10161s, ... }
+ *   om / of      forme normale male / femelle
+ *   sm / sf      chromatique male / femelle
+ *   f<id>        forme alternative n° <id> (PokeAPI), version normale
+ *   f<id>s       la meme, chromatique
+ *
+ * `vo` / `vs` sont l'ancien schema, quand une espece n'avait qu'une variante :
+ * ils restent lus et rattaches a la forme principale, mais ne sont plus ecrits.
  *
  * Deux sources empilees :
  *   - data/collection.json  la reference commitee dans le depot
@@ -17,6 +21,11 @@
 import { CONFIG } from "../config.js";
 
 export const SLOT_KEYS = ["om", "of", "sm", "sf", "vo", "vs"];
+
+/** Cases de forme : "f10161" (normale) et "f10161s" (chromatique). */
+const FORM_SLOT = /^f\d+s?$/;
+
+const isSlot = (key) => SLOT_KEYS.includes(key) || FORM_SLOT.test(key);
 
 export class Collection {
   constructor(base) {
@@ -155,12 +164,14 @@ function sanitize(raw) {
   for (const [id, marks] of Object.entries(raw || {})) {
     if (!/^\d+$/.test(id) || !marks || typeof marks !== "object") continue;
     const clean = {};
-    for (const slot of SLOT_KEYS) if (marks[slot]) clean[slot] = 1;
+    for (const [slot, value] of Object.entries(marks)) if (value && isSlot(slot)) clean[slot] = 1;
     out[id] = clean;
   }
   return out;
 }
 
 function sameMarks(a = {}, b = {}) {
-  return SLOT_KEYS.every((slot) => Boolean(a[slot]) === Boolean(b[slot]));
+  const slots = new Set([...Object.keys(a), ...Object.keys(b)]);
+  for (const slot of slots) if (Boolean(a[slot]) !== Boolean(b[slot])) return false;
+  return true;
 }

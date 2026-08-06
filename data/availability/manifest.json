@@ -1,0 +1,77 @@
+{
+  "generatedAt": "2026-08-06T22:13:48Z",
+  "source": "PokeAPI (pokedexes x pokemon_dex_numbers)",
+  "generator": "tools/build_availability.py",
+  "total": 1025,
+  "perGame": {
+    "rb": 151,
+    "y": 151,
+    "gs": 251,
+    "c": 251,
+    "rs": 202,
+    "e": 202,
+    "frlg": 151,
+    "dp": 151,
+    "pt": 210,
+    "hgss": 256,
+    "bw": 156,
+    "b2w2": 301,
+    "xy": 454,
+    "oras": 211,
+    "sm": 302,
+    "usum": 403,
+    "lgpe": 153,
+    "swsh": 584,
+    "bdsp": 485,
+    "pla": 242,
+    "sv": 664,
+    "za": 364
+  },
+  "generations": [
+    {
+      "gen": 1,
+      "file": "gen-1.json",
+      "count": 151
+    },
+    {
+      "gen": 2,
+      "file": "gen-2.json",
+      "count": 100
+    },
+    {
+      "gen": 3,
+      "file": "gen-3.json",
+      "count": 135
+    },
+    {
+      "gen": 4,
+      "file": "gen-4.json",
+      "count": 107
+    },
+    {
+      "gen": 5,
+      "file": "gen-5.json",
+      "count": 156
+    },
+    {
+      "gen": 6,
+      "file": "gen-6.json",
+      "count": 72
+    },
+    {
+      "gen": 7,
+      "file": "gen-7.json",
+      "count": 88
+    },
+    {
+      "gen": 8,
+      "file": "gen-8.json",
+      "count": 96
+    },
+    {
+      "gen": 9,
+      "file": "gen-9.json",
+      "count": 120
+    }
+  ]
+}

@@ -1,0 +1,846 @@
+{
+ "652": [
+  {
+   "id": 10292,
+   "key": "chesnaught-mega",
+   "name": "Méga-Blindépique",
+   "label": "Méga-Blindépique",
+   "kind": "mega",
+   "types": [
+    "Plante",
+    "Combat"
+   ],
+   "stats": [
+    88,
+    137,
+    172,
+    74,
+    115,
+    44
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "655": [
+  {
+   "id": 10293,
+   "key": "delphox-mega",
+   "name": "Méga-Goupelin",
+   "label": "Méga-Goupelin",
+   "kind": "mega",
+   "types": [
+    "Feu",
+    "Psy"
+   ],
+   "stats": [
+    75,
+    69,
+    72,
+    159,
+    125,
+    134
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "658": [
+  {
+   "id": 10294,
+   "key": "greninja-mega",
+   "name": "Méga-Amphinobi",
+   "label": "Méga-Amphinobi",
+   "kind": "mega",
+   "types": [
+    "Eau",
+    "Ténèbres"
+   ],
+   "stats": [
+    72,
+    125,
+    77,
+    133,
+    81,
+    142
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10117,
+   "key": "greninja-ash",
+   "name": "Amphinobi Forme Sacha",
+   "label": "Forme Sacha",
+   "kind": "battle",
+   "types": [
+    "Eau",
+    "Ténèbres"
+   ],
+   "stats": [
+    72,
+    145,
+    67,
+    153,
+    71,
+    132
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10116,
+   "key": "greninja-battle-bond",
+   "name": "Amphinobi Synergie",
+   "label": "Autre forme",
+   "kind": "other",
+   "types": [
+    "Eau",
+    "Ténèbres"
+   ],
+   "stats": [
+    72,
+    95,
+    67,
+    103,
+    71,
+    122
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "668": [
+  {
+   "id": 10295,
+   "key": "pyroar-mega",
+   "name": "Méga-Némélios",
+   "label": "Méga-Némélios",
+   "kind": "mega",
+   "types": [
+    "Feu",
+    "Normal"
+   ],
+   "stats": [
+    86,
+    88,
+    92,
+    129,
+    86,
+    126
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "670": [
+  {
+   "id": 10296,
+   "key": "floette-mega",
+   "name": "Méga-Floette",
+   "label": "Méga-Floette",
+   "kind": "mega",
+   "types": [
+    "Fée"
+   ],
+   "stats": [
+    74,
+    85,
+    87,
+    155,
+    148,
+    102
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10061,
+   "key": "floette-eternal",
+   "name": "Floette Éternel",
+   "label": "Fleur Éternelle",
+   "kind": "other",
+   "types": [
+    "Fée"
+   ],
+   "stats": [
+    74,
+    65,
+    67,
+    125,
+    128,
+    92
+   ],
+   "battleOnly": 0,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "678": [
+  {
+   "id": 10314,
+   "key": "meowstic-male-mega",
+   "name": "Méga-Mistigrix",
+   "label": "Méga-Mistigrix",
+   "kind": "mega",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    74,
+    48,
+    76,
+    143,
+    101,
+    124
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10025,
+   "key": "meowstic-female",
+   "name": "Mistigrix Femelle",
+   "label": "Femelle",
+   "kind": "other",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    74,
+    48,
+    76,
+    83,
+    81,
+    104
+   ],
+   "battleOnly": 0,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 0
+   }
+  }
+ ],
+ "681": [
+  {
+   "id": 10026,
+   "key": "aegislash-blade",
+   "name": "Exagide Assaut",
+   "label": "Forme Assaut",
+   "kind": "battle",
+   "types": [
+    "Acier",
+    "Spectre"
+   ],
+   "stats": [
+    60,
+    140,
+    50,
+    140,
+    50,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "687": [
+  {
+   "id": 10297,
+   "key": "malamar-mega",
+   "name": "Méga-Sepiatroce",
+   "label": "Méga-Sepiatroce",
+   "kind": "mega",
+   "types": [
+    "Ténèbres",
+    "Psy"
+   ],
+   "stats": [
+    86,
+    102,
+    88,
+    98,
+    120,
+    88
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "689": [
+  {
+   "id": 10298,
+   "key": "barbaracle-mega",
+   "name": "Méga-Golgopathe",
+   "label": "Méga-Golgopathe",
+   "kind": "mega",
+   "types": [
+    "Roche",
+    "Combat"
+   ],
+   "stats": [
+    72,
+    140,
+    130,
+    64,
+    106,
+    88
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "691": [
+  {
+   "id": 10299,
+   "key": "dragalge-mega",
+   "name": "Méga-Kravarech",
+   "label": "Méga-Kravarech",
+   "kind": "mega",
+   "types": [
+    "Poison",
+    "Dragon"
+   ],
+   "stats": [
+    65,
+    85,
+    105,
+    132,
+    163,
+    44
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "701": [
+  {
+   "id": 10300,
+   "key": "hawlucha-mega",
+   "name": "Méga-Brutalibré",
+   "label": "Méga-Brutalibré",
+   "kind": "mega",
+   "types": [
+    "Combat",
+    "Vol"
+   ],
+   "stats": [
+    78,
+    137,
+    100,
+    74,
+    93,
+    118
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "705": [
+  {
+   "id": 10241,
+   "key": "sliggoo-hisui",
+   "name": "Colimucus de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Acier",
+    "Dragon"
+   ],
+   "stats": [
+    58,
+    75,
+    83,
+    83,
+    113,
+    40
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "706": [
+  {
+   "id": 10242,
+   "key": "goodra-hisui",
+   "name": "Muplodocus de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Acier",
+    "Dragon"
+   ],
+   "stats": [
+    80,
+    100,
+    100,
+    110,
+    150,
+    60
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "710": [
+  {
+   "id": 10027,
+   "key": "pumpkaboo-small",
+   "name": "Pitrouille Mini",
+   "label": "Taille Mini",
+   "kind": "other",
+   "types": [
+    "Spectre",
+    "Plante"
+   ],
+   "stats": [
+    44,
+    66,
+    70,
+    44,
+    55,
+    56
+   ],
+   "battleOnly": 0,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10028,
+   "key": "pumpkaboo-large",
+   "name": "Pitrouille Maxi",
+   "label": "Taille Maxi",
+   "kind": "other",
+   "types": [
+    "Spectre",
+    "Plante"
+   ],
+   "stats": [
+    54,
+    66,
+    70,
+    44,
+    55,
+    46
+   ],
+   "battleOnly": 0,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10029,
+   "key": "pumpkaboo-super",
+   "name": "Pitrouille Ultra",
+   "label": "Taille Ultra",
+   "kind": "other",
+   "types": [
+    "Spectre",
+    "Plante"
+   ],
+   "stats": [
+    59,
+    66,
+    70,
+    44,
+    55,
+    41
+   ],
+   "battleOnly": 0,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "711": [
+  {
+   "id": 10030,
+   "key": "gourgeist-small",
+   "name": "Banshitrouye Mini",
+   "label": "Taille Mini",
+   "kind": "other",
+   "types": [
+    "Spectre",
+    "Plante"
+   ],
+   "stats": [
+    55,
+    85,
+    122,
+    58,
+    75,
+    99
+   ],
+   "battleOnly": 0,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10031,
+   "key": "gourgeist-large",
+   "name": "Banshitrouye Maxi",
+   "label": "Taille Maxi",
+   "kind": "other",
+   "types": [
+    "Spectre",
+    "Plante"
+   ],
+   "stats": [
+    75,
+    95,
+    122,
+    58,
+    75,
+    69
+   ],
+   "battleOnly": 0,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10032,
+   "key": "gourgeist-super",
+   "name": "Banshitrouye Ultra",
+   "label": "Taille Ultra",
+   "kind": "other",
+   "types": [
+    "Spectre",
+    "Plante"
+   ],
+   "stats": [
+    85,
+    100,
+    122,
+    58,
+    75,
+    54
+   ],
+   "battleOnly": 0,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "713": [
+  {
+   "id": 10243,
+   "key": "avalugg-hisui",
+   "name": "Séracrawl de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Glace",
+    "Roche"
+   ],
+   "stats": [
+    95,
+    127,
+    184,
+    34,
+    36,
+    38
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "718": [
+  {
+   "id": 10301,
+   "key": "zygarde-mega",
+   "name": "Méga-Zygarde",
+   "label": "Méga-Zygarde",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Sol"
+   ],
+   "stats": [
+    216,
+    70,
+    91,
+    216,
+    85,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10120,
+   "key": "zygarde-complete",
+   "name": "Zygarde Forme Parfaite",
+   "label": "Forme Parfaite",
+   "kind": "battle",
+   "types": [
+    "Dragon",
+    "Sol"
+   ],
+   "stats": [
+    216,
+    100,
+    121,
+    91,
+    95,
+    85
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10118,
+   "key": "zygarde-10-power-construct",
+   "name": "Zygarde Forme 10 %",
+   "label": "Forme 10 %",
+   "kind": "other",
+   "types": [
+    "Dragon",
+    "Sol"
+   ],
+   "stats": [
+    54,
+    100,
+    71,
+    61,
+    85,
+    115
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10119,
+   "key": "zygarde-50-power-construct",
+   "name": "Zygarde Forme 50 %",
+   "label": "Forme 50 %",
+   "kind": "other",
+   "types": [
+    "Dragon",
+    "Sol"
+   ],
+   "stats": [
+    108,
+    100,
+    121,
+    81,
+    95,
+    95
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "719": [
+  {
+   "id": 10075,
+   "key": "diancie-mega",
+   "name": "Méga-Diancie",
+   "label": "Méga-Diancie",
+   "kind": "mega",
+   "types": [
+    "Roche",
+    "Fée"
+   ],
+   "stats": [
+    50,
+    160,
+    110,
+    160,
+    110,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "720": [
+  {
+   "id": 10086,
+   "key": "hoopa-unbound",
+   "name": "Hoopa Déchaîné",
+   "label": "Hoopa Déchaîné",
+   "kind": "other",
+   "types": [
+    "Psy",
+    "Ténèbres"
+   ],
+   "stats": [
+    80,
+    160,
+    60,
+    170,
+    130,
+    80
+   ],
+   "battleOnly": 0,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ]
+}

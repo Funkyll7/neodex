@@ -1,16 +1,14 @@
 {
  "571": {
   "where": "Évolution de Zorua au niveau 30 (Noir/Blanc).",
-  "gm": "bw b2w2 usum swsh pla sv",
-  "variant": {
-   "name": "Zoroark de Hisui",
-   "id": 10231,
-   "where": "Légendes Pokémon : Arceus. Normal/Spectre."
-  }
+  "gm": "bw b2w2 usum swsh pla sv"
  },
  "643": {
   "where": "Château de N, Unys — intrigue principale (Pokémon Blanc).",
-  "gm": "bw b2w2 usum swsh",
-  "nsh": "bw b2w2 swsh"
+  "gm": "bw b2w2 usum swsh"
+ },
+ "644": {
+  "gm": "usum swsh",
+  "where": "Zekrom : Poing Menaçant (Noir/Blanc 2) ; revient dans les Expéditions Dynamax des Terres Enneigées et par les failles d'Ultra-Chimie."
  }
 }

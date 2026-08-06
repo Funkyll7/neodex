@@ -1,0 +1,89 @@
+{
+  "_comment": "Verrouillage chromatique (shiny lock) : ou le jeu refuse purement et simplement de generer un chromatique. Trois couches : 'always' (jamais chromatique dans aucun jeu de la serie), 'byGame' (numeros nationaux bloques dans ce jeu precis), 'forms' (id PokeAPI de la forme -> jeux ou elle est bloquee). data/details/gen-N.json peut ajouter des cas avec le champ nsh. Sources : Poképédia (Shiny Lock), Bulbapedia (Shiny Pokémon), PokéBip (dossier Shasse).",
+
+  "always": {
+    "_comment": "Fabuleux et distributions : dans la serie principale, le jeu ne les genere jamais en chromatique, quel que soit le titre. Les chromatiques qui existent viennent tous de distributions officielles ponctuelles ou de Pokémon GO.",
+    "species": [151, 251, 385, 489, 490, 491, 492, 493, 494, 647, 648, 649, 719, 720, 721, 801, 802, 807, 893, 1025],
+    "why": "Fabuleux : aucun jeu de la série principale ne les génère en chromatique. Les chromatiques existants proviennent uniquement de distributions officielles."
+  },
+
+  "byGame": {
+    "rb":   { "noShiny": true, "why": "La Gén. I ne connaît pas les Pokémon chromatiques : ils apparaissent avec Or/Argent." },
+    "y":    { "noShiny": true, "why": "La Gén. I ne connaît pas les Pokémon chromatiques : ils apparaissent avec Or/Argent." },
+
+    "gs":   { "species": [], "why": "Rien n'est verrouillé : les chromatiques viennent de naître, tout ce qui se rencontre peut l'être (1/8192)." },
+    "c":    { "species": [], "why": "Rien n'est verrouillé côté rencontres." },
+
+    "rs":   { "species": [], "why": "Aucun verrou hors fabuleux : légendaires, starters et rencontres fixes sont tous resetables." },
+    "e":    { "species": [], "why": "Aucun verrou hors fabuleux. Deoxys de l'Île Sédimentaire est resetable." },
+    "frlg": { "species": [], "why": "Aucun verrou hors fabuleux." },
+    "col":  { "species": [], "why": "Colosseum : les Pokémon Obscurs peuvent être chromatiques (chasse au Munja / Roigada célèbre). XD verrouille en revanche tous ses Pokémon Obscurs.", "note": "XD : Le Souffle des Ténèbres verrouille tous les Pokémon Obscurs ; Colosseum ne verrouille que les Pokémon du disque bonus." },
+
+    "dp":   { "species": [], "why": "Aucun verrou hors fabuleux : Dialga, Palkia, le trio des lacs et Giratina sont resetables." },
+    "pt":   { "species": [], "why": "Aucun verrou hors fabuleux." },
+    "hgss": { "species": [], "why": "Aucun verrou hors fabuleux et Pokémon du Pokéwalker.", "note": "Les Pokémon rapportés par le Pokéwalker et le Pichu Troizépi ne peuvent pas être chromatiques." },
+
+    "bw":   { "species": [150, 570, 571, 643, 644], "why": "Première génération à verrouiller vraiment : les légendaires de l'intrigue, les Pokémon de N et les distributions.", "note": "Les Pokémon des Trouées Cachées et du Heylink sont également verrouillés." },
+    "b2w2": { "species": [133, 570, 585, 643, 644], "why": "Reshiram / Zekrom de l'intrigue, l'Évoli et le Vivaldaim offerts à talent caché, le Zorua de N.", "note": "Les Pokémon des Trouées Cachées restent verrouillés. Le Haxaure chromatique du Sanctuaire Blanc est au contraire garanti." },
+
+    "xy":   { "species": [143, 144, 145, 146, 150, 448, 716, 717, 718], "why": "X/Y verrouille toutes ses rencontres fixes : Ronflex de la Route 7, les oiseaux légendaires errants, Mewtwo, le Lucario offert à la Tour de Maîtrise, Xerneas, Yveltal et Zygarde.", "note": "Les starters de Kalos et de Kanto, eux, sont resetables." },
+    "oras": { "species": [380, 381, 382, 383, 384, 386], "why": "Les légendaires de l'intrigue (Groudon, Kyogre, Rayquaza, Deoxys) et le Latios / Latias offert par le Boss Team Magma / Aqua.", "note": "Les Pokémon d'échange interne et le Pikachu Cosplayeur sont aussi verrouillés. Regirock, Regice et Registeel, eux, sont resetables." },
+
+    "sm":   { "species": [718, 746, 785, 786, 787, 788, 789, 790, 791, 792, 793, 794, 795, 796, 797, 798, 799, 800], "why": "Tapus, Cosmog et sa lignée, Necrozma, les Ultra-Chimères et le Wishiwashi des épreuves.", "note": "Les starters d'Alola sont resetables. Les Ultra-Chimères se débloquent en revanche dans Ultra-Soleil / Ultra-Lune." },
+    "usum": { "species": [718, 785, 786, 787, 788, 789, 790, 791, 792, 800], "why": "Tapus, Cosmog, Solgaleo / Lunala, Necrozma et tous les Zygarde du Cube.", "note": "Les Ultra-Chimères sont ici resetables via les failles d'Ultra-Chimie : c'est la grande différence avec Soleil / Lune." },
+
+    "lgpe": { "species": [], "why": "Presque rien n'est verrouillé : Let's Go est même l'un des meilleurs jeux de chasse, grâce à la chaîne d'attrapage et aux chromatiques visibles directement sur la carte.", "note": "Seuls le partenaire Pikachu / Évoli, les Pokémon d'échange interne, Mew (Poké Ball Plus) et Meltan / Melmetal sont bloqués. Les Bulbizarre, Salamèche et Carapuce offerts le sont aussi, mais les trois se croisent également à l'état sauvage : le chromatique reste accessible." },
+
+    "swsh": { "species": [1, 4, 7, 789, 790, 810, 813, 816, 822, 888, 889, 890, 891, 892, 894, 895, 896, 897, 898], "why": "Starters, Pokémon offerts (Bulbizarre et Carapuce de l'Île de l'Armure, Salamèche de Tarak), légendaires de l'intrigue (Zacian, Zamazenta, Éthernatos), Kubfu / Wushours, Regieleki, Regidrago, Blizzeval, Spectreval et Sylveroy.", "note": "Les légendaires des Expéditions Dynamax (oiseaux de Kanto, chiens de Johto, Regis, Lunettes...) sont au contraire chromatiques possibles à 1/300, ou 1/100 avec le Charme Chroma : c'est le meilleur taux de la série pour eux." },
+    "bdsp": { "species": [], "why": "Presque rien n'est verrouillé : starters, Dialga, Palkia, Giratina, trio des lacs et légendaires du Parc Ramanas sont tous resetables.", "note": "Seuls les fabuleux transférés (Mew de Let's Go, Jirachi d'Épée/Bouclier) et Manaphy restent bloqués." },
+    "pla":  { "species": [155, 201, 393, 442, 480, 481, 482, 483, 484, 485, 486, 487, 488, 501, 641, 642, 645, 905], "why": "Tous les légendaires et les Pokémon liés à une quête : les trois starters offerts, Spiritomb des 108 âmes, les Zarbi fixes, le trio des lacs, Dialga, Palkia, Giratina, Heatran, Regigigas, Cresselia, le quatuor des Forces de la Nature.", "note": "Exception amusante : le Ponyta de la requête « Un Ponyta pas comme les autres » est chromatique garanti." },
+
+    "sv":   { "species": [906, 909, 912, 999, 1000, 1001, 1002, 1003, 1004, 1007, 1008, 1009, 1010, 1014, 1015, 1016, 1017, 1020, 1021, 1022, 1023, 1024], "why": "Starters, lignée de Mordudor, quatuor des Trésors de Ruine, Koraidon et Miraidon, Pokémon paradoxes de distribution et d'Aire Zéro des DLC, le Trio Fidèle, Ogerpon et Terapagos.", "note": "Tout le reste est chassable : apparitions massives, sandwichs à l'Encens Éclatant, et le Charme Chroma après le Pokédex complet." },
+
+    "za":   { "species": [650, 653, 656, 718], "provisional": true, "why": "Starters de Kalos offerts et Zygarde, cœur de l'intrigue de Lumiose.", "note": "Liste provisoire : Légendes Z-A et son DLC Méga-Dimension sont récents, les verrous restants se confirment au fil des datamines. Les Méga-Évolutions ne changent rien au chromatique — c'est celui du Pokémon de base qui compte." }
+  },
+
+  "forms": {
+    "_comment": "Identifiant PokeAPI de la forme (champ 'key' de data/forms/) -> jeux ou son chromatique est impossible. '*' = aucun chromatique n'existe, dans aucun jeu.",
+
+    "pikachu-rock-star": "*", "pikachu-belle": "*", "pikachu-pop-star": "*",
+    "pikachu-phd": "*", "pikachu-libre": "*", "pikachu-cosplay": "*",
+    "pikachu-original-cap": "*", "pikachu-hoenn-cap": "*", "pikachu-sinnoh-cap": "*",
+    "pikachu-unova-cap": "*", "pikachu-kalos-cap": "*", "pikachu-alola-cap": "*",
+    "pikachu-partner-cap": "*", "pikachu-world-cap": "*",
+    "pikachu-starter": "*", "eevee-starter": "*",
+    "pikachu-gmax": "swsh", "eevee-gmax": "swsh",
+
+    "greninja-battle-bond": "sm usum", "greninja-ash": "sm usum",
+    "zygarde-10-power-construct": "sm usum", "zygarde-50-power-construct": "sm usum",
+    "zygarde-complete": "sm usum",
+    "necrozma-dusk": "usum", "necrozma-dawn": "usum", "necrozma-ultra": "usum",
+    "magearna-original": "sm usum",
+
+    "articuno-galar": "swsh", "zapdos-galar": "swsh", "moltres-galar": "swsh",
+    "raichu-alola": "swsh", "vulpix-alola": "swsh", "ninetales-alola": "swsh",
+    "diglett-alola": "swsh", "dugtrio-alola": "swsh", "meowth-alola": "swsh",
+    "persian-alola": "swsh", "geodude-alola": "swsh", "graveler-alola": "swsh",
+    "golem-alola": "swsh", "grimer-alola": "swsh", "muk-alola": "swsh",
+    "exeggutor-alola": "swsh", "marowak-alola": "swsh", "sandshrew-alola": "swsh",
+    "sandslash-alola": "swsh", "rattata-alola": "swsh", "raticate-alola": "swsh",
+    "zacian-crowned": "swsh", "zamazenta-crowned": "swsh",
+    "eternatus-eternamax": "swsh", "urshifu-rapid-strike": "swsh",
+    "zarude-dada": "swsh", "calyrex-ice": "swsh", "calyrex-shadow": "swsh",
+
+    "dialga-origin": "pla", "palkia-origin": "pla", "enamorus-therian": "pla",
+
+    "floette-eternal": "xy oras sv", "gimmighoul-roaming": "sv",
+    "ursaluna-bloodmoon": "sv",
+    "ogerpon-wellspring-mask": "sv", "ogerpon-hearthflame-mask": "sv",
+    "ogerpon-cornerstone-mask": "sv",
+    "terapagos-terastal": "sv", "terapagos-stellar": "sv"
+  },
+
+  "categories": {
+    "_comment": "Regles transversales rappelees dans la fiche quand elles s'appliquent.",
+    "trade": "Les Pokémon d'échange interne (le PNJ qui échange toujours le même Pokémon) sont verrouillés dans tous les jeux depuis la Gén. III.",
+    "gift": "Un Pokémon offert n'est verrouillé que dans certains jeux — Épée/Bouclier, Écarlate/Violet, Légendes Arceus, Let's Go. Ailleurs (Gén. II à VII, Diamant Étincelant), il se soft reset.",
+    "story": "Un légendaire capturé dans l'intrigue est presque toujours verrouillé à partir de la Gén. V. Avant, il se soft reset."
+  }
+}

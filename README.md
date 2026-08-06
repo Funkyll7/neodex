@@ -1,7 +1,9 @@
 # NéoDex
 
-Pokédex personnel : les 1025 espèces, ma collection (normal / chromatique,
-formes ♂ et ♀), la disponibilité jeu par jeu et des quêtes de shiny hunt.
+Pokédex personnel : les 1025 espèces et leurs 304 formes alternatives (Alola,
+Galar, Hisui, Paldéa, Méga-Évolutions, Gigamax…), ma collection (normal /
+chromatique, formes ♂ et ♀), la disponibilité jeu par jeu, le verrouillage
+chromatique et la méthode de shiny hunt détaillée pour chaque jeu.
 
 Site statique — pas de build, pas de dépendance, pas de serveur.
 
@@ -30,11 +32,21 @@ fichiers générés sont versionnés.
 
 ```bash
 python tools/build_dataset.py
+python tools/build_forms.py
+python tools/build_availability.py
 ```
 
-Régénère `data/pokemon/` à partir des CSV de PokeAPI (nom FR/EN, types,
-statistiques de base, dimorphisme, pré-évolutions). Ne touche jamais aux
-fichiers écrits à la main.
+- `build_dataset.py` régénère `data/pokemon/` (nom FR/EN, types, statistiques de
+  base, dimorphisme, pré-évolutions).
+- `build_forms.py` régénère `data/forms/` : les 304 formes alternatives, avec
+  vérification image par image des sprites qui existent réellement — normal,
+  chromatique, HOME et artwork officiel.
+- `build_availability.py` régénère `data/availability/` : dans quels jeux chaque
+  espèce s'obtient, et dans lesquels on la croise vraiment à l'état sauvage
+  (croisement des Pokédex régionaux et de la table des rencontres de PokeAPI).
+
+Les trois acceptent `--cache` pour réutiliser les CSV déjà téléchargés, et ne
+touchent jamais aux fichiers écrits à la main.
 
 ```bash
 python tools/fetch_sprites.py
@@ -87,8 +99,15 @@ certains dossiers.
 ## Sources
 
 - Données et sprites : [PokeAPI](https://pokeapi.co/) (sprites servis via jsDelivr).
-- Emplacements et méthodes de chasse : [Poképédia](https://www.pokepedia.fr/) et
-  [Bulbapedia](https://bulbapedia.bulbagarden.net/).
+- Emplacements et méthodes de chasse : [Poképédia](https://www.pokepedia.fr/),
+  [Bulbapedia](https://bulbapedia.bulbagarden.net/) et le
+  [dossier Shasse de PokéBip](https://www.pokebip.com/page/jeux-video/dossier-shasse/).
+- Recensement des formes : les pages
+  [formes de Galar](https://www.pokebip.com/page/jeux-video/pokemon-epee-bouclier/formes-galar),
+  [formes d'Alola](https://www.pokebip.com/page/jeux-video/pokemon-soleil-lune/nouvelles-formes),
+  [formes de Paldéa](https://www.pokebip.com/page/jeux-video/pokemon-ecarlate-violet/formes-paldea)
+  et [Méga-Évolutions](https://www.pokebip.com/page/general/mega-evolutions) de PokéBip,
+  ainsi que [Gigamax](https://www.pokepedia.fr/Gigamax) sur Poképédia.
 
 Pokémon est une marque de Nintendo / Creatures Inc. / GAME FREAK inc.
 Projet personnel, sans but lucratif et sans affiliation.

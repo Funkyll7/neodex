@@ -1,0 +1,1055 @@
+{
+ "812": [
+  {
+   "id": 10209,
+   "key": "rillaboom-gmax",
+   "name": "Gorythmic Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Plante"
+   ],
+   "stats": [
+    100,
+    125,
+    90,
+    60,
+    70,
+    85
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "815": [
+  {
+   "id": 10210,
+   "key": "cinderace-gmax",
+   "name": "Pyrobut Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Feu"
+   ],
+   "stats": [
+    80,
+    116,
+    75,
+    65,
+    75,
+    119
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "818": [
+  {
+   "id": 10211,
+   "key": "inteleon-gmax",
+   "name": "Lézargus Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    70,
+    85,
+    65,
+    125,
+    65,
+    120
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "823": [
+  {
+   "id": 10212,
+   "key": "corviknight-gmax",
+   "name": "Corvaillus Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Vol",
+    "Acier"
+   ],
+   "stats": [
+    98,
+    87,
+    105,
+    53,
+    85,
+    67
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "826": [
+  {
+   "id": 10213,
+   "key": "orbeetle-gmax",
+   "name": "Astronelle Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Insecte",
+    "Psy"
+   ],
+   "stats": [
+    60,
+    45,
+    110,
+    80,
+    120,
+    90
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "834": [
+  {
+   "id": 10214,
+   "key": "drednaw-gmax",
+   "name": "Torgamord Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Eau",
+    "Roche"
+   ],
+   "stats": [
+    90,
+    115,
+    90,
+    48,
+    68,
+    74
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "839": [
+  {
+   "id": 10215,
+   "key": "coalossal-gmax",
+   "name": "Monthracite Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Roche",
+    "Feu"
+   ],
+   "stats": [
+    110,
+    80,
+    120,
+    80,
+    90,
+    30
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "841": [
+  {
+   "id": 10216,
+   "key": "flapple-gmax",
+   "name": "Pomdrapi Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Plante",
+    "Dragon"
+   ],
+   "stats": [
+    70,
+    110,
+    80,
+    95,
+    60,
+    70
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "842": [
+  {
+   "id": 10217,
+   "key": "appletun-gmax",
+   "name": "Dratatin Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Plante",
+    "Dragon"
+   ],
+   "stats": [
+    110,
+    85,
+    80,
+    100,
+    80,
+    30
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "844": [
+  {
+   "id": 10218,
+   "key": "sandaconda-gmax",
+   "name": "Dunaconda Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Sol"
+   ],
+   "stats": [
+    72,
+    107,
+    125,
+    65,
+    70,
+    71
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "845": [
+  {
+   "id": 10182,
+   "key": "cramorant-gulping",
+   "name": "Nigosier Forme Gobe-Tout",
+   "label": "Forme Gobe-Tout",
+   "kind": "battle",
+   "types": [
+    "Vol",
+    "Eau"
+   ],
+   "stats": [
+    70,
+    85,
+    55,
+    85,
+    95,
+    85
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10183,
+   "key": "cramorant-gorging",
+   "name": "Nigosier Forme Gobe-Chu",
+   "label": "Forme Gobe-Chu",
+   "kind": "battle",
+   "types": [
+    "Vol",
+    "Eau"
+   ],
+   "stats": [
+    70,
+    85,
+    55,
+    85,
+    95,
+    85
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "849": [
+  {
+   "id": 10219,
+   "key": "toxtricity-amped-gmax",
+   "name": "Salarsen Forme Aigüe Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Électrik",
+    "Poison"
+   ],
+   "stats": [
+    75,
+    98,
+    70,
+    114,
+    70,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10228,
+   "key": "toxtricity-low-key-gmax",
+   "name": "Salarsen Forme Grave Gigamax",
+   "label": "Gigantamax Form",
+   "kind": "gmax",
+   "types": [
+    "Électrik",
+    "Poison"
+   ],
+   "stats": [
+    75,
+    98,
+    70,
+    114,
+    70,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10184,
+   "key": "toxtricity-low-key",
+   "name": "Salarsen Forme Grave",
+   "label": "Forme Grave",
+   "kind": "other",
+   "types": [
+    "Électrik",
+    "Poison"
+   ],
+   "stats": [
+    75,
+    98,
+    70,
+    114,
+    70,
+    75
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "851": [
+  {
+   "id": 10220,
+   "key": "centiskorch-gmax",
+   "name": "Scolocendre Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Feu",
+    "Insecte"
+   ],
+   "stats": [
+    100,
+    115,
+    65,
+    90,
+    90,
+    65
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "858": [
+  {
+   "id": 10221,
+   "key": "hatterene-gmax",
+   "name": "Sorcilence Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Psy",
+    "Fée"
+   ],
+   "stats": [
+    57,
+    90,
+    95,
+    136,
+    103,
+    29
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "861": [
+  {
+   "id": 10222,
+   "key": "grimmsnarl-gmax",
+   "name": "Angoliath Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Ténèbres",
+    "Fée"
+   ],
+   "stats": [
+    95,
+    120,
+    65,
+    95,
+    75,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "869": [
+  {
+   "id": 10223,
+   "key": "alcremie-gmax",
+   "name": "Charmilly Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Fée"
+   ],
+   "stats": [
+    65,
+    60,
+    75,
+    110,
+    121,
+    64
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "870": [
+  {
+   "id": 10303,
+   "key": "falinks-mega",
+   "name": "Méga-Hexadron",
+   "label": "Méga-Hexadron",
+   "kind": "mega",
+   "types": [
+    "Combat"
+   ],
+   "stats": [
+    65,
+    135,
+    135,
+    70,
+    65,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "875": [
+  {
+   "id": 10185,
+   "key": "eiscue-noice",
+   "name": "Bekaglaçon Tête Dégel",
+   "label": "Tête Dégel",
+   "kind": "battle",
+   "types": [
+    "Glace"
+   ],
+   "stats": [
+    75,
+    80,
+    70,
+    65,
+    50,
+    130
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "876": [
+  {
+   "id": 10186,
+   "key": "indeedee-female",
+   "name": "Wimessir Femelle",
+   "label": "Femelle",
+   "kind": "other",
+   "types": [
+    "Psy",
+    "Normal"
+   ],
+   "stats": [
+    70,
+    55,
+    65,
+    95,
+    105,
+    85
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "877": [
+  {
+   "id": 10187,
+   "key": "morpeko-hangry",
+   "name": "Morpeko Affamé",
+   "label": "Mode Affamé",
+   "kind": "battle",
+   "types": [
+    "Électrik",
+    "Ténèbres"
+   ],
+   "stats": [
+    58,
+    95,
+    58,
+    70,
+    58,
+    97
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "879": [
+  {
+   "id": 10224,
+   "key": "copperajah-gmax",
+   "name": "Pachyradjah Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Acier"
+   ],
+   "stats": [
+    122,
+    130,
+    69,
+    80,
+    69,
+    30
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "884": [
+  {
+   "id": 10225,
+   "key": "duraludon-gmax",
+   "name": "Duralugon Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Acier",
+    "Dragon"
+   ],
+   "stats": [
+    70,
+    95,
+    115,
+    120,
+    50,
+    85
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "888": [
+  {
+   "id": 10188,
+   "key": "zacian-crowned",
+   "name": "Zacian Épée Suprême",
+   "label": "Épée Suprême",
+   "kind": "battle",
+   "types": [
+    "Fée",
+    "Acier"
+   ],
+   "stats": [
+    92,
+    150,
+    115,
+    80,
+    115,
+    148
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "889": [
+  {
+   "id": 10189,
+   "key": "zamazenta-crowned",
+   "name": "Zamazenta Bouclier Suprême",
+   "label": "Bouclier Suprême",
+   "kind": "battle",
+   "types": [
+    "Combat",
+    "Acier"
+   ],
+   "stats": [
+    92,
+    120,
+    140,
+    80,
+    140,
+    128
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "890": [
+  {
+   "id": 10190,
+   "key": "eternatus-eternamax",
+   "name": "Éthernatos Infinimax",
+   "label": "Infinimax",
+   "kind": "other",
+   "types": [
+    "Poison",
+    "Dragon"
+   ],
+   "stats": [
+    255,
+    115,
+    250,
+    125,
+    250,
+    130
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "892": [
+  {
+   "id": 10226,
+   "key": "urshifu-single-strike-gmax",
+   "name": "Shifours Style Poing Final Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Combat",
+    "Ténèbres"
+   ],
+   "stats": [
+    100,
+    130,
+    100,
+    63,
+    60,
+    97
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10227,
+   "key": "urshifu-rapid-strike-gmax",
+   "name": "Shifours Style Mille Poings Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Combat",
+    "Eau"
+   ],
+   "stats": [
+    100,
+    130,
+    100,
+    63,
+    60,
+    97
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10191,
+   "key": "urshifu-rapid-strike",
+   "name": "Shifours Style Mille Poings",
+   "label": "Style Mille Poings",
+   "kind": "other",
+   "types": [
+    "Combat",
+    "Eau"
+   ],
+   "stats": [
+    100,
+    130,
+    100,
+    63,
+    60,
+    97
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "893": [
+  {
+   "id": 10192,
+   "key": "zarude-dada",
+   "name": "Zarude Papa",
+   "label": "Papa",
+   "kind": "other",
+   "types": [
+    "Ténèbres",
+    "Plante"
+   ],
+   "stats": [
+    105,
+    120,
+    105,
+    70,
+    95,
+    105
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 0
+   }
+  }
+ ],
+ "898": [
+  {
+   "id": 10193,
+   "key": "calyrex-ice",
+   "name": "Calyrex Cavalier du Froid",
+   "label": "Cavalier du Froid",
+   "kind": "other",
+   "types": [
+    "Psy",
+    "Glace"
+   ],
+   "stats": [
+    100,
+    165,
+    150,
+    85,
+    130,
+    50
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10194,
+   "key": "calyrex-shadow",
+   "name": "Calyrex Cavalier d’Effroi",
+   "label": "Cavalier d’Effroi",
+   "kind": "other",
+   "types": [
+    "Psy",
+    "Spectre"
+   ],
+   "stats": [
+    100,
+    85,
+    80,
+    165,
+    100,
+    150
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "901": [
+  {
+   "id": 10272,
+   "key": "ursaluna-bloodmoon",
+   "name": "Ursaking Lune Vermeille",
+   "label": "Lune Vermeille",
+   "kind": "other",
+   "types": [
+    "Sol",
+    "Normal"
+   ],
+   "stats": [
+    113,
+    70,
+    120,
+    135,
+    65,
+    52
+   ],
+   "battleOnly": 0,
+   "since": "the-teal-mask",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "902": [
+  {
+   "id": 10248,
+   "key": "basculegion-female",
+   "name": "Paragruel Femelle",
+   "label": "Femelle",
+   "kind": "other",
+   "types": [
+    "Eau",
+    "Spectre"
+   ],
+   "stats": [
+    120,
+    92,
+    65,
+    100,
+    75,
+    78
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "905": [
+  {
+   "id": 10249,
+   "key": "enamorus-therian",
+   "name": "Amovénus Totémique",
+   "label": "Forme Totémique",
+   "kind": "other",
+   "types": [
+    "Fée",
+    "Vol"
+   ],
+   "stats": [
+    74,
+    115,
+    110,
+    135,
+    100,
+    46
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ]
+}

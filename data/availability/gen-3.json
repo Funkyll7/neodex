@@ -1,0 +1,542 @@
+{
+ "252": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "253": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "254": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "255": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "256": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "257": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "258": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "259": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "260": {
+  "gm": "rs e oras bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "261": {
+  "gm": "rs e xy oras bdsp sv",
+  "wild": "rs e oras bdsp sv"
+ },
+ "262": {
+  "gm": "rs e xy oras bdsp sv",
+  "wild": "e xy bdsp sv"
+ },
+ "263": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "rs e xy oras swsh bdsp"
+ },
+ "264": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "rs e swsh bdsp"
+ },
+ "265": {
+  "gm": "rs e dp pt oras bdsp pla",
+  "wild": "rs e dp pt oras bdsp pla"
+ },
+ "266": {
+  "gm": "rs e dp pt oras bdsp pla",
+  "wild": "rs e dp pt bdsp pla"
+ },
+ "267": {
+  "gm": "rs e dp pt oras bdsp pla",
+  "wild": "dp pt bdsp pla"
+ },
+ "268": {
+  "gm": "rs e dp pt oras bdsp pla",
+  "wild": "rs e dp pt bdsp pla"
+ },
+ "269": {
+  "gm": "rs e dp pt oras bdsp pla",
+  "wild": "dp pt bdsp pla"
+ },
+ "270": {
+  "gm": "rs e xy oras swsh bdsp sv",
+  "wild": "rs e oras swsh bdsp sv"
+ },
+ "271": {
+  "gm": "rs e xy oras swsh bdsp sv",
+  "wild": "rs e xy swsh bdsp sv"
+ },
+ "272": {
+  "gm": "rs e xy oras swsh bdsp sv",
+  "wild": "swsh bdsp sv"
+ },
+ "273": {
+  "gm": "rs e oras swsh bdsp sv",
+  "wild": "rs e oras swsh bdsp sv"
+ },
+ "274": {
+  "gm": "rs e oras swsh bdsp sv",
+  "wild": "rs e swsh bdsp sv"
+ },
+ "275": {
+  "gm": "rs e oras swsh bdsp sv",
+  "wild": "swsh bdsp sv"
+ },
+ "276": {
+  "gm": "rs e xy oras bdsp",
+  "wild": "rs e xy oras bdsp"
+ },
+ "277": {
+  "gm": "rs e xy oras bdsp",
+  "wild": "rs e bdsp"
+ },
+ "278": {
+  "gm": "rs e dp pt b2w2 xy oras sm usum swsh bdsp sv",
+  "wild": "rs e dp pt xy oras sm usum swsh bdsp sv"
+ },
+ "279": {
+  "gm": "rs e dp pt b2w2 xy oras sm usum swsh bdsp sv",
+  "wild": "rs e dp pt b2w2 sm usum swsh bdsp sv"
+ },
+ "280": {
+  "gm": "rs e pt xy oras swsh bdsp pla sv za",
+  "wild": "rs e pt xy oras swsh bdsp pla sv za"
+ },
+ "281": {
+  "gm": "rs e pt xy oras swsh bdsp pla sv za",
+  "wild": "pt xy swsh bdsp pla sv za"
+ },
+ "282": {
+  "gm": "rs e pt xy oras swsh bdsp pla sv za",
+  "wild": "swsh bdsp pla sv za"
+ },
+ "283": {
+  "gm": "rs e xy oras sm usum bdsp sv",
+  "wild": "rs sm usum bdsp sv"
+ },
+ "284": {
+  "gm": "rs e xy oras sm usum bdsp sv",
+  "wild": "xy sm usum bdsp sv"
+ },
+ "285": {
+  "gm": "rs e oras bdsp sv",
+  "wild": "rs e oras bdsp sv"
+ },
+ "286": {
+  "gm": "rs e oras bdsp sv",
+  "wild": "bdsp sv"
+ },
+ "287": {
+  "gm": "rs e b2w2 oras bdsp sv",
+  "wild": "rs e bdsp sv"
+ },
+ "288": {
+  "gm": "rs e b2w2 oras bdsp sv",
+  "wild": "b2w2 bdsp sv"
+ },
+ "289": {
+  "gm": "rs e b2w2 oras bdsp sv",
+  "wild": "b2w2 bdsp sv"
+ },
+ "290": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "rs e xy oras swsh bdsp"
+ },
+ "291": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "292": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "293": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "rs e xy oras swsh bdsp"
+ },
+ "294": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "rs e xy oras swsh bdsp"
+ },
+ "295": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "296": {
+  "gm": "rs e xy oras sm usum bdsp sv",
+  "wild": "rs e oras sm usum bdsp sv"
+ },
+ "297": {
+  "gm": "rs e xy oras sm usum bdsp sv",
+  "wild": "rs e xy sm usum bdsp sv"
+ },
+ "298": {
+  "gm": "rs e dp pt b2w2 xy oras swsh bdsp sv",
+  "wild": "dp pt b2w2 xy swsh bdsp sv"
+ },
+ "299": {
+  "gm": "rs e pt b2w2 xy oras sm usum bdsp pla sv",
+  "wild": "rs e pt b2w2 xy sm usum bdsp pla sv"
+ },
+ "300": {
+  "gm": "rs e b2w2 xy oras bdsp",
+  "wild": "rs e b2w2 xy oras bdsp"
+ },
+ "301": {
+  "gm": "rs e b2w2 xy oras bdsp",
+  "wild": "b2w2 bdsp"
+ },
+ "302": {
+  "gm": "rs e xy oras sm usum swsh bdsp sv za",
+  "wild": "rs e xy oras sm usum swsh bdsp sv za"
+ },
+ "303": {
+  "gm": "rs e xy oras usum swsh bdsp za",
+  "wild": "rs e xy oras usum swsh bdsp za"
+ },
+ "304": {
+  "gm": "rs e b2w2 xy oras swsh bdsp za",
+  "wild": "rs e b2w2 xy oras swsh bdsp za"
+ },
+ "305": {
+  "gm": "rs e b2w2 xy oras swsh bdsp za",
+  "wild": "rs e b2w2 xy swsh bdsp za"
+ },
+ "306": {
+  "gm": "rs e b2w2 xy oras swsh bdsp za",
+  "wild": "swsh bdsp za"
+ },
+ "307": {
+  "gm": "rs e dp pt xy oras bdsp sv za",
+  "wild": "rs dp pt xy oras bdsp sv za"
+ },
+ "308": {
+  "gm": "rs e dp pt xy oras bdsp sv za",
+  "wild": "rs dp pt bdsp sv za"
+ },
+ "309": {
+  "gm": "rs e xy oras usum swsh bdsp za",
+  "wild": "rs e xy oras swsh bdsp za"
+ },
+ "310": {
+  "gm": "rs e xy oras usum swsh bdsp za",
+  "wild": "rs e xy usum swsh bdsp za"
+ },
+ "311": {
+  "gm": "rs e xy oras bdsp sv",
+  "wild": "rs e xy oras bdsp sv"
+ },
+ "312": {
+  "gm": "rs e xy oras bdsp sv",
+  "wild": "rs e xy oras bdsp sv"
+ },
+ "313": {
+  "gm": "rs e xy oras bdsp sv",
+  "wild": "rs e xy bdsp sv"
+ },
+ "314": {
+  "gm": "rs e xy oras bdsp sv",
+  "wild": "rs e xy bdsp sv"
+ },
+ "315": {
+  "gm": "rs e dp pt b2w2 xy oras swsh bdsp pla za",
+  "wild": "rs dp pt b2w2 xy oras swsh bdsp pla za"
+ },
+ "316": {
+  "gm": "rs e xy oras bdsp sv za",
+  "wild": "rs e xy bdsp sv za"
+ },
+ "317": {
+  "gm": "rs e xy oras bdsp sv za",
+  "wild": "xy bdsp sv za"
+ },
+ "318": {
+  "gm": "rs e xy oras sm usum swsh bdsp za",
+  "wild": "rs e xy usum swsh bdsp za"
+ },
+ "319": {
+  "gm": "rs e xy oras sm usum swsh bdsp za",
+  "wild": "rs e xy sm usum swsh bdsp za"
+ },
+ "320": {
+  "gm": "rs e b2w2 xy oras sm usum swsh bdsp",
+  "wild": "rs e b2w2 xy sm usum swsh bdsp"
+ },
+ "321": {
+  "gm": "rs e b2w2 xy oras sm usum swsh bdsp",
+  "wild": "rs e b2w2 sm usum swsh bdsp"
+ },
+ "322": {
+  "gm": "rs e b2w2 oras bdsp sv za",
+  "wild": "rs e b2w2 oras bdsp sv za"
+ },
+ "323": {
+  "gm": "rs e b2w2 oras bdsp sv za",
+  "wild": "b2w2 bdsp sv za"
+ },
+ "324": {
+  "gm": "rs e xy oras sm usum swsh bdsp sv",
+  "wild": "rs e xy sm usum swsh bdsp sv"
+ },
+ "325": {
+  "gm": "rs e b2w2 xy oras bdsp sv za",
+  "wild": "rs e b2w2 xy oras bdsp sv za"
+ },
+ "326": {
+  "gm": "rs e b2w2 xy oras bdsp sv za",
+  "wild": "b2w2 xy bdsp sv za"
+ },
+ "327": {
+  "gm": "rs e xy oras sm usum bdsp",
+  "wild": "rs e xy oras sm usum bdsp"
+ },
+ "328": {
+  "gm": "rs e b2w2 xy oras sm usum swsh bdsp sv",
+  "wild": "rs e b2w2 xy sm usum swsh bdsp sv"
+ },
+ "329": {
+  "gm": "rs e b2w2 xy oras sm usum swsh bdsp sv",
+  "wild": "b2w2 swsh bdsp sv"
+ },
+ "330": {
+  "gm": "rs e b2w2 xy oras sm usum swsh bdsp sv",
+  "wild": "swsh bdsp sv"
+ },
+ "331": {
+  "gm": "rs e oras bdsp sv",
+  "wild": "rs e bdsp sv"
+ },
+ "332": {
+  "gm": "rs e oras bdsp sv",
+  "wild": "bdsp sv"
+ },
+ "333": {
+  "gm": "rs e pt b2w2 xy oras swsh bdsp sv za",
+  "wild": "rs e pt b2w2 xy oras swsh bdsp sv za"
+ },
+ "334": {
+  "gm": "rs e pt b2w2 xy oras swsh bdsp sv za",
+  "wild": "rs e b2w2 xy swsh bdsp sv za"
+ },
+ "335": {
+  "gm": "rs e b2w2 xy oras bdsp sv za",
+  "wild": "rs b2w2 xy bdsp sv za"
+ },
+ "336": {
+  "gm": "rs e b2w2 xy oras bdsp sv za",
+  "wild": "rs e b2w2 xy bdsp sv za"
+ },
+ "337": {
+  "gm": "rs e b2w2 xy oras swsh bdsp",
+  "wild": "rs b2w2 xy swsh bdsp"
+ },
+ "338": {
+  "gm": "rs e b2w2 xy oras swsh bdsp",
+  "wild": "rs e b2w2 xy swsh bdsp"
+ },
+ "339": {
+  "gm": "rs e dp pt xy oras sm usum swsh bdsp pla sv",
+  "wild": "rs e dp pt xy sm usum swsh bdsp pla sv"
+ },
+ "340": {
+  "gm": "rs e dp pt xy oras sm usum swsh bdsp pla sv",
+  "wild": "rs e dp pt xy sm usum swsh bdsp pla sv"
+ },
+ "341": {
+  "gm": "rs e b2w2 xy oras usum swsh bdsp sv",
+  "wild": "rs e b2w2 xy usum swsh bdsp sv"
+ },
+ "342": {
+  "gm": "rs e b2w2 xy oras usum swsh bdsp sv",
+  "wild": "b2w2 xy usum swsh bdsp sv"
+ },
+ "343": {
+  "gm": "rs e b2w2 oras usum swsh bdsp",
+  "wild": "rs e b2w2 usum swsh bdsp"
+ },
+ "344": {
+  "gm": "rs e b2w2 oras usum swsh bdsp",
+  "wild": "rs e swsh bdsp"
+ },
+ "345": {
+  "gm": "rs e oras usum swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "346": {
+  "gm": "rs e oras usum swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "347": {
+  "gm": "rs e oras usum swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "348": {
+  "gm": "rs e oras usum swsh bdsp",
+  "wild": "swsh bdsp"
+ },
+ "349": {
+  "gm": "rs e dp pt oras sm usum swsh bdsp sv za",
+  "wild": "rs e dp pt sm usum swsh bdsp sv za"
+ },
+ "350": {
+  "gm": "rs e dp pt oras sm usum swsh bdsp sv za",
+  "wild": "swsh bdsp sv za"
+ },
+ "351": {
+  "gm": "rs e b2w2 oras sm usum bdsp",
+  "wild": "b2w2 sm usum bdsp"
+ },
+ "352": {
+  "gm": "rs e xy oras usum bdsp za",
+  "wild": "rs e xy oras usum bdsp za"
+ },
+ "353": {
+  "gm": "rs e b2w2 xy oras usum bdsp sv za",
+  "wild": "rs e xy oras usum bdsp sv za"
+ },
+ "354": {
+  "gm": "rs e b2w2 xy oras usum bdsp sv za",
+  "wild": "rs e b2w2 xy bdsp sv za"
+ },
+ "355": {
+  "gm": "rs e pt oras swsh bdsp pla sv",
+  "wild": "rs e pt swsh bdsp pla sv"
+ },
+ "356": {
+  "gm": "rs e pt oras swsh bdsp pla sv",
+  "wild": "rs pt swsh bdsp pla sv"
+ },
+ "357": {
+  "gm": "rs e pt b2w2 oras usum bdsp sv",
+  "wild": "rs e pt b2w2 usum bdsp sv"
+ },
+ "358": {
+  "gm": "rs e dp pt xy oras bdsp pla sv za",
+  "wild": "rs e dp pt bdsp pla sv za"
+ },
+ "359": {
+  "gm": "rs e pt b2w2 xy oras sm usum swsh bdsp za",
+  "wild": "rs e pt b2w2 xy sm usum swsh bdsp za"
+ },
+ "360": {
+  "gm": "rs e xy oras swsh bdsp",
+  "wild": "rs e swsh bdsp"
+ },
+ "361": {
+  "gm": "rs e pt oras sm usum swsh bdsp pla sv za",
+  "wild": "rs e pt oras sm usum swsh bdsp pla sv za"
+ },
+ "362": {
+  "gm": "rs e pt oras sm usum swsh bdsp pla sv za",
+  "wild": "sm usum swsh bdsp pla sv za"
+ },
+ "363": {
+  "gm": "rs e b2w2 oras swsh bdsp pla",
+  "wild": "rs e b2w2 oras swsh bdsp pla"
+ },
+ "364": {
+  "gm": "rs e b2w2 oras swsh bdsp pla",
+  "wild": "b2w2 swsh bdsp pla"
+ },
+ "365": {
+  "gm": "rs e b2w2 oras swsh bdsp pla",
+  "wild": "b2w2 swsh bdsp pla"
+ },
+ "366": {
+  "gm": "rs e xy oras usum bdsp",
+  "wild": "rs e xy usum bdsp"
+ },
+ "367": {
+  "gm": "rs e xy oras usum bdsp",
+  "wild": "xy usum bdsp"
+ },
+ "368": {
+  "gm": "rs e xy oras usum bdsp",
+  "wild": "xy usum bdsp"
+ },
+ "369": {
+  "gm": "rs e xy oras sm usum swsh bdsp",
+  "wild": "rs e xy sm usum swsh bdsp"
+ },
+ "370": {
+  "gm": "rs e xy oras sm usum bdsp sv",
+  "wild": "rs e xy sm usum bdsp sv"
+ },
+ "371": {
+  "gm": "rs e xy oras sm usum swsh bdsp sv za",
+  "wild": "rs e xy oras sm usum swsh bdsp sv za"
+ },
+ "372": {
+  "gm": "rs e xy oras sm usum swsh bdsp sv za",
+  "wild": "xy sm usum swsh bdsp sv za"
+ },
+ "373": {
+  "gm": "rs e xy oras sm usum swsh bdsp sv za",
+  "wild": "sm usum swsh bdsp sv za"
+ },
+ "374": {
+  "gm": "rs e b2w2 oras sm usum swsh bdsp sv za",
+  "wild": "sm usum swsh bdsp sv za"
+ },
+ "375": {
+  "gm": "rs e b2w2 oras sm usum swsh bdsp sv za",
+  "wild": "b2w2 swsh bdsp sv za"
+ },
+ "376": {
+  "gm": "rs e b2w2 oras sm usum swsh bdsp sv za",
+  "wild": "b2w2 swsh bdsp sv za"
+ },
+ "377": {
+  "gm": "rs e oras swsh bdsp",
+  "wild": "rs e oras swsh"
+ },
+ "378": {
+  "gm": "rs e oras swsh bdsp",
+  "wild": "rs e oras swsh"
+ },
+ "379": {
+  "gm": "rs e oras swsh bdsp",
+  "wild": "rs e oras swsh"
+ },
+ "380": {
+  "gm": "rs e oras bdsp za",
+  "wild": "rs e oras"
+ },
+ "381": {
+  "gm": "rs e oras bdsp za",
+  "wild": "rs e oras"
+ },
+ "382": {
+  "gm": "rs e oras bdsp za",
+  "wild": "rs e oras"
+ },
+ "383": {
+  "gm": "rs e oras bdsp za",
+  "wild": "rs e oras"
+ },
+ "384": {
+  "gm": "rs e oras bdsp za",
+  "wild": "rs e oras"
+ },
+ "385": {
+  "ev": "rs e oras"
+ },
+ "386": {
+  "gm": "oras",
+  "ev": "rs e",
+  "wild": "e oras"
+ }
+}

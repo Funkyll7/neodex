@@ -13,9 +13,6 @@
  * (donnee PokeAPI presente pour les 1025 especes) et non via une table de noms.
  */
 
-/** Formulations de `where` qui signalent une espece qu'on ne croise pas dehors. */
-const NOT_WILD = /^\s*(Évolution|Evolution|Échange|Echange|Offert|Pokémon de départ|Distribution|Reçu|Fossile|Ressuscité)/i;
-
 export class HuntPlanner {
   constructor(dataset) {
     this.data = dataset;
@@ -36,30 +33,39 @@ export class HuntPlanner {
     return Boolean(species.legend || species.mythic || species.isStaticEncounter);
   }
 
-  /** Espece qu'on ne rencontre pas a l'etat sauvage. */
-  isNotWild(species) {
-    if (species.isWild) return false;
-    return Boolean(species.evolvesFrom) || species.isGift || NOT_WILD.test(species.where || "");
+  /**
+   * Se croise-t-elle dehors dans ce jeu ?
+   * La reponse vient de data/availability/ (rencontres reelles de PokeAPI), pas
+   * d'une lecture du texte : un Pikachu se chasse dans l'herbe de Rouge/Bleu
+   * mais est le starter de Jaune, et les deux cas se distinguent tout seuls.
+   */
+  isWildIn(species, gameCode) {
+    return species.wildGames.has(gameCode);
   }
 
   /**
-   * Remonte la lignee jusqu'a la forme qu'on chasse reellement.
-   * On s'arrete avant les bebes : personne ne chasse un Pichu pour un Pikachu.
+   * Remonte la lignee jusqu'a la forme qu'on chasse reellement dans ce jeu :
+   * le premier ancetre qu'on peut vraiment croiser. On s'arrete avant les
+   * bebes — personne ne chasse un Pichu pour un Pikachu.
    */
-  huntTarget(species) {
+  huntTarget(species, gameCode) {
     let current = species;
+    let lineageEnd = species;
     for (let step = 0; step < 6; step += 1) {
+      if (this.isWildIn(current, gameCode)) return { species: current, isGift: false };
       if (!current.evolvesFrom) break;
       const parent = this.data.byId.get(current.evolvesFrom);
       if (!parent || parent.baby) break;
       current = parent;
+      lineageEnd = parent;
     }
-    return { species: current, isGift: current.isGift || (this.isNotWild(current) && !current.isWild) };
+    // Personne dans la lignee ne se croise ici : c'est un don ou un echange.
+    return { species: lineageEnd, isGift: true };
   }
 
   /** La cible se croise-t-elle vraiment dans les hautes herbes ? */
-  targetIsGrass(species) {
-    const target = this.huntTarget(species);
+  targetIsGrass(species, gameCode) {
+    const target = this.huntTarget(species, gameCode);
     if (target.isGift) return true;
     if (target.species.habitat) return target.species.habitat === "herbe";
     return this.grass.has(target.species.name);
@@ -73,7 +79,7 @@ export class HuntPlanner {
     let base = this.ref.byGame[gameCode] || this.ref.fallback;
 
     // Poke Radar (Sinnoh, X/Y) : inoperant hors hautes herbes.
-    if (this.grassOnly.has(gameCode) && !this.targetIsGrass(species)) {
+    if (this.grassOnly.has(gameCode) && !this.targetIsGrass(species, gameCode)) {
       base = this.withEraOdds(this.ref.templates.wildFallback, game);
     }
 
@@ -83,8 +89,8 @@ export class HuntPlanner {
       return this.withEraOdds(this.ref.templates.softReset, game);
     }
 
-    if (this.isNotWild(species)) {
-      const target = this.huntTarget(species);
+    if (!this.isWildIn(species, gameCode)) {
+      const target = this.huntTarget(species, gameCode);
       const method = target.isGift
         ? this.giftMethod(target.species.name, species, game)
         : this.evolutionMethod(base, target.species.name, species);
@@ -159,9 +165,15 @@ export class HuntPlanner {
       games = games.filter(
         (g) => this.staticOk.has(g.code) || (g.code === "swsh" && this.dynamax.has(species.id))
       );
-    } else if (this.isNotWild(species) && this.huntTarget(species).isGift) {
+    } else {
       // Un don shiny-locke reste chassable si le jeu permet la methode Masuda.
-      games = games.filter((g) => !this.giftLocked.has(g.code) || Boolean(this.ref.masudaOdds[g.code]));
+      games = games.filter(
+        (g) =>
+          this.isWildIn(species, g.code) ||
+          !this.huntTarget(species, g.code).isGift ||
+          !this.giftLocked.has(g.code) ||
+          Boolean(this.ref.masudaOdds[g.code])
+      );
     }
     return games;
   }

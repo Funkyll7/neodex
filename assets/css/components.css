@@ -278,25 +278,44 @@
 .slot[aria-pressed="true"] .slot__label { color: var(--text); }
 .slot--gold[aria-pressed="true"] .slot__label { color: var(--accent); }
 
-/* Variante (forme regionale, Gigamax, Mega...) */
-.variant { background: var(--bg-sunken); border: 1px solid var(--border-strong); border-radius: 14px; padding: 12px; }
-.variant__pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
-.variant__cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.variant__cap { font-size: 9px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
-.variant__cap--shiny { color: var(--accent); }
-.variant__img { width: 76px; height: 76px; object-fit: contain; }
-.variant__img--shiny { filter: drop-shadow(0 0 8px var(--accent-glow)); }
-.variant__btns { display: flex; gap: 6px; margin-top: 10px; }
-.variant__btn {
+/* Formes alternatives (regionales, Gigamax, Mega, formes de combat...) */
+.forms__group { margin-bottom: var(--sp-3); }
+.forms__group:last-child { margin-bottom: 0; }
+.forms__title {
+  font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--text-faint); margin-bottom: 7px;
+}
+.forms__list { display: flex; flex-direction: column; gap: 9px; }
+
+.form { background: var(--bg-sunken); border: 1px solid var(--border-strong); border-radius: 14px; padding: 11px; }
+.form__head { display: flex; gap: var(--sp-2); align-items: center; }
+.form__arts { display: flex; gap: 2px; flex: 0 0 auto; }
+.form__art { position: relative; display: block; }
+.form__img { width: 62px; height: 62px; object-fit: contain; display: block; }
+.form__art--shiny .form__img { filter: drop-shadow(0 0 7px var(--accent-glow)); }
+.form__spark { position: absolute; right: 0; bottom: 0; font-size: 10px; color: var(--accent); }
+.form__id { min-width: 0; }
+.form__name { font-size: 13px; font-weight: 800; color: var(--text); line-height: 1.25; }
+.form__chips { display: flex; gap: 4px; flex-wrap: wrap; margin: 4px 0 3px; }
+.form__label { font-size: 10px; font-weight: 700; color: var(--text-ghost); }
+.form__text { font-size: 12px; font-weight: 600; color: var(--text-soft); line-height: 1.5; margin-top: 9px; }
+.form__games { font-size: 11px; font-weight: 600; color: var(--text-muted); line-height: 1.45; margin-top: 7px; }
+.form__games strong { color: var(--text-soft); font-weight: 700; }
+.form__shiny { font-size: 11px; font-weight: 700; line-height: 1.45; margin-top: 7px; }
+.form__shiny--ok { color: var(--accent); }
+.form__shiny--none { color: var(--danger); }
+.form__shiny--base { color: var(--text-muted); }
+.form__note { font-size: 11px; font-weight: 600; color: var(--text-muted); line-height: 1.45; margin-top: 7px; }
+.form__warn { font-size: 11px; font-weight: 700; color: var(--text-ghost); margin-top: 9px; line-height: 1.45; }
+.form__btns { display: flex; gap: 6px; margin-top: 10px; }
+.form__btn {
   flex: 1; cursor: pointer;
   border: 1px solid var(--border-strong); border-radius: 9px; padding: 8px;
   background: var(--bg-raised); color: var(--text-muted);
   font-size: 11px; font-weight: 800;
 }
-.variant__btn[aria-pressed="true"] { border-color: transparent; background: var(--pair); color: #fff; }
-.variant__btn--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
-.variant__text { font-size: 12px; font-weight: 600; color: var(--text-soft); line-height: 1.5; margin-top: 10px; }
-.variant__warn { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-top: 9px; line-height: 1.45; }
+.form__btn[aria-pressed="true"] { border-color: transparent; background: var(--pair); color: #fff; }
+.form__btn--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 
 /* Tableau de disponibilite par jeu */
 .games { background: var(--bg-sunken); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
@@ -343,6 +362,46 @@
 }
 .hunt__name { font-size: 12px; font-weight: 800; color: var(--text); }
 .hunt__how { font-size: 11px; font-weight: 600; color: var(--text-muted); line-height: 1.45; }
+.hunt__locked {
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  line-height: 1.5; margin-top: 11px;
+  border-left: 3px solid var(--avail-nolock); padding-left: 9px;
+}
+
+/* Une carte depliable par jeu : methode, taux, marche a suivre */
+.method {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  margin-bottom: 6px;
+}
+.method:last-of-type { margin-bottom: 0; }
+.method__head {
+  cursor: pointer; list-style: none;
+  display: grid; grid-template-columns: minmax(0,1fr) auto;
+  align-items: center; gap: 4px var(--sp-2);
+  padding: 9px 11px;
+}
+.method__head::-webkit-details-marker { display: none; }
+.method__game { font-size: 12px; font-weight: 800; color: var(--text); }
+.method__odds {
+  grid-row: 1; grid-column: 2;
+  white-space: nowrap;
+  font-size: 10px; font-weight: 800;
+  color: var(--accent); background: var(--accent-wash);
+  border-radius: 6px; padding: 2px 6px;
+}
+.method__name {
+  grid-column: 1 / -1;
+  font-size: 11px; font-weight: 600; color: var(--text-muted); line-height: 1.35;
+}
+.method[open] .method__head { border-bottom: 1px solid var(--border); }
+.method__steps {
+  margin: 0; padding: 9px 11px 11px 28px;
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: 11px; font-weight: 600; color: var(--text-soft); line-height: 1.5;
+}
+.method__steps li::marker { color: var(--accent); font-weight: 800; }
 
 /* Bloc fiche / liens / stats */
 .info { background: var(--bg-sunken); border: 1px solid var(--border); border-radius: 14px; padding: 13px; display: flex; flex-direction: column; gap: 10px; }

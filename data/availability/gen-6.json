@@ -1,0 +1,287 @@
+{
+ "650": {
+  "gm": "xy sv za",
+  "wild": "sv za"
+ },
+ "651": {
+  "gm": "xy sv za",
+  "wild": "xy sv za"
+ },
+ "652": {
+  "gm": "xy sv za",
+  "wild": "sv za"
+ },
+ "653": {
+  "gm": "xy sv za",
+  "wild": "sv za"
+ },
+ "654": {
+  "gm": "xy sv za",
+  "wild": "xy sv za"
+ },
+ "655": {
+  "gm": "xy sv za",
+  "wild": "sv za"
+ },
+ "656": {
+  "gm": "xy sv za",
+  "wild": "sv za"
+ },
+ "657": {
+  "gm": "xy sv za",
+  "wild": "xy sv za"
+ },
+ "658": {
+  "gm": "xy sv za",
+  "wild": "sv za"
+ },
+ "659": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "660": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "661": {
+  "gm": "xy sm usum swsh sv za",
+  "wild": "xy sm usum swsh sv za"
+ },
+ "662": {
+  "gm": "xy sm usum swsh sv za",
+  "wild": "xy sm usum swsh sv za"
+ },
+ "663": {
+  "gm": "xy sm usum swsh sv za",
+  "wild": "swsh sv za"
+ },
+ "664": {
+  "gm": "xy sv za",
+  "wild": "xy sv za"
+ },
+ "665": {
+  "gm": "xy sv za",
+  "wild": "xy sv za"
+ },
+ "666": {
+  "gm": "xy sv za",
+  "wild": "xy sv za"
+ },
+ "667": {
+  "gm": "xy usum sv za",
+  "wild": "xy sv za"
+ },
+ "668": {
+  "gm": "xy usum sv za",
+  "wild": "xy usum sv za"
+ },
+ "669": {
+  "gm": "xy usum sv za",
+  "wild": "xy usum sv za"
+ },
+ "670": {
+  "gm": "xy usum sv za",
+  "wild": "xy usum sv za"
+ },
+ "671": {
+  "gm": "xy usum sv za",
+  "wild": "sv za"
+ },
+ "672": {
+  "gm": "xy sv za",
+  "wild": "xy sv za"
+ },
+ "673": {
+  "gm": "xy sv za",
+  "wild": "xy sv za"
+ },
+ "674": {
+  "gm": "xy sm usum swsh za",
+  "wild": "xy sm usum swsh za"
+ },
+ "675": {
+  "gm": "xy sm usum swsh za",
+  "wild": "sm usum swsh za"
+ },
+ "676": {
+  "gm": "xy usum za",
+  "wild": "xy usum za"
+ },
+ "677": {
+  "gm": "xy swsh sv za",
+  "wild": "xy swsh sv za"
+ },
+ "678": {
+  "gm": "xy swsh sv za",
+  "wild": "swsh sv za"
+ },
+ "679": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "680": {
+  "gm": "xy swsh za",
+  "wild": "swsh za"
+ },
+ "681": {
+  "gm": "xy swsh za",
+  "wild": "swsh za"
+ },
+ "682": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "683": {
+  "gm": "xy swsh za",
+  "wild": "swsh za"
+ },
+ "684": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "685": {
+  "gm": "xy swsh za",
+  "wild": "swsh za"
+ },
+ "686": {
+  "gm": "xy usum swsh sv za",
+  "wild": "xy usum swsh sv za"
+ },
+ "687": {
+  "gm": "xy usum swsh sv za",
+  "wild": "swsh sv za"
+ },
+ "688": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "689": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "690": {
+  "gm": "xy usum swsh sv za",
+  "wild": "xy swsh sv za"
+ },
+ "691": {
+  "gm": "xy usum swsh sv za",
+  "wild": "xy usum swsh sv za"
+ },
+ "692": {
+  "gm": "xy usum swsh sv za",
+  "wild": "xy swsh sv za"
+ },
+ "693": {
+  "gm": "xy usum swsh sv za",
+  "wild": "xy usum swsh sv za"
+ },
+ "694": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "695": {
+  "gm": "xy swsh za",
+  "wild": "swsh za"
+ },
+ "696": {
+  "gm": "xy usum swsh za",
+  "wild": "swsh za"
+ },
+ "697": {
+  "gm": "xy usum swsh za",
+  "wild": "swsh za"
+ },
+ "698": {
+  "gm": "xy usum swsh za",
+  "wild": "swsh za"
+ },
+ "699": {
+  "gm": "xy usum swsh za",
+  "wild": "swsh za"
+ },
+ "700": {
+  "gm": "xy sm usum swsh pla sv za",
+  "wild": "swsh pla sv za"
+ },
+ "701": {
+  "gm": "xy usum swsh sv za",
+  "wild": "xy usum swsh sv za"
+ },
+ "702": {
+  "gm": "xy usum swsh sv za",
+  "wild": "xy usum swsh sv za"
+ },
+ "703": {
+  "gm": "xy sm usum swsh sv za",
+  "wild": "xy sm usum swsh sv za"
+ },
+ "704": {
+  "gm": "xy sm usum swsh pla sv za",
+  "wild": "xy sm usum swsh pla sv za"
+ },
+ "705": {
+  "gm": "xy sm usum swsh pla sv za",
+  "wild": "xy sm usum swsh pla sv za"
+ },
+ "706": {
+  "gm": "xy sm usum swsh pla sv za",
+  "wild": "swsh pla sv za"
+ },
+ "707": {
+  "gm": "xy sm usum swsh sv za",
+  "wild": "xy sm usum swsh sv za"
+ },
+ "708": {
+  "gm": "xy sm usum swsh sv za",
+  "wild": "xy sm usum swsh sv za"
+ },
+ "709": {
+  "gm": "xy sm usum swsh sv za",
+  "wild": "xy swsh sv za"
+ },
+ "710": {
+  "gm": "xy swsh za",
+  "wild": "xy swsh za"
+ },
+ "711": {
+  "gm": "xy swsh za",
+  "wild": "swsh za"
+ },
+ "712": {
+  "gm": "xy swsh pla sv za",
+  "wild": "xy swsh pla sv za"
+ },
+ "713": {
+  "gm": "xy swsh pla sv za",
+  "wild": "swsh pla sv za"
+ },
+ "714": {
+  "gm": "xy usum swsh sv za",
+  "wild": "xy usum swsh sv za"
+ },
+ "715": {
+  "gm": "xy usum swsh sv za",
+  "wild": "usum swsh sv za"
+ },
+ "716": {
+  "gm": "xy za",
+  "wild": "xy"
+ },
+ "717": {
+  "gm": "xy za",
+  "wild": "xy"
+ },
+ "718": {
+  "gm": "xy sm usum za",
+  "wild": "xy usum"
+ },
+ "719": {
+  "ev": "za"
+ },
+ "720": {
+  "ev": "za"
+ },
+ "721": {
+  "ev": "za"
+ }
+}

@@ -1,0 +1,624 @@
+{
+ "398": [
+  {
+   "id": 10308,
+   "key": "staraptor-mega",
+   "name": "Méga-Étouraptor",
+   "label": "Méga-Étouraptor",
+   "kind": "mega",
+   "types": [
+    "Combat",
+    "Vol"
+   ],
+   "stats": [
+    85,
+    140,
+    100,
+    60,
+    90,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "413": [
+  {
+   "id": 10004,
+   "key": "wormadam-sandy",
+   "name": "Cheniselle Sable",
+   "label": "Cape Sable",
+   "kind": "other",
+   "types": [
+    "Insecte",
+    "Sol"
+   ],
+   "stats": [
+    60,
+    79,
+    105,
+    59,
+    85,
+    36
+   ],
+   "battleOnly": 0,
+   "since": "diamond-pearl",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10005,
+   "key": "wormadam-trash",
+   "name": "Cheniselle Déchet",
+   "label": "Cape Déchet",
+   "kind": "other",
+   "types": [
+    "Insecte",
+    "Acier"
+   ],
+   "stats": [
+    60,
+    69,
+    95,
+    69,
+    95,
+    36
+   ],
+   "battleOnly": 0,
+   "since": "diamond-pearl",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "428": [
+  {
+   "id": 10088,
+   "key": "lopunny-mega",
+   "name": "Méga-Lockpin",
+   "label": "Méga-Lockpin",
+   "kind": "mega",
+   "types": [
+    "Normal",
+    "Combat"
+   ],
+   "stats": [
+    65,
+    136,
+    94,
+    54,
+    96,
+    135
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "445": [
+  {
+   "id": 10058,
+   "key": "garchomp-mega",
+   "name": "Méga-Carchacrok",
+   "label": "Méga-Carchacrok",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Sol"
+   ],
+   "stats": [
+    108,
+    170,
+    115,
+    120,
+    95,
+    92
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10309,
+   "key": "garchomp-mega-z",
+   "name": "Méga-Carchacrok Z",
+   "label": "Méga-Carchacrok Z",
+   "kind": "mega",
+   "types": [
+    "Dragon"
+   ],
+   "stats": [
+    108,
+    130,
+    85,
+    141,
+    85,
+    151
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 0
+   }
+  }
+ ],
+ "448": [
+  {
+   "id": 10059,
+   "key": "lucario-mega",
+   "name": "Méga-Lucario",
+   "label": "Méga-Lucario",
+   "kind": "mega",
+   "types": [
+    "Combat",
+    "Acier"
+   ],
+   "stats": [
+    70,
+    145,
+    88,
+    140,
+    70,
+    112
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10310,
+   "key": "lucario-mega-z",
+   "name": "Méga-Lucario Z",
+   "label": "Méga-Lucario Z",
+   "kind": "mega",
+   "types": [
+    "Combat",
+    "Acier"
+   ],
+   "stats": [
+    70,
+    100,
+    70,
+    164,
+    70,
+    151
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "460": [
+  {
+   "id": 10060,
+   "key": "abomasnow-mega",
+   "name": "Méga-Blizzaroi",
+   "label": "Méga-Blizzaroi",
+   "kind": "mega",
+   "types": [
+    "Plante",
+    "Glace"
+   ],
+   "stats": [
+    90,
+    132,
+    105,
+    132,
+    105,
+    30
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "475": [
+  {
+   "id": 10068,
+   "key": "gallade-mega",
+   "name": "Méga-Gallame",
+   "label": "Méga-Gallame",
+   "kind": "mega",
+   "types": [
+    "Psy",
+    "Combat"
+   ],
+   "stats": [
+    68,
+    165,
+    95,
+    65,
+    115,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "478": [
+  {
+   "id": 10285,
+   "key": "froslass-mega",
+   "name": "Méga-Momartik",
+   "label": "Méga-Momartik",
+   "kind": "mega",
+   "types": [
+    "Glace",
+    "Spectre"
+   ],
+   "stats": [
+    70,
+    80,
+    70,
+    140,
+    100,
+    120
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "479": [
+  {
+   "id": 10008,
+   "key": "rotom-heat",
+   "name": "Motisma Chaleur",
+   "label": "Motisma Chaleur",
+   "kind": "other",
+   "types": [
+    "Électrik",
+    "Feu"
+   ],
+   "stats": [
+    50,
+    65,
+    107,
+    105,
+    107,
+    86
+   ],
+   "battleOnly": 0,
+   "since": "platinum",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10009,
+   "key": "rotom-wash",
+   "name": "Motisma Lavage",
+   "label": "Motisma Lavage",
+   "kind": "other",
+   "types": [
+    "Électrik",
+    "Eau"
+   ],
+   "stats": [
+    50,
+    65,
+    107,
+    105,
+    107,
+    86
+   ],
+   "battleOnly": 0,
+   "since": "platinum",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10010,
+   "key": "rotom-frost",
+   "name": "Motisma Froid",
+   "label": "Motisma Froid",
+   "kind": "other",
+   "types": [
+    "Électrik",
+    "Glace"
+   ],
+   "stats": [
+    50,
+    65,
+    107,
+    105,
+    107,
+    86
+   ],
+   "battleOnly": 0,
+   "since": "platinum",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10011,
+   "key": "rotom-fan",
+   "name": "Motisma Hélice",
+   "label": "Motisma Hélice",
+   "kind": "other",
+   "types": [
+    "Électrik",
+    "Vol"
+   ],
+   "stats": [
+    50,
+    65,
+    107,
+    105,
+    107,
+    86
+   ],
+   "battleOnly": 0,
+   "since": "platinum",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10012,
+   "key": "rotom-mow",
+   "name": "Motisma Tonte",
+   "label": "Motisma Tonte",
+   "kind": "other",
+   "types": [
+    "Électrik",
+    "Plante"
+   ],
+   "stats": [
+    50,
+    65,
+    107,
+    105,
+    107,
+    86
+   ],
+   "battleOnly": 0,
+   "since": "platinum",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "483": [
+  {
+   "id": 10245,
+   "key": "dialga-origin",
+   "name": "Diagla Originel",
+   "label": "Forme Originelle",
+   "kind": "other",
+   "types": [
+    "Acier",
+    "Dragon"
+   ],
+   "stats": [
+    100,
+    100,
+    120,
+    150,
+    120,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "484": [
+  {
+   "id": 10246,
+   "key": "palkia-origin",
+   "name": "Palkia Originel",
+   "label": "Forme Originelle",
+   "kind": "other",
+   "types": [
+    "Eau",
+    "Dragon"
+   ],
+   "stats": [
+    90,
+    100,
+    100,
+    150,
+    120,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "485": [
+  {
+   "id": 10311,
+   "key": "heatran-mega",
+   "name": "Méga-Heatran",
+   "label": "Méga-Heatran",
+   "kind": "mega",
+   "types": [
+    "Feu",
+    "Acier"
+   ],
+   "stats": [
+    91,
+    120,
+    106,
+    175,
+    141,
+    67
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "487": [
+  {
+   "id": 10007,
+   "key": "giratina-origin",
+   "name": "Giratina Originel",
+   "label": "Forme Originelle",
+   "kind": "other",
+   "types": [
+    "Spectre",
+    "Dragon"
+   ],
+   "stats": [
+    150,
+    120,
+    100,
+    120,
+    100,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "platinum",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "491": [
+  {
+   "id": 10312,
+   "key": "darkrai-mega",
+   "name": "Méga-Darkrai",
+   "label": "Méga-Darkrai",
+   "kind": "mega",
+   "types": [
+    "Ténèbres"
+   ],
+   "stats": [
+    70,
+    120,
+    130,
+    165,
+    130,
+    85
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "492": [
+  {
+   "id": 10006,
+   "key": "shaymin-sky",
+   "name": "Shaymin Céleste",
+   "label": "Forme Céleste",
+   "kind": "other",
+   "types": [
+    "Plante",
+    "Vol"
+   ],
+   "stats": [
+    100,
+    103,
+    75,
+    120,
+    75,
+    127
+   ],
+   "battleOnly": 0,
+   "since": "platinum",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ]
+}

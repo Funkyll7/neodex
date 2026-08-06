@@ -1,18 +1,17 @@
 /**
  * detail-panel.js — la fiche de droite.
  *
- * Sections, dans l'ordre : entete, ma collection, variante, disponibilite par
- * jeu, shiny hunt, fiche d'origine, statistiques de base.
+ * Sections, dans l'ordre : entete, ma collection, formes alternatives,
+ * disponibilite par jeu, shiny hunt jeu par jeu, fiche d'origine, statistiques.
  * Tout est reconstruit a chaque changement de selection ou de case cochee :
  * c'est un seul panneau, le cout est negligeable.
  */
 
 import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
-import { spriteImg } from "../domain/sprites.js";
+import { spriteImg, formImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
-import { isMega } from "./dex-grid.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
@@ -35,7 +34,7 @@ export function createDetailPanel(ctx) {
         root,
         head(species, ctx, c1),
         collectionSection(species, ctx),
-        variantSection(species, ctx),
+        formsSection(species, ctx),
         availabilitySection(species, ctx),
         huntSection(species, ctx),
         infoSection(species, ctx),
@@ -133,41 +132,106 @@ function slotButton(species, ctx, { slot, label, shiny, female }) {
   );
 }
 
-/* -------------------------------- variante -------------------------------- */
+/* -------------------------------- formes --------------------------------- */
 
-function variantSection(species, ctx) {
-  const variant = species.variant;
-  if (!variant) return null;
-  const collectible = !isMega(species);
+/** Libelles des groupes, dans l'ordre d'affichage. */
+const KIND_TITLES = {
+  alola: "Formes d'Alola",
+  galar: "Formes de Galar",
+  hisui: "Formes de Hisui",
+  paldea: "Formes de Paldéa",
+  mega: "Méga-Évolutions",
+  primal: "Primo-Résurgence",
+  gmax: "Formes Gigamax",
+  cap: "Pikachu à casquette",
+  battle: "Formes de combat",
+  other: "Autres formes",
+};
+const KIND_ORDER = Object.keys(KIND_TITLES);
+
+function formsSection(species, ctx) {
+  if (!species.forms.length) return null;
+
+  const groups = new Map();
+  for (const form of species.forms) {
+    if (!groups.has(form.kind)) groups.set(form.kind, []);
+    groups.get(form.kind).push(form);
+  }
+  const ordered = KIND_ORDER.filter((kind) => groups.has(kind));
 
   return el(
     "section.detail__section",
-    el("h3.panel__label", `Variante · ${variant.name}`),
     el(
-      "div.variant",
+      "div.detail__row",
+      el("h3.panel__label", `Formes · ${species.forms.length}`),
+      el("span.detail__note", `${species.forms.filter((f) => f.collectible).length} à collectionner`)
+    ),
+    el(
+      "p.detail__help",
+      "Chaque forme a son propre sprite normal et chromatique. Les Méga-Évolutions et les formes de combat ne sont que des transformations : elles reprennent le chromatique du Pokémon de base et ne se cochent pas."
+    ),
+    ordered.map((kind) =>
       el(
-        "div.variant__pair",
+        "div.forms__group",
+        el("h4.forms__title", KIND_TITLES[kind]),
+        el("div.forms__list", groups.get(kind).map((form) => formCard(form, species, ctx)))
+      )
+    )
+  );
+}
+
+function formCard(form, species, ctx) {
+  const { dataset, collection } = ctx;
+  const games = dataset.games.filter((g) => form.games.has(g.code));
+  const huntable = games.filter((g) => g.shinyOk !== false && !form.shinyLocked.has(g.code));
+
+  return el(
+    "article.form",
+    el(
+      "div.form__head",
+      el(
+        "div.form__arts",
         el(
-          "div.variant__cell",
-          el("span.variant__cap", "Normal"),
-          spriteImg(variant.id, { alt: variant.name, className: "variant__img" })
+          "span.form__art",
+          formImg(form, { alt: form.name, className: "form__img" })
         ),
-        el(
-          "div.variant__cell",
-          el("span.variant__cap.variant__cap--shiny", "✦ Shiny"),
-          spriteImg(variant.id, { shiny: true, alt: `${variant.name} shiny`, className: "variant__img variant__img--shiny" })
-        )
+        form.hasShinySprite
+          ? el(
+              "span.form__art.form__art--shiny",
+              formImg(form, { shiny: true, alt: `${form.name} chromatique`, className: "form__img" }),
+              el("span.form__spark", "✦")
+            )
+          : null
       ),
-      collectible &&
+      el(
+        "div.form__id",
+        el("div.form__name", form.name),
         el(
-          "div.variant__btns",
+          "div.form__chips",
+          form.types.map((t) => typeChip(t, dataset.types[t] || "#8b8b8b"))
+        ),
+        el("div.form__label", form.label)
+      )
+    ),
+    form.where ? el("p.form__text", form.where) : null,
+    el(
+      "p.form__games",
+      games.length
+        ? ["Présente dans : ", el("strong", games.map((g) => g.name).join(" · "))]
+        : "Aucun jeu de la série principale ne la propose — transfert HOME uniquement."
+    ),
+    shinyLine(form, huntable, games),
+    form.note ? el("p.form__note", form.note) : null,
+    form.collectible
+      ? el(
+          "div.form__btns",
           [
-            ["vo", "Normal", false],
-            ["vs", "✦ Shiny", true],
+            [form.slot, "Normal", false],
+            [form.shinySlot, "✦ Shiny", true],
           ].map(([slot, label, gold]) => {
-            const on = ctx.collection.has(species.id, slot);
+            const on = collection.has(species.id, slot);
             return el(
-              gold ? "button.variant__btn.variant__btn--gold" : "button.variant__btn",
+              gold ? "button.form__btn.form__btn--gold" : "button.form__btn",
               {
                 type: "button",
                 "aria-pressed": String(on),
@@ -176,12 +240,37 @@ function variantSection(species, ctx) {
               on ? `✓ ${label}` : label
             );
           })
-        ),
-      !collectible &&
-        el("p.variant__warn", "Forme temporaire en combat — ce n'est pas une entrée séparée à collectionner."),
-      el("p.variant__text", variant.where || ""),
-      el("a.info__link", { href: pokepediaUrl(variant.name), target: "_blank", rel: "noopener" }, "Fiche de la variante ↗")
+        )
+      : el("p.form__warn", "Transformation de combat : rien à cocher, elle n'a pas d'entrée propre dans HOME."),
+    el(
+      "a.info__link",
+      { href: pokepediaUrl(form.name), target: "_blank", rel: "noopener" },
+      "Fiche de la forme ↗"
     )
+  );
+}
+
+/** La ligne qui repond a « et le shiny, alors ? » pour une forme. */
+function shinyLine(form, huntable, games) {
+  if (form.shiny === "base") {
+    return el("p.form__shiny.form__shiny--base", "✦ Pas de chasse dédiée : c'est le chromatique du Pokémon de base qui s'affiche sous cette forme.");
+  }
+  if (form.shiny === "none" || !form.hasShinySprite) {
+    return el("p.form__shiny.form__shiny--none", "✦ Aucun chromatique n'existe pour cette forme, dans aucun jeu.");
+  }
+  if (!huntable.length) {
+    return el(
+      "p.form__shiny.form__shiny--none",
+      games.length
+        ? `✦ Chromatique verrouillé partout où elle apparaît (${games.map((g) => g.name).join(" · ")}).`
+        : "✦ Chromatique non chassable dans la série principale."
+    );
+  }
+  return el(
+    "p.form__shiny.form__shiny--ok",
+    `✦ Chromatique chassable dans ${huntable.length} jeu${huntable.length > 1 ? "x" : ""} : ${huntable
+      .map((g) => g.name)
+      .join(" · ")}.`
   );
 }
 
@@ -242,34 +331,48 @@ function availabilitySection(species, { dataset }) {
 
 /* ------------------------------ shiny hunt ------------------------------- */
 
-function huntSection(species, { dataset }) {
+function huntSection(species, ctx) {
+  const { dataset, planner } = ctx;
   const huntable = huntableGames(species, dataset.games);
-  const methods = huntable.length ? dataset.hunt.generalMethods : [];
+  const locked = dataset.games.filter(
+    (g) => species.games.has(g.code) && g.shinyOk !== false && species.shinyLocked.has(g.code)
+  );
+
+  const badge = el(
+    huntable.length ? "span.hunt__badge" : "span.hunt__badge.hunt__badge--none",
+    huntable.length
+      ? `✦ Shiny hunt possible dans ${huntable.length} jeu${huntable.length > 1 ? "x" : ""}`
+      : "Shiny impossible dans la série principale"
+  );
 
   const why = huntable.length
-    ? `Meilleurs jeux pour la chasse : ${huntable.slice(-3).map((g) => g.name).join(" · ")}. Les jeux marqués « Bloqué » donnent ce Pokémon dans l'intrigue avec le chromatique désactivé, et la Gén. I n'a pas de chromatiques du tout.`
+    ? whyText(species, huntable, planner)
     : species.note ||
       (species.curated
-        ? "Ce Pokémon n'est obtenable qu'en événement ou dans l'intrigue avec le chromatique désactivé (shiny-locked) dans tous les jeux où il apparaît."
+        ? "Ce Pokémon est verrouillé chromatique (shiny lock) dans tous les jeux où il apparaît, ou n'existe que dans la Gén. I, qui ne connaît pas les chromatiques."
         : "Disponibilité pas encore renseignée : impossible de dire où le shiny est chassable.");
 
   return el(
     "section.detail__section",
-    el("h3.panel__label", "✦ Shiny hunt"),
+    el("h3.panel__label", "✦ Shiny hunt — jeu par jeu"),
     el(
       "div.hunt",
-      el(
-        huntable.length ? "span.hunt__badge" : "span.hunt__badge.hunt__badge--none",
-        huntable.length
-          ? `✦ Shiny hunt possible dans ${huntable.length} jeu${huntable.length > 1 ? "x" : ""}`
-          : "Shiny impossible ou non documenté"
-      ),
+      badge,
       el("p.hunt__why", why),
-      methods.length ? el("div.hunt__sep") : null,
-      methods.length ? el("h4.panel__label", "Méthodes recommandées") : null,
+      huntable.length ? el("div.hunt__sep") : null,
+      huntable.map((game) => gameMethod(species, game, planner)),
+      locked.length
+        ? el(
+            "p.hunt__locked",
+            `Verrouillé chromatique dans : ${locked.map((g) => g.name).join(" · ")}. `,
+            lockReason(species, locked, dataset)
+          )
+        : null,
+      el("div.hunt__sep"),
+      el("h4.panel__label", "Rappel des méthodes générales"),
       el(
         "div.hunt__list",
-        methods.map((m) =>
+        dataset.hunt.generalMethods.map((m) =>
           el(
             "div.hunt__item",
             el("span.hunt__odds", m.odds),
@@ -284,6 +387,44 @@ function huntSection(species, { dataset }) {
       )
     )
   );
+}
+
+/** Une carte depliable par jeu : methode, taux, marche a suivre. */
+function gameMethod(species, game, planner) {
+  const method = planner.methodFor(game.code, species);
+  const node = el(
+    "details.method",
+    el(
+      "summary.method__head",
+      el("span.method__game", game.name),
+      el("span.method__odds", method.odds || "—"),
+      el("span.method__name", method.name)
+    ),
+    el("ol.method__steps", (method.steps || []).map((step) => el("li", step)))
+  );
+  return node;
+}
+
+function whyText(species, huntable, planner) {
+  const best = huntable
+    .map((game) => ({ game, method: planner.methodFor(game.code, species) }))
+    .sort((a, b) => oddsOf(a.method.odds) - oddsOf(b.method.odds))[0];
+  return (
+    `Le meilleur taux se trouve dans ${best.game.name} : ${best.method.name}, ${best.method.odds}. ` +
+    "Déplie un jeu ci-dessous pour la marche à suivre exacte ; les taux tiennent compte du Charme Chroma quand le jeu le propose."
+  );
+}
+
+function lockReason(species, locked, dataset) {
+  const always = ((dataset.locks.always && dataset.locks.always.species) || []).includes(species.id);
+  if (always) return dataset.locks.always.why || "";
+  const first = dataset.locks.byGame && dataset.locks.byGame[locked[0].code];
+  return (first && first.why) || "Le jeu ne génère jamais cette espèce en chromatique.";
+}
+
+function oddsOf(odds) {
+  const match = /1\s*\/\s*([\d\s]+)/.exec(odds || "");
+  return match ? parseInt(match[1].replace(/\s/g, ""), 10) : Number.MAX_SAFE_INTEGER;
 }
 
 /* --------------------------------- fiche --------------------------------- */

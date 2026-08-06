@@ -1,0 +1,2372 @@
+{
+ "3": [
+  {
+   "id": 10033,
+   "key": "venusaur-mega",
+   "name": "Méga-Florizarre",
+   "label": "Méga-Florizarre",
+   "kind": "mega",
+   "types": [
+    "Plante",
+    "Poison"
+   ],
+   "stats": [
+    80,
+    100,
+    123,
+    122,
+    120,
+    80
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10195,
+   "key": "venusaur-gmax",
+   "name": "Florizarre Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Plante",
+    "Poison"
+   ],
+   "stats": [
+    80,
+    82,
+    83,
+    100,
+    100,
+    80
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "6": [
+  {
+   "id": 10034,
+   "key": "charizard-mega-x",
+   "name": "Méga-Dracaufeu X",
+   "label": "Méga-Dracaufeu X",
+   "kind": "mega",
+   "types": [
+    "Feu",
+    "Dragon"
+   ],
+   "stats": [
+    78,
+    130,
+    111,
+    130,
+    85,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10035,
+   "key": "charizard-mega-y",
+   "name": "Méga-Dracaufeu Y",
+   "label": "Méga-Dracaufeu Y",
+   "kind": "mega",
+   "types": [
+    "Feu",
+    "Vol"
+   ],
+   "stats": [
+    78,
+    104,
+    78,
+    159,
+    115,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10196,
+   "key": "charizard-gmax",
+   "name": "Dracaufeu Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Feu",
+    "Vol"
+   ],
+   "stats": [
+    78,
+    84,
+    78,
+    109,
+    85,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "9": [
+  {
+   "id": 10036,
+   "key": "blastoise-mega",
+   "name": "Méga-Tortank",
+   "label": "Méga-Tortank",
+   "kind": "mega",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    79,
+    103,
+    120,
+    135,
+    115,
+    78
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10197,
+   "key": "blastoise-gmax",
+   "name": "Tortank Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    79,
+    83,
+    100,
+    85,
+    105,
+    78
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "12": [
+  {
+   "id": 10198,
+   "key": "butterfree-gmax",
+   "name": "Papilusion Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Insecte",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    45,
+    50,
+    90,
+    80,
+    70
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "15": [
+  {
+   "id": 10090,
+   "key": "beedrill-mega",
+   "name": "Méga-Dardargnan",
+   "label": "Méga-Dardargnan",
+   "kind": "mega",
+   "types": [
+    "Insecte",
+    "Poison"
+   ],
+   "stats": [
+    65,
+    150,
+    40,
+    15,
+    80,
+    145
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "18": [
+  {
+   "id": 10073,
+   "key": "pidgeot-mega",
+   "name": "Méga-Roucarnage",
+   "label": "Méga-Roucarnage",
+   "kind": "mega",
+   "types": [
+    "Normal",
+    "Vol"
+   ],
+   "stats": [
+    83,
+    80,
+    80,
+    135,
+    80,
+    121
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "19": [
+  {
+   "id": 10091,
+   "key": "rattata-alola",
+   "name": "Rattata d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Ténèbres",
+    "Normal"
+   ],
+   "stats": [
+    30,
+    56,
+    35,
+    25,
+    35,
+    72
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "20": [
+  {
+   "id": 10092,
+   "key": "raticate-alola",
+   "name": "Rattatac d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Ténèbres",
+    "Normal"
+   ],
+   "stats": [
+    75,
+    71,
+    70,
+    40,
+    80,
+    77
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "25": [
+  {
+   "id": 10199,
+   "key": "pikachu-gmax",
+   "name": "Pikachu Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10080,
+   "key": "pikachu-rock-star",
+   "name": "Pikachu Rockeur",
+   "label": "Pikachu Rockeur",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 0,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10081,
+   "key": "pikachu-belle",
+   "name": "Pikachu Lady",
+   "label": "Pikachu Lady",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 0,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10082,
+   "key": "pikachu-pop-star",
+   "name": "Pikachu Star",
+   "label": "Pikachu Star",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 0,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10083,
+   "key": "pikachu-phd",
+   "name": "Pikachu Docteur",
+   "label": "Pikachu Docteur",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 0,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10084,
+   "key": "pikachu-libre",
+   "name": "Pikachu Catcheur",
+   "label": "Pikachu Catcheur",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 0,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10085,
+   "key": "pikachu-cosplay",
+   "name": "Pikachu Cosplayeur",
+   "label": "Pikachu Cosplayeur",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 0,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 0
+   }
+  },
+  {
+   "id": 10094,
+   "key": "pikachu-original-cap",
+   "name": "Pikachu Casquette Originale",
+   "label": "Casquette Originale",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10095,
+   "key": "pikachu-hoenn-cap",
+   "name": "Pikachu Casquette de Hoenn",
+   "label": "Casquette de Hoenn",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10096,
+   "key": "pikachu-sinnoh-cap",
+   "name": "Pikachu Casquette de Sinnoh",
+   "label": "Casquette de Sinnoh",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10097,
+   "key": "pikachu-unova-cap",
+   "name": "Pikachu Casquette d’Unys",
+   "label": "Casquette d’Unys",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10098,
+   "key": "pikachu-kalos-cap",
+   "name": "Pikachu Casquette de Kalos",
+   "label": "Casquette de Kalos",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10099,
+   "key": "pikachu-alola-cap",
+   "name": "Pikachu Casquette d’Alola",
+   "label": "Casquette d’Alola",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10148,
+   "key": "pikachu-partner-cap",
+   "name": "Pikachu Casquette Partenaire",
+   "label": "Casquette Partenaire",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "ultra-sun-ultra-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 0
+   }
+  },
+  {
+   "id": 10160,
+   "key": "pikachu-world-cap",
+   "name": "Pikachu Casquette Monde",
+   "label": "Casquette Monde",
+   "kind": "cap",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    35,
+    55,
+    40,
+    50,
+    50,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 0
+   }
+  },
+  {
+   "id": 10158,
+   "key": "pikachu-starter",
+   "name": "Pikachu Partenaire",
+   "label": "Autre forme",
+   "kind": "other",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    45,
+    80,
+    50,
+    75,
+    60,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "lets-go-pikachu-lets-go-eevee",
+   "sprites": {
+    "home": 0,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 0
+   }
+  }
+ ],
+ "26": [
+  {
+   "id": 10100,
+   "key": "raichu-alola",
+   "name": "Raichu d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Électrik",
+    "Psy"
+   ],
+   "stats": [
+    60,
+    85,
+    50,
+    95,
+    85,
+    110
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10304,
+   "key": "raichu-mega-x",
+   "name": "Méga-Raichu X",
+   "label": "Méga-Raichu X",
+   "kind": "mega",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    60,
+    135,
+    95,
+    90,
+    95,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10305,
+   "key": "raichu-mega-y",
+   "name": "Méga-Raichu Y",
+   "label": "Méga-Raichu Y",
+   "kind": "mega",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    60,
+    100,
+    55,
+    160,
+    80,
+    130
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "27": [
+  {
+   "id": 10101,
+   "key": "sandshrew-alola",
+   "name": "Sabelette d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Glace",
+    "Acier"
+   ],
+   "stats": [
+    50,
+    75,
+    90,
+    10,
+    35,
+    40
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "28": [
+  {
+   "id": 10102,
+   "key": "sandslash-alola",
+   "name": "Sablaireau d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Glace",
+    "Acier"
+   ],
+   "stats": [
+    75,
+    100,
+    120,
+    25,
+    65,
+    65
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "36": [
+  {
+   "id": 10278,
+   "key": "clefable-mega",
+   "name": "Méga-Mélodelfe",
+   "label": "Méga-Mélodelfe",
+   "kind": "mega",
+   "types": [
+    "Fée",
+    "Vol"
+   ],
+   "stats": [
+    95,
+    80,
+    93,
+    135,
+    110,
+    70
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "37": [
+  {
+   "id": 10103,
+   "key": "vulpix-alola",
+   "name": "Goupix d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Glace"
+   ],
+   "stats": [
+    38,
+    41,
+    40,
+    50,
+    65,
+    65
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "38": [
+  {
+   "id": 10104,
+   "key": "ninetales-alola",
+   "name": "Feunard d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Glace",
+    "Fée"
+   ],
+   "stats": [
+    73,
+    67,
+    75,
+    81,
+    100,
+    109
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "50": [
+  {
+   "id": 10105,
+   "key": "diglett-alola",
+   "name": "Taupiqueur d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Sol",
+    "Acier"
+   ],
+   "stats": [
+    10,
+    55,
+    30,
+    35,
+    45,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "51": [
+  {
+   "id": 10106,
+   "key": "dugtrio-alola",
+   "name": "Triopikeur d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Sol",
+    "Acier"
+   ],
+   "stats": [
+    35,
+    100,
+    60,
+    50,
+    70,
+    110
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "52": [
+  {
+   "id": 10107,
+   "key": "meowth-alola",
+   "name": "Miaouss d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Ténèbres"
+   ],
+   "stats": [
+    40,
+    35,
+    35,
+    50,
+    40,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10161,
+   "key": "meowth-galar",
+   "name": "Miaouss de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Acier"
+   ],
+   "stats": [
+    50,
+    65,
+    55,
+    40,
+    40,
+    40
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10200,
+   "key": "meowth-gmax",
+   "name": "Miaouss Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    40,
+    45,
+    35,
+    40,
+    40,
+    90
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "53": [
+  {
+   "id": 10108,
+   "key": "persian-alola",
+   "name": "Persian d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Ténèbres"
+   ],
+   "stats": [
+    65,
+    60,
+    60,
+    75,
+    65,
+    115
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "58": [
+  {
+   "id": 10229,
+   "key": "growlithe-hisui",
+   "name": "Caninos de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Feu",
+    "Roche"
+   ],
+   "stats": [
+    60,
+    75,
+    45,
+    65,
+    50,
+    55
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "59": [
+  {
+   "id": 10230,
+   "key": "arcanine-hisui",
+   "name": "Arcanin de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Feu",
+    "Roche"
+   ],
+   "stats": [
+    95,
+    115,
+    80,
+    95,
+    80,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "65": [
+  {
+   "id": 10037,
+   "key": "alakazam-mega",
+   "name": "Méga-Alakazam",
+   "label": "Méga-Alakazam",
+   "kind": "mega",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    55,
+    50,
+    65,
+    175,
+    105,
+    150
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "68": [
+  {
+   "id": 10201,
+   "key": "machamp-gmax",
+   "name": "Mackogneur Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Combat"
+   ],
+   "stats": [
+    90,
+    130,
+    80,
+    65,
+    85,
+    55
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "71": [
+  {
+   "id": 10279,
+   "key": "victreebel-mega",
+   "name": "Méga-Empiflor",
+   "label": "Méga-Empiflor",
+   "kind": "mega",
+   "types": [
+    "Plante",
+    "Poison"
+   ],
+   "stats": [
+    80,
+    125,
+    85,
+    135,
+    95,
+    70
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "74": [
+  {
+   "id": 10109,
+   "key": "geodude-alola",
+   "name": "Racaillou d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Roche",
+    "Électrik"
+   ],
+   "stats": [
+    40,
+    80,
+    100,
+    30,
+    30,
+    20
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "75": [
+  {
+   "id": 10110,
+   "key": "graveler-alola",
+   "name": "Gravalanch d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Roche",
+    "Électrik"
+   ],
+   "stats": [
+    55,
+    95,
+    115,
+    45,
+    45,
+    35
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "76": [
+  {
+   "id": 10111,
+   "key": "golem-alola",
+   "name": "Grolem d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Roche",
+    "Électrik"
+   ],
+   "stats": [
+    80,
+    120,
+    130,
+    55,
+    65,
+    45
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "77": [
+  {
+   "id": 10162,
+   "key": "ponyta-galar",
+   "name": "Ponyta de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    50,
+    85,
+    55,
+    65,
+    65,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "78": [
+  {
+   "id": 10163,
+   "key": "rapidash-galar",
+   "name": "Galopa de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Psy",
+    "Fée"
+   ],
+   "stats": [
+    65,
+    100,
+    70,
+    80,
+    80,
+    105
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "79": [
+  {
+   "id": 10164,
+   "key": "slowpoke-galar",
+   "name": "Ramoloss de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    90,
+    65,
+    65,
+    40,
+    40,
+    15
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "80": [
+  {
+   "id": 10165,
+   "key": "slowbro-galar",
+   "name": "Flagadoss de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Poison",
+    "Psy"
+   ],
+   "stats": [
+    95,
+    100,
+    95,
+    100,
+    70,
+    30
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10071,
+   "key": "slowbro-mega",
+   "name": "Méga-Flagadoss",
+   "label": "Méga-Flagadoss",
+   "kind": "mega",
+   "types": [
+    "Eau",
+    "Psy"
+   ],
+   "stats": [
+    95,
+    75,
+    180,
+    130,
+    80,
+    30
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "83": [
+  {
+   "id": 10166,
+   "key": "farfetchd-galar",
+   "name": "Canarticho de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Combat"
+   ],
+   "stats": [
+    52,
+    95,
+    55,
+    58,
+    62,
+    55
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "88": [
+  {
+   "id": 10112,
+   "key": "grimer-alola",
+   "name": "Tadmorv d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Poison",
+    "Ténèbres"
+   ],
+   "stats": [
+    80,
+    80,
+    50,
+    40,
+    50,
+    25
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "89": [
+  {
+   "id": 10113,
+   "key": "muk-alola",
+   "name": "Grotadmorv d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Poison",
+    "Ténèbres"
+   ],
+   "stats": [
+    105,
+    105,
+    75,
+    65,
+    100,
+    50
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "94": [
+  {
+   "id": 10038,
+   "key": "gengar-mega",
+   "name": "Méga-Ectoplasma",
+   "label": "Méga-Ectoplasma",
+   "kind": "mega",
+   "types": [
+    "Spectre",
+    "Poison"
+   ],
+   "stats": [
+    60,
+    65,
+    80,
+    170,
+    95,
+    130
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10202,
+   "key": "gengar-gmax",
+   "name": "Ectoplasma Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Spectre",
+    "Poison"
+   ],
+   "stats": [
+    60,
+    65,
+    60,
+    130,
+    75,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "99": [
+  {
+   "id": 10203,
+   "key": "kingler-gmax",
+   "name": "Krabboss Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    55,
+    130,
+    115,
+    50,
+    50,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "100": [
+  {
+   "id": 10231,
+   "key": "voltorb-hisui",
+   "name": "Voltorbe de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Électrik",
+    "Plante"
+   ],
+   "stats": [
+    40,
+    30,
+    50,
+    55,
+    55,
+    100
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "101": [
+  {
+   "id": 10232,
+   "key": "electrode-hisui",
+   "name": "Électrode de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Électrik",
+    "Plante"
+   ],
+   "stats": [
+    60,
+    50,
+    70,
+    80,
+    80,
+    150
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "103": [
+  {
+   "id": 10114,
+   "key": "exeggutor-alola",
+   "name": "Noadkoko d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Plante",
+    "Dragon"
+   ],
+   "stats": [
+    95,
+    105,
+    85,
+    125,
+    75,
+    45
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "105": [
+  {
+   "id": 10115,
+   "key": "marowak-alola",
+   "name": "Ossatueur d’Alola",
+   "label": "Forme d’Alola",
+   "kind": "alola",
+   "types": [
+    "Feu",
+    "Spectre"
+   ],
+   "stats": [
+    60,
+    80,
+    110,
+    50,
+    80,
+    45
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "110": [
+  {
+   "id": 10167,
+   "key": "weezing-galar",
+   "name": "Smogogo de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Poison",
+    "Fée"
+   ],
+   "stats": [
+    65,
+    90,
+    120,
+    85,
+    70,
+    60
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "115": [
+  {
+   "id": 10039,
+   "key": "kangaskhan-mega",
+   "name": "Méga-Kangourex",
+   "label": "Méga-Kangourex",
+   "kind": "mega",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    105,
+    125,
+    100,
+    60,
+    100,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "121": [
+  {
+   "id": 10280,
+   "key": "starmie-mega",
+   "name": "Méga-Staross",
+   "label": "Méga-Staross",
+   "kind": "mega",
+   "types": [
+    "Eau",
+    "Psy"
+   ],
+   "stats": [
+    60,
+    100,
+    105,
+    130,
+    105,
+    120
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "122": [
+  {
+   "id": 10168,
+   "key": "mr-mime-galar",
+   "name": "M. Mime de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Glace",
+    "Psy"
+   ],
+   "stats": [
+    50,
+    65,
+    65,
+    90,
+    90,
+    100
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "127": [
+  {
+   "id": 10040,
+   "key": "pinsir-mega",
+   "name": "Méga-Scarabrute",
+   "label": "Méga-Scarabrute",
+   "kind": "mega",
+   "types": [
+    "Insecte",
+    "Vol"
+   ],
+   "stats": [
+    65,
+    155,
+    120,
+    65,
+    90,
+    105
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "128": [
+  {
+   "id": 10250,
+   "key": "tauros-paldea-combat-breed",
+   "name": "Tauros de Paldéa Race Combative",
+   "label": "Forme de Paldéa",
+   "kind": "paldea",
+   "types": [
+    "Combat"
+   ],
+   "stats": [
+    75,
+    110,
+    105,
+    30,
+    70,
+    100
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10251,
+   "key": "tauros-paldea-blaze-breed",
+   "name": "Tauros de Paldéa Race Flamboyante",
+   "label": "Forme de Paldéa",
+   "kind": "paldea",
+   "types": [
+    "Combat",
+    "Feu"
+   ],
+   "stats": [
+    75,
+    110,
+    105,
+    30,
+    70,
+    100
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10252,
+   "key": "tauros-paldea-aqua-breed",
+   "name": "Tauros de Paldéa Race Aquatique",
+   "label": "Forme de Paldéa",
+   "kind": "paldea",
+   "types": [
+    "Combat",
+    "Eau"
+   ],
+   "stats": [
+    75,
+    110,
+    105,
+    30,
+    70,
+    100
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "130": [
+  {
+   "id": 10041,
+   "key": "gyarados-mega",
+   "name": "Méga-Léviator",
+   "label": "Méga-Léviator",
+   "kind": "mega",
+   "types": [
+    "Eau",
+    "Ténèbres"
+   ],
+   "stats": [
+    95,
+    155,
+    109,
+    70,
+    130,
+    81
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "131": [
+  {
+   "id": 10204,
+   "key": "lapras-gmax",
+   "name": "Lokhlass Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Eau",
+    "Glace"
+   ],
+   "stats": [
+    130,
+    85,
+    80,
+    85,
+    95,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "133": [
+  {
+   "id": 10205,
+   "key": "eevee-gmax",
+   "name": "Évoli Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    55,
+    55,
+    50,
+    45,
+    65,
+    55
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10159,
+   "key": "eevee-starter",
+   "name": "Évoli Partenaire",
+   "label": "Autre forme",
+   "kind": "other",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    65,
+    75,
+    70,
+    65,
+    85,
+    75
+   ],
+   "battleOnly": 0,
+   "since": "lets-go-pikachu-lets-go-eevee",
+   "sprites": {
+    "home": 0,
+    "homeShiny": 0,
+    "art": 1,
+    "artShiny": 0
+   }
+  }
+ ],
+ "142": [
+  {
+   "id": 10042,
+   "key": "aerodactyl-mega",
+   "name": "Méga-Ptéra",
+   "label": "Méga-Ptéra",
+   "kind": "mega",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    80,
+    135,
+    85,
+    70,
+    95,
+    150
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "143": [
+  {
+   "id": 10206,
+   "key": "snorlax-gmax",
+   "name": "Ronflex Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Normal"
+   ],
+   "stats": [
+    160,
+    110,
+    65,
+    65,
+    110,
+    30
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "144": [
+  {
+   "id": 10169,
+   "key": "articuno-galar",
+   "name": "Artikodin de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Psy",
+    "Vol"
+   ],
+   "stats": [
+    90,
+    85,
+    85,
+    125,
+    100,
+    95
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "145": [
+  {
+   "id": 10170,
+   "key": "zapdos-galar",
+   "name": "Électhor de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Combat",
+    "Vol"
+   ],
+   "stats": [
+    90,
+    125,
+    90,
+    85,
+    90,
+    100
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "146": [
+  {
+   "id": 10171,
+   "key": "moltres-galar",
+   "name": "Sulfura de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Ténèbres",
+    "Vol"
+   ],
+   "stats": [
+    90,
+    85,
+    90,
+    100,
+    125,
+    90
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "149": [
+  {
+   "id": 10281,
+   "key": "dragonite-mega",
+   "name": "Méga-Dracolosse",
+   "label": "Méga-Dracolosse",
+   "kind": "mega",
+   "types": [
+    "Dragon",
+    "Vol"
+   ],
+   "stats": [
+    91,
+    124,
+    115,
+    145,
+    125,
+    100
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "150": [
+  {
+   "id": 10043,
+   "key": "mewtwo-mega-x",
+   "name": "Méga-Mewtwo X",
+   "label": "Méga-Mewtwo X",
+   "kind": "mega",
+   "types": [
+    "Psy",
+    "Combat"
+   ],
+   "stats": [
+    106,
+    190,
+    100,
+    154,
+    100,
+    130
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10044,
+   "key": "mewtwo-mega-y",
+   "name": "Méga-Mewtwo Y",
+   "label": "Méga-Mewtwo Y",
+   "kind": "mega",
+   "types": [
+    "Psy"
+   ],
+   "stats": [
+    106,
+    150,
+    70,
+    194,
+    120,
+    140
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ]
+}

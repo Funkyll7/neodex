@@ -1,0 +1,915 @@
+{
+ "724": [
+  {
+   "id": 10244,
+   "key": "decidueye-hisui",
+   "name": "Archéduc de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Plante",
+    "Combat"
+   ],
+   "stats": [
+    88,
+    112,
+    80,
+    95,
+    95,
+    60
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "740": [
+  {
+   "id": 10315,
+   "key": "crabominable-mega",
+   "name": "Méga-Crabominable",
+   "label": "Méga-Crabominable",
+   "kind": "mega",
+   "types": [
+    "Combat",
+    "Glace"
+   ],
+   "stats": [
+    97,
+    157,
+    122,
+    62,
+    107,
+    33
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "741": [
+  {
+   "id": 10123,
+   "key": "oricorio-pom-pom",
+   "name": "Plumeline Style Pom-Pom",
+   "label": "Style Pom-Pom",
+   "kind": "other",
+   "types": [
+    "Électrik",
+    "Vol"
+   ],
+   "stats": [
+    75,
+    70,
+    70,
+    98,
+    70,
+    93
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10124,
+   "key": "oricorio-pau",
+   "name": "Plumeline Style Hula",
+   "label": "Style Hula",
+   "kind": "other",
+   "types": [
+    "Psy",
+    "Vol"
+   ],
+   "stats": [
+    75,
+    70,
+    70,
+    98,
+    70,
+    93
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10125,
+   "key": "oricorio-sensu",
+   "name": "Plumeline Style Buyō",
+   "label": "Style Buyō",
+   "kind": "other",
+   "types": [
+    "Spectre",
+    "Vol"
+   ],
+   "stats": [
+    75,
+    70,
+    70,
+    98,
+    70,
+    93
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "744": [
+  {
+   "id": 10151,
+   "key": "rockruff-own-tempo",
+   "name": "Rocabot Tempo Perso",
+   "label": "Autre forme",
+   "kind": "other",
+   "types": [
+    "Roche"
+   ],
+   "stats": [
+    45,
+    65,
+    40,
+    30,
+    40,
+    60
+   ],
+   "battleOnly": 0,
+   "since": "ultra-sun-ultra-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "745": [
+  {
+   "id": 10126,
+   "key": "lycanroc-midnight",
+   "name": "Lougaroc Forme Nocturne",
+   "label": "Forme Nocturne",
+   "kind": "other",
+   "types": [
+    "Roche"
+   ],
+   "stats": [
+    85,
+    115,
+    75,
+    55,
+    75,
+    82
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10152,
+   "key": "lycanroc-dusk",
+   "name": "Lougaroc Forme Crépusculaire",
+   "label": "Forme Crépusculaire",
+   "kind": "other",
+   "types": [
+    "Roche"
+   ],
+   "stats": [
+    75,
+    117,
+    65,
+    55,
+    65,
+    110
+   ],
+   "battleOnly": 0,
+   "since": "ultra-sun-ultra-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "746": [
+  {
+   "id": 10127,
+   "key": "wishiwashi-school",
+   "name": "Froussardine Forme Banc",
+   "label": "Forme Banc",
+   "kind": "battle",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    45,
+    140,
+    130,
+    140,
+    135,
+    30
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "768": [
+  {
+   "id": 10316,
+   "key": "golisopod-mega",
+   "name": "Méga-Sarmuraï",
+   "label": "Méga-Sarmuraï",
+   "kind": "mega",
+   "types": [
+    "Insecte",
+    "Acier"
+   ],
+   "stats": [
+    75,
+    150,
+    175,
+    70,
+    120,
+    40
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "774": [
+  {
+   "id": 10130,
+   "key": "minior-orange-meteor",
+   "name": "Météno Forme Météore Noyeau Orange",
+   "label": "Forme Météore",
+   "kind": "battle",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    60,
+    100,
+    60,
+    100,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10131,
+   "key": "minior-yellow-meteor",
+   "name": "Météno Forme Météore Noyeau Jaune",
+   "label": "Forme Météore",
+   "kind": "battle",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    60,
+    100,
+    60,
+    100,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10132,
+   "key": "minior-green-meteor",
+   "name": "Météno Forme Météore Noyeau Vert",
+   "label": "Forme Météore",
+   "kind": "battle",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    60,
+    100,
+    60,
+    100,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10133,
+   "key": "minior-blue-meteor",
+   "name": "Météno Forme Météore Noyeau Bleu",
+   "label": "Forme Météore",
+   "kind": "battle",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    60,
+    100,
+    60,
+    100,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10134,
+   "key": "minior-indigo-meteor",
+   "name": "Météno Forme Météore Noyeau Indigo",
+   "label": "Forme Météore",
+   "kind": "battle",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    60,
+    100,
+    60,
+    100,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10135,
+   "key": "minior-violet-meteor",
+   "name": "Météno Forme Météore Noyeau Violet",
+   "label": "Forme Météore",
+   "kind": "battle",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    60,
+    100,
+    60,
+    100,
+    60
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10136,
+   "key": "minior-red",
+   "name": "Météno Noyeau Rouge",
+   "label": "Noyau Rouge",
+   "kind": "other",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    100,
+    60,
+    100,
+    60,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10137,
+   "key": "minior-orange",
+   "name": "Météno Noyeau Orange",
+   "label": "Noyau Orange",
+   "kind": "other",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    100,
+    60,
+    100,
+    60,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10138,
+   "key": "minior-yellow",
+   "name": "Météno Noyeau Jaune",
+   "label": "Noyau Jaune",
+   "kind": "other",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    100,
+    60,
+    100,
+    60,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10139,
+   "key": "minior-green",
+   "name": "Météno Noyeau Vert",
+   "label": "Noyau Vert",
+   "kind": "other",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    100,
+    60,
+    100,
+    60,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10140,
+   "key": "minior-blue",
+   "name": "Météno Noyeau Bleu",
+   "label": "Noyau Bleu",
+   "kind": "other",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    100,
+    60,
+    100,
+    60,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10141,
+   "key": "minior-indigo",
+   "name": "Météno Noyeau Indigo",
+   "label": "Noyau Indigo",
+   "kind": "other",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    100,
+    60,
+    100,
+    60,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10142,
+   "key": "minior-violet",
+   "name": "Météno Noyeau Violet",
+   "label": "Noyau Violet",
+   "kind": "other",
+   "types": [
+    "Roche",
+    "Vol"
+   ],
+   "stats": [
+    60,
+    100,
+    60,
+    100,
+    60,
+    120
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "778": [
+  {
+   "id": 10143,
+   "key": "mimikyu-busted",
+   "name": "Mimiqui Forme Démasquée",
+   "label": "Forme Démasquée",
+   "kind": "battle",
+   "types": [
+    "Spectre",
+    "Fée"
+   ],
+   "stats": [
+    55,
+    90,
+    80,
+    50,
+    105,
+    96
+   ],
+   "battleOnly": 1,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 0,
+    "artShiny": 0
+   }
+  }
+ ],
+ "780": [
+  {
+   "id": 10302,
+   "key": "drampa-mega",
+   "name": "Méga-Draïeul",
+   "label": "Méga-Draïeul",
+   "kind": "mega",
+   "types": [
+    "Normal",
+    "Dragon"
+   ],
+   "stats": [
+    78,
+    85,
+    110,
+    160,
+    116,
+    36
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "800": [
+  {
+   "id": 10157,
+   "key": "necrozma-ultra",
+   "name": "Ultra-Necrozma",
+   "label": "Ultra-Necrozma",
+   "kind": "battle",
+   "types": [
+    "Psy",
+    "Dragon"
+   ],
+   "stats": [
+    97,
+    167,
+    97,
+    167,
+    97,
+    129
+   ],
+   "battleOnly": 1,
+   "since": "ultra-sun-ultra-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10155,
+   "key": "necrozma-dusk",
+   "name": "Necrozma Crinière du Couchant",
+   "label": "Crinière du Couchant",
+   "kind": "other",
+   "types": [
+    "Psy",
+    "Acier"
+   ],
+   "stats": [
+    97,
+    157,
+    127,
+    113,
+    109,
+    77
+   ],
+   "battleOnly": 0,
+   "since": "ultra-sun-ultra-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10156,
+   "key": "necrozma-dawn",
+   "name": "Necrozma Ailes de l’Aurore",
+   "label": "Ailes de l’Aurore",
+   "kind": "other",
+   "types": [
+    "Psy",
+    "Spectre"
+   ],
+   "stats": [
+    97,
+    113,
+    109,
+    157,
+    127,
+    77
+   ],
+   "battleOnly": 0,
+   "since": "ultra-sun-ultra-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "801": [
+  {
+   "id": 10317,
+   "key": "magearna-mega",
+   "name": "Méga-Magearna",
+   "label": "Méga-Magearna",
+   "kind": "mega",
+   "types": [
+    "Acier",
+    "Fée"
+   ],
+   "stats": [
+    80,
+    125,
+    115,
+    170,
+    115,
+    95
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10318,
+   "key": "magearna-original-mega",
+   "name": "Méga-Magearna Couleur du Passé",
+   "label": "Méga-Magearna Couleur du Passé",
+   "kind": "mega",
+   "types": [
+    "Acier",
+    "Fée"
+   ],
+   "stats": [
+    80,
+    125,
+    115,
+    170,
+    115,
+    95
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 0
+   }
+  },
+  {
+   "id": 10147,
+   "key": "magearna-original",
+   "name": "Magearna Couleur du Passé",
+   "label": "Couleur du Passé",
+   "kind": "other",
+   "types": [
+    "Acier",
+    "Fée"
+   ],
+   "stats": [
+    80,
+    95,
+    115,
+    130,
+    115,
+    65
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "807": [
+  {
+   "id": 10319,
+   "key": "zeraora-mega",
+   "name": "Méga-Zeraora",
+   "label": "Méga-Zeraora",
+   "kind": "mega",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    88,
+    157,
+    75,
+    147,
+    80,
+    153
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "809": [
+  {
+   "id": 10208,
+   "key": "melmetal-gmax",
+   "name": "Melmetal Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Acier"
+   ],
+   "stats": [
+    135,
+    143,
+    143,
+    80,
+    65,
+    34
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ]
+}

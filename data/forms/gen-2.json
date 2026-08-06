@@ -1,0 +1,436 @@
+{
+ "154": [
+  {
+   "id": 10282,
+   "key": "meganium-mega",
+   "name": "Méga-Méganium",
+   "label": "Méga-Méganium",
+   "kind": "mega",
+   "types": [
+    "Plante",
+    "Fée"
+   ],
+   "stats": [
+    80,
+    92,
+    115,
+    143,
+    115,
+    80
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "157": [
+  {
+   "id": 10233,
+   "key": "typhlosion-hisui",
+   "name": "Typhlosion de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Feu",
+    "Spectre"
+   ],
+   "stats": [
+    73,
+    84,
+    78,
+    119,
+    85,
+    95
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "160": [
+  {
+   "id": 10283,
+   "key": "feraligatr-mega",
+   "name": "Méga-Aligatueur",
+   "label": "Méga-Aligatueur",
+   "kind": "mega",
+   "types": [
+    "Eau",
+    "Dragon"
+   ],
+   "stats": [
+    85,
+    160,
+    125,
+    89,
+    93,
+    78
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "181": [
+  {
+   "id": 10045,
+   "key": "ampharos-mega",
+   "name": "Méga-Pharamp",
+   "label": "Méga-Pharamp",
+   "kind": "mega",
+   "types": [
+    "Électrik",
+    "Dragon"
+   ],
+   "stats": [
+    90,
+    95,
+    105,
+    165,
+    110,
+    45
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "194": [
+  {
+   "id": 10253,
+   "key": "wooper-paldea",
+   "name": "Axoloto de Paldéa",
+   "label": "Forme de Paldéa",
+   "kind": "paldea",
+   "types": [
+    "Poison",
+    "Sol"
+   ],
+   "stats": [
+    55,
+    45,
+    45,
+    25,
+    25,
+    15
+   ],
+   "battleOnly": 0,
+   "since": "scarlet-violet",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "199": [
+  {
+   "id": 10172,
+   "key": "slowking-galar",
+   "name": "Roigada de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Poison",
+    "Psy"
+   ],
+   "stats": [
+    95,
+    65,
+    80,
+    110,
+    110,
+    30
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "208": [
+  {
+   "id": 10072,
+   "key": "steelix-mega",
+   "name": "Méga-Steelix",
+   "label": "Méga-Steelix",
+   "kind": "mega",
+   "types": [
+    "Acier",
+    "Sol"
+   ],
+   "stats": [
+    75,
+    125,
+    230,
+    55,
+    95,
+    30
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "211": [
+  {
+   "id": 10234,
+   "key": "qwilfish-hisui",
+   "name": "Qwilfish de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Ténèbres",
+    "Poison"
+   ],
+   "stats": [
+    65,
+    95,
+    85,
+    55,
+    55,
+    85
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "212": [
+  {
+   "id": 10046,
+   "key": "scizor-mega",
+   "name": "Méga-Cizayox",
+   "label": "Méga-Cizayox",
+   "kind": "mega",
+   "types": [
+    "Insecte",
+    "Acier"
+   ],
+   "stats": [
+    70,
+    150,
+    140,
+    65,
+    100,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "214": [
+  {
+   "id": 10047,
+   "key": "heracross-mega",
+   "name": "Méga-Scarhino",
+   "label": "Méga-Scarhino",
+   "kind": "mega",
+   "types": [
+    "Insecte",
+    "Combat"
+   ],
+   "stats": [
+    80,
+    185,
+    115,
+    40,
+    105,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "215": [
+  {
+   "id": 10235,
+   "key": "sneasel-hisui",
+   "name": "Farfuret de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Combat",
+    "Poison"
+   ],
+   "stats": [
+    55,
+    95,
+    55,
+    35,
+    75,
+    115
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "222": [
+  {
+   "id": 10173,
+   "key": "corsola-galar",
+   "name": "Corayon de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Spectre"
+   ],
+   "stats": [
+    60,
+    55,
+    100,
+    65,
+    100,
+    30
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "227": [
+  {
+   "id": 10284,
+   "key": "skarmory-mega",
+   "name": "Méga-Airmure",
+   "label": "Méga-Airmure",
+   "kind": "mega",
+   "types": [
+    "Acier",
+    "Vol"
+   ],
+   "stats": [
+    65,
+    140,
+    110,
+    40,
+    100,
+    110
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "229": [
+  {
+   "id": 10048,
+   "key": "houndoom-mega",
+   "name": "Méga-Démolosse",
+   "label": "Méga-Démolosse",
+   "kind": "mega",
+   "types": [
+    "Ténèbres",
+    "Feu"
+   ],
+   "stats": [
+    75,
+    90,
+    90,
+    140,
+    90,
+    115
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "248": [
+  {
+   "id": 10049,
+   "key": "tyranitar-mega",
+   "name": "Méga-Tyranocif",
+   "label": "Méga-Tyranocif",
+   "kind": "mega",
+   "types": [
+    "Roche",
+    "Ténèbres"
+   ],
+   "stats": [
+    100,
+    164,
+    150,
+    95,
+    120,
+    71
+   ],
+   "battleOnly": 1,
+   "since": "x-y",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ]
+}

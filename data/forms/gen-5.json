@@ -1,0 +1,828 @@
+{
+ "500": [
+  {
+   "id": 10286,
+   "key": "emboar-mega",
+   "name": "Méga-Roitiflam",
+   "label": "Méga-Roitiflam",
+   "kind": "mega",
+   "types": [
+    "Feu",
+    "Combat"
+   ],
+   "stats": [
+    110,
+    148,
+    75,
+    110,
+    110,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "503": [
+  {
+   "id": 10236,
+   "key": "samurott-hisui",
+   "name": "Clamiral de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Eau",
+    "Ténèbres"
+   ],
+   "stats": [
+    90,
+    108,
+    80,
+    100,
+    65,
+    85
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "530": [
+  {
+   "id": 10287,
+   "key": "excadrill-mega",
+   "name": "Méga-Minotaupe",
+   "label": "Méga-Minotaupe",
+   "kind": "mega",
+   "types": [
+    "Sol",
+    "Acier"
+   ],
+   "stats": [
+    110,
+    165,
+    100,
+    65,
+    65,
+    103
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "531": [
+  {
+   "id": 10069,
+   "key": "audino-mega",
+   "name": "Méga-Nanméouïe",
+   "label": "Méga-Nanméouïe",
+   "kind": "mega",
+   "types": [
+    "Normal",
+    "Fée"
+   ],
+   "stats": [
+    103,
+    60,
+    126,
+    80,
+    126,
+    50
+   ],
+   "battleOnly": 1,
+   "since": "omega-ruby-alpha-sapphire",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "545": [
+  {
+   "id": 10288,
+   "key": "scolipede-mega",
+   "name": "Méga-Brutapode",
+   "label": "Méga-Brutapode",
+   "kind": "mega",
+   "types": [
+    "Insecte",
+    "Poison"
+   ],
+   "stats": [
+    60,
+    140,
+    149,
+    75,
+    99,
+    62
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "549": [
+  {
+   "id": 10237,
+   "key": "lilligant-hisui",
+   "name": "Fragilady de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Plante",
+    "Combat"
+   ],
+   "stats": [
+    70,
+    105,
+    75,
+    50,
+    75,
+    105
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "550": [
+  {
+   "id": 10016,
+   "key": "basculin-blue-striped",
+   "name": "Bargantua Bleu",
+   "label": "Motif Bleu",
+   "kind": "other",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    70,
+    92,
+    65,
+    80,
+    55,
+    98
+   ],
+   "battleOnly": 0,
+   "since": "black-white",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10247,
+   "key": "basculin-white-striped",
+   "name": "Bargantua Blanc",
+   "label": "Motif Blanc",
+   "kind": "other",
+   "types": [
+    "Eau"
+   ],
+   "stats": [
+    70,
+    92,
+    65,
+    80,
+    55,
+    98
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "554": [
+  {
+   "id": 10176,
+   "key": "darumaka-galar",
+   "name": "Darumarond de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Glace"
+   ],
+   "stats": [
+    70,
+    90,
+    45,
+    15,
+    45,
+    50
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "555": [
+  {
+   "id": 10177,
+   "key": "darmanitan-galar-standard",
+   "name": "Darumacho de Galar Normal",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Glace"
+   ],
+   "stats": [
+    105,
+    140,
+    55,
+    30,
+    55,
+    95
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10178,
+   "key": "darmanitan-galar-zen",
+   "name": "Darumacho de Galar Transe",
+   "label": "Mode Transe",
+   "kind": "galar",
+   "types": [
+    "Glace",
+    "Feu"
+   ],
+   "stats": [
+    105,
+    160,
+    55,
+    30,
+    55,
+    135
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10017,
+   "key": "darmanitan-zen",
+   "name": "Darumacho Transe",
+   "label": "Mode Transe",
+   "kind": "battle",
+   "types": [
+    "Feu",
+    "Psy"
+   ],
+   "stats": [
+    105,
+    30,
+    105,
+    140,
+    105,
+    55
+   ],
+   "battleOnly": 1,
+   "since": "black-white",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "560": [
+  {
+   "id": 10289,
+   "key": "scrafty-mega",
+   "name": "Méga-Baggaïd",
+   "label": "Méga-Baggaïd",
+   "kind": "mega",
+   "types": [
+    "Ténèbres",
+    "Combat"
+   ],
+   "stats": [
+    65,
+    130,
+    135,
+    55,
+    135,
+    68
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "562": [
+  {
+   "id": 10179,
+   "key": "yamask-galar",
+   "name": "Tutafeh de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Sol",
+    "Spectre"
+   ],
+   "stats": [
+    38,
+    55,
+    85,
+    30,
+    65,
+    30
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "569": [
+  {
+   "id": 10207,
+   "key": "garbodor-gmax",
+   "name": "Miasmax Gigamax",
+   "label": "Forme Gigamax",
+   "kind": "gmax",
+   "types": [
+    "Poison"
+   ],
+   "stats": [
+    80,
+    95,
+    82,
+    60,
+    82,
+    75
+   ],
+   "battleOnly": 1,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "570": [
+  {
+   "id": 10238,
+   "key": "zorua-hisui",
+   "name": "Zorua de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Normal",
+    "Spectre"
+   ],
+   "stats": [
+    35,
+    60,
+    40,
+    85,
+    40,
+    70
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "571": [
+  {
+   "id": 10239,
+   "key": "zoroark-hisui",
+   "name": "Zoroark de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Normal",
+    "Spectre"
+   ],
+   "stats": [
+    55,
+    100,
+    60,
+    125,
+    60,
+    110
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "604": [
+  {
+   "id": 10290,
+   "key": "eelektross-mega",
+   "name": "Méga-Ohmassacre",
+   "label": "Méga-Ohmassacre",
+   "kind": "mega",
+   "types": [
+    "Électrik"
+   ],
+   "stats": [
+    85,
+    145,
+    80,
+    135,
+    90,
+    80
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "609": [
+  {
+   "id": 10291,
+   "key": "chandelure-mega",
+   "name": "Méga-Lugulabre",
+   "label": "Méga-Lugulabre",
+   "kind": "mega",
+   "types": [
+    "Spectre",
+    "Feu"
+   ],
+   "stats": [
+    60,
+    75,
+    110,
+    175,
+    110,
+    90
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "618": [
+  {
+   "id": 10180,
+   "key": "stunfisk-galar",
+   "name": "Limonde de Galar",
+   "label": "Forme de Galar",
+   "kind": "galar",
+   "types": [
+    "Sol",
+    "Acier"
+   ],
+   "stats": [
+    109,
+    81,
+    99,
+    66,
+    84,
+    32
+   ],
+   "battleOnly": 0,
+   "since": "sword-shield",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "623": [
+  {
+   "id": 10313,
+   "key": "golurk-mega",
+   "name": "Méga-Golemastoc",
+   "label": "Méga-Golemastoc",
+   "kind": "mega",
+   "types": [
+    "Sol",
+    "Spectre"
+   ],
+   "stats": [
+    89,
+    159,
+    105,
+    70,
+    105,
+    55
+   ],
+   "battleOnly": 1,
+   "since": "mega-dimension",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "628": [
+  {
+   "id": 10240,
+   "key": "braviary-hisui",
+   "name": "Gueriaigle de Hisui",
+   "label": "Forme de Hisui",
+   "kind": "hisui",
+   "types": [
+    "Psy",
+    "Vol"
+   ],
+   "stats": [
+    110,
+    83,
+    70,
+    112,
+    70,
+    65
+   ],
+   "battleOnly": 0,
+   "since": "legends-arceus",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "641": [
+  {
+   "id": 10019,
+   "key": "tornadus-therian",
+   "name": "Boréas Totémique",
+   "label": "Forme Totémique",
+   "kind": "other",
+   "types": [
+    "Vol"
+   ],
+   "stats": [
+    79,
+    100,
+    80,
+    110,
+    90,
+    121
+   ],
+   "battleOnly": 0,
+   "since": "black-2-white-2",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "642": [
+  {
+   "id": 10020,
+   "key": "thundurus-therian",
+   "name": "Fulguris Totémique",
+   "label": "Forme Totémique",
+   "kind": "other",
+   "types": [
+    "Électrik",
+    "Vol"
+   ],
+   "stats": [
+    79,
+    105,
+    70,
+    145,
+    80,
+    101
+   ],
+   "battleOnly": 0,
+   "since": "black-2-white-2",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "645": [
+  {
+   "id": 10021,
+   "key": "landorus-therian",
+   "name": "Démétéros Totémique",
+   "label": "Forme Totémique",
+   "kind": "other",
+   "types": [
+    "Sol",
+    "Vol"
+   ],
+   "stats": [
+    89,
+    145,
+    90,
+    105,
+    80,
+    91
+   ],
+   "battleOnly": 0,
+   "since": "black-2-white-2",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "646": [
+  {
+   "id": 10022,
+   "key": "kyurem-black",
+   "name": "Kyurem Noir",
+   "label": "Kyurem Noir",
+   "kind": "other",
+   "types": [
+    "Dragon",
+    "Glace"
+   ],
+   "stats": [
+    125,
+    170,
+    100,
+    120,
+    90,
+    95
+   ],
+   "battleOnly": 0,
+   "since": "black-2-white-2",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
+   "id": 10023,
+   "key": "kyurem-white",
+   "name": "Kyurem Blanc",
+   "label": "Kyurem Blanc",
+   "kind": "other",
+   "types": [
+    "Dragon",
+    "Glace"
+   ],
+   "stats": [
+    125,
+    120,
+    90,
+    170,
+    100,
+    95
+   ],
+   "battleOnly": 0,
+   "since": "black-2-white-2",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "647": [
+  {
+   "id": 10024,
+   "key": "keldeo-resolute",
+   "name": "Keldeo Décidé",
+   "label": "Aspect Décidé",
+   "kind": "other",
+   "types": [
+    "Eau",
+    "Combat"
+   ],
+   "stats": [
+    91,
+    72,
+    90,
+    129,
+    90,
+    108
+   ],
+   "battleOnly": 0,
+   "since": "black-2-white-2",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ],
+ "648": [
+  {
+   "id": 10018,
+   "key": "meloetta-pirouette",
+   "name": "Meloetta Danse",
+   "label": "Forme Danse",
+   "kind": "battle",
+   "types": [
+    "Normal",
+    "Combat"
+   ],
+   "stats": [
+    100,
+    128,
+    90,
+    77,
+    77,
+    128
+   ],
+   "battleOnly": 1,
+   "since": "black-white",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  }
+ ]
+}

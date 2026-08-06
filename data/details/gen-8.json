@@ -1,12 +1,7 @@
 {
  "812": {
   "where": "Évolution de Badabouin au niveau 35 (Épée/Bouclier).",
-  "gm": "swsh sv",
-  "variant": {
-   "name": "Gorythmic Gigamax",
-   "id": 10217,
-   "where": "Raid Gigamax dans les Terres Sauvages (Épée/Bouclier)."
-  }
+  "gm": "swsh sv"
  },
  "887": {
   "where": "Évolution de Dispareptil au niveau 60 (Épée/Bouclier).",
@@ -15,7 +10,10 @@
  "888": {
   "where": "Temple de l'Épée, Couronneige — intrigue principale (Pokémon Épée).",
   "gm": "swsh",
-  "ev": "sv",
-  "nsh": "swsh"
+  "ev": "sv"
+ },
+ "889": {
+  "gm": "sv",
+  "where": "Zamazenta : intrigue d'Épée/Bouclier, puis Tréfonds de l'Aire Zéro dans le DLC Le Disque Indigo — et là, le chromatique est possible."
  }
 }

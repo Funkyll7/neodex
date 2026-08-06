@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-08-06T21:48:16Z",
+  "source": "PokeAPI (data/v2/csv) + PokeAPI/sprites",
+  "generator": "tools/build_forms.py",
+  "total": 304,
+  "byKind": {
+    "alola": 18,
+    "galar": 20,
+    "hisui": 16,
+    "paldea": 4,
+    "mega": 96,
+    "primal": 2,
+    "gmax": 34,
+    "cap": 14,
+    "battle": 26,
+    "other": 74
+  },
+  "kindLabels": {
+    "alola": "Forme d'Alola",
+    "galar": "Forme de Galar",
+    "hisui": "Forme de Hisui",
+    "paldea": "Forme de Paldéa",
+    "mega": "Méga-Évolution",
+    "primal": "Primo-Résurgence",
+    "gmax": "Forme Gigamax",
+    "cap": "Pikachu à casquette",
+    "battle": "Forme de combat",
+    "other": "Autre forme"
+  },
+  "kindOrder": [
+    "alola",
+    "galar",
+    "hisui",
+    "paldea",
+    "mega",
+    "primal",
+    "gmax",
+    "cap",
+    "battle",
+    "other"
+  ],
+  "withoutShinySprite": [
+    "eevee-starter",
+    "pikachu-cosplay",
+    "pikachu-starter",
+    "pikachu-world-cap"
+  ],
+  "generations": [
+    {
+      "gen": 1,
+      "file": "gen-1.json",
+      "species": 56,
+      "forms": 85
+    },
+    {
+      "gen": 2,
+      "file": "gen-2.json",
+      "species": 15,
+      "forms": 15
+    },
+    {
+      "gen": 3,
+      "file": "gen-3.json",
+      "species": 27,
+      "forms": 32
+    },
+    {
+      "gen": 4,
+      "file": "gen-4.json",
+      "species": 15,
+      "forms": 22
+    },
+    {
+      "gen": 5,
+      "file": "gen-5.json",
+      "species": 25,
+      "forms": 29
+    },
+    {
+      "gen": 6,
+      "file": "gen-6.json",
+      "species": 19,
+      "forms": 30
+    },
+    {
+      "gen": 7,
+      "file": "gen-7.json",
+      "species": 14,
+      "forms": 33
+    },
+    {
+      "gen": 8,
+      "file": "gen-8.json",
+      "species": 31,
+      "forms": 37
+    },
+    {
+      "gen": 9,
+      "file": "gen-9.json",
+      "species": 12,
+      "forms": 21
+    }
+  ]
+}

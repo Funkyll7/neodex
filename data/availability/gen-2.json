@@ -1,0 +1,402 @@
+{
+ "152": {
+  "gm": "gs c hgss bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "153": {
+  "gm": "gs c hgss bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "154": {
+  "gm": "gs c hgss bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "155": {
+  "gm": "gs c hgss bdsp pla sv",
+  "wild": "bdsp pla sv"
+ },
+ "156": {
+  "gm": "gs c hgss bdsp pla sv",
+  "wild": "bdsp pla sv"
+ },
+ "157": {
+  "gm": "gs c hgss bdsp pla sv",
+  "wild": "bdsp pla sv"
+ },
+ "158": {
+  "gm": "gs c hgss bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "159": {
+  "gm": "gs c hgss bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "160": {
+  "gm": "gs c hgss bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "161": {
+  "gm": "gs c hgss xy bdsp sv",
+  "wild": "gs c hgss xy bdsp sv"
+ },
+ "162": {
+  "gm": "gs c hgss xy bdsp sv",
+  "wild": "gs c hgss bdsp sv"
+ },
+ "163": {
+  "gm": "gs c dp pt hgss xy usum swsh bdsp sv",
+  "wild": "gs c dp pt hgss xy usum swsh bdsp sv"
+ },
+ "164": {
+  "gm": "gs c dp pt hgss xy usum swsh bdsp sv",
+  "wild": "gs c dp pt hgss xy usum swsh bdsp sv"
+ },
+ "165": {
+  "gm": "gs c hgss xy sm usum bdsp",
+  "wild": "gs c hgss xy sm usum bdsp"
+ },
+ "166": {
+  "gm": "gs c hgss xy sm usum bdsp",
+  "wild": "gs c hgss sm usum bdsp"
+ },
+ "167": {
+  "gm": "gs c hgss xy sm usum bdsp sv za",
+  "wild": "gs c hgss sm usum bdsp sv za"
+ },
+ "168": {
+  "gm": "gs c hgss xy sm usum bdsp sv za",
+  "wild": "gs c hgss xy sm usum bdsp sv za"
+ },
+ "169": {
+  "gm": "gs c rs e dp pt hgss b2w2 xy oras sm usum swsh bdsp pla za",
+  "wild": "b2w2 sm usum swsh bdsp pla za"
+ },
+ "170": {
+  "gm": "gs c rs e hgss xy oras sm usum swsh bdsp sv",
+  "wild": "gs c rs e hgss xy sm usum swsh bdsp sv"
+ },
+ "171": {
+  "gm": "gs c rs e hgss xy oras sm usum swsh bdsp sv",
+  "wild": "gs c hgss xy usum swsh bdsp sv"
+ },
+ "172": {
+  "gm": "gs c rs e dp pt hgss xy oras sm usum swsh bdsp pla sv za",
+  "wild": "dp pt sm usum swsh bdsp pla sv za"
+ },
+ "173": {
+  "gm": "gs c dp pt hgss b2w2 sm usum swsh bdsp pla sv za",
+  "wild": "dp pt sm usum swsh bdsp pla sv za"
+ },
+ "174": {
+  "gm": "gs c rs e hgss b2w2 xy oras sm usum swsh bdsp sv za",
+  "wild": "sm usum swsh bdsp sv za"
+ },
+ "175": {
+  "gm": "gs c pt hgss swsh bdsp pla",
+  "wild": "pt swsh bdsp pla"
+ },
+ "176": {
+  "gm": "gs c pt hgss swsh bdsp pla",
+  "wild": "swsh bdsp pla"
+ },
+ "177": {
+  "gm": "gs c rs e hgss oras usum swsh bdsp",
+  "wild": "gs c rs e hgss usum swsh bdsp"
+ },
+ "178": {
+  "gm": "gs c rs e hgss oras usum swsh bdsp",
+  "wild": "rs e oras usum swsh bdsp"
+ },
+ "179": {
+  "gm": "gs c hgss b2w2 xy usum bdsp sv za",
+  "wild": "gs hgss b2w2 xy usum bdsp sv za"
+ },
+ "180": {
+  "gm": "gs c hgss b2w2 xy usum bdsp sv za",
+  "wild": "gs hgss bdsp sv za"
+ },
+ "181": {
+  "gm": "gs c hgss b2w2 xy usum bdsp sv za",
+  "wild": "bdsp sv za"
+ },
+ "182": {
+  "gm": "gs c rs e hgss xy oras swsh bdsp sv",
+  "wild": "swsh bdsp sv"
+ },
+ "183": {
+  "gm": "gs c rs e dp pt hgss b2w2 xy oras swsh bdsp sv",
+  "wild": "gs c rs e dp pt hgss b2w2 xy oras swsh bdsp sv"
+ },
+ "184": {
+  "gm": "gs c rs e dp pt hgss b2w2 xy oras swsh bdsp sv",
+  "wild": "pt b2w2 xy swsh bdsp sv"
+ },
+ "185": {
+  "gm": "gs c dp pt hgss xy sm usum swsh bdsp pla sv",
+  "wild": "gs c dp pt hgss xy sm usum swsh bdsp pla sv"
+ },
+ "186": {
+  "gm": "gs c hgss xy sm usum swsh bdsp sv",
+  "wild": "xy sm usum swsh bdsp sv"
+ },
+ "187": {
+  "gm": "gs c hgss xy bdsp sv",
+  "wild": "gs c hgss xy bdsp sv"
+ },
+ "188": {
+  "gm": "gs c hgss xy bdsp sv",
+  "wild": "gs c hgss bdsp sv"
+ },
+ "189": {
+  "gm": "gs c hgss xy bdsp sv",
+  "wild": "hgss bdsp sv"
+ },
+ "190": {
+  "gm": "gs c dp pt hgss usum bdsp pla sv",
+  "wild": "gs c dp pt hgss usum bdsp pla sv"
+ },
+ "191": {
+  "gm": "gs c hgss b2w2 bdsp sv",
+  "wild": "gs c hgss b2w2 bdsp sv"
+ },
+ "192": {
+  "gm": "gs c hgss b2w2 bdsp sv",
+  "wild": "bdsp sv"
+ },
+ "193": {
+  "gm": "gs c pt hgss b2w2 xy bdsp pla sv",
+  "wild": "gs c pt hgss b2w2 xy bdsp pla sv"
+ },
+ "194": {
+  "gm": "gs c dp pt hgss xy swsh bdsp sv",
+  "wild": "gs c dp pt hgss xy swsh bdsp sv"
+ },
+ "195": {
+  "gm": "gs c dp pt hgss xy swsh bdsp sv",
+  "wild": "gs c dp pt hgss xy swsh bdsp sv"
+ },
+ "196": {
+  "gm": "gs c pt hgss b2w2 xy sm usum swsh bdsp pla sv za",
+  "wild": "sm usum swsh bdsp pla sv za"
+ },
+ "197": {
+  "gm": "gs c pt hgss b2w2 xy sm usum swsh bdsp pla sv za",
+  "wild": "sm usum swsh bdsp pla sv za"
+ },
+ "198": {
+  "gm": "gs c dp pt hgss xy sm usum bdsp pla sv",
+  "wild": "gs c dp hgss xy sm usum bdsp pla sv"
+ },
+ "199": {
+  "gm": "gs c hgss xy sm usum swsh bdsp sv za",
+  "wild": "usum swsh bdsp sv za"
+ },
+ "200": {
+  "gm": "gs c dp pt hgss sm usum bdsp pla sv",
+  "wild": "gs c dp hgss sm usum bdsp pla sv"
+ },
+ "201": {
+  "gm": "gs c dp pt hgss bdsp pla",
+  "wild": "gs c dp pt hgss bdsp pla"
+ },
+ "202": {
+  "gm": "gs c rs e hgss xy oras swsh bdsp",
+  "wild": "gs c rs e hgss xy swsh bdsp"
+ },
+ "203": {
+  "gm": "gs c rs e dp pt hgss oras bdsp sv",
+  "wild": "gs rs e dp pt hgss oras bdsp sv"
+ },
+ "204": {
+  "gm": "gs c hgss usum bdsp sv",
+  "wild": "gs c hgss usum bdsp sv"
+ },
+ "205": {
+  "gm": "gs c hgss usum bdsp sv",
+  "wild": "bdsp sv"
+ },
+ "206": {
+  "gm": "gs c hgss b2w2 xy usum swsh bdsp sv",
+  "wild": "gs c hgss b2w2 xy usum swsh bdsp sv"
+ },
+ "207": {
+  "gm": "gs c pt hgss b2w2 xy bdsp pla sv",
+  "wild": "gs c pt hgss b2w2 xy bdsp pla sv"
+ },
+ "208": {
+  "gm": "gs c dp pt hgss b2w2 xy swsh bdsp pla za",
+  "wild": "dp pt hgss b2w2 swsh bdsp pla za"
+ },
+ "209": {
+  "gm": "gs c hgss xy sm usum bdsp sv",
+  "wild": "gs c hgss xy bdsp sv"
+ },
+ "210": {
+  "gm": "gs c hgss xy sm usum bdsp sv",
+  "wild": "c sm usum bdsp sv"
+ },
+ "211": {
+  "gm": "gs c hgss xy swsh bdsp pla sv za",
+  "wild": "gs c hgss xy swsh bdsp pla sv za"
+ },
+ "212": {
+  "gm": "gs c pt hgss xy sm usum swsh bdsp pla sv za",
+  "wild": "swsh bdsp pla sv za"
+ },
+ "213": {
+  "gm": "gs c hgss b2w2 xy swsh bdsp",
+  "wild": "gs c hgss b2w2 xy swsh bdsp"
+ },
+ "214": {
+  "gm": "gs c rs e dp pt hgss b2w2 xy oras usum swsh bdsp pla sv za",
+  "wild": "gs c rs e dp pt hgss b2w2 xy usum swsh bdsp pla sv za"
+ },
+ "215": {
+  "gm": "gs c dp pt hgss b2w2 xy sm usum swsh bdsp pla sv",
+  "wild": "gs c dp pt hgss b2w2 xy sm usum swsh bdsp pla sv"
+ },
+ "216": {
+  "gm": "gs c hgss xy bdsp pla sv",
+  "wild": "gs c hgss xy bdsp pla sv"
+ },
+ "217": {
+  "gm": "gs c hgss xy bdsp pla sv",
+  "wild": "gs c hgss xy bdsp pla sv"
+ },
+ "218": {
+  "gm": "gs c rs e hgss xy oras bdsp sv",
+  "wild": "gs c rs e hgss xy oras bdsp sv"
+ },
+ "219": {
+  "gm": "gs c rs e hgss xy oras bdsp sv",
+  "wild": "xy bdsp sv"
+ },
+ "220": {
+  "gm": "gs c pt hgss b2w2 xy swsh bdsp pla sv",
+  "wild": "gs c pt hgss swsh bdsp pla sv"
+ },
+ "221": {
+  "gm": "gs c pt hgss b2w2 xy swsh bdsp pla sv",
+  "wild": "pt b2w2 xy swsh bdsp pla sv"
+ },
+ "222": {
+  "gm": "gs c rs e hgss b2w2 xy oras sm usum swsh bdsp",
+  "wild": "gs c rs e hgss b2w2 xy sm usum swsh bdsp"
+ },
+ "223": {
+  "gm": "gs c dp pt hgss b2w2 xy usum swsh bdsp pla",
+  "wild": "gs dp pt hgss b2w2 xy usum swsh bdsp pla"
+ },
+ "224": {
+  "gm": "gs c dp pt hgss b2w2 xy usum swsh bdsp pla",
+  "wild": "dp pt b2w2 xy usum swsh bdsp pla"
+ },
+ "225": {
+  "gm": "gs c hgss b2w2 xy sm usum swsh bdsp sv za",
+  "wild": "gs c hgss b2w2 xy sm usum swsh bdsp sv za"
+ },
+ "226": {
+  "gm": "gs c dp pt hgss b2w2 xy usum swsh bdsp pla",
+  "wild": "gs c hgss b2w2 swsh bdsp pla"
+ },
+ "227": {
+  "gm": "gs c rs e hgss b2w2 xy oras sm usum swsh bdsp sv za",
+  "wild": "gs c rs e hgss b2w2 xy oras sm usum swsh bdsp sv za"
+ },
+ "228": {
+  "gm": "gs c pt hgss xy usum bdsp sv za",
+  "wild": "gs c pt hgss xy bdsp sv za"
+ },
+ "229": {
+  "gm": "gs c pt hgss xy usum bdsp sv za",
+  "wild": "hgss usum bdsp sv za"
+ },
+ "230": {
+  "gm": "gs c rs e hgss xy oras swsh bdsp sv",
+  "wild": "swsh bdsp sv"
+ },
+ "231": {
+  "gm": "gs c rs e hgss oras bdsp sv",
+  "wild": "gs c rs e hgss bdsp sv"
+ },
+ "232": {
+  "gm": "gs c rs e hgss oras bdsp sv",
+  "wild": "gs c hgss oras bdsp sv"
+ },
+ "233": {
+  "gm": "gs c pt hgss sm usum swsh bdsp pla sv za",
+  "wild": "bdsp pla sv za"
+ },
+ "234": {
+  "gm": "gs c hgss bdsp pla sv",
+  "wild": "gs c hgss bdsp pla sv"
+ },
+ "235": {
+  "gm": "gs c hgss xy sm usum bdsp sv",
+  "wild": "gs c hgss xy sm usum bdsp sv"
+ },
+ "236": {
+  "gm": "gs c hgss swsh bdsp sv",
+  "wild": "swsh bdsp sv"
+ },
+ "237": {
+  "gm": "gs c hgss swsh bdsp sv",
+  "wild": "swsh bdsp sv"
+ },
+ "238": {
+  "gm": "gs c hgss xy usum swsh bdsp",
+  "wild": "xy usum swsh bdsp"
+ },
+ "239": {
+  "gm": "gs c pt hgss b2w2 sm usum swsh bdsp pla sv",
+  "wild": "b2w2 sm usum swsh bdsp pla sv"
+ },
+ "240": {
+  "gm": "gs c pt hgss b2w2 sm usum swsh bdsp pla sv",
+  "wild": "b2w2 sm usum swsh bdsp pla sv"
+ },
+ "241": {
+  "gm": "gs c hgss xy sm usum swsh bdsp",
+  "wild": "gs c hgss xy sm usum swsh bdsp"
+ },
+ "242": {
+  "gm": "gs c dp pt hgss sm usum swsh bdsp pla sv",
+  "wild": "usum swsh bdsp pla sv"
+ },
+ "243": {
+  "gm": "gs c hgss bdsp",
+  "wild": "gs c hgss"
+ },
+ "244": {
+  "gm": "gs c hgss bdsp",
+  "wild": "gs c hgss"
+ },
+ "245": {
+  "gm": "gs c hgss bdsp",
+  "wild": "gs c hgss"
+ },
+ "246": {
+  "gm": "gs c hgss b2w2 xy usum swsh bdsp sv za",
+  "wild": "gs c hgss xy usum swsh bdsp sv za"
+ },
+ "247": {
+  "gm": "gs c hgss b2w2 xy usum swsh bdsp sv za",
+  "wild": "c hgss b2w2 xy swsh bdsp sv za"
+ },
+ "248": {
+  "gm": "gs c hgss b2w2 xy usum swsh bdsp sv za",
+  "wild": "b2w2 swsh bdsp sv za"
+ },
+ "249": {
+  "gm": "gs c hgss bdsp",
+  "wild": "gs c hgss"
+ },
+ "250": {
+  "gm": "gs c hgss bdsp",
+  "wild": "gs c hgss"
+ },
+ "251": {
+  "ev": "gs c hgss",
+  "wild": "c"
+ }
+}
