@@ -16,6 +16,7 @@ import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
   const singleColumn = window.matchMedia("(max-width: 1180px)");
+  let shownId = null;
 
   return {
     /**
@@ -30,6 +31,13 @@ export function createDetailPanel(ctx) {
       root.style.setProperty("--c1", c1);
       root.style.setProperty("--c2", c2);
 
+      // Cocher une case reconstruit toute la fiche. Tant qu'on reste sur le
+      // meme Pokemon, on remet l'utilisateur exactement ou il etait : meme
+      // position de defilement, memes methodes depliees.
+      const sameSpecies = shownId === species.id;
+      const scroll = sameSpecies ? root.scrollTop : 0;
+      const opened = sameSpecies ? openedMethods(root) : null;
+
       fill(
         root,
         head(species, ctx, c1),
@@ -40,12 +48,29 @@ export function createDetailPanel(ctx) {
         infoSection(species, ctx),
         statsSection(species, ctx)
       );
-      root.scrollTop = 0;
-      if (reveal && singleColumn.matches) {
+
+      if (opened) restoreMethods(root, opened);
+      root.scrollTop = scroll;
+      shownId = species.id;
+
+      if (reveal && !sameSpecies && singleColumn.matches) {
         root.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     },
   };
+}
+
+/** Codes des jeux dont la marche a suivre est depliee. */
+function openedMethods(root) {
+  return new Set(
+    [...root.querySelectorAll(".method[open]")].map((node) => node.dataset.game)
+  );
+}
+
+function restoreMethods(root, opened) {
+  for (const node of root.querySelectorAll(".method")) {
+    if (opened.has(node.dataset.game)) node.open = true;
+  }
 }
 
 /* -------------------------------- entete --------------------------------- */
@@ -170,13 +195,28 @@ function formsSection(species, ctx) {
       "p.detail__help",
       "Chaque forme a son propre sprite normal et chromatique. Les Méga-Évolutions et les formes de combat ne sont que des transformations : elles reprennent le chromatique du Pokémon de base et ne se cochent pas."
     ),
-    ordered.map((kind) =>
-      el(
-        "div.forms__group",
-        el("h4.forms__title", KIND_TITLES[kind]),
-        el("div.forms__list", groups.get(kind).map((form) => formCard(form, species, ctx)))
-      )
-    )
+    ordered.map((kind) => formGroup(kind, groups.get(kind), species, ctx))
+  );
+}
+
+/**
+ * Un groupe de formes. Celles qu'on ne collectionne pas — Méga, formes de
+ * combat, casquettes — sont repliees par defaut : chez Pikachu elles font a
+ * elles seules quatorze cartes, et elles poussent le reste de la fiche hors de
+ * portee. Un clic sur le titre les rouvre.
+ */
+function formGroup(kind, forms, species, ctx) {
+  const cards = forms.map((form) => formCard(form, species, ctx));
+  const collapsible = !forms.some((form) => form.collectible) && forms.length > 2;
+  const title = `${KIND_TITLES[kind]} · ${forms.length}`;
+
+  if (!collapsible) {
+    return el("div.forms__group", el("h4.forms__title", title), el("div.forms__list", cards));
+  }
+  return el(
+    "details.forms__group.forms__group--fold",
+    el("summary.forms__title.forms__title--fold", title),
+    el("div.forms__list", cards)
   );
 }
 
@@ -394,6 +434,7 @@ function gameMethod(species, game, planner) {
   const method = planner.methodFor(game.code, species);
   const node = el(
     "details.method",
+    { dataset: { game: game.code } },
     el(
       "summary.method__head",
       el("span.method__game", game.name),

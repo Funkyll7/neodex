@@ -133,6 +133,17 @@ export class Collection {
     writeLocal(this.local);
   }
 
+  /**
+   * Ce qui vient d'etre ecrit dans le depot devient la nouvelle reference.
+   * La couche locale n'a alors plus rien a signaler : dirtyCount retombe a 0
+   * sans qu'on ait besoin de recharger la page.
+   */
+  commitLocal(marks) {
+    this.base = sanitize(marks);
+    this.local = {};
+    writeLocal(this.local);
+  }
+
   /** Oublie les modifications locales et revient au fichier de reference. */
   resetLocal() {
     this.local = {};

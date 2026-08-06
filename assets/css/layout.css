@@ -144,6 +144,9 @@
   }
   .sidebar[hidden] { display: none; }
 
-  .main { padding: var(--sp-4) var(--sp-4) 40px; }
-  .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: var(--sp-2); }
+  .main { padding: var(--sp-4) var(--sp-3) 40px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-3); }
 }
+
+/* Les surcharges mobiles qui touchent aux composants sont a la fin de
+   components.css : cette feuille-ci est chargee avant, elle perdrait. */

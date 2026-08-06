@@ -21,6 +21,21 @@ export const CONFIG = {
     marks: "neodex.marks.v1",
     quest: "neodex.quest.v1",
     prefs: "neodex.prefs.v1",
+    token: "neodex.github.v1",
+  },
+
+  /**
+   * Ecriture directe de data/collection.json dans le depot, depuis le site.
+   * Le jeton n'est pas ici : il est saisi dans la barre laterale et reste dans
+   * le localStorage de ce navigateur.
+   */
+  github: {
+    owner: "Funkyll7",
+    repo: "neodex",
+    branch: "main",
+    path: "data/collection.json",
+    /** Delai avant d'ecrire, pour regrouper une serie de cases cochees. */
+    delayMs: 4000,
   },
 
   /** Liens externes des fiches. */

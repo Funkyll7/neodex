@@ -25,6 +25,33 @@ Puis ouvrir <http://localhost:4173>.
 
 ---
 
+## Cocher depuis le site, sans exporter
+
+Le site peut écrire `data/collection.json` directement dans le dépôt. Il reste
+statique : c'est le navigateur qui parle à l'API GitHub.
+
+1. Créer un **jeton d'accès personnel à portée limitée** :
+   [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)
+   - *Repository access* : **Only select repositories** → `neodex`
+   - *Permissions* → *Repository permissions* → **Contents : Read and write**
+   - une expiration courte se renouvelle sans douleur, le site le redemandera
+2. Coller le jeton dans **Synchronisation**, dans la barre latérale du site.
+3. C'est fini. Chaque case cochée part dans le dépôt quelques secondes plus
+   tard, regroupée avec les suivantes pour ne pas faire un commit par clic.
+   Quitter l'onglet force l'envoi immédiat.
+
+Le jeton reste dans le `localStorage` de ce navigateur et n'est envoyé qu'à
+`api.github.com`. Le bouton **Oublier** l'efface. À ne pas faire sur un
+ordinateur partagé : donne-lui la portée la plus étroite possible, et rien
+d'autre que ce dépôt.
+
+**Recharger** récupère ce que contient le dépôt — pratique quand on a coché
+depuis le téléphone et qu'on reprend sur l'ordinateur.
+
+L'export / import reste disponible et fonctionne sans jeton.
+
+---
+
 ## Régénérer les données
 
 Rien de tout ceci n'est nécessaire pour simplement utiliser le site : les

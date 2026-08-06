@@ -92,6 +92,29 @@
       </ul>
     </section>
 
+    <section class="field" aria-label="Synchronisation GitHub">
+      <h2 class="panel__label">Synchronisation</h2>
+      <p id="sync-state" class="sync__state">Hors ligne</p>
+
+      <div id="sync-setup" class="sync__setup">
+        <p class="sync__help">
+          Colle un jeton GitHub à portée limitée pour que tes cases cochées
+          partent directement dans le dépôt, sans exporter.
+          <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Créer un jeton ↗</a>
+        </p>
+        <input type="password" id="sync-token" class="sync__input"
+               placeholder="github_pat_…" autocomplete="off" spellcheck="false"
+               aria-label="Jeton d'accès GitHub">
+        <button type="button" id="sync-connect" class="btn btn--ghost">Connecter</button>
+      </div>
+
+      <div id="sync-live" class="btn-row" hidden>
+        <button type="button" id="sync-now" class="btn btn--ghost">Enregistrer</button>
+        <button type="button" id="sync-pull" class="btn btn--ghost">Recharger</button>
+        <button type="button" id="sync-forget" class="btn btn--ghost btn--danger">Oublier</button>
+      </div>
+    </section>
+
     <section class="field" aria-label="Sauvegarde de la collection">
       <h2 class="panel__label">Ma sauvegarde</h2>
       <p id="dirty-note" class="dirty-note" hidden></p>

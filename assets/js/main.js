@@ -11,6 +11,7 @@ import { createStore, debounce } from "./core/store.js";
 import { el, fill } from "./core/dom.js";
 import { loadDataset } from "./core/data.js";
 import { Collection } from "./domain/collection.js";
+import { GitHubSync } from "./domain/sync.js";
 import { HuntPlanner } from "./domain/hunt.js";
 import { applyFilters } from "./domain/filters.js";
 import { initTheme } from "./ui/theme.js";
@@ -40,6 +41,7 @@ async function boot() {
 
 function start(dataset) {
   const collection = new Collection(dataset.baseCollection);
+  const sync = new GitHubSync(collection);
   const planner = new HuntPlanner(dataset);
   const store = createStore({
     tab: "dex",
@@ -57,10 +59,13 @@ function start(dataset) {
   const ctx = {
     dataset,
     collection,
+    sync,
     planner,
     store,
     onToggle: (id, slot) => {
       collection.toggle(id, slot);
+      const species = dataset.byId.get(id);
+      sync.schedule(species ? species.name : `n° ${id}`);
       onCollectionChange(id);
     },
     onCollectionChange: (id) => onCollectionChange(id),
@@ -72,6 +77,14 @@ function start(dataset) {
   const detail = createDetailPanel(ctx);
   const quest = createQuest(ctx);
   const save = createSaveControls(ctx);
+
+  // Sur telephone, on quitte l'onglet plus souvent qu'on ne le ferme : c'est
+  // le moment sur : on ecrit sans attendre la fin du delai de regroupement.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden" && collection.dirtyCount) {
+      sync.flush("sortie de l'application").catch(() => {});
+    }
+  });
 
   const tabsRoot = document.getElementById("tabs");
   const panels = { dex: document.getElementById("tab-dex"), quest: document.getElementById("tab-quest") };

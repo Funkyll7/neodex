@@ -47,6 +47,7 @@ Projet Poke/
 │       │   ├── sprites.js      URL des images (espèces et formes) + replis
 │       │   ├── availability.js présence par jeu et shiny possible ou non
 │       │   ├── hunt.js         choix de la méthode de chasse, tirage des quêtes
+│       │   ├── sync.js         écrit data/collection.json dans le dépôt via l'API GitHub
 │       │   └── filters.js      filtrage et tri de la liste
 │       └── ui/                 rendu, un module par zone d'écran
 │           ├── theme.js        bascule clair / sombre
@@ -222,7 +223,8 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | changer l'apparence d'une vignette | `assets/js/ui/dex-grid.js` + `components.css` |
 | ajouter une section à la fiche | `assets/js/ui/detail-panel.js` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |
-| corriger une case cochée à tort | dans le site, puis **Exporter** → remplacer `data/collection.json` |
+| changer le dépôt de synchronisation | `assets/js/config.js` (bloc `github`) |
+| corriger une case cochée à tort | dans le site : la synchronisation s'en occupe (§ 6) |
 
 **Règles de tenue du code**
 
@@ -288,15 +290,39 @@ réapparaissent intactes dans la suivante.
 
 ## 6. Sauvegarde de la collection
 
-Le site est statique : il ne peut rien écrire dans le dépôt. D'où ce cycle,
-volontairement explicite :
+`data/collection.json` est la **référence**, versionnée dans git. Les cases
+cochées vont d'abord dans le **localStorage**, par-dessus. Deux façons de faire
+redescendre le localStorage dans le dépôt.
 
-1. `data/collection.json` est la **référence**, versionnée dans git.
-2. Les cases cochées dans le navigateur vont dans le **localStorage**, par-dessus.
-3. La barre latérale affiche « N espèces modifiées dans ce navigateur ».
-4. **Exporter** produit un `collection.json` fusionné → le remplacer dans le
-   dépôt et commiter.
-5. **Réinitialiser** jette la couche locale et revient au fichier.
+### Synchronisation directe (le chemin normal)
+
+`assets/js/domain/sync.js` écrit `data/collection.json` dans le dépôt via l'API
+GitHub, depuis le navigateur. Le site reste statique : il n'y a pas de serveur,
+c'est le navigateur qui commite.
+
+1. Dans la barre latérale, coller un **jeton d'accès personnel à portée
+   limitée** — dépôt `neodex` uniquement, permission `Contents: read and write`.
+2. Le jeton est vérifié tout de suite, puis rangé dans le localStorage de ce
+   navigateur, et nulle part ailleurs. « Oublier » l'efface.
+3. Chaque case cochée programme une écriture ; les suivantes la repoussent de
+   `CONFIG.github.delayMs` (4 s). Cocher dix cases fait donc un seul commit.
+4. Quitter l'onglet (`visibilitychange`) déclenche l'écriture immédiatement :
+   sur téléphone, c'est le cas courant.
+5. **Recharger** reprend ce que contient le dépôt — utile quand on a coché
+   depuis un autre appareil.
+
+Le `sha` du fichier distant est relu avant chaque écriture ; en cas de conflit
+(quelqu'un a commité entre-temps), l'écriture est retentée une fois avec le
+`sha` frais. Rien n'est écrasé en silence.
+
+Le dépôt de destination se règle dans `assets/js/config.js`, bloc `github`
+(`owner`, `repo`, `branch`, `path`).
+
+### Export / import (le filet)
+
+Toujours là, et sans jeton : **Exporter** produit un `collection.json` fusionné
+à remplacer dans le dépôt, **Importer** relit un fichier, **Réinitialiser**
+jette la couche locale et revient au fichier de référence.
 
 Vider les données du site dans le navigateur ne perd donc jamais que les
-modifications non exportées.
+modifications non encore synchronisées.
