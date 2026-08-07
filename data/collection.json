@@ -1,8 +1,7 @@
 {
- "_comment": "Genere par tools/read_screenshots.py a partir du dossier photo/. Les cases cochees dans le navigateur se superposent a ce fichier ; utilise « Exporter » pour figer tes corrections ici.",
  "version": 1,
- "updatedAt": "2026-08-01T13:52:56Z",
- "source": "captures Pokémon HOME (61 images)",
+ "updatedAt": "2026-08-07T19:24:26.497Z",
+ "source": "site NéoDex",
  "marks": {
   "1": {
    "om": 1,
@@ -29,7 +28,8 @@
    "sm": 1
   },
   "7": {
-   "om": 1
+   "om": 1,
+   "sm": 1
   },
   "8": {
    "sm": 1,
@@ -104,6 +104,9 @@
   },
   "28": {
    "sm": 1,
+   "om": 1
+  },
+  "29": {
    "om": 1
   },
   "30": {
@@ -2155,10 +2158,6 @@
    "sm": 1
   },
   "915": {
-   "sm": 1,
-   "om": 1
-  },
-  "916": {
    "sm": 1,
    "om": 1
   },
