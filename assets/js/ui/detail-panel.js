@@ -15,10 +15,14 @@ import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
-  const singleColumn = window.matchMedia("(max-width: 1180px)");
+  const sheet = createSheet(root);
   let shownId = null;
 
   return {
+    /** Ouvre la feuille mobile sans rien redessiner. */
+    open: () => sheet.open(),
+    close: () => sheet.close(),
+
     /**
      * @param {object} species
      * @param {boolean} reveal  vrai quand l'utilisateur vient de choisir une
@@ -53,11 +57,54 @@ export function createDetailPanel(ctx) {
       root.scrollTop = scroll;
       shownId = species.id;
 
-      if (reveal && !sameSpecies && singleColumn.matches) {
-        root.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      // Choisir une vignette sur telephone ouvre la feuille par-dessus la
+      // grille, au lieu de faire descendre la page de plusieurs milliers de
+      // pixels jusqu'a la fiche.
+      if (reveal && !sameSpecies) sheet.open();
     },
   };
+}
+
+/* ------------------------- feuille plein ecran --------------------------- */
+
+/**
+ * Sur telephone la fiche devient une feuille qui monte du bas.
+ * Trois sorties : la croix, le fond assombri, la touche Echap. Le defilement
+ * de la page derriere est bloque tant que la feuille est ouverte, sinon on
+ * fait defiler la grille en croyant faire defiler la fiche.
+ */
+function createSheet(root) {
+  const backdrop = document.getElementById("detail-backdrop");
+  const closeButton = document.getElementById("detail-close");
+  const mobile = window.matchMedia("(max-width: 860px)");
+
+  function close() {
+    if (!document.body.classList.contains("sheet-open")) return;
+    document.body.classList.remove("sheet-open");
+    backdrop.hidden = true;
+    closeButton.hidden = true;
+  }
+
+  function open() {
+    if (!mobile.matches) return;
+    document.body.classList.add("sheet-open");
+    backdrop.hidden = false;
+    closeButton.hidden = false;
+    closeButton.focus({ preventScroll: true });
+  }
+
+  backdrop.addEventListener("click", close);
+  closeButton.addEventListener("click", close);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") close();
+  });
+  // Repasser en grand ecran alors que la feuille est ouverte la laisserait
+  // coincee : la fiche redevient une colonne, on referme.
+  mobile.addEventListener("change", (event) => {
+    if (!event.matches) close();
+  });
+
+  return { open, close };
 }
 
 /** Codes des jeux dont la marche a suivre est depliee. */

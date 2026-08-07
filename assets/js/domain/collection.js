@@ -87,15 +87,21 @@ export class Collection {
     return count;
   }
 
-  /** Compteurs affiches dans la barre laterale. */
-  counts(species) {
+  /**
+   * Compteurs affiches dans la barre laterale.
+   * @param {(species: object) => boolean} [isComplete]  test « tout obtenu »,
+   *   injecte par l'appelant : la collection ne connait ni les jeux ni les formes.
+   */
+  counts(species, isComplete = () => false) {
     let owned = 0;
     let shiny = 0;
     let pair = 0;
+    let complete = 0;
     for (const p of species) {
       if (this.isOwned(p.id)) owned += 1;
       if (this.isShiny(p.id)) shiny += 1;
       if (this.isCompletePair(p.id)) pair += 1;
+      if (isComplete(p)) complete += 1;
     }
     const total = species.length;
     return {
@@ -104,6 +110,8 @@ export class Collection {
       missing: total - owned,
       shiny,
       pair,
+      complete,
+      incomplete: total - complete,
       pct: total ? Math.round((owned / total) * 100) : 0,
     };
   }

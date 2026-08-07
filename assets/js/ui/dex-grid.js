@@ -9,6 +9,7 @@
 import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
 import { spriteImg } from "../domain/sprites.js";
+import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip } from "./common.js";
 
 export function createGrid(ctx) {
@@ -71,7 +72,15 @@ export function createGrid(ctx) {
       const old = grid.querySelector(`[data-id="${id}"]`);
       if (!old) return;
       const species = ctx.dataset.byId.get(id);
-      old.replaceWith(card(species, ctx));
+      const wasComplete = old.classList.contains("card--complete");
+      const next = card(species, ctx);
+      // La vignette vient de basculer sur « complet » : c'est le seul moment ou
+      // l'animation a un sens. La jouer en permanence sur cent vignettes
+      // fatiguerait l'oeil et la machine.
+      if (!wasComplete && next.classList.contains("card--complete")) {
+        next.classList.add("card--just-complete");
+      }
+      old.replaceWith(next);
     },
 
     /** Met a jour l'anneau de selection sans tout redessiner. */
@@ -93,6 +102,7 @@ function card(species, ctx) {
   const shiny = collection.isShiny(species.id);
   const selected = store.state.selectedId === species.id;
   const color = dataset.types[species.types[0]] || "#8b8b8b";
+  const progress = completionOf(species, collection, dataset.games);
 
   const view = store.state.view;
   const showShiny = view === "shiny" || (shiny && view !== "normal");
@@ -109,23 +119,30 @@ function card(species, ctx) {
         owned ? "card--owned" : "card--missing",
         shiny ? "card--shiny" : "",
         showShiny && owned ? "card--shiny-art" : "",
+        progress.complete ? "card--complete" : "",
         selected ? "card--selected" : "",
       ]
         .filter(Boolean)
         .join(" "),
+      title: progress.complete
+        ? `Tout obtenu — ${progress.total} case${progress.total > 1 ? "s" : ""}`
+        : `${progress.done} / ${progress.total} — reste : ${progress.missing.join(", ")}`,
     },
     el(
       "button.card__select",
       {
         type: "button",
         "aria-label": `Ouvrir la fiche de ${species.name}`,
-        onclick: () => store.set({ selectedId: species.id }),
+        onclick: () => ctx.onSelect(species.id),
       },
       el(
         "span.card__top",
         el("span.card__num", dexNumber(species.id)),
         el(
           "span.card__flags",
+          progress.complete
+            ? el("span.card__flag.card__flag--complete", { title: "Tout obtenu" }, "★")
+            : null,
           species.forms.length
             ? el(
                 "span.card__flag",
@@ -153,7 +170,9 @@ function card(species, ctx) {
         "span.card__types",
         species.types.map((t) => typeChip(t, dataset.types[t] || "#8b8b8b"))
       ),
-      el("span.card__gen", dataset.generations[species.gen].game.replace("Pokémon ", ""))
+      progress.complete
+        ? el("span.card__complete", "★ Complet")
+        : el("span.card__gen", dataset.generations[species.gen].game.replace("Pokémon ", ""))
     ),
     el("div.card__toggles", quickToggles(species, ctx, color))
   );

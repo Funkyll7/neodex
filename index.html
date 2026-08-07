@@ -152,6 +152,12 @@
           <div id="grid-sentinel" class="sentinel" aria-hidden="true"></div>
         </div>
 
+        <!-- Sur téléphone, ce panneau devient une feuille plein écran : voir
+             ui/detail-panel.js et le bloc « Feuille mobile » de components.css. -->
+        <div id="detail-backdrop" class="sheet-backdrop" hidden></div>
+        <!-- Le bouton vit hors de #detail : le panneau est entièrement
+             reconstruit à chaque rendu, il y serait effacé. -->
+        <button type="button" id="detail-close" class="sheet__close" aria-label="Fermer la fiche" hidden>✕</button>
         <div id="detail" class="detail panel" aria-label="Fiche détaillée" aria-live="polite"></div>
       </div>
     </section>

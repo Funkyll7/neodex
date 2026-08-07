@@ -5,6 +5,9 @@ Galar, Hisui, Paldéa, Méga-Évolutions, Gigamax…), ma collection (normal /
 chromatique, formes ♂ et ♀), la disponibilité jeu par jeu, le verrouillage
 chromatique et la méthode de shiny hunt détaillée pour chaque jeu.
 
+Un Pokémon dont tout l'obtenable est coché passe en doré, badge « ★ Complet ».
+Sur téléphone, choisir une vignette ouvre la fiche en feuille plein écran.
+
 Site statique — pas de build, pas de dépendance, pas de serveur.
 
 > **La carte du projet est dans [PROJET.md](PROJET.md).** À lire avant toute

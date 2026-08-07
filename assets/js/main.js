@@ -14,6 +14,7 @@ import { Collection } from "./domain/collection.js";
 import { GitHubSync } from "./domain/sync.js";
 import { HuntPlanner } from "./domain/hunt.js";
 import { applyFilters } from "./domain/filters.js";
+import { isComplete } from "./domain/completion.js";
 import { initTheme } from "./ui/theme.js";
 import { createSidebar } from "./ui/sidebar.js";
 import { createGrid } from "./ui/dex-grid.js";
@@ -69,6 +70,15 @@ function start(dataset) {
       onCollectionChange(id);
     },
     onCollectionChange: (id) => onCollectionChange(id),
+    /**
+     * Choisir une vignette. Retaper celle qui est deja selectionnee ne change
+     * pas l'etat, donc n'aurait rien declenche : sur telephone, la feuille
+     * refermee ne se rouvrait plus. On l'ouvre alors directement.
+     */
+    onSelect: (id) => {
+      if (store.state.selectedId === id) detail.open();
+      else store.set({ selectedId: id });
+    },
     onSearchInput: debounce((event) => store.set({ search: event.target.value }), 160),
   };
 
@@ -93,8 +103,11 @@ function start(dataset) {
 
   /* ------------------------------- rendu ------------------------------- */
 
+  /** « Tout obtenu » : dépend des jeux et des formes, donc du dataset. */
+  const complete = (species) => isComplete(species, collection, dataset.games);
+
   function renderTabs() {
-    const counts = collection.counts(dataset.species);
+    const counts = collection.counts(dataset.species, complete);
     fill(
       tabsRoot,
       [
@@ -119,7 +132,7 @@ function start(dataset) {
   }
 
   function renderList() {
-    grid.render(applyFilters(dataset.species, store.state, collection));
+    grid.render(applyFilters(dataset.species, store.state, collection, complete));
   }
 
   function renderDetail(reveal = false) {
@@ -128,7 +141,7 @@ function start(dataset) {
   }
 
   function renderCounts() {
-    sidebar.render(collection.counts(dataset.species));
+    sidebar.render(collection.counts(dataset.species, complete));
     save.render();
     renderTabs();
   }

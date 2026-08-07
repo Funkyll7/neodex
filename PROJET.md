@@ -48,6 +48,7 @@ Projet Poke/
 │       │   ├── availability.js présence par jeu et shiny possible ou non
 │       │   ├── hunt.js         choix de la méthode de chasse, tirage des quêtes
 │       │   ├── sync.js         écrit data/collection.json dans le dépôt via l'API GitHub
+│       │   ├── completion.js   « tout obtenu ? » — cases exigées, l'impossible exclu
 │       │   └── filters.js      filtrage et tri de la liste
 │       └── ui/                 rendu, un module par zone d'écran
 │           ├── theme.js        bascule clair / sombre
@@ -193,6 +194,31 @@ précédence : `defaults` par catégorie → `bySince` par jeu d'introduction �
 - `base` — elle reprend celui du Pokémon de base (Méga, Primo, formes de combat) ;
 - `none` — aucun chromatique n'existe.
 
+### « Tout obtenu »
+
+`assets/js/domain/completion.js` répond à « ai-je tout pour ce Pokémon ? ». La
+règle : **tout ce qui est obtenable, l'impossible exclu.** Sont retirés du
+calcul, automatiquement :
+
+- le chromatique d'une espèce verrouillée dans tous les jeux où elle apparaît
+  (Ogerpon, Koraidon, les fabuleux) ;
+- le chromatique d'une forme dont aucun sprite chromatique n'existe (les
+  Pikachu à casquette, le Pikachu partenaire) ou qui est verrouillée partout
+  (Pikachu Gigamax, offert donc bloqué) ;
+- les formes non collectionnables — Méga, Primo, formes de combat.
+
+Sans cette soustraction, Pikachu et Évoli ne seraient jamais complets et
+l'indicateur ne voudrait plus rien dire. Concrètement : Bulbizarre demande
+2 cases, Pikachu 6, Miaouss 8, Ogerpon 4 (aucun chromatique).
+
+Une vignette complète prend une bordure dorée, un fond teinté et un badge
+« ★ Complet », plus une animation jouée **une seule fois**, au moment où elle
+bascule — `ui/dex-grid.js` ajoute alors `card--just-complete`. L'animer en
+permanence sur des centaines de vignettes coûterait cher pour rien. Tout est
+neutralisé sous `prefers-reduced-motion`.
+
+Deux entrées de filtre s'y rattachent : « ★ Complets » et « À terminer ».
+
 ### Le shiny lock
 
 `data/reference/shiny-locks.json` répond à « puis-je avoir ce chromatique ici ? »
@@ -222,6 +248,8 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | ajouter un filtre | `assets/js/domain/filters.js` + un contrôle dans `index.html` et `ui/sidebar.js` |
 | changer l'apparence d'une vignette | `assets/js/ui/dex-grid.js` + `components.css` |
 | ajouter une section à la fiche | `assets/js/ui/detail-panel.js` |
+| changer la règle du « tout obtenu » | `assets/js/domain/completion.js` |
+| retoucher la feuille mobile | `ui/detail-panel.js` (`createSheet`) + bloc « Feuille mobile » de `components.css` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |
 | changer le dépôt de synchronisation | `assets/js/config.js` (bloc `github`) |
 | corriger une case cochée à tort | dans le site : la synchronisation s'en occupe (§ 6) |

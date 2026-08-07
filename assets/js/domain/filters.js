@@ -10,6 +10,8 @@ export const STATUS_FILTERS = [
   { value: "missing", label: "Manquants", key: "missing" },
   { value: "shiny", label: "✦ Shiny", key: "shiny" },
   { value: "pair", label: "♂♀ Paire complète", key: "pair" },
+  { value: "complete", label: "★ Complets", key: "complete" },
+  { value: "incomplete", label: "À terminer", key: "incomplete" },
 ];
 
 export const SORTS = {
@@ -21,7 +23,7 @@ export const SORTS = {
 
 const total = (p) => p.stats.reduce((sum, n) => sum + n, 0);
 
-export function applyFilters(species, state, collection) {
+export function applyFilters(species, state, collection, isComplete = () => false) {
   const query = state.search.trim().toLowerCase();
 
   const list = species.filter((p) => {
@@ -39,6 +41,10 @@ export function applyFilters(species, state, collection) {
         return collection.isShiny(p.id);
       case "pair":
         return collection.isCompletePair(p.id);
+      case "complete":
+        return isComplete(p);
+      case "incomplete":
+        return !isComplete(p);
       default:
         return true;
     }
