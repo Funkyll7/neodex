@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-08-08T23:59:51.663Z",
+ "updatedAt": "2026-08-09T00:00:00.553Z",
  "source": "site NéoDex",
  "marks": {
   "1": {
@@ -2120,7 +2120,10 @@
    "x585-winter": 1
   },
   "586": {
-   "om": 1
+   "om": 1,
+   "x586-summer": 1,
+   "x586-autumn": 1,
+   "x586-winter": 1
   },
   "587": {
    "om": 1,
