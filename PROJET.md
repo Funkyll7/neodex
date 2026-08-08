@@ -5,10 +5,11 @@
 > **Si tu ajoutes, déplaces ou supprimes un fichier, mets ce document à jour
 > dans le même changement.**
 
-NéoDex est un Pokédex personnel : suivi de collection sur les 1025 espèces et
+NéoDex est un Pokédex personnel : suivi de collection sur les 1025 espèces,
 leurs 304 formes alternatives (Alola, Galar, Hisui, Paldéa, Méga-Évolutions,
-Gigamax…), formes ♂ / ♀, chromatiques, disponibilité par jeu, verrouillage
-chromatique et méthode de shiny hunt jeu par jeu.
+Gigamax…) et leurs 160 formes cosmétiques (Zarbi, Prismillon, Charmilly…),
+formes ♂ / ♀, chromatiques, disponibilité par jeu, verrouillage chromatique et
+méthode de shiny hunt jeu par jeu. Soit 2 806 cases à cocher.
 
 - Site **100 % statique** : pas de build, pas de dépendance, pas de serveur.
   Le dossier tel quel se publie sur GitHub Pages.
@@ -34,21 +35,23 @@ Projet Poke/
 │   │   ├── layout.css          squelette : barre latérale, grille, points de rupture
 │   │   └── components.css      briques d'interface : vignettes, fiche, tableau, quêtes
 │   ├── img/
-│   │   └── favicon.svg         Poké Ball
+│   │   ├── favicon.svg         Poké Ball
+│   │   └── dynamax.svg         pastille Gigamax (glyphe original)
 │   └── js/
 │       ├── main.js             point d'entrée : charge, câble les vues, gère l'état
 │       ├── config.js           réglages (URL des sprites, pagination, clés localStorage)
 │       ├── core/
 │       │   ├── dom.js          el() / fill() — fabrication de DOM sans framework
 │       │   ├── store.js        état applicatif + abonnements groupés
-│       │   └── data.js         chargement et fusion des trois couches de données
+│       │   └── data.js         chargement et fusion des six couches de données
 │       ├── domain/             logique métier, sans aucun accès au DOM
 │       │   ├── collection.js   marques possédées, compteurs, export / import
-│       │   ├── sprites.js      URL des images (espèces et formes) + replis
+│       │   ├── sprites.js      URL des images (espèces, formes, cosmétiques) + replis
 │       │   ├── availability.js présence par jeu et shiny possible ou non
 │       │   ├── hunt.js         choix de la méthode de chasse, tirage des quêtes
 │       │   ├── sync.js         écrit data/collection.json dans le dépôt via l'API GitHub
 │       │   ├── completion.js   « tout obtenu ? » — cases exigées, l'impossible exclu
+│       │   ├── progress.js     compteurs globaux par case : tout / paires / formes / Gigamax
 │       │   └── filters.js      filtrage et tri de la liste
 │       └── ui/                 rendu, un module par zone d'écran
 │           ├── theme.js        bascule clair / sombre
@@ -74,10 +77,12 @@ Projet Poke/
 │   │   ├── generations.json    jeu d'origine et année par génération
 │   │   ├── games.json          23 jeux de la série principale (+ version groups)
 │   │   ├── hunt.json           méthodes de shiny hunt, taux, règles d'exception
-│   │   └── shiny-locks.json    qui est verrouillé chromatique, et dans quel jeu
+│   │   └── shiny-locks.json    verrou chromatique par jeu, + `noShiny` (jamais nulle part)
 │   ├── details/                ✎ écrit à la main, enrichissement par Pokémon
 │   │   ├── gen-1.json … gen-9.json    où le trouver, corrections de jeux
-│   │   └── forms.json          où obtenir chaque forme, par catégorie et au cas par cas
+│   │   ├── forms.json          où obtenir chaque forme, par catégorie et au cas par cas
+│   │   └── cosmetic-forms.json les formes que PokeAPI n'expose pas (Zarbi, Prismillon,
+│   │                           Flabébé, Couafarel, Charmilly, Cheniti, Sancoki…)
 │   └── collection.json         ▲ GÉNÉRÉ puis corrigé — ma collection
 │
 ├── tools/                      scripts Python, hors site
@@ -95,7 +100,7 @@ Légende : **▲ GÉNÉRÉ** = écrasé par un script, **✎** = édité à la m
 
 ---
 
-## 2. Les cinq couches de données
+## 2. Les six couches de données
 
 Elles sont séparées pour que la régénération automatique n'écrase jamais le
 travail manuel. Ce qui se déduit d'une base de données est **généré** ; ce qui
@@ -107,7 +112,8 @@ demande un arbitrage humain est **écrit à la main**.
 | **Formes** | `data/forms/gen-*.json` | PokeAPI + dépôt de sprites, via `build_forms.py` | id, nom FR, catégorie de forme, types, stats, sprites réellement existants |
 | **Disponibilité** | `data/availability/gen-*.json` | Pokédex régionaux + table des rencontres, via `build_availability.py` | `gm` (jeux où on l'obtient), `ev` (événement), `wild` (jeux où on le croise dehors) |
 | **Détails** | `data/details/*.json` | écrit à la main | corrections et textes : `where`, `gm`, `nogm`, `ev`, `note`, `hab`, `gift`, `stat`, `wild` — et `forms.json` pour les formes |
-| **Collection** | `data/collection.json` | `read_screenshots.py` puis corrections | `om`, `of`, `sm`, `sf`, `f<id>`, `f<id>s` par espèce |
+| **Cosmétiques** | `data/details/cosmetic-forms.json` | écrit à la main | les formes sans entrée `/pokemon` chez PokeAPI : 28 Zarbi, 20 Prismillon, 63 Charmilly, 10 Couafarel, 5 Flabébé × 3 espèces, saisons, capes, mers, formes de thé |
+| **Collection** | `data/collection.json` | `read_screenshots.py` puis corrections | `om`, `of`, `sm`, `sf`, `f<id>`, `f<id>s`, `x<n>-<clef>`, `y<n>-<clef>` par espèce |
 
 `assets/js/core/data.js` les fusionne au chargement, plus les tables de
 `data/reference/`. Les 1025 espèces ont désormais une disponibilité : le
@@ -151,11 +157,18 @@ Le verrouillage chromatique ne se met **plus** ici : il vit dans
 | `om` / `of` | forme normale, mâle / femelle |
 | `sm` / `sf` | chromatique, mâle / femelle |
 | `f<id>` / `f<id>s` | forme alternative n° `<id>` (id PokeAPI), normale / chromatique |
+| `f<id>f` / `f<id>sf` | la même en femelle, pour les formes à dimorphisme (Farfuret de Hisui) |
+| `x<n>-<clef>` / `y<n>-<clef>` | forme cosmétique — `x201-b` = Zarbi B, `y666-savanna` = Prismillon Savane chromatique |
 | `vo` / `vs` | ancien schéma : la **première** forme collectionnable de l'espèce |
 
 `of` et `sf` ne sont proposées que si l'espèce a `gd: 1` (dimorphisme visible).
 `vo` / `vs` restent lus et écrits pour la forme principale, ce qui garde les
 collections déjà exportées valables.
+
+Chez les espèces à formes cosmétiques, **la variante de base réutilise `om` /
+`sm`** : le Zarbi A, la Prismillon Motif Floral, la Flabébé Fleur Rouge *sont*
+la forme par défaut de l'espèce. Sans cela on cocherait deux fois la même
+chose, et `isOwned()` ne saurait plus quoi regarder.
 
 ---
 
@@ -188,36 +201,82 @@ chromatique n'existe pour cette forme » quand c'est le cas.
 
 `data/details/forms.json` complète le tableau à la main, avec trois niveaux de
 précédence : `defaults` par catégorie → `bySince` par jeu d'introduction →
-`forms` au cas par cas. Le champ `shiny` y vaut :
+`forms` au cas par cas. Champs propres à une forme :
 
-- `own` — la forme a son propre chromatique, à chasser séparément ;
-- `base` — elle reprend celui du Pokémon de base (Méga, Primo, formes de combat) ;
-- `none` — aucun chromatique n'existe.
+- `shiny` — `own` (chromatique propre à chasser) / `base` (celui du Pokémon de
+  base : Méga, Primo, formes de combat) / `none` (aucun chromatique n'existe) ;
+- `entry` — `0` retire **les cases** sans retirer la fiche : la forme n'a pas
+  d'entrée à elle dans HOME. C'est le cas des fusions (Kyurem Noir, Necrozma
+  Solgaleo, Sylveroy monté), des Formes Originelles de Dialga / Palkia /
+  Giratina, de l'Infinimax d'Éthernatos et des partenaires de Let's Go ;
+- `hidden` — `1` retire la forme complètement, doublon ou mirage : une femelle
+  déjà couverte par la case ♀ de l'espèce (Mistigrix, Wimessir, Paragruel,
+  Fragroin), le Zygarde 50 % en double, l'Amphinobi Synergie qui est le même
+  Pokémon que la Forme Sacha, les masques d'Ogerpon qui ne montent pas dans HOME ;
+- `gendered` — `1` donne quatre cases à la forme (♂ / ♀ × normal / chromatique).
+  Un seul cas à ce jour : le Farfuret de Hisui.
+
+### Les formes cosmétiques
+
+PokeAPI ne donne pas d'entrée `/pokemon` aux Zarbi, Prismillon, Flabébé,
+Couafarel, Charmilly, Cheniti, Sancoki, Tritosor, Vivaldaim, Haydaim, Théffroi
+et consorts : `build_forms.py` ne peut donc pas les voir. Elles vivent dans
+`data/details/cosmetic-forms.json`, écrit à la main, et s'affichent sous forme
+de **grille à cocher** (deux cases par tuile) suivie du détail de chaque
+variante. Les sprites existent bel et bien dans le dépôt PokeAPI, nommés par
+forme (`666-savanna`, `201-b`, `869-rainbow-swirl-love-sweet`).
+
+Clés d'un groupe : `title`, `base` (la variante qui *est* la forme par défaut),
+`where`, `note`, `layout` (`compact` pour les lettres, `wide` pour les motifs),
+`fold` (replié d'office — les 63 Charmilly), `info` (aucune case à cocher :
+le seul Pichu Troizépi), `spriteSet` (`classic` quand la forme n'a pas de rendu
+HOME). Clés d'une variante : `key`, `name`, `short`, `where`, `noshiny`,
+`nosprite`.
 
 ### « Tout obtenu »
 
-`assets/js/domain/completion.js` répond à « ai-je tout pour ce Pokémon ? ». La
-règle : **tout ce qui est obtenable, l'impossible exclu.** Sont retirés du
-calcul, automatiquement :
+`assets/js/domain/completion.js` répond à « ai-je tout pour ce Pokémon ? ».
+La règle tient en une phrase : **tout ce qui a existé un jour est à cocher.**
+Un chromatique distribué une seule fois en 2013 reste un chromatique qu'on peut
+avoir en boîte — il compte. Trois soustractions, et trois seulement :
 
-- le chromatique d'une espèce verrouillée dans tous les jeux où elle apparaît
-  (Ogerpon, Koraidon, les fabuleux) ;
-- le chromatique d'une forme dont aucun sprite chromatique n'existe (les
-  Pikachu à casquette, le Pikachu partenaire) ou qui est verrouillée partout
-  (Pikachu Gigamax, offert donc bloqué) ;
-- les formes non collectionnables — Méga, Primo, formes de combat.
+- les espèces listées dans `noShiny` de `data/reference/shiny-locks.json` :
+  aucun chromatique n'en a jamais été produit, ni en jeu, ni en distribution, ni
+  par GO. Victini, Ogerpon, Shifours, les Trésors de Ruine du DLC… Elles n'ont
+  pas de bouton « Shiny » du tout, et le verrou se propage à leurs formes ;
+- les formes sans entrée dans HOME (`entry: 0`, plus Méga / Primo / combat) ;
+- les formes en `shiny: "none"` ou sans sprite chromatique — Pikachu à
+  casquette, Amphinobi Forme Sacha, Melmetal Gigamax, noyaux de Météno,
+  Floette Éternel, Prismillon Poké Ball.
 
-Sans cette soustraction, Pikachu et Évoli ne seraient jamais complets et
-l'indicateur ne voudrait plus rien dire. Concrètement : Bulbizarre demande
-2 cases, Pikachu 6, Miaouss 8, Ogerpon 4 (aucun chromatique).
+Attention à ne pas confondre `always` et `noShiny` dans `shiny-locks.json` :
+`always` dit « la série principale ne le génère jamais » — c'est une
+information de **chasse**, elle ne retire rien du « tout obtenu ». Shaymin,
+Darkrai, Phione, Manaphy, Meloetta, Genesect, Arceus, Volcanion, Zeraora, les
+Gardiens d'Alola, Regieleki, Regidrago, Solgaleo, Lunala, Koraidon et Miraidon
+sont dans ce cas : pas chassables, mais leur chromatique existe, donc exigé.
 
-Une vignette complète prend une bordure dorée, un fond teinté et un badge
+Concrètement : Bulbizarre demande 2 cases, Miaouss 8, Pikachu 20, Zarbi 56,
+Prismillon 39, Charmilly 128, Ogerpon 1 (aucun chromatique nulle part).
+
+Chaque vignette affiche son compteur — `3/8` — à côté du losange qui compte les
+formes : on sait ce que le Pokémon réclame sans ouvrir la fiche. Une vignette
+complète prend en plus une bordure dorée, un fond teinté et un badge
 « ★ Complet », plus une animation jouée **une seule fois**, au moment où elle
 bascule — `ui/dex-grid.js` ajoute alors `card--just-complete`. L'animer en
 permanence sur des centaines de vignettes coûterait cher pour rien. Tout est
 neutralisé sous `prefers-reduced-motion`.
 
 Deux entrées de filtre s'y rattachent : « ★ Complets » et « À terminer ».
+
+### Compteurs globaux
+
+`assets/js/domain/progress.js` répond à l'autre question : « combien de **cases**
+ai-je, sur les 2 806 du site ? ». Il produit quatre barres pour la barre
+latérale — Tout, Paires ♂ / ♀, Formes, Gigamax — plus le bloc Gigamax (paires
+normal + chromatique, chromatiques obtenus). À ne pas confondre avec
+`collection.counts()`, qui compte des **espèces** : un Miaouss capturé pèse une
+espèce et huit cases.
 
 ### Le shiny lock
 
@@ -242,13 +301,19 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | changer une couleur, un rayon, une police | `assets/css/theme.css` |
 | documenter un Pokémon (emplacement, corrections de jeux) | `data/details/gen-N.json` |
 | documenter une forme (où l'obtenir, remarque) | `data/details/forms.json` |
-| corriger un verrouillage chromatique | `data/reference/shiny-locks.json` |
+| retirer les cases d'une forme (pas transférable dans HOME) | `data/details/forms.json`, champ `entry: 0` |
+| supprimer une forme en double | `data/details/forms.json`, champ `hidden: 1` |
+| ajouter une forme cosmétique (motif, couleur, saison…) | `data/details/cosmetic-forms.json` |
+| dire qu'une espèce n'a **aucun** chromatique | `data/reference/shiny-locks.json`, bloc `noShiny` |
+| corriger un verrouillage chromatique par jeu | `data/reference/shiny-locks.json`, bloc `byGame` |
 | ajouter un jeu à la série | `data/reference/games.json` (dont ses `vg`) |
 | changer une méthode de chasse ou un taux | `data/reference/hunt.json` |
 | ajouter un filtre | `assets/js/domain/filters.js` + un contrôle dans `index.html` et `ui/sidebar.js` |
 | changer l'apparence d'une vignette | `assets/js/ui/dex-grid.js` + `components.css` |
 | ajouter une section à la fiche | `assets/js/ui/detail-panel.js` |
+| retoucher la grille à cocher des cosmétiques | `ui/detail-panel.js` (`cosmeticPicker`) + bloc `.picker` de `components.css` |
 | changer la règle du « tout obtenu » | `assets/js/domain/completion.js` |
+| changer une barre de progression | `assets/js/domain/progress.js` + `ui/sidebar.js` |
 | retoucher la feuille mobile | `ui/detail-panel.js` (`createSheet`) + bloc « Feuille mobile » de `components.css` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |
 | changer le dépôt de synchronisation | `assets/js/config.js` (bloc `github`) |
@@ -261,6 +326,28 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 - Pas de dépendance externe : ni npm, ni CDN de bibliothèque. Seules les images
   et les polices viennent de l'extérieur.
 - Commentaires et textes d'interface en français.
+- **Une case cochée ne reconstruit jamais son propre bouton.** Voir ci-dessous.
+
+### Cocher une case : délégation et repeinte
+
+C'est la seule subtilité du rendu, et elle vient d'un vrai bug : la fiche était
+entièrement reconstruite à chaque clic. Le bouton qu'on venait de toucher
+disparaissait donc sous le doigt, le focus retombait sur `<body>`, et
+l'évènement suivant pouvait atterrir sur un bouton fraîchement recréé au même
+endroit — la case précédente se recochait toute seule.
+
+Deux règles en découlent :
+
+1. **Écoute déléguée.** Un seul écouteur `click` sur `#detail`, un seul sur
+   `#grid`, posés une fois pour toutes. Aucun bouton ne porte de `onclick` ; ils
+   portent `data-slot` et `data-species`, et le conteneur fait le reste.
+2. **Repeinte, pas reconstruction.** Cocher une case appelle
+   `detail.syncMarks()` et `grid.refresh()`, qui se contentent de retourner les
+   `aria-pressed` et de remplacer le sprite quand il passe au chromatique.
+   `detail.render()` — la reconstruction complète — n'a lieu qu'au changement de
+   Pokémon. Corollaire : un libellé de bouton ne doit jamais dépendre de l'état
+   coché (d'où le `✓` transparent de `.form__btn-check`), sinon il ne se mettra
+   pas à jour.
 
 ---
 

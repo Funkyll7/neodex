@@ -7,12 +7,16 @@
  *                                    (tools/build_forms.py)
  *   3. data/availability/gen-N.json  genere : ou chaque espece s'obtient
  *                                    (tools/build_availability.py)
- *   4. data/details/*.json           enrichissements ecrits a la main
+ *   4. data/details/*.json           enrichissements ecrits a la main, dont
+ *                                    cosmetic-forms.json (Zarbi, Prismillon,
+ *                                    Charmilly… que PokeAPI n'expose pas comme
+ *                                    des entrees /pokemon distinctes)
  *   5. data/reference/*.json         tables de reference (types, jeux, chasse,
  *                                    verrouillage chromatique)
  *
  * Le resultat est un tableau `species` fige, trie par numero national, dont
- * chaque entree porte son tableau `forms` deja resolu.
+ * chaque entree porte son tableau `forms` deja resolu et, le cas echeant, son
+ * groupe `cosmetic`.
  */
 
 const BASE = new URL("../../../data/", import.meta.url);
@@ -32,15 +36,17 @@ function loadOptional(path, fallback) {
 }
 
 export async function loadDataset() {
-  const [manifest, typesRef, gensRef, gamesRef, huntRef, locksRef, formDetails] = await Promise.all([
-    loadJson("pokemon/manifest.json"),
-    loadJson("reference/types.json"),
-    loadJson("reference/generations.json"),
-    loadJson("reference/games.json"),
-    loadJson("reference/hunt.json"),
-    loadOptional("reference/shiny-locks.json", { always: {}, byGame: {}, forms: {} }),
-    loadOptional("details/forms.json", { defaults: {}, bySince: {}, forms: {} }),
-  ]);
+  const [manifest, typesRef, gensRef, gamesRef, huntRef, locksRef, formDetails, cosmeticRef] =
+    await Promise.all([
+      loadJson("pokemon/manifest.json"),
+      loadJson("reference/types.json"),
+      loadJson("reference/generations.json"),
+      loadJson("reference/games.json"),
+      loadJson("reference/hunt.json"),
+      loadOptional("reference/shiny-locks.json", { always: {}, noShiny: {}, byGame: {}, forms: {} }),
+      loadOptional("details/forms.json", { defaults: {}, bySince: {}, forms: {} }),
+      loadOptional("details/cosmetic-forms.json", { groups: {} }),
+    ]);
 
   const gens = manifest.generations.map((g) => g.gen);
 
@@ -65,7 +71,10 @@ export async function loadDataset() {
     gameOfVersionGroup: versionGroupIndex(games),
     locks: locksRef,
     lockedByGame: lockIndex(locksRef, allCodes),
+    /** Especes dont le chromatique n'existe nulle part : aucun bouton Shiny. */
+    noShiny: new Set((locksRef.noShiny && locksRef.noShiny.species) || []),
     formDetails,
+    cosmeticGroups: cosmeticRef.groups || {},
   };
 
   const species = baseChunks
@@ -149,6 +158,13 @@ function merge(entry, detail = {}, avail = {}, rawForms = [], context) {
 
   const species = {
     ...entry,
+    /**
+     * Le chromatique de cette espece n'existe nulle part — ni en jeu, ni en
+     * distribution, ni via GO. C'est la seule chose qui retire la case Shiny :
+     * un fabuleux verrouille dans toute la serie principale garde la sienne,
+     * puisqu'une distribution a pu en produire un.
+     */
+    noShiny: context.noShiny.has(entry.id),
     where: detail.where || "",
     note: detail.note || "",
     habitat: detail.hab || "",
@@ -166,15 +182,31 @@ function merge(entry, detail = {}, avail = {}, rawForms = [], context) {
     documented: Boolean(detail.where || detail.note),
   };
 
-  const forms = (rawForms || []).map((form) => mergeForm(form, species, context));
-  // La premiere forme collectionnable garde les anciennes cases `vo` / `vs` :
+  // `hidden` retire les doublons : une femelle qui est deja la case ♀ de
+  // l'espece, une forme qui ne monte pas dans HOME et n'a donc rien a cocher.
+  const forms = (rawForms || [])
+    .filter((form) => !((context.formDetails.forms || {})[form.key] || {}).hidden)
+    .map((form) => mergeForm(form, species, context));
+  // La premiere forme cochable garde les anciennes cases `vo` / `vs` :
   // les collections deja exportees restent lisibles telles quelles.
-  const primary = forms.findIndex((f) => f.collectible);
-  if (primary >= 0) forms[primary] = Object.freeze({ ...forms[primary], slot: "vo", shinySlot: "vs" });
+  const primary = forms.findIndex((f) => f.entry && f.shiny !== "none");
+  if (primary >= 0) {
+    forms[primary] = Object.freeze({
+      ...forms[primary],
+      slot: "vo",
+      shinySlot: "vs",
+      slotF: "vof",
+      shinySlotF: "vsf",
+    });
+  }
 
   species.forms = forms;
   /** Forme principale : la premiere que l'on peut reellement collectionner. */
   species.primaryForm = primary >= 0 ? forms[primary] : null;
+  species.cosmetic = cosmeticGroup(context.cosmeticGroups[String(entry.id)], species);
+  /** Tout ce qui se compte comme « une forme » dans la vignette. */
+  species.formCount =
+    forms.length + (species.cosmetic ? species.cosmetic.variants.filter((v) => !v.isBase).length : 0);
   return Object.freeze(species);
 }
 
@@ -210,6 +242,17 @@ function mergeForm(form, species, context) {
   // verrouille pour l'espece l'est aussi pour la forme.
   for (const code of species.shinyLocked) shinyLocked.add(code);
 
+  const hasShinySprite = Boolean(form.sprites && (form.sprites.homeShiny || form.sprites.artShiny));
+  /**
+   * `entry` = la forme a sa propre entree dans HOME, donc sa propre case.
+   * Par defaut : tout sauf les transformations de combat. `entry: 0` dans
+   * data/details/forms.json retire les cases sans retirer la fiche — c'est le
+   * cas des fusions (Kyurem Noir, Necrozma Solgaleo, Sylveroy monte) et des
+   * partenaires de Let's Go, qui ne montent jamais dans HOME.
+   */
+  const entry = rule.entry === undefined ? !NOT_COLLECTIBLE.has(form.kind) : Boolean(rule.entry);
+  const gendered = Boolean(rule.gendered);
+
   return Object.freeze({
     ...form,
     games,
@@ -218,12 +261,66 @@ function mergeForm(form, species, context) {
     shiny,
     where: rule.where || "",
     note: rule.note || "",
-    collectible: !NOT_COLLECTIBLE.has(form.kind) && shiny !== "none",
-    /** Cases de collection propres a cette forme. */
+    entry,
+    gendered,
+    /** Un chromatique de cette forme existe-t-il, et est-il a cocher ? */
+    shinyEntry: entry && shiny === "own" && hasShinySprite && !species.noShiny,
+    /** Cases de collection propres a cette forme (…f = femelle). */
     slot: `f${form.id}`,
     shinySlot: `f${form.id}s`,
+    slotF: `f${form.id}f`,
+    shinySlotF: `f${form.id}sf`,
     /** Un sprite chromatique existe-t-il seulement ? */
-    hasShinySprite: Boolean(form.sprites && (form.sprites.homeShiny || form.sprites.artShiny)),
+    hasShinySprite,
+  });
+}
+
+/* --------------------------- formes cosmetiques -------------------------- */
+
+/**
+ * Zarbi, Prismillon, Charmilly, Couafarel… : PokeAPI ne leur donne pas d'entree
+ * /pokemon distincte (pas d'id > 10000), donc tools/build_forms.py ne les voit
+ * pas. Elles sont ecrites a la main dans data/details/cosmetic-forms.json et
+ * rendues sous forme de grille a cocher.
+ *
+ * `base` designe la variante qui EST la forme par defaut de l'espece : elle
+ * reutilise les cases `om` / `sm` au lieu d'en creer de nouvelles, sans quoi on
+ * cocherait deux fois la meme chose.
+ */
+function cosmeticGroup(group, species) {
+  if (!group || !Array.isArray(group.forms)) return null;
+
+  const variants = group.forms.map((raw) => {
+    const isBase = raw.key === group.base;
+    const noShiny = Boolean(raw.noshiny) || species.noShiny || Boolean(group.info);
+    return Object.freeze({
+      key: raw.key,
+      name: raw.name,
+      short: raw.short || raw.name,
+      where: raw.where || "",
+      isBase,
+      /** Nom du fichier de sprite ("666-savanna"), ou null : on retombe sur l'espece. */
+      sprite: raw.nosprite ? null : `${species.id}-${raw.key}`,
+      spriteSet: group.spriteSet || "home",
+      slot: isBase ? "om" : `x${species.id}-${raw.key}`,
+      shinySlot: isBase ? "sm" : `y${species.id}-${raw.key}`,
+      shinyEntry: !group.info && !noShiny,
+      entry: !group.info,
+    });
+  });
+
+  return Object.freeze({
+    title: group.title || "Formes",
+    where: group.where || "",
+    note: group.note || "",
+    layout: group.layout || "",
+    fold: Boolean(group.fold),
+    /** Aucune case a cocher : le groupe n'est la que pour l'information. */
+    info: Boolean(group.info),
+    /** La grille remplace « Ma collection » : la variante de base y figure. */
+    coversBase: variants.some((v) => v.isBase),
+    baseVariant: variants.find((v) => v.isBase) || null,
+    variants,
   });
 }
 

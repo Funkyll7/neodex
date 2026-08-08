@@ -2,9 +2,24 @@
   "_comment": "Verrouillage chromatique (shiny lock) : ou le jeu refuse purement et simplement de generer un chromatique. Trois couches : 'always' (jamais chromatique dans aucun jeu de la serie), 'byGame' (numeros nationaux bloques dans ce jeu precis), 'forms' (id PokeAPI de la forme -> jeux ou elle est bloquee). data/details/gen-N.json peut ajouter des cas avec le champ nsh. Sources : Poképédia (Shiny Lock), Bulbapedia (Shiny Pokémon), PokéBip (dossier Shasse).",
 
   "always": {
-    "_comment": "Fabuleux et distributions : dans la serie principale, le jeu ne les genere jamais en chromatique, quel que soit le titre. Les chromatiques qui existent viennent tous de distributions officielles ponctuelles ou de Pokémon GO.",
+    "_comment": "Fabuleux et distributions : dans la serie principale, le jeu ne les genere jamais en chromatique, quel que soit le titre. Les chromatiques qui existent viennent tous de distributions officielles ponctuelles ou de Pokémon GO. Cette liste ne dit rien de la COLLECTION : un chromatique de distribution reste obtenable, et compte donc dans le « tout obtenu ». Ce qui l'exclut, c'est 'noShiny' ci-dessous.",
     "species": [151, 251, 385, 489, 490, 491, 492, 493, 494, 647, 648, 649, 719, 720, 721, 801, 802, 807, 893, 1025],
     "why": "Fabuleux : aucun jeu de la série principale ne les génère en chromatique. Les chromatiques existants proviennent uniquement de distributions officielles."
+  },
+
+  "noShiny": {
+    "_comment": "Le seul cas ou le chromatique n'existe NULLE PART : ni en jeu, ni en distribution, ni via GO ou HOME. Ces especes n'ont pas de bouton « Shiny » du tout, et leur chromatique ne compte pas dans le « tout obtenu ». Tout le reste — y compris les fabuleux verrouilles dans la serie principale — garde son bouton : un chromatique distribue une seule fois reste un chromatique qu'on peut avoir en boite. Le verrou se propage aux formes de l'espece.",
+    "species": [
+      494,
+      719, 720,
+      789, 790, 801, 802,
+      891, 892, 893, 896, 897, 898,
+      1009, 1010,
+      1014, 1015, 1016, 1017,
+      1020, 1021, 1022, 1023,
+      1024, 1025
+    ],
+    "why": "Aucun chromatique de cette espèce n'a jamais existé : la série ne l'a jamais généré, et aucune distribution ni aucun passage par GO ou HOME n'en a produit."
   },
 
   "byGame": {

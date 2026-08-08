@@ -1,0 +1,1070 @@
+{
+  "_comment": "Formes cosmetiques : celles que PokeAPI n'expose pas comme des entrees /pokemon distinctes (elles n'ont pas d'id > 10000) et que tools/build_forms.py ne peut donc pas generer. Ecrit a la main. Cle = numero national. Champs d'un groupe : title, base (la variante qui EST la forme par defaut de l'espece — elle reutilise les cases om/sm au lieu d'avoir les siennes), where, note, layout ('compact' | 'wide'), fold (replie par defaut), info (1 = aucune case a cocher), spriteSet ('classic' = sprites/pokemon/ au lieu des sprites HOME), gm/nogm (jeux, sinon suit l'espece). Champs d'une variante : key (suffixe du sprite PokeAPI), name, short (libelle de la grille), where, noshiny (1 = verrouille chromatique), nosprite (1 = aucun sprite propre, on retombe sur l'espece).",
+  "groups": {
+    "201": {
+      "title": "Alphabet Zarbi",
+      "layout": "compact",
+      "base": "a",
+      "where": "Les 28 Zarbi se lisent comme un alphabet : chaque symbole est une entrée distincte dans HOME. Ruines d'Alph (Or/Argent/Cristal, Or HeartGold/Argent SoulSilver), Ruines de Vestigion (Diamant/Perle/Platine, Diamant Étincelant/Perle Scintillante) et toute la région de Hisui dans Légendes Arceus.",
+      "note": "Le symbole est tiré au sort à la capture — dans les ruines, chaque salle ne propose qu'un sous-ensemble de lettres. ! et ? ne se débloquent qu'après avoir attrapé les 26 autres dans la Gén. II.",
+      "forms": [
+        {
+          "key": "a",
+          "name": "Zarbi A",
+          "short": "A"
+        },
+        {
+          "key": "b",
+          "name": "Zarbi B",
+          "short": "B"
+        },
+        {
+          "key": "c",
+          "name": "Zarbi C",
+          "short": "C"
+        },
+        {
+          "key": "d",
+          "name": "Zarbi D",
+          "short": "D"
+        },
+        {
+          "key": "e",
+          "name": "Zarbi E",
+          "short": "E"
+        },
+        {
+          "key": "f",
+          "name": "Zarbi F",
+          "short": "F"
+        },
+        {
+          "key": "g",
+          "name": "Zarbi G",
+          "short": "G"
+        },
+        {
+          "key": "h",
+          "name": "Zarbi H",
+          "short": "H"
+        },
+        {
+          "key": "i",
+          "name": "Zarbi I",
+          "short": "I"
+        },
+        {
+          "key": "j",
+          "name": "Zarbi J",
+          "short": "J"
+        },
+        {
+          "key": "k",
+          "name": "Zarbi K",
+          "short": "K"
+        },
+        {
+          "key": "l",
+          "name": "Zarbi L",
+          "short": "L"
+        },
+        {
+          "key": "m",
+          "name": "Zarbi M",
+          "short": "M"
+        },
+        {
+          "key": "n",
+          "name": "Zarbi N",
+          "short": "N"
+        },
+        {
+          "key": "o",
+          "name": "Zarbi O",
+          "short": "O"
+        },
+        {
+          "key": "p",
+          "name": "Zarbi P",
+          "short": "P"
+        },
+        {
+          "key": "q",
+          "name": "Zarbi Q",
+          "short": "Q"
+        },
+        {
+          "key": "r",
+          "name": "Zarbi R",
+          "short": "R"
+        },
+        {
+          "key": "s",
+          "name": "Zarbi S",
+          "short": "S"
+        },
+        {
+          "key": "t",
+          "name": "Zarbi T",
+          "short": "T"
+        },
+        {
+          "key": "u",
+          "name": "Zarbi U",
+          "short": "U"
+        },
+        {
+          "key": "v",
+          "name": "Zarbi V",
+          "short": "V"
+        },
+        {
+          "key": "w",
+          "name": "Zarbi W",
+          "short": "W"
+        },
+        {
+          "key": "x",
+          "name": "Zarbi X",
+          "short": "X"
+        },
+        {
+          "key": "y",
+          "name": "Zarbi Y",
+          "short": "Y"
+        },
+        {
+          "key": "z",
+          "name": "Zarbi Z",
+          "short": "Z"
+        },
+        {
+          "key": "exclamation",
+          "name": "Zarbi !",
+          "short": "!"
+        },
+        {
+          "key": "question",
+          "name": "Zarbi ?",
+          "short": "?"
+        }
+      ]
+    },
+    "412": {
+      "title": "Capes de Cheniti",
+      "base": "plant",
+      "where": "La cape dépend du décor du dernier combat de Cheniti : herbe pour la Cape Plante, sable ou grotte pour la Cape Sable, intérieur d'un bâtiment pour la Cape Déchet.",
+      "note": "La cape se reprend à volonté en changeant de décor — mais elle fige la forme de Cheniselle au moment de l'évolution.",
+      "forms": [
+        {
+          "key": "plant",
+          "name": "Cheniti Cape Plante",
+          "short": "Plante",
+          "where": "Combat livré dans l'herbe ou en extérieur végétal."
+        },
+        {
+          "key": "sandy",
+          "name": "Cheniti Cape Sable",
+          "short": "Sable",
+          "where": "Combat livré dans une grotte ou sur le sable."
+        },
+        {
+          "key": "trash",
+          "name": "Cheniti Cape Déchet",
+          "short": "Déchet",
+          "where": "Combat livré à l'intérieur d'un bâtiment."
+        }
+      ]
+    },
+    "422": {
+      "title": "Mers de Sancoki",
+      "base": "west",
+      "where": "Deux populations séparées par le Mont Couronné : la Mer d'Occident (rose) à l'ouest de Sinnoh, la Mer d'Orient (bleue) à l'est.",
+      "note": "Les deux mers cohabitent dans les jeux suivants ; la couleur se transmet par la mère à l'élevage.",
+      "forms": [
+        {
+          "key": "west",
+          "name": "Sancoki Mer d'Occident",
+          "short": "Occident",
+          "where": "Ouest de Sinnoh : Lac Vérité, Route 205, Vallée Éolia."
+        },
+        {
+          "key": "east",
+          "name": "Sancoki Mer d'Orient",
+          "short": "Orient",
+          "where": "Est de Sinnoh : Route 213, Route 218, Baie Marée."
+        }
+      ]
+    },
+    "423": {
+      "title": "Mers de Tritosor",
+      "base": "west",
+      "where": "Deux populations séparées par le Mont Couronné : la Mer d'Occident (rose) à l'ouest de Sinnoh, la Mer d'Orient (bleue) à l'est.",
+      "note": "Les deux mers cohabitent dans les jeux suivants ; la couleur se transmet par la mère à l'élevage.",
+      "forms": [
+        {
+          "key": "west",
+          "name": "Tritosor Mer d'Occident",
+          "short": "Occident",
+          "where": "Ouest de Sinnoh : Lac Vérité, Route 205, Vallée Éolia."
+        },
+        {
+          "key": "east",
+          "name": "Tritosor Mer d'Orient",
+          "short": "Orient",
+          "where": "Est de Sinnoh : Route 213, Route 218, Baie Marée."
+        }
+      ]
+    },
+    "585": {
+      "title": "Saisons de Vivaldaim",
+      "base": "spring",
+      "where": "La saison de Noir/Blanc et Noir 2/Blanc 2 changeait chaque mois réel. Dans les jeux suivants, la forme est figée à la capture.",
+      "note": "Une seule saison est disponible à la fois dans la Gén. V : il faut quatre mois de jeu réel pour croiser les quatre — ou un échange.",
+      "forms": [
+        {
+          "key": "spring",
+          "name": "Vivaldaim Printemps",
+          "short": "Printemps"
+        },
+        {
+          "key": "summer",
+          "name": "Vivaldaim Été",
+          "short": "Été"
+        },
+        {
+          "key": "autumn",
+          "name": "Vivaldaim Automne",
+          "short": "Automne"
+        },
+        {
+          "key": "winter",
+          "name": "Vivaldaim Hiver",
+          "short": "Hiver"
+        }
+      ]
+    },
+    "586": {
+      "title": "Saisons de Haydaim",
+      "base": "spring",
+      "where": "La saison de Noir/Blanc et Noir 2/Blanc 2 changeait chaque mois réel. Dans les jeux suivants, la forme est figée à la capture.",
+      "note": "Une seule saison est disponible à la fois dans la Gén. V : il faut quatre mois de jeu réel pour croiser les quatre — ou un échange.",
+      "forms": [
+        {
+          "key": "spring",
+          "name": "Haydaim Printemps",
+          "short": "Printemps"
+        },
+        {
+          "key": "summer",
+          "name": "Haydaim Été",
+          "short": "Été"
+        },
+        {
+          "key": "autumn",
+          "name": "Haydaim Automne",
+          "short": "Automne"
+        },
+        {
+          "key": "winter",
+          "name": "Haydaim Hiver",
+          "short": "Hiver"
+        }
+      ]
+    },
+    "666": {
+      "title": "Motifs de Prismillon",
+      "base": "meadow",
+      "layout": "wide",
+      "where": "Le motif dépend de la région du monde réel où la console a été enregistrée : il se fixe à la première partie et ne change plus. Les vingt motifs se collectionnent donc par échange ou via HOME.",
+      "note": "Le motif se transmet par la mère à l'élevage : un œuf pondu par une Prismillon Savane donnera une Prismillon Savane, quelle que soit la console.",
+      "forms": [
+        {
+          "key": "meadow",
+          "name": "Prismillon Motif Floral",
+          "short": "Floral",
+          "where": "Motif de départ dans une grande partie de l'Europe de l'Ouest."
+        },
+        {
+          "key": "archipelago",
+          "name": "Prismillon Motif Archipel",
+          "short": "Archipel",
+          "where": "Régions insulaires : Antilles, Océanie orientale."
+        },
+        {
+          "key": "continental",
+          "name": "Prismillon Motif Continent",
+          "short": "Continent",
+          "where": "Europe centrale et de l'Est, nord de l'Asie."
+        },
+        {
+          "key": "elegant",
+          "name": "Prismillon Motif Élégance",
+          "short": "Élégance",
+          "where": "Japon."
+        },
+        {
+          "key": "garden",
+          "name": "Prismillon Motif Jardin",
+          "short": "Jardin",
+          "where": "Îles Britanniques."
+        },
+        {
+          "key": "high-plains",
+          "name": "Prismillon Motif Plaine",
+          "short": "Plaine",
+          "where": "Grandes plaines d'Amérique du Nord."
+        },
+        {
+          "key": "icy-snow",
+          "name": "Prismillon Motif Banquise",
+          "short": "Banquise",
+          "where": "Grand Nord : Alaska, Sibérie, Groenland."
+        },
+        {
+          "key": "jungle",
+          "name": "Prismillon Motif Jungle",
+          "short": "Jungle",
+          "where": "Forêts tropicales : Amazonie, Afrique centrale, Asie du Sud-Est."
+        },
+        {
+          "key": "marine",
+          "name": "Prismillon Motif Marine",
+          "short": "Marine",
+          "where": "Côtes d'Europe du Nord et Nouvelle-Zélande."
+        },
+        {
+          "key": "modern",
+          "name": "Prismillon Motif Métropole",
+          "short": "Métropole",
+          "where": "Est des États-Unis."
+        },
+        {
+          "key": "monsoon",
+          "name": "Prismillon Motif Mousson",
+          "short": "Mousson",
+          "where": "Asie du Sud : Inde, Bangladesh."
+        },
+        {
+          "key": "ocean",
+          "name": "Prismillon Motif Océan",
+          "short": "Océan",
+          "where": "Îles du Pacifique, Hawaï."
+        },
+        {
+          "key": "polar",
+          "name": "Prismillon Motif Pôle",
+          "short": "Pôle",
+          "where": "Canada, Scandinavie."
+        },
+        {
+          "key": "river",
+          "name": "Prismillon Motif Rivière",
+          "short": "Rivière",
+          "where": "France, Benelux."
+        },
+        {
+          "key": "sandstorm",
+          "name": "Prismillon Motif Sable",
+          "short": "Sable",
+          "where": "Déserts : Sahara, Moyen-Orient, Australie centrale."
+        },
+        {
+          "key": "savanna",
+          "name": "Prismillon Motif Savane",
+          "short": "Savane",
+          "where": "Afrique australe, Amérique du Sud."
+        },
+        {
+          "key": "sun",
+          "name": "Prismillon Motif Soleil",
+          "short": "Soleil",
+          "where": "Sud de l'Europe et Afrique du Nord."
+        },
+        {
+          "key": "tundra",
+          "name": "Prismillon Motif Toundra",
+          "short": "Toundra",
+          "where": "Nord-Est de l'Asie."
+        },
+        {
+          "key": "fancy",
+          "name": "Prismillon Motif Fantaisie",
+          "short": "Fantaisie",
+          "where": "Distribution événementielle uniquement — jamais rencontré à l'état sauvage."
+        },
+        {
+          "key": "poke-ball",
+          "name": "Prismillon Motif Poké Ball",
+          "short": "Poké Ball",
+          "where": "Distribution événementielle uniquement. Verrouillé chromatique : aucun Prismillon Poké Ball chromatique n'a jamais été distribué.",
+          "noshiny": 1
+        }
+      ]
+    },
+    "669": {
+      "title": "Fleurs de Flabébé",
+      "base": "red",
+      "where": "La couleur de la fleur est tirée à la capture de Flabébé et ne change plus : elle se conserve à travers les deux évolutions.",
+      "note": "Chaque couleur est une entrée distincte dans HOME. Faire évoluer une Flabébé Bleue donnera toujours une Florges Bleue.",
+      "forms": [
+        {
+          "key": "red",
+          "name": "Flabébé Fleur Rouge",
+          "short": "Rouge",
+          "where": "La plus commune : Route 4, Prairie Azur."
+        },
+        {
+          "key": "yellow",
+          "name": "Flabébé Fleur Jaune",
+          "short": "Jaune",
+          "where": "Route 4 et Prairie Azur, un peu moins fréquente."
+        },
+        {
+          "key": "orange",
+          "name": "Flabébé Fleur Orange",
+          "short": "Orange",
+          "where": "Route 7 et Prairie Azur."
+        },
+        {
+          "key": "blue",
+          "name": "Flabébé Fleur Bleue",
+          "short": "Bleue",
+          "where": "Route 7, plus rare."
+        },
+        {
+          "key": "white",
+          "name": "Flabébé Fleur Blanche",
+          "short": "Blanche",
+          "where": "La plus rare : Prairie Azur uniquement, et absente de certains jeux."
+        }
+      ]
+    },
+    "670": {
+      "title": "Fleurs de Floette",
+      "base": "red",
+      "where": "La couleur de la fleur est tirée à la capture de Flabébé et ne change plus : elle se conserve à travers les deux évolutions.",
+      "note": "Chaque couleur est une entrée distincte dans HOME. Faire évoluer une Flabébé Bleue donnera toujours une Florges Bleue.",
+      "forms": [
+        {
+          "key": "red",
+          "name": "Floette Fleur Rouge",
+          "short": "Rouge",
+          "where": "La plus commune : Route 4, Prairie Azur."
+        },
+        {
+          "key": "yellow",
+          "name": "Floette Fleur Jaune",
+          "short": "Jaune",
+          "where": "Route 4 et Prairie Azur, un peu moins fréquente."
+        },
+        {
+          "key": "orange",
+          "name": "Floette Fleur Orange",
+          "short": "Orange",
+          "where": "Route 7 et Prairie Azur."
+        },
+        {
+          "key": "blue",
+          "name": "Floette Fleur Bleue",
+          "short": "Bleue",
+          "where": "Route 7, plus rare."
+        },
+        {
+          "key": "white",
+          "name": "Floette Fleur Blanche",
+          "short": "Blanche",
+          "where": "La plus rare : Prairie Azur uniquement, et absente de certains jeux."
+        }
+      ]
+    },
+    "671": {
+      "title": "Fleurs de Florges",
+      "base": "red",
+      "where": "La couleur de la fleur est tirée à la capture de Flabébé et ne change plus : elle se conserve à travers les deux évolutions.",
+      "note": "Chaque couleur est une entrée distincte dans HOME. Faire évoluer une Flabébé Bleue donnera toujours une Florges Bleue.",
+      "forms": [
+        {
+          "key": "red",
+          "name": "Florges Fleur Rouge",
+          "short": "Rouge",
+          "where": "La plus commune : Route 4, Prairie Azur."
+        },
+        {
+          "key": "yellow",
+          "name": "Florges Fleur Jaune",
+          "short": "Jaune",
+          "where": "Route 4 et Prairie Azur, un peu moins fréquente."
+        },
+        {
+          "key": "orange",
+          "name": "Florges Fleur Orange",
+          "short": "Orange",
+          "where": "Route 7 et Prairie Azur."
+        },
+        {
+          "key": "blue",
+          "name": "Florges Fleur Bleue",
+          "short": "Bleue",
+          "where": "Route 7, plus rare."
+        },
+        {
+          "key": "white",
+          "name": "Florges Fleur Blanche",
+          "short": "Blanche",
+          "where": "La plus rare : Prairie Azur uniquement, et absente de certains jeux."
+        }
+      ]
+    },
+    "676": {
+      "title": "Tailles de Couafarel",
+      "base": "natural",
+      "where": "Une coupe se paie au salon de toilettage de Neigelis ou d'Illumis. Elle tient cinq jours, puis Couafarel revient à sa Forme Naturelle.",
+      "note": "La coupe ne survit pas au transfert : dans HOME, chaque taille est bien une entrée distincte, mais le Couafarel qui rentre en boîte reprend sa Forme Naturelle au bout de cinq jours dans X/Y.",
+      "forms": [
+        {
+          "key": "natural",
+          "name": "Couafarel Taille Naturelle",
+          "short": "Naturelle",
+          "where": "Forme par défaut : c'est celle de Couafarel avant tout passage au salon."
+        },
+        {
+          "key": "heart",
+          "name": "Couafarel Taille Cœur",
+          "short": "Cœur",
+          "where": "Salon de toilettage — coupe disponible dès le départ."
+        },
+        {
+          "key": "star",
+          "name": "Couafarel Taille Étoile",
+          "short": "Étoile",
+          "where": "Salon de toilettage — coupe disponible dès le départ."
+        },
+        {
+          "key": "diamond",
+          "name": "Couafarel Taille Diamant",
+          "short": "Diamant",
+          "where": "Salon de toilettage — coupe disponible dès le départ."
+        },
+        {
+          "key": "debutante",
+          "name": "Couafarel Taille Demoiselle",
+          "short": "Demoiselle",
+          "where": "Salon de toilettage — coupe disponible dès le départ."
+        },
+        {
+          "key": "matron",
+          "name": "Couafarel Taille Madame",
+          "short": "Madame",
+          "where": "Salon de toilettage — coupe débloquée en fidélisant le salon."
+        },
+        {
+          "key": "dandy",
+          "name": "Couafarel Taille Monsieur",
+          "short": "Monsieur",
+          "where": "Salon de toilettage — coupe débloquée en fidélisant le salon."
+        },
+        {
+          "key": "la-reine",
+          "name": "Couafarel Taille Reine",
+          "short": "Reine",
+          "where": "Salon de toilettage — coupe débloquée en fidélisant le salon."
+        },
+        {
+          "key": "kabuki",
+          "name": "Couafarel Taille Kabuki",
+          "short": "Kabuki",
+          "where": "Salon de toilettage d'Illumis — coupe débloquée en fidélisant le salon."
+        },
+        {
+          "key": "pharaoh",
+          "name": "Couafarel Taille Pharaon",
+          "short": "Pharaon",
+          "where": "Salon de toilettage d'Illumis — coupe débloquée en fidélisant le salon."
+        }
+      ]
+    },
+    "869": {
+      "title": "Crèmes et douceurs de Charmilly",
+      "base": "vanilla-cream-strawberry-sweet",
+      "layout": "wide",
+      "fold": 1,
+      "where": "Charmilly s'obtient en faisant tourner la console pendant l'évolution de Sucreine : le sens, la durée et l'heure décident de la crème, la Douceur tenue décide de la décoration. Neuf crèmes × sept douceurs = 63 entrées distinctes dans HOME.",
+      "note": "Seule la crème dépend de la manipulation ; la Douceur est un objet à faire tenir. Les Douceurs se trouvent aux Terres Sauvages et à la boutique de Motefranche.",
+      "forms": [
+        {
+          "key": "vanilla-cream-strawberry-sweet",
+          "name": "Charmilly Crème Vanille · Douceur Fraise",
+          "short": "Vanille · Fraise",
+          "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "vanilla-cream-berry-sweet",
+          "name": "Charmilly Crème Vanille · Douceur Baies",
+          "short": "Vanille · Baies",
+          "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "vanilla-cream-love-sweet",
+          "name": "Charmilly Crème Vanille · Douceur Cœur",
+          "short": "Vanille · Cœur",
+          "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "vanilla-cream-star-sweet",
+          "name": "Charmilly Crème Vanille · Douceur Étoile",
+          "short": "Vanille · Étoile",
+          "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "vanilla-cream-clover-sweet",
+          "name": "Charmilly Crème Vanille · Douceur Trèfle",
+          "short": "Vanille · Trèfle",
+          "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "vanilla-cream-flower-sweet",
+          "name": "Charmilly Crème Vanille · Douceur Fleur",
+          "short": "Vanille · Fleur",
+          "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "vanilla-cream-ribbon-sweet",
+          "name": "Charmilly Crème Vanille · Douceur Ruban",
+          "short": "Vanille · Ruban",
+          "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-cream-strawberry-sweet",
+          "name": "Charmilly Crème Rubis · Douceur Fraise",
+          "short": "Rubis · Fraise",
+          "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-cream-berry-sweet",
+          "name": "Charmilly Crème Rubis · Douceur Baies",
+          "short": "Rubis · Baies",
+          "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-cream-love-sweet",
+          "name": "Charmilly Crème Rubis · Douceur Cœur",
+          "short": "Rubis · Cœur",
+          "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-cream-star-sweet",
+          "name": "Charmilly Crème Rubis · Douceur Étoile",
+          "short": "Rubis · Étoile",
+          "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-cream-clover-sweet",
+          "name": "Charmilly Crème Rubis · Douceur Trèfle",
+          "short": "Rubis · Trèfle",
+          "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-cream-flower-sweet",
+          "name": "Charmilly Crème Rubis · Douceur Fleur",
+          "short": "Rubis · Fleur",
+          "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-cream-ribbon-sweet",
+          "name": "Charmilly Crème Rubis · Douceur Ruban",
+          "short": "Rubis · Ruban",
+          "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        },
+        {
+          "key": "matcha-cream-strawberry-sweet",
+          "name": "Charmilly Crème Matcha · Douceur Fraise",
+          "short": "Matcha · Fraise",
+          "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "matcha-cream-berry-sweet",
+          "name": "Charmilly Crème Matcha · Douceur Baies",
+          "short": "Matcha · Baies",
+          "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "matcha-cream-love-sweet",
+          "name": "Charmilly Crème Matcha · Douceur Cœur",
+          "short": "Matcha · Cœur",
+          "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "matcha-cream-star-sweet",
+          "name": "Charmilly Crème Matcha · Douceur Étoile",
+          "short": "Matcha · Étoile",
+          "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "matcha-cream-clover-sweet",
+          "name": "Charmilly Crème Matcha · Douceur Trèfle",
+          "short": "Matcha · Trèfle",
+          "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "matcha-cream-flower-sweet",
+          "name": "Charmilly Crème Matcha · Douceur Fleur",
+          "short": "Matcha · Fleur",
+          "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "matcha-cream-ribbon-sweet",
+          "name": "Charmilly Crème Matcha · Douceur Ruban",
+          "short": "Matcha · Ruban",
+          "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        },
+        {
+          "key": "mint-cream-strawberry-sweet",
+          "name": "Charmilly Crème Menthe · Douceur Fraise",
+          "short": "Menthe · Fraise",
+          "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "mint-cream-berry-sweet",
+          "name": "Charmilly Crème Menthe · Douceur Baies",
+          "short": "Menthe · Baies",
+          "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "mint-cream-love-sweet",
+          "name": "Charmilly Crème Menthe · Douceur Cœur",
+          "short": "Menthe · Cœur",
+          "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "mint-cream-star-sweet",
+          "name": "Charmilly Crème Menthe · Douceur Étoile",
+          "short": "Menthe · Étoile",
+          "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "mint-cream-clover-sweet",
+          "name": "Charmilly Crème Menthe · Douceur Trèfle",
+          "short": "Menthe · Trèfle",
+          "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "mint-cream-flower-sweet",
+          "name": "Charmilly Crème Menthe · Douceur Fleur",
+          "short": "Menthe · Fleur",
+          "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "mint-cream-ribbon-sweet",
+          "name": "Charmilly Crème Menthe · Douceur Ruban",
+          "short": "Menthe · Ruban",
+          "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        },
+        {
+          "key": "lemon-cream-strawberry-sweet",
+          "name": "Charmilly Crème Citron · Douceur Fraise",
+          "short": "Citron · Fraise",
+          "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "lemon-cream-berry-sweet",
+          "name": "Charmilly Crème Citron · Douceur Baies",
+          "short": "Citron · Baies",
+          "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "lemon-cream-love-sweet",
+          "name": "Charmilly Crème Citron · Douceur Cœur",
+          "short": "Citron · Cœur",
+          "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "lemon-cream-star-sweet",
+          "name": "Charmilly Crème Citron · Douceur Étoile",
+          "short": "Citron · Étoile",
+          "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "lemon-cream-clover-sweet",
+          "name": "Charmilly Crème Citron · Douceur Trèfle",
+          "short": "Citron · Trèfle",
+          "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "lemon-cream-flower-sweet",
+          "name": "Charmilly Crème Citron · Douceur Fleur",
+          "short": "Citron · Fleur",
+          "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "lemon-cream-ribbon-sweet",
+          "name": "Charmilly Crème Citron · Douceur Ruban",
+          "short": "Citron · Ruban",
+          "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        },
+        {
+          "key": "salted-cream-strawberry-sweet",
+          "name": "Charmilly Crème Salée · Douceur Fraise",
+          "short": "Salée · Fraise",
+          "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "salted-cream-berry-sweet",
+          "name": "Charmilly Crème Salée · Douceur Baies",
+          "short": "Salée · Baies",
+          "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "salted-cream-love-sweet",
+          "name": "Charmilly Crème Salée · Douceur Cœur",
+          "short": "Salée · Cœur",
+          "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "salted-cream-star-sweet",
+          "name": "Charmilly Crème Salée · Douceur Étoile",
+          "short": "Salée · Étoile",
+          "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "salted-cream-clover-sweet",
+          "name": "Charmilly Crème Salée · Douceur Trèfle",
+          "short": "Salée · Trèfle",
+          "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "salted-cream-flower-sweet",
+          "name": "Charmilly Crème Salée · Douceur Fleur",
+          "short": "Salée · Fleur",
+          "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "salted-cream-ribbon-sweet",
+          "name": "Charmilly Crème Salée · Douceur Ruban",
+          "short": "Salée · Ruban",
+          "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-swirl-strawberry-sweet",
+          "name": "Charmilly Duo Rubis · Douceur Fraise",
+          "short": "Rubis · Fraise",
+          "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-swirl-berry-sweet",
+          "name": "Charmilly Duo Rubis · Douceur Baies",
+          "short": "Rubis · Baies",
+          "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-swirl-love-sweet",
+          "name": "Charmilly Duo Rubis · Douceur Cœur",
+          "short": "Rubis · Cœur",
+          "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-swirl-star-sweet",
+          "name": "Charmilly Duo Rubis · Douceur Étoile",
+          "short": "Rubis · Étoile",
+          "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-swirl-clover-sweet",
+          "name": "Charmilly Duo Rubis · Douceur Trèfle",
+          "short": "Rubis · Trèfle",
+          "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-swirl-flower-sweet",
+          "name": "Charmilly Duo Rubis · Douceur Fleur",
+          "short": "Rubis · Fleur",
+          "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "ruby-swirl-ribbon-sweet",
+          "name": "Charmilly Duo Rubis · Douceur Ruban",
+          "short": "Rubis · Ruban",
+          "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        },
+        {
+          "key": "caramel-swirl-strawberry-sweet",
+          "name": "Charmilly Duo Caramel · Douceur Fraise",
+          "short": "Caramel · Fraise",
+          "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "caramel-swirl-berry-sweet",
+          "name": "Charmilly Duo Caramel · Douceur Baies",
+          "short": "Caramel · Baies",
+          "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "caramel-swirl-love-sweet",
+          "name": "Charmilly Duo Caramel · Douceur Cœur",
+          "short": "Caramel · Cœur",
+          "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "caramel-swirl-star-sweet",
+          "name": "Charmilly Duo Caramel · Douceur Étoile",
+          "short": "Caramel · Étoile",
+          "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "caramel-swirl-clover-sweet",
+          "name": "Charmilly Duo Caramel · Douceur Trèfle",
+          "short": "Caramel · Trèfle",
+          "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "caramel-swirl-flower-sweet",
+          "name": "Charmilly Duo Caramel · Douceur Fleur",
+          "short": "Caramel · Fleur",
+          "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "caramel-swirl-ribbon-sweet",
+          "name": "Charmilly Duo Caramel · Douceur Ruban",
+          "short": "Caramel · Ruban",
+          "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        },
+        {
+          "key": "rainbow-swirl-strawberry-sweet",
+          "name": "Charmilly Duo Arc-en-Ciel · Douceur Fraise",
+          "short": "Arc-en-Ciel · Fraise",
+          "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+        },
+        {
+          "key": "rainbow-swirl-berry-sweet",
+          "name": "Charmilly Duo Arc-en-Ciel · Douceur Baies",
+          "short": "Arc-en-Ciel · Baies",
+          "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+        },
+        {
+          "key": "rainbow-swirl-love-sweet",
+          "name": "Charmilly Duo Arc-en-Ciel · Douceur Cœur",
+          "short": "Arc-en-Ciel · Cœur",
+          "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "rainbow-swirl-star-sweet",
+          "name": "Charmilly Duo Arc-en-Ciel · Douceur Étoile",
+          "short": "Arc-en-Ciel · Étoile",
+          "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+        },
+        {
+          "key": "rainbow-swirl-clover-sweet",
+          "name": "Charmilly Duo Arc-en-Ciel · Douceur Trèfle",
+          "short": "Arc-en-Ciel · Trèfle",
+          "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+        },
+        {
+          "key": "rainbow-swirl-flower-sweet",
+          "name": "Charmilly Duo Arc-en-Ciel · Douceur Fleur",
+          "short": "Arc-en-Ciel · Fleur",
+          "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+        },
+        {
+          "key": "rainbow-swirl-ribbon-sweet",
+          "name": "Charmilly Duo Arc-en-Ciel · Douceur Ruban",
+          "short": "Arc-en-Ciel · Ruban",
+          "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+        }
+      ]
+    },
+    "854": {
+      "title": "Formes de Théffroi",
+      "base": "phony",
+      "where": "Ruines de Chaumine et Bois Sombres (Épée/Bouclier). La forme Authentique est environ dix fois plus rare.",
+      "note": "Les deux formes sont visuellement identiques en jeu : seule la marque sous le fond de la tasse les distingue. Elles restent deux entrées distinctes dans HOME.",
+      "forms": [
+        {
+          "key": "phony",
+          "name": "Théffroi Forme Contrefaçon",
+          "short": "Contrefaçon",
+          "nosprite": 1
+        },
+        {
+          "key": "antique",
+          "name": "Théffroi Forme Authentique",
+          "short": "Authentique",
+          "nosprite": 1
+        }
+      ]
+    },
+    "855": {
+      "title": "Formes de Polthégeist",
+      "base": "phony",
+      "where": "Évolution de Théffroi avec un Éclat Fêlé (Contrefaçon) ou un Éclat Fissuré (Authentique) — l'éclat doit correspondre à la forme de Théffroi.",
+      "note": "Un Théffroi Contrefaçon ne peut pas devenir un Polthégeist Authentique : les deux lignées sont séparées de bout en bout.",
+      "forms": [
+        {
+          "key": "phony",
+          "name": "Polthégeist Forme Contrefaçon",
+          "short": "Contrefaçon",
+          "nosprite": 1
+        },
+        {
+          "key": "antique",
+          "name": "Polthégeist Forme Authentique",
+          "short": "Authentique",
+          "nosprite": 1
+        }
+      ]
+    },
+    "1012": {
+      "title": "Formes de Poltchageist",
+      "base": "counterfeit",
+      "where": "Bosquets de Kitakami (DLC Le Masque Turquoise). La forme Artisanale est nettement plus rare.",
+      "note": "Comme pour Théffroi, les deux formes se ressemblent trait pour trait : c'est la marque du récipient qui change.",
+      "forms": [
+        {
+          "key": "counterfeit",
+          "name": "Poltchageist Forme Contrefaçon",
+          "short": "Contrefaçon",
+          "nosprite": 1
+        },
+        {
+          "key": "artisan",
+          "name": "Poltchageist Forme Artisanale",
+          "short": "Artisanale",
+          "nosprite": 1
+        }
+      ]
+    },
+    "1013": {
+      "title": "Formes de Théffroyable",
+      "base": "unremarkable",
+      "where": "Évolution de Poltchageist avec de la Poudre Quelconque (forme Quelconque) ou de la Poudre Chef-d'œuvre (forme Chef-d'œuvre).",
+      "note": "La poudre doit correspondre à la forme de Poltchageist : Contrefaçon → Quelconque, Artisanale → Chef-d'œuvre.",
+      "forms": [
+        {
+          "key": "unremarkable",
+          "name": "Théffroyable Forme Quelconque",
+          "short": "Quelconque",
+          "nosprite": 1
+        },
+        {
+          "key": "masterpiece",
+          "name": "Théffroyable Forme Chef-d'œuvre",
+          "short": "Chef-d'œuvre",
+          "nosprite": 1
+        }
+      ]
+    },
+    "172": {
+      "title": "Pichu Troizépi",
+      "spriteSet": "classic",
+      "info": 1,
+      "where": "Pichu Troizépi ne s'obtient que dans Or HeartGold / Argent SoulSilver, en emmenant le Pikachu Volt Jaune (celui de la distribution du Pokémon Ranger) au Vestige d'Ilex : Célébi surgit et le Pichu apparaît.",
+      "note": "Il ne peut ni évoluer, ni être échangé, ni monter dans la Banque ou dans HOME : il reste enfermé dans sa cartouche. Il est de plus verrouillé chromatique. Aucune case à cocher, donc — la forme est ici pour mémoire.",
+      "forms": [
+        {
+          "key": "spiky-eared",
+          "name": "Pichu Troizépi",
+          "short": "Troizépi"
+        }
+      ]
+    }
+  }
+}

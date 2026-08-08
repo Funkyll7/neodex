@@ -12,6 +12,9 @@ photo/
 .claude/settings.local.json
 
 # Systeme / editeurs
+# ._xxx : les « resource forks » que macOS depose a cote de chaque fichier
+# quand le depot vit sur un disque exFAT / FAT, comme ici.
+._*
 Thumbs.db
 desktop.ini
 .DS_Store

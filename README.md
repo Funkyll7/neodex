@@ -1,12 +1,21 @@
 # NéoDex
 
-Pokédex personnel : les 1025 espèces et leurs 304 formes alternatives (Alola,
-Galar, Hisui, Paldéa, Méga-Évolutions, Gigamax…), ma collection (normal /
-chromatique, formes ♂ et ♀), la disponibilité jeu par jeu, le verrouillage
-chromatique et la méthode de shiny hunt détaillée pour chaque jeu.
+Pokédex personnel : les 1025 espèces, leurs 304 formes alternatives (Alola,
+Galar, Hisui, Paldéa, Méga-Évolutions, Gigamax…) et leurs 160 formes
+cosmétiques (les 28 Zarbi, les 20 Prismillon, les 63 Charmilly, les couleurs de
+Flabébé, les tailles de Couafarel, les saisons de Vivaldaim…), ma collection
+(normal / chromatique, formes ♂ et ♀), la disponibilité jeu par jeu, le
+verrouillage chromatique et la méthode de shiny hunt détaillée pour chaque jeu.
 
-Un Pokémon dont tout l'obtenable est coché passe en doré, badge « ★ Complet ».
-Sur téléphone, choisir une vignette ouvre la fiche en feuille plein écran.
+**2 806 cases** en tout. Chaque vignette affiche les siennes — `3/8` — sans
+qu'on ait à l'ouvrir. Un Pokémon dont tout l'obtenable est coché passe en doré,
+badge « ★ Complet ». La barre latérale suit quatre progressions distinctes :
+tout, paires ♂ / ♀, formes, Gigamax.
+
+Les formes cosmétiques se cochent dans une **grille** — les lettres des Zarbi,
+les motifs de Prismillon, les crèmes de Charmilly — plutôt qu'en défilant sur
+soixante fiches. Sur téléphone, choisir une vignette ouvre la fiche en feuille
+plein écran.
 
 Site statique — pas de build, pas de dépendance, pas de serveur.
 
@@ -70,7 +79,10 @@ python tools/build_availability.py
   base, dimorphisme, pré-évolutions).
 - `build_forms.py` régénère `data/forms/` : les 304 formes alternatives, avec
   vérification image par image des sprites qui existent réellement — normal,
-  chromatique, HOME et artwork officiel.
+  chromatique, HOME et artwork officiel. Il ne voit **pas** les formes
+  cosmétiques (Zarbi, Prismillon, Charmilly…), que PokeAPI n'expose pas comme
+  des entrées distinctes : celles-là sont écrites à la main dans
+  `data/details/cosmetic-forms.json`.
 - `build_availability.py` régénère `data/availability/` : dans quels jeux chaque
   espèce s'obtient, et dans lesquels on la croise vraiment à l'état sauvage
   (croisement des Pokédex régionaux et de la table des rencontres de PokeAPI).

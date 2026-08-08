@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Marque « Gigamax » — glyphe original, dessiné pour NéoDex.
+  Trois arcs d'énergie qui tournent autour d'un noyau : c'est le vocabulaire
+  visuel du Dynamax d'Épée/Bouclier (le rouge, la spirale, le halo), pas son
+  logo. Sert de pastille sur les formes Gigamax de la fiche.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Gigamax">
+  <defs>
+    <radialGradient id="gmax-core" cx="50%" cy="42%" r="60%">
+      <stop offset="0%" stop-color="#ffd9e2"/>
+      <stop offset="45%" stop-color="#ff5f7e"/>
+      <stop offset="100%" stop-color="#c9123f"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="24" cy="24" r="22" fill="url(#gmax-core)"/>
+
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="3.2" opacity=".95">
+    <path d="M24 7.5A16.5 16.5 0 0 1 38.3 32"/>
+    <path d="M38.3 32A16.5 16.5 0 0 1 9.7 32"/>
+    <path d="M9.7 32A16.5 16.5 0 0 1 24 7.5"/>
+  </g>
+
+  <circle cx="24" cy="24" r="6.6" fill="#fff"/>
+  <circle cx="24" cy="24" r="3.1" fill="#c9123f"/>
+</svg>

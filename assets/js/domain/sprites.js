@@ -51,6 +51,24 @@ export function formImg(form, { shiny = false, alt = "", className = "" } = {}) 
   return imageFrom(chain, alt || form.name, className);
 }
 
+/**
+ * Image d'une forme cosmetique. Les sprites sont nommes par forme et non par
+ * id — "666-savanna", "201-b", "869-rainbow-swirl-love-sweet". Une variante
+ * sans sprite propre (Théffroi Contrefaçon / Authentique, indiscernables en
+ * jeu) retombe simplement sur l'image de l'espece.
+ */
+export function cosmeticImg(variant, speciesId, { shiny = false, alt = "", className = "" } = {}) {
+  if (!variant.sprite) return spriteImg(speciesId, { shiny, alt: alt || variant.name, className });
+
+  const base = variant.spriteSet === "classic" ? CONFIG.spriteClassicBase : CONFIG.spriteBase;
+  const chain = [];
+  if (shiny) chain.push(`${base}shiny/${variant.sprite}.png`);
+  chain.push(`${base}${variant.sprite}.png`);
+  // Repli si le depot de sprites change de nommage : l'espece, jamais rien.
+  chain.push(spriteUrl(speciesId, { shiny }), artworkUrl(speciesId));
+  return imageFrom(chain, alt || variant.name, className);
+}
+
 function imageFrom(chain, alt, className) {
   const img = document.createElement("img");
   img.alt = alt;

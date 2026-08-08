@@ -101,10 +101,25 @@ export function createSidebar(ctx) {
     pair: document.getElementById("stat-pair"),
     bar: document.getElementById("progress-bar"),
     fill: document.getElementById("progress-fill"),
+    bars: document.getElementById("progress-bars"),
+    gmax: {
+      pct: document.getElementById("gmax-pct"),
+      done: document.getElementById("gmax-done"),
+      total: document.getElementById("gmax-total"),
+      pairs: document.getElementById("gmax-pairs"),
+      pairsTotal: document.getElementById("gmax-pairs-total"),
+      shiny: document.getElementById("gmax-shiny"),
+      bar: document.getElementById("gmax-bar"),
+      fill: document.getElementById("gmax-fill"),
+    },
   };
 
   return {
-    render(counts) {
+    /**
+     * @param {object} counts    decompte par espece (combien en ai-je ?)
+     * @param {object} progress  decompte par case (combien de cases ai-je ?)
+     */
+    render(counts, progress) {
       out.pct.textContent = counts.pct;
       out.owned.textContent = counts.owned;
       out.total.textContent = counts.total;
@@ -112,6 +127,8 @@ export function createSidebar(ctx) {
       out.pair.textContent = counts.pair;
       out.fill.style.width = `${counts.pct}%`;
       out.bar.setAttribute("aria-valuenow", counts.pct);
+
+      if (progress) renderBars(out, progress);
 
       fill(
         pills,
@@ -138,4 +155,49 @@ export function createSidebar(ctx) {
       typeSelect.value = store.state.type;
     },
   };
+}
+
+/* ------------------------------ barres de % ------------------------------ */
+
+/**
+ * Quatre barres qui ne mesurent pas la meme chose : « Tout » compte chaque
+ * case du site, les trois autres decoupent le total. Un pourcentage global
+ * sans le detail ne dit pas ou l'on peche.
+ */
+function renderBars(out, progress) {
+  fill(
+    out.bars,
+    [
+      ["Tout", progress.all, "Toutes les cases : espèces, formes régionales, formes cosmétiques et Gigamax."],
+      ["Paires ♂ / ♀", progress.pairs, "Espèces à apparence mâle et femelle distinctes dont les deux cases sont cochées."],
+      ["Formes", progress.forms, "Formes alternatives et cosmétiques, hors Gigamax."],
+      ["Gigamax", progress.gmax, "Les 34 formes Gigamax, normales et chromatiques."],
+    ].map(([label, value, title]) =>
+      el(
+        "div.bars__row",
+        { title },
+        el(
+          "div.bars__head",
+          el("span.bars__label", label),
+          el("span.bars__value", `${value.done} / ${value.total}`),
+          el("span.bars__pct", `${value.pct} %`)
+        ),
+        el(
+          "div.bar",
+          { role: "progressbar", "aria-label": label, "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(value.pct) },
+          el("div.bar__fill", { style: { width: `${value.pct}%` } })
+        )
+      )
+    )
+  );
+
+  const g = progress.gmax;
+  out.gmax.pct.textContent = g.pct;
+  out.gmax.done.textContent = g.done;
+  out.gmax.total.textContent = g.total;
+  out.gmax.pairs.textContent = g.pairs;
+  out.gmax.pairsTotal.textContent = g.pairsTotal;
+  out.gmax.shiny.textContent = g.shiny;
+  out.gmax.fill.style.width = `${g.pct}%`;
+  out.gmax.bar.setAttribute("aria-valuenow", g.pct);
 }

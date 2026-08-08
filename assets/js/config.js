@@ -13,6 +13,13 @@ export const CONFIG = {
   /** Repli quand un sprite HOME n'existe pas (formes recentes). */
   artworkBase: "https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/other/official-artwork/",
 
+  /**
+   * Sprites « classiques » du depot PokeAPI, nommes par forme ("172-spiky-eared").
+   * Les formes cosmetiques y sont toutes presentes, y compris celles qui n'ont
+   * pas de rendu HOME — c'est le cas du seul Pichu Troizepi.
+   */
+  spriteClassicBase: "https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/",
+
   /** Nombre de vignettes ajoutees a chaque palier de defilement. */
   pageSize: 120,
 

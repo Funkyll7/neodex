@@ -1,80 +1,87 @@
 /**
  * completion.js — « ai-je vraiment tout pour ce Pokémon ? »
  *
- * La question n'a de sens que si l'on retire ce que le jeu ne permet pas.
- * Trois choses ne sont jamais obtenables et sont donc exclues du calcul :
+ * La règle tient en une phrase : **tout ce qui a existé un jour est à cocher.**
+ * Un chromatique distribué une seule fois en 2013 reste un chromatique qu'on
+ * peut avoir en boîte : il compte. Ce qui ne compte pas, c'est ce qui n'existe
+ * nulle part. Trois soustractions, et trois seulement :
  *
- *   - le chromatique d'une espèce verrouillée dans tous les jeux où elle
- *     apparaît (Ogerpon, Koraidon, les fabuleux…) ;
- *   - le chromatique d'une forme dont aucun sprite chromatique n'existe
- *     (les Pikachu à casquette, le Pikachu partenaire) ;
- *   - les formes qu'on ne collectionne pas — Méga-Évolutions, Primo-Résurgence
- *     et formes de combat : ce sont des transformations, pas des entrées.
+ *   - les espèces de `noShiny` (data/reference/shiny-locks.json) : aucun
+ *     chromatique n'en a jamais été produit — Victini, Ogerpon, Shifours…
+ *   - les formes sans entrée propre dans HOME (`entry: 0`) : fusions, formes de
+ *     combat, Méga-Évolutions, partenaires de Let's Go ;
+ *   - les formes dont aucun sprite chromatique n'existe (Pikachu à casquette)
+ *     ou marquées `shiny: "none"` (Amphinobi Forme Sacha, Melmetal Gigamax).
  *
- * Sans cette soustraction, Pikachu et Évoli ne pourraient jamais être marqués
- * complets, ce qui viderait l'indicateur de son sens.
+ * Tout le reste est exigé, y compris les formes cosmétiques : les 28 Zarbi, les
+ * 20 Prismillon, les 63 Charmilly. Un Pokémon « ★ Complet » l'est vraiment.
  */
-
-import { huntableGames } from "./availability.js";
 
 /**
  * Les cases qui doivent être cochées pour que ce Pokémon soit complet.
  * @returns {{slot: string, label: string}[]}
  */
-export function requiredSlots(species, games) {
+export function requiredSlots(species) {
   const slots = [];
-  const shinyPossible = huntableGames(species, games).length > 0;
+  const shiny = !species.noShiny;
+  const cos = species.cosmetic;
+  // Chez les espèces à formes cosmétiques, la case de base n'est pas
+  // « Normal » : c'est le Zarbi A, la Prismillon Motif Floral, la Flabébé
+  // Fleur Rouge. On la nomme pour que l'infobulle reste lisible.
+  const baseName = cos && cos.baseVariant ? cos.baseVariant.name : "";
 
-  slots.push({ slot: "om", label: species.gd ? "Normal ♂" : "Normal" });
+  slots.push({ slot: "om", label: baseName || (species.gd ? "Normal ♂" : "Normal") });
   if (species.gd) slots.push({ slot: "of", label: "Normal ♀" });
-  if (shinyPossible) {
-    slots.push({ slot: "sm", label: species.gd ? "Shiny ♂" : "Shiny" });
+  if (shiny) {
+    slots.push({ slot: "sm", label: baseName ? `${baseName} shiny` : species.gd ? "Shiny ♂" : "Shiny" });
     if (species.gd) slots.push({ slot: "sf", label: "Shiny ♀" });
   }
 
+  if (cos && !cos.info) {
+    for (const variant of cos.variants) {
+      if (variant.isBase) continue;
+      slots.push({ slot: variant.slot, label: variant.name });
+      if (variant.shinyEntry) slots.push({ slot: variant.shinySlot, label: `${variant.name} shiny` });
+    }
+  }
+
   for (const form of species.forms) {
-    if (!form.collectible) continue;
-    slots.push({ slot: form.slot, label: form.name });
-    if (formShinyPossible(form, games)) {
-      slots.push({ slot: form.shinySlot, label: `${form.name} shiny` });
+    if (!form.entry) continue;
+    slots.push({ slot: form.slot, label: form.gendered ? `${form.name} ♂` : form.name });
+    if (form.gendered) slots.push({ slot: form.slotF, label: `${form.name} ♀` });
+    if (form.shinyEntry) {
+      slots.push({ slot: form.shinySlot, label: form.gendered ? `${form.name} shiny ♂` : `${form.name} shiny` });
+      if (form.gendered) slots.push({ slot: form.shinySlotF, label: `${form.name} shiny ♀` });
     }
   }
   return slots;
-}
-
-/** Un chromatique de cette forme existe-t-il, et est-il atteignable quelque part ? */
-function formShinyPossible(form, games) {
-  if (!form.hasShinySprite || form.shiny === "none") return false;
-  return games.some(
-    (game) => form.games.has(game.code) && game.shinyOk !== false && !form.shinyLocked.has(game.code)
-  );
 }
 
 /**
  * Avancement d'un Pokémon : combien de cases sur combien, et est-ce fini.
  * `total` vaut au minimum 1 (la forme normale de base), jamais 0.
  */
-export function completionOf(species, collection, games) {
-  const slots = requiredSlots(species, games);
-  const done = slots.filter((entry) => collection.has(species.id, entry.slot)).length;
+export function completionOf(species, collection) {
+  const slots = requiredSlots(species);
+  const missing = slots.filter((entry) => !collection.has(species.id, entry.slot));
   return {
-    done,
+    done: slots.length - missing.length,
     total: slots.length,
-    complete: done === slots.length,
+    complete: missing.length === 0,
     /** Ce qu'il reste à cocher, pour l'infobulle de la vignette. */
-    missing: slots.filter((entry) => !collection.has(species.id, entry.slot)).map((e) => e.label),
+    missing: missing.map((e) => e.label),
   };
 }
 
-export function isComplete(species, collection, games) {
-  return completionOf(species, collection, games).complete;
+export function isComplete(species, collection) {
+  return completionOf(species, collection).complete;
 }
 
 /** Nombre de Pokémon entièrement obtenus, pour les compteurs. */
-export function countComplete(speciesList, collection, games) {
+export function countComplete(speciesList, collection) {
   let count = 0;
   for (const species of speciesList) {
-    if (isComplete(species, collection, games)) count += 1;
+    if (isComplete(species, collection)) count += 1;
   }
   return count;
 }

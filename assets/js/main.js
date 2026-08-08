@@ -15,6 +15,7 @@ import { GitHubSync } from "./domain/sync.js";
 import { HuntPlanner } from "./domain/hunt.js";
 import { applyFilters } from "./domain/filters.js";
 import { isComplete } from "./domain/completion.js";
+import { progressOf } from "./domain/progress.js";
 import { initTheme } from "./ui/theme.js";
 import { createSidebar } from "./ui/sidebar.js";
 import { createGrid } from "./ui/dex-grid.js";
@@ -103,8 +104,8 @@ function start(dataset) {
 
   /* ------------------------------- rendu ------------------------------- */
 
-  /** « Tout obtenu » : dépend des jeux et des formes, donc du dataset. */
-  const complete = (species) => isComplete(species, collection, dataset.games);
+  /** « Tout obtenu » : dépend des formes et du verrou chromatique. */
+  const complete = (species) => isComplete(species, collection);
 
   function renderTabs() {
     const counts = collection.counts(dataset.species, complete);
@@ -141,22 +142,28 @@ function start(dataset) {
   }
 
   function renderCounts() {
-    sidebar.render(collection.counts(dataset.species, complete));
+    sidebar.render(collection.counts(dataset.species, complete), progressOf(dataset.species, collection));
     save.render();
     renderTabs();
   }
 
-  /** Une case a ete cochee : on rafraichit le strict necessaire. */
+  /**
+   * Une case a ete cochee : on rafraichit le strict necessaire.
+   * La fiche n'est surtout PAS reconstruite — on ne fait que retourner ses
+   * `aria-pressed`. Sinon le bouton qu'on vient de toucher disparaitrait sous
+   * le doigt, et l'evenement suivant retomberait sur son remplacant.
+   */
   function onCollectionChange(id) {
     renderCounts();
     if (id === undefined) {
       renderList();
-    } else {
-      grid.refresh(id);
-      // Les filtres « capturés / manquants / shiny » peuvent exclure la carte.
-      if (store.state.status !== "all") renderList();
+      renderDetail();
+      return;
     }
-    renderDetail();
+    grid.refresh(id);
+    // Les filtres « capturés / manquants / shiny » peuvent exclure la carte.
+    if (store.state.status !== "all") renderList();
+    detail.syncMarks(dataset.byId.get(id) || dataset.species[0]);
   }
 
   let previousSelected = store.state.selectedId;
