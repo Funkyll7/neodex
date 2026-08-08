@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-08-08T23:44:56.993Z",
+ "updatedAt": "2026-08-08T23:45:24.945Z",
  "source": "site NéoDex",
  "marks": {
   "1": {
@@ -2439,7 +2439,25 @@
   },
   "676": {
    "om": 1,
-   "sm": 1
+   "sm": 1,
+   "x676-heart": 1,
+   "y676-heart": 1,
+   "x676-star": 1,
+   "y676-star": 1,
+   "x676-diamond": 1,
+   "y676-diamond": 1,
+   "x676-debutante": 1,
+   "y676-debutante": 1,
+   "x676-matron": 1,
+   "y676-matron": 1,
+   "x676-dandy": 1,
+   "y676-dandy": 1,
+   "x676-la-reine": 1,
+   "y676-la-reine": 1,
+   "x676-kabuki": 1,
+   "y676-kabuki": 1,
+   "x676-pharaoh": 1,
+   "y676-pharaoh": 1
   },
   "677": {
    "om": 1,
