@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-08-08T23:44:33.890Z",
+ "updatedAt": "2026-08-08T23:44:45.841Z",
  "source": "site NéoDex",
  "marks": {
   "1": {
@@ -2403,7 +2403,15 @@
   },
   "671": {
    "om": 1,
-   "sm": 1
+   "sm": 1,
+   "x671-yellow": 1,
+   "y671-yellow": 1,
+   "x671-orange": 1,
+   "y671-orange": 1,
+   "x671-blue": 1,
+   "y671-blue": 1,
+   "x671-white": 1,
+   "y671-white": 1
   },
   "672": {
    "om": 1,
