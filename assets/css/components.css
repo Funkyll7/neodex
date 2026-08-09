@@ -437,6 +437,22 @@
 .form__btn[aria-pressed="true"] .form__btn-check { color: inherit; }
 .form__btn--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 
+/* Cases des formes Gigamax : l'emblème est gris tant que la forme n'est pas
+   obtenue, et passe en couleur une fois la case cochée. Deux fichiers plutôt
+   qu'un filtre CSS : on ne recolore pas du gris vers du magenta proprement. */
+.form__btn-icon {
+  flex: 0 0 auto;
+  width: 16px; height: 16px;
+  background: url("../img/gigamax-nb.png") center / contain no-repeat;
+  opacity: .55;
+  transition: opacity .14s;
+}
+.form__btn:hover .form__btn-icon { opacity: .8; }
+.form__btn[aria-pressed="true"] .form__btn-icon {
+  background-image: url("../img/gigamax.png");
+  opacity: 1;
+}
+
 /* ------------------- Grille a cocher des formes cosmetiques --------------- */
 /* Zarbi, Prismillon, Flabebe, Couafarel, Charmilly : jusqu'a 63 variantes.
    Une fiche par variante ferait defiler sur cinq ecrans ; ici tout tient sous
@@ -750,6 +766,7 @@
   .form__note,
   .form__warn { font-size: 13px; }
   .form__btn { font-size: 13px; padding: 14px 8px; }
+  .form__btn-icon { width: 18px; height: 18px; }
   .forms__title { font-size: 12px; }
 
   /* Shiny hunt : les etapes se lisent vraiment. */

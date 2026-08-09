@@ -498,7 +498,7 @@ function formCard(form, species, ctx) {
         el(
           "div.form__name",
           form.kind === "gmax"
-            ? el("img.form__gmax", { src: "assets/img/dynamax.svg", alt: "", width: 18, height: 18 })
+            ? el("img.form__gmax", { src: "assets/img/gigamax.png", alt: "", width: 18, height: 18 })
             : null,
           form.name
         ),
@@ -547,16 +547,27 @@ function formButtons(form, species, ctx) {
     if (form.gendered) defs.push([form.shinySlotF, "✦ Shiny ♀", true]);
   }
 
+  // Sur une forme Gigamax, l'emblème se pose sur la case elle-même : gris tant
+  // qu'elle n'est pas cochée, en couleur une fois obtenue. Le basculement se
+  // fait en CSS, sur l'attribut aria-pressed.
+  const gmax = form.kind === "gmax";
+
   return el(
     form.gendered ? "div.form__btns.form__btns--four" : "div.form__btns",
     defs.map(([slot, label, gold]) =>
       el(
-        gold ? "button.form__btn.form__btn--gold" : "button.form__btn",
+        [
+          gold ? "button.form__btn.form__btn--gold" : "button.form__btn",
+          gmax ? "form__btn--gmax" : "",
+        ]
+          .filter(Boolean)
+          .join("."),
         {
           type: "button",
           "aria-pressed": String(ctx.collection.has(species.id, slot)),
           dataset: { slot, species: species.id },
         },
+        gmax ? el("span.form__btn-icon", { "aria-hidden": "true" }) : null,
         el("span.form__btn-check", "✓"),
         label
       )
