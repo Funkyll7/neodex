@@ -182,14 +182,22 @@ function paint(node, species, ctx) {
     species.gd ? el("span.card__flag.card__flag--pair", { title: "Formes ♂ et ♀ distinctes" }, "♂♀") : null
   );
 
+  const gmax = gmaxState(species, collection);
   const art = node.querySelector(".card__art");
-  const key = `${showShiny}-${showFemale}`;
+  const key = `${showShiny}-${showFemale}-${gmax}`;
   if (art.dataset.key !== key) {
     art.dataset.key = key;
     fill(
       art,
       spriteImg(species.id, { shiny: showShiny, female: showFemale, alt: species.name, className: "card__img" }),
-      showShiny ? el("span.card__spark", { title: "Version chromatique affichée" }, "✦") : null
+      showShiny ? el("span.card__spark", { title: "Version chromatique affichée" }, "✦") : null,
+      // Sous l'étoile chromatique : l'emblème Gigamax, gris tant que la forme
+      // n'est pas obtenue. Rien du tout chez les espèces qui n'en ont pas.
+      gmax === "none"
+        ? null
+        : el(gmax === "owned" ? "span.card__gmax.card__gmax--on" : "span.card__gmax", {
+            title: gmax === "owned" ? "Forme Gigamax obtenue" : "Forme Gigamax manquante",
+          })
     );
   }
 
@@ -203,6 +211,21 @@ function paint(node, species, ctx) {
   for (const button of node.querySelectorAll("[data-slot]")) {
     button.setAttribute("aria-pressed", String(collection.has(species.id, button.dataset.slot)));
   }
+}
+
+/**
+ * Etat Gigamax d'une espece, pour la pastille de la vignette.
+ * « obtenue » des qu'une de ses formes Gigamax est cochee, normale ou
+ * chromatique : avoir le Gigamax chromatique, c'est avoir le Gigamax.
+ * @returns {"none"|"owned"|"missing"}
+ */
+function gmaxState(species, collection) {
+  const forms = species.forms.filter((form) => form.kind === "gmax" && form.entry);
+  if (!forms.length) return "none";
+  const owned = forms.some(
+    (form) => collection.has(species.id, form.slot) || collection.has(species.id, form.shinySlot)
+  );
+  return owned ? "owned" : "missing";
 }
 
 function formTitle(species) {

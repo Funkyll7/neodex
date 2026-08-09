@@ -267,6 +267,21 @@
   font-size: 12px; color: var(--accent);
   text-shadow: 0 0 8px var(--accent-glow);
 }
+/* Emblème Gigamax, juste sous l'étoile chromatique. Gris tant que la forme
+   n'est pas obtenue, en couleur ensuite — deux fichiers, on ne recolore pas
+   du gris vers du magenta. La place est réservée même sans étoile, pour que
+   la pastille reste au même endroit d'une vignette à l'autre. */
+.card__gmax {
+  position: absolute; top: 15px; right: 0;
+  width: 15px; height: 15px;
+  background: url("../img/gigamax-nb.png") center / contain no-repeat;
+  opacity: .45;
+}
+.card__gmax--on {
+  background-image: url("../img/gigamax.png");
+  opacity: 1;
+  filter: drop-shadow(0 0 5px rgba(224, 21, 95, .5));
+}
 
 .card__name {
   font-family: var(--font-display); font-weight: 700; font-size: 14px;
