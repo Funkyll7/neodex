@@ -1,27 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Marque « Gigamax » — glyphe original, dessiné pour NéoDex.
-  Trois arcs d'énergie qui tournent autour d'un noyau : c'est le vocabulaire
-  visuel du Dynamax d'Épée/Bouclier (le rouge, la spirale, le halo), pas son
-  logo. Sert de pastille sur les formes Gigamax de la fiche.
+  Emblème Dynamax / Gigamax d'Épée-Bouclier, redessiné à la main en SVG.
+  Deux ailes qui s'ouvrent vers le haut, une pointe centrale, deux jambes qui
+  descendent en croix, et les trois entailles sur la jambe droite. Dégradé du
+  blanc au magenta, halo rose autour.
+
+  Sert de pastille sur les formes Gigamax : la fiche l'affiche à 18 px, la
+  barre latérale à 16 px. Tout ce qui est plus fin que ~1 unité disparaît à
+  cette taille, le tracé reste donc volontairement franc.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Gigamax">
   <defs>
-    <radialGradient id="gmax-core" cx="50%" cy="42%" r="60%">
-      <stop offset="0%" stop-color="#ffd9e2"/>
-      <stop offset="45%" stop-color="#ff5f7e"/>
-      <stop offset="100%" stop-color="#c9123f"/>
+    <radialGradient id="dmax-body" cx="50%" cy="38%" r="68%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="22%" stop-color="#fde0ec"/>
+      <stop offset="55%" stop-color="#f27ba9"/>
+      <stop offset="100%" stop-color="#e0155f"/>
     </radialGradient>
+    <filter id="dmax-glow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="0.7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
 
-  <circle cx="24" cy="24" r="22" fill="url(#gmax-core)"/>
-
-  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="3.2" opacity=".95">
-    <path d="M24 7.5A16.5 16.5 0 0 1 38.3 32"/>
-    <path d="M38.3 32A16.5 16.5 0 0 1 9.7 32"/>
-    <path d="M9.7 32A16.5 16.5 0 0 1 24 7.5"/>
+  <g fill="url(#dmax-body)" filter="url(#dmax-glow)">
+    <!-- Aile gauche : de la pointe extérieure jusqu'au creux sous la pointe centrale. -->
+    <path d="M5.6 7.3 C13.4 12.2 18.4 16.4 22.2 21.6 L24 26.6 L20.4 24.4
+             C15.4 20.2 10.6 14.2 5.6 7.3 Z"/>
+    <!-- Aile droite, miroir de la gauche. -->
+    <path d="M42.4 7.3 C34.6 12.2 29.6 16.4 25.8 21.6 L24 26.6 L27.6 24.4
+             C32.6 20.2 37.4 14.2 42.4 7.3 Z"/>
+    <!-- Le corps du haut : le V large qui relie les deux ailes à la pointe. -->
+    <path d="M5.6 7.3 C14.6 11.4 19.4 13.4 22.3 15.9 L24 8.4 L25.7 15.9
+             C28.6 13.4 33.4 11.4 42.4 7.3
+             C36.2 15.6 30.4 22.2 24 28.8
+             C17.6 22.2 11.8 15.6 5.6 7.3 Z"/>
+    <!-- Jambe gauche, du croisement central vers la pointe basse. -->
+    <path d="M20.1 22.4 L25.4 29.6 C23.8 34.4 21.9 39.1 19.6 43.6
+             C14.4 39.9 8.9 38.4 2.6 41.4
+             C8.4 34.6 14.2 28.4 20.1 22.4 Z"/>
+    <!-- Jambe droite : même tracé en miroir. -->
+    <path d="M27.9 22.4 L22.6 29.6 C24.2 34.4 26.1 39.1 28.4 43.6
+             C33.6 39.9 39.1 38.4 45.4 41.4
+             C39.6 34.6 33.8 28.4 27.9 22.4 Z"/>
   </g>
 
-  <circle cx="24" cy="24" r="6.6" fill="#fff"/>
-  <circle cx="24" cy="24" r="3.1" fill="#c9123f"/>
+  <!-- Les trois entailles de la jambe droite, en creux dans le dégradé. -->
+  <g fill="#ffffff" opacity=".55">
+    <path d="M29.7 24.6 L32.1 27.6 L27.6 33.2 L25.9 30.1 Z"/>
+    <path d="M33.1 28.9 L35.4 31.9 L30.4 37.7 L28.7 34.6 Z"/>
+    <path d="M36.4 33.2 L38.7 36.2 L33.2 42.1 L31.6 39.1 Z"/>
+  </g>
 </svg>
