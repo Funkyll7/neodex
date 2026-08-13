@@ -2,19 +2,12 @@
  "_comment": "Formes cosmetiques : celles que PokeAPI n'expose pas comme des entrees /pokemon distinctes (elles n'ont pas d'id > 10000) et que tools/build_forms.py ne peut donc pas generer. Ecrit a la main. Cle = numero national. Champs d'un groupe : title, base (la variante qui EST la forme par defaut de l'espece — elle reutilise les cases om/sm au lieu d'avoir les siennes), where, note, layout ('compact' | 'wide'), fold (replie par defaut), info (1 = aucune case a cocher), spriteSet ('classic' = sprites/pokemon/ au lieu des sprites HOME), gm/nogm (jeux, sinon suit l'espece). Champs d'une variante : key (suffixe du sprite PokeAPI), name, short (libelle de la grille), where, noshiny (1 = verrouille chromatique), nosprite (1 = aucun sprite propre, on retombe sur l'espece).",
  "groups": {
   "25": {
-   "title": "Pikachu à casquette et Pikachu Cosplayeur",
+   "title": "Casquettes et tenues de Pikachu",
    "layout": "wide",
-   "base": "base",
    "spriteSet": "classic",
    "where": "Toutes ces tenues viennent de distributions officielles : aucune ne se rencontre en jeu. Les casquettes rejouent celles de Sacha dans chaque région, la série Cosplayeur vient des Concours de Hoenn dans Rubis Oméga / Saphir Alpha.",
    "note": "Trois régimes différents. Les six Pikachu Cosplayeur ne peuvent ni évoluer, ni être échangés, ni quitter ROSA : ils n'entrent pas dans HOME, il n'y a rien à cocher. Les sept casquettes régionales ne sont distribuées qu'en version normale. Seul le Pikachu Casquette Partenaire existe aussi en chromatique — un chromatique qui ne change aucune couleur, mais qui déclenche bien les particules à l'apparition.",
    "forms": [
-    {
-     "key": "base",
-     "name": "Pikachu",
-     "short": "Normal",
-     "sprite": "25"
-    },
     {
      "key": "original-cap",
      "name": "Pikachu Casquette Originale",

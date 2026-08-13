@@ -75,6 +75,7 @@ export function createDetailPanel(ctx) {
         root,
         head(species, ctx, c1),
         collectionSection(species, ctx),
+        cosmeticSection(species, ctx),
         cosmeticNotes(species, ctx),
         formsSection(species, ctx),
         availabilitySection(species, ctx),
@@ -205,6 +206,9 @@ function collectionSection(species, ctx) {
   if (cosmetic && cosmetic.coversBase) return cosmeticPicker(species, cosmetic, ctx);
 
   const shiny = !species.noShiny;
+  // Note : quand le groupe ne couvre pas la base — les casquettes de Pikachu,
+  // qui s'ajoutent a la forme classique au lieu de la remplacer — la grille
+  // est rendue juste apres, par cosmeticSection().
   const slots = [["om", species.gd ? "Normal ♂" : "Normal", false, false]];
   if (species.gd) slots.push(["of", "Normal ♀", false, true]);
   if (shiny) {
@@ -280,12 +284,14 @@ function cosmeticPicker(species, cosmetic, ctx) {
     "section.detail__section",
     el(
       "div.detail__row",
-      el("h3.panel__label", `Ma collection · ${cosmetic.title}`),
+      el("h3.panel__label", cosmetic.coversBase ? `Ma collection · ${cosmetic.title}` : cosmetic.title),
       el("span.detail__note", { dataset: { role: "cosmetic-count" } }, cosmeticCount(species, cosmetic, ctx))
     ),
     el(
       "p.detail__help",
-      "Chaque variante est une entrée distincte dans HOME : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique. La première tuile est la forme de base de l'espèce."
+      cosmetic.coversBase
+        ? "Chaque variante est une entrée distincte dans HOME : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique. La première tuile est la forme de base de l'espèce."
+        : "Chaque variante est une entrée distincte dans HOME, en plus de la forme classique ci-dessus : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique."
     ),
     cosmetic.fold
       ? el(
@@ -298,6 +304,17 @@ function cosmeticPicker(species, cosmetic, ctx) {
     cosmetic.where ? el("p.form__text", cosmetic.where) : null,
     cosmetic.note ? el("p.form__note", cosmetic.note) : null
   );
+}
+
+/**
+ * La grille des variantes, en section a elle, quand elle ne remplace pas
+ * « Ma collection » : Pikachu garde ses cases ♂ / ♀ classiques, et ses
+ * quatorze tenues viennent ensuite.
+ */
+function cosmeticSection(species, ctx) {
+  const cosmetic = species.cosmetic;
+  if (!cosmetic || cosmetic.info || cosmetic.coversBase) return null;
+  return cosmeticPicker(species, cosmetic, ctx);
 }
 
 function cosmeticCount(species, cosmetic, ctx) {
