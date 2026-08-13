@@ -6,7 +6,7 @@
    "layout": "wide",
    "spriteSet": "classic",
    "where": "Toutes ces tenues viennent de distributions officielles : aucune ne se rencontre en jeu. Les casquettes rejouent celles de Sacha dans chaque région, la série Cosplayeur vient des Concours de Hoenn dans Rubis Oméga / Saphir Alpha.",
-   "note": "Trois régimes différents. Les six Pikachu Cosplayeur viennent des Concours de Hoenn dans Rubis Oméga / Saphir Alpha : ils ne peuvent ni évoluer, ni être échangés, ni quitter le jeu — coche-les si tu les as sur ta cartouche. Les sept casquettes régionales n'ont été distribuées qu'en version normale, leur case chromatique reste barrée. Seul le Pikachu Casquette Partenaire a un chromatique distribué : un chromatique qui ne change aucune couleur, mais qui déclenche bien les particules.",
+   "note": "Trois régimes différents. Les six Pikachu Cosplayeur des Concours de Hoenn ne peuvent ni évoluer, ni être échangés, ni quitter Rubis Oméga / Saphir Alpha : ils n'entrent pas dans HOME, il n'y a rien à cocher. Les sept casquettes régionales n'ont été distribuées qu'en version normale, leur case chromatique reste barrée. Seul le Pikachu Casquette Partenaire a un chromatique distribué : un chromatique qui ne change aucune couleur, mais qui déclenche bien les particules.",
    "forms": [
     {
      "key": "original-cap",
@@ -76,42 +76,48 @@
      "name": "Pikachu Rockeur",
      "short": "Rockeur",
      "sprite": "10080",
-     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Robustesse."
+     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Robustesse.",
+     "noentry": 1
     },
     {
      "key": "belle",
      "name": "Pikachu Lady",
      "short": "Lady",
      "sprite": "10081",
-     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Grâce."
+     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Grâce.",
+     "noentry": 1
     },
     {
      "key": "pop-star",
      "name": "Pikachu Star",
      "short": "Star",
      "sprite": "10082",
-     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Beauté."
+     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Beauté.",
+     "noentry": 1
     },
     {
      "key": "phd",
      "name": "Pikachu Docteur",
      "short": "Docteur",
      "sprite": "10083",
-     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Intelligence."
+     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Intelligence.",
+     "noentry": 1
     },
     {
      "key": "libre",
      "name": "Pikachu Catcheur",
      "short": "Catcheur",
      "sprite": "10084",
-     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Sang-froid."
+     "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Sang-froid.",
+     "noentry": 1
     },
     {
      "key": "cosplay",
      "name": "Pikachu Cosplayeur",
      "short": "Cosplayeur",
      "sprite": "10085",
-     "where": "Pikachu Cosplayeur de base, remis avant le premier Concours de Hoenn."
+     "where": "Pikachu Cosplayeur de base, remis avant le premier Concours de Hoenn.",
+     "noentry": 1
     }
    ]
   },
