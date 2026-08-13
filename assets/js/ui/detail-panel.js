@@ -301,8 +301,11 @@ function cosmeticPicker(species, cosmetic, ctx) {
 }
 
 function cosmeticCount(species, cosmetic, ctx) {
-  const done = cosmetic.variants.filter((v) => ctx.collection.has(species.id, v.slot)).length;
-  return `${done} / ${cosmetic.variants.length} variantes`;
+  // Les variantes hors HOME ne comptent pas : les afficher au dénominateur
+  // ferait un compteur qui n'atteint jamais son total.
+  const countable = cosmetic.variants.filter((v) => v.entry);
+  const done = countable.filter((v) => ctx.collection.has(species.id, v.slot)).length;
+  return `${done} / ${countable.length} variantes`;
 }
 
 function updateCosmeticCount(root, species, ctx) {
@@ -311,6 +314,21 @@ function updateCosmeticCount(root, species, ctx) {
 }
 
 function pickerCell(species, variant, ctx) {
+  // Variante qui ne monte pas dans HOME : on la montre pour l'inventaire, mais
+  // il n'y a rien à cocher — ni normal, ni chromatique.
+  if (!variant.entry) {
+    return el(
+      "div.picker__cell.picker__cell--off",
+      cosmeticImg(variant, species.id, { className: "picker__img" }),
+      el("span.picker__name", variant.short),
+      el(
+        "div.picker__btns",
+        el("span.picker__btn.picker__btn--off", { title: "Ne peut pas entrer dans HOME" }, "✕"),
+        el("span.picker__btn.picker__btn--off", { title: "Ne peut pas entrer dans HOME" }, "✕")
+      )
+    );
+  }
+
   const buttons = [
     el(
       "button.picker__btn",

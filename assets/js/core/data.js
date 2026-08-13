@@ -292,20 +292,28 @@ function cosmeticGroup(group, species) {
 
   const variants = group.forms.map((raw) => {
     const isBase = raw.key === group.base;
-    const noShiny = Boolean(raw.noshiny) || species.noShiny || Boolean(group.info);
+    // `noentry` : la variante existe, se montre, mais ne peut pas entrer dans
+    // HOME — les six Pikachu Cosplayeur de ROSA, prisonniers de leur jeu.
+    const noEntry = Boolean(raw.noentry);
+    const noShiny = Boolean(raw.noshiny) || species.noShiny || Boolean(group.info) || noEntry;
     return Object.freeze({
       key: raw.key,
       name: raw.name,
       short: raw.short || raw.name,
       where: raw.where || "",
       isBase,
-      /** Nom du fichier de sprite ("666-savanna"), ou null : on retombe sur l'espece. */
-      sprite: raw.nosprite ? null : `${species.id}-${raw.key}`,
+      /**
+       * Nom du fichier de sprite, ou null : on retombe sur l'espece.
+       * Par defaut la convention par forme ("666-savanna") ; `sprite` permet de
+       * pointer un fichier nomme autrement, comme les id des Pikachu a
+       * casquette, que le jeu de sprites ne nomme pas par motif.
+       */
+      sprite: raw.nosprite ? null : String(raw.sprite || `${species.id}-${raw.key}`),
       spriteSet: group.spriteSet || "home",
       slot: isBase ? "om" : `x${species.id}-${raw.key}`,
       shinySlot: isBase ? "sm" : `y${species.id}-${raw.key}`,
       shinyEntry: !group.info && !noShiny,
-      entry: !group.info,
+      entry: !group.info && !noEntry,
     });
   });
 

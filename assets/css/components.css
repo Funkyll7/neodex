@@ -488,6 +488,11 @@
   background: var(--bg-sunken);
 }
 .picker__cell--base { border-color: var(--border-strong); background: var(--bg-inset); }
+/* Variante qui ne peut pas entrer dans HOME : présente pour l'inventaire,
+   mais rien à y cocher. On l'estompe pour qu'elle ne se confonde pas avec
+   une case simplement pas encore obtenue. */
+.picker__cell--off { opacity: .45; border-style: dashed; }
+.picker__cell--off .picker__img { filter: grayscale(1); }
 /* Ici on ne ternit PAS les sprites manquants, contrairement aux vignettes :
    toute la grille sert justement a distinguer un motif d'un autre, et une
    Prismillon grisee de 52 px ne se distingue plus de rien. C'est la tuile,

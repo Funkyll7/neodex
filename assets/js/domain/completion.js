@@ -39,7 +39,9 @@ export function requiredSlots(species) {
 
   if (cos && !cos.info) {
     for (const variant of cos.variants) {
-      if (variant.isBase) continue;
+      // La base est deja comptee plus haut ; une variante qui ne monte pas dans
+      // HOME ne peut pas etre cochee, donc pas exigee.
+      if (variant.isBase || !variant.entry) continue;
       slots.push({ slot: variant.slot, label: variant.name });
       if (variant.shinyEntry) slots.push({ slot: variant.shinySlot, label: `${variant.name} shiny` });
     }
