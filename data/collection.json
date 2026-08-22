@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-08-22T18:50:14.406Z",
+ "updatedAt": "2026-08-22T18:51:14.517Z",
  "source": "site NéoDex",
  "marks": {
   "1": {
@@ -2433,7 +2433,8 @@
    "x666-garden": 1,
    "y666-garden": 1,
    "x666-icy-snow": 1,
-   "x666-marine": 1
+   "x666-marine": 1,
+   "x666-poke-ball": 1
   },
   "667": {
    "sm": 1,
