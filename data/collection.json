@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-08-24T10:59:00.790Z",
+ "updatedAt": "2026-08-24T10:59:07.397Z",
  "source": "site NéoDex",
  "marks": {
   "1": {
@@ -108,7 +108,9 @@
    "of": 1,
    "x25-partner-cap": 1,
    "x25-hoenn-cap": 1,
-   "x25-unova-cap": 1
+   "x25-unova-cap": 1,
+   "x25-alola-cap": 1,
+   "x25-sinnoh-cap": 1
   },
   "26": {
    "om": 1,
