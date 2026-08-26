@@ -25,9 +25,10 @@ const total = (p) => p.stats.reduce((sum, n) => sum + n, 0);
 
 export function applyFilters(species, state, collection, isComplete = () => false) {
   const query = state.search.trim().toLowerCase();
+  const number = numberQuery(query);
 
   const list = species.filter((p) => {
-    if (query && !matches(p, query)) return false;
+    if (query && !matches(p, query, number)) return false;
     if (state.type !== "all" && !p.types.includes(state.type)) return false;
     if (state.gen !== "all" && String(p.gen) !== state.gen) return false;
     if (state.game !== "all" && !p.games.has(state.game)) return false;
@@ -50,13 +51,45 @@ export function applyFilters(species, state, collection, isComplete = () => fals
     }
   });
 
-  return list.sort(SORTS[state.sort] || SORTS.num);
+  list.sort(SORTS[state.sort] || SORTS.num);
+
+  // Un numero tape en entier gagne la premiere place, quel que soit le tri :
+  // qui tape « 0025 » cherche Pikachu, pas le premier de la liste par ordre
+  // alphabetique.
+  if (number !== null) {
+    const exact = list.findIndex((p) => p.id === number);
+    if (exact > 0) list.unshift(list.splice(exact, 1)[0]);
+  }
+  return list;
 }
 
-function matches(p, query) {
-  return (
-    p.name.toLowerCase().includes(query) ||
-    p.en.toLowerCase().includes(query) ||
-    String(p.id).includes(query)
-  );
+/**
+ * « 0025 », « #25 », « 25 » -> 25. Tout le reste -> null.
+ *
+ * Les vignettes affichent le numero sur quatre chiffres (`#0025`) : c'est donc
+ * ce qu'on recopie depuis une capture d'ecran. Sans normalisation, l'ancienne
+ * recherche par sous-chaine repondait « Pêchaminus » a « 025 », parce que
+ * « 1025 » contient « 025 » — un seul resultat, faux, et sans le moindre
+ * signe que quelque chose clochait.
+ */
+function numberQuery(query) {
+  const match = /^#?0*(\d{1,4})$/.exec(query);
+  if (!match) return null;
+  const value = parseInt(match[1], 10);
+  return value > 0 ? value : null;
+}
+
+/**
+ * Une requete purement numerique ne compare que des numeros : le numero exact,
+ * ou un debut de numero (« 25 » sort 25 puis 250 a 259). Jamais une
+ * sous-chaine — c'est ce qui faisait remonter 1025 pour « 025 ».
+ * Tout le reste cherche dans `species.search`, construit par core/data.js :
+ * nom francais et anglais, categorie, noms de formes et de cosmetiques.
+ */
+function matches(p, query, number) {
+  if (number !== null) {
+    const id = String(p.id);
+    return p.id === number || id.startsWith(String(number));
+  }
+  return p.search.includes(query);
 }

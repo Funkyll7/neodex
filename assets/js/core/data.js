@@ -207,7 +207,29 @@ function merge(entry, detail = {}, avail = {}, rawForms = [], context) {
   /** Tout ce qui se compte comme « une forme » dans la vignette. */
   species.formCount =
     forms.length + (species.cosmetic ? species.cosmetic.variants.filter((v) => !v.isBase).length : 0);
+  species.search = searchIndex(species);
   return Object.freeze(species);
+}
+
+/**
+ * Botte de foin de la recherche : tout ce qu'on peut taper pour retrouver ce
+ * Pokemon, en minuscules, concatene une fois pour toutes.
+ *
+ * Sans elle, chercher « alola » ou « gigamax » ne donnait rien : la recherche
+ * ne regardait que le nom de l'espece — sur un site dont l'interet est
+ * justement ses 304 formes et ses 160 cosmetiques.
+ *
+ * Les cles PokeAPI (`rattata-alola`) sont incluses volontairement : elles
+ * offrent une prise en anglais, et elles sont stables.
+ */
+function searchIndex(species) {
+  const parts = [species.name, species.en, species.cat];
+  for (const form of species.forms) parts.push(form.name, form.label, form.key);
+  if (species.cosmetic) {
+    parts.push(species.cosmetic.title);
+    for (const variant of species.cosmetic.variants) parts.push(variant.name, variant.short);
+  }
+  return parts.filter(Boolean).join(" ").toLowerCase();
 }
 
 /** Categories qui ne sont qu'une transformation de combat : rien a cocher. */
