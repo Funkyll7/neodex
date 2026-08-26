@@ -7,6 +7,7 @@
  *
  *   /  ou  s     aller a la recherche
  *   ← / →        Pokemon precedent / suivant dans la liste filtree
+ *   1 / 2        cocher la case normale / chromatique du Pokemon affiche
  *   Echap        quitter la recherche (la feuille mobile est geree ailleurs,
  *                dans ui/detail-panel.js, qui ecoute deja Echap)
  *
@@ -42,6 +43,17 @@ export function createShortcuts(ctx) {
       event.preventDefault();
       search.focus();
       search.select();
+      return;
+    }
+
+    // Cocher sans la souris. Les fleches deplacent, ces deux touches cochent :
+    // remonter une boite entiere ne demande plus de lacher le clavier.
+    if (event.key === "1" || event.key === "2") {
+      const species = ctx.dataset.byId.get(ctx.store.state.selectedId);
+      if (!species) return;
+      if (event.key === "2" && species.noShiny) return;
+      event.preventDefault();
+      ctx.onToggle(species.id, event.key === "1" ? "om" : "sm");
       return;
     }
 

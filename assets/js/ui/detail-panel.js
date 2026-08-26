@@ -150,25 +150,60 @@ function createSheet(root) {
   const closeButton = document.getElementById("detail-close");
   const mobile = window.matchMedia("(max-width: 860px)");
 
-  function close() {
-    if (!document.body.classList.contains("sheet-open")) return;
+  /** Ou l'on etait dans la grille, et qui avait le focus, avant l'ouverture. */
+  let scroll = 0;
+  let origine = null;
+  /** Une entree d'historique a-t-elle ete empilee pour cette feuille ? */
+  let empile = false;
+
+  const ouverte = () => document.body.classList.contains("sheet-open");
+
+  /**
+   * @param {boolean} viaRetour  vrai quand c'est le bouton Retour du
+   *   navigateur qui ferme : l'entree d'historique est deja depilee, il ne
+   *   faut surtout pas rappeler `history.back()`.
+   */
+  function close(viaRetour = false) {
+    if (!ouverte()) return;
     document.body.classList.remove("sheet-open");
     backdrop.hidden = true;
     closeButton.hidden = true;
+
+    // Le blocage du defilement peut avoir fait remonter la page : on remet
+    // l'utilisateur exactement la ou il avait laissé la grille.
+    window.scrollTo({ top: scroll, behavior: "auto" });
+    if (origine && document.contains(origine)) origine.focus({ preventScroll: true });
+    origine = null;
+
+    if (empile && !viaRetour) history.back();
+    empile = false;
   }
 
   function open() {
-    if (!mobile.matches) return;
+    if (!mobile.matches || ouverte()) return;
+    scroll = window.scrollY;
+    origine = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
     document.body.classList.add("sheet-open");
     backdrop.hidden = false;
     closeButton.hidden = false;
     closeButton.focus({ preventScroll: true });
+
+    // Sur telephone, le reflexe pour refermer un panneau est le bouton Retour.
+    // Sans cette entree d'historique, il quittait le site.
+    if (!empile) {
+      history.pushState({ funkylldexSheet: true }, "");
+      empile = true;
+    }
   }
 
-  backdrop.addEventListener("click", close);
-  closeButton.addEventListener("click", close);
+  backdrop.addEventListener("click", () => close());
+  closeButton.addEventListener("click", () => close());
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") close();
+  });
+  window.addEventListener("popstate", () => {
+    if (ouverte()) close(true);
   });
   // Repasser en grand ecran alors que la feuille est ouverte la laisserait
   // coincee : la fiche redevient une colonne, on referme.
@@ -176,7 +211,45 @@ function createSheet(root) {
     if (!event.matches) close();
   });
 
+  glisserPourFermer(root, close);
   return { open, close };
+}
+
+/**
+ * Tirer la feuille vers le bas pour la fermer, le geste attendu sur telephone.
+ *
+ * Le glissement n'est pris en compte que si la fiche est deja tout en haut :
+ * sinon on empecherait de la faire defiler, ce qui est autrement plus utile.
+ */
+function glisserPourFermer(root, close) {
+  let depart = null;
+
+  root.addEventListener(
+    "touchstart",
+    (event) => {
+      depart = root.scrollTop <= 0 && event.touches.length === 1 ? event.touches[0].clientY : null;
+    },
+    { passive: true }
+  );
+
+  root.addEventListener(
+    "touchmove",
+    (event) => {
+      if (depart === null) return;
+      const delta = event.touches[0].clientY - depart;
+      // Un glissement vers le haut annule : l'utilisateur veut lire, pas fermer.
+      if (delta < 0) depart = null;
+      else if (delta > 90) {
+        depart = null;
+        close();
+      }
+    },
+    { passive: true }
+  );
+
+  root.addEventListener("touchend", () => {
+    depart = null;
+  });
 }
 
 /** Cles des blocs deplies (methodes de chasse, groupes de formes replies). */

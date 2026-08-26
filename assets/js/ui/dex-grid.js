@@ -168,7 +168,11 @@ function paint(node, species, ctx) {
 
   fill(
     node.querySelector(".card__flags"),
-    progress.complete ? el("span.card__flag.card__flag--complete", { title: "Tout obtenu" }, "★") : null,
+    // L'étoile de complétion n'est plus dans cette rangée : elle se pose en
+    // pastille dans le coin de la vignette (voir `.card--complete::after`),
+    // où elle se repère sans être lue, et où elle ne dispute plus la place au
+    // compteur de cases.
+    null,
     // Le compteur repond a « combien de cases ce Pokemon demande-t-il ? »
     // sans avoir a ouvrir la fiche : Miaouss en veut huit, pas quatre.
     el(

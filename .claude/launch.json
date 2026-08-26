@@ -2,13 +2,13 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "neodex",
+      "name": "funkylldex",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "4173"],
       "port": 4173
     },
     {
-      "name": "neodex-windows",
+      "name": "funkylldex-windows",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "4173"],
       "port": 4173

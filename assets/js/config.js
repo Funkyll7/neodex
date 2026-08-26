@@ -54,11 +54,28 @@ export const CONFIG = {
    */
   offline: true,
 
-  /** Cles localStorage. Changer de version repart d'une sauvegarde vierge. */
+  /**
+   * Cles localStorage. Changer de version repart d'une sauvegarde vierge.
+   *
+   * Renommees de `neodex.*` a `funkylldex.*` en meme temps que le site.
+   * `main.js` recopie les anciennes cles au premier chargement : sans cela le
+   * changement de nom aurait jete les cases cochees pas encore synchronisees,
+   * l'avancement des quetes, le theme choisi et le jeton GitHub.
+   */
   storage: {
+    marks: "funkylldex.marks.v1",
+    quest: "funkylldex.quest.v1",
+    prefs: "funkylldex.prefs.v1",
+    filters: "funkylldex.filters.v1",
+    token: "funkylldex.github.v1",
+  },
+
+  /** Anciennes cles, relues une fois pour reprendre ce qui s'y trouve. */
+  storageLegacy: {
     marks: "neodex.marks.v1",
     quest: "neodex.quest.v1",
     prefs: "neodex.prefs.v1",
+    filters: "neodex.filters.v1",
     token: "neodex.github.v1",
   },
 

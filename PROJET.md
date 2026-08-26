@@ -1,11 +1,11 @@
-# PROJET.md — carte du projet NéoDex
+# PROJET.md — carte du projet Funkylldex
 
 > **À lire avant chaque modification.** Ce fichier liste tous les dossiers et
 > fichiers, dit à quoi sert chacun, et rappelle où ajouter quoi.
 > **Si tu ajoutes, déplaces ou supprimes un fichier, mets ce document à jour
 > dans le même changement.**
 
-NéoDex est un Pokédex personnel : suivi de collection sur les 1025 espèces,
+Funkylldex est un Pokédex personnel : suivi de collection sur les 1025 espèces,
 leurs 304 formes alternatives (Alola, Galar, Hisui, Paldéa, Méga-Évolutions,
 Gigamax…) et leurs 160 formes cosmétiques (Zarbi, Prismillon, Charmilly…),
 formes ♂ / ♀, chromatiques, disponibilité par jeu, verrouillage chromatique et
@@ -67,7 +67,8 @@ Projet Poke/
 │           ├── detail-panel.js fiche détaillée de droite
 │           ├── quest.js        onglet Quêtes et journal de chasse
 │           ├── save.js         exporter / importer / réinitialiser
-│           ├── shortcuts.js    raccourcis clavier (/ · ← → · Échap)
+│           ├── shortcuts.js    raccourcis clavier (/ · ← → · 1 2 · Échap)
+│           ├── to-top.js       bouton « revenir en haut » (apparaît au défilement)
 │           └── common.js       fragments partagés (pastilles de type, liens)
 │
 ├── data/
@@ -462,6 +463,40 @@ L'ancienne carte Gigamax séparée a disparu : elle répétait une barre déjà
 présente et allongeait une colonne déjà chargée. Ses deux chiffres propres
 (paires normal + chromatique, chromatiques obtenus) restent calculés dans
 `progress.kinds.gmax`.
+
+### La feuille mobile
+
+C'est là qu'on utilise le site le plus souvent, et elle avait un défaut de
+fond : **fermée, la fiche restait dans le flux**. Elle repassait en bloc normal
+sous la grille, si bien qu'en défilant jusqu'au bout du Pokédex on retrouvait
+une fiche entière, ouverte sur le dernier Pokémon consulté. Sur téléphone,
+`.detail` est donc en `display: none` tant que `body.sheet-open` n'est pas là.
+
+Trois gestes la referment, en plus de la croix et du fond : **Échap**, le
+**bouton Retour du navigateur** — le réflexe sur téléphone, et sans l'entrée
+d'historique il quittait le site — et un **glissement vers le bas**. Ce
+dernier n'est pris en compte que si la fiche est déjà tout en haut, sinon on
+l'empêcherait de défiler.
+
+À la fermeture, on remet l'utilisateur là où il avait laissé la grille et on
+rend le focus à la vignette d'origine : bloquer le défilement de la page peut
+sinon la faire remonter.
+
+### Ce qui est gardé d'une visite à l'autre
+
+`CONFIG.storage` : les cases cochées, les quêtes, le thème, le jeton, **et
+depuis peu les filtres**. Travailler « À terminer » filtré sur Gigamax et
+recharger repartait sinon de zéro. La recherche, elle, n'est pas gardée —
+c'est une intention du moment, la retrouver au retour ferait croire à une
+liste vide.
+
+Les clés ont été renommées de `neodex.*` à `funkylldex.*` en même temps que le
+site. `migrateStorage()` dans `main.js` recopie les anciennes au premier
+chargement : sans cela le renommage aurait jeté d'un coup les cases pas encore
+synchronisées, l'avancement des quêtes et le jeton GitHub.
+
+**`CONFIG.github.repo` reste `neodex`** : c'est le nom réel du dépôt, le
+changer casserait la synchronisation.
 
 ### Chercher, et se déplacer de fiche en fiche
 

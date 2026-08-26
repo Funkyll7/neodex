@@ -1,4 +1,4 @@
-# NéoDex
+# Funkylldex
 
 Pokédex personnel : les 1025 espèces, leurs 304 formes alternatives (Alola,
 Galar, Hisui, Paldéa, Méga-Évolutions, Gigamax…) et leurs 160 formes

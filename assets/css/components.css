@@ -840,6 +840,13 @@
 .sheet__close { display: none; }
 
 @media (max-width: 860px) {
+  /* Fermée, la fiche ne doit plus exister du tout. Elle repassait sinon en
+     bloc normal dans le flux, c'est-à-dire une fiche entière posée SOUS la
+     grille : en défilant jusqu'au bout du Pokédex on la retrouvait là,
+     ouverte sur le dernier Pokémon consulté. */
+  .detail { display: none; }
+  body.sheet-open .detail { display: block; }
+
   .sheet-backdrop {
     display: block;
     position: fixed; inset: 0; z-index: 40;
@@ -1125,6 +1132,44 @@
   color: var(--text-faint);
 }
 
+/* ===================== Bouton « revenir en haut » ======================== */
+/* 1025 vignettes font une page très longue, et sur téléphone il n'existe pas
+   de geste pour remonter. Le bouton n'apparaît qu'une fois vraiment descendu. */
+.to-top {
+  position: fixed;
+  right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--bg-raised);
+  color: var(--accent);
+  font-size: 19px; font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+}
+.to-top:hover { background: var(--bg-hover); }
+.to-top[hidden] { display: none; }
+
+/* Pastille de complétion, dans le coin de la vignette. Elle était auparavant
+   une étoile dans la rangée de badges, où elle se lisait au lieu de se
+   repérer, et où elle disputait la place au compteur de cases. */
+.card { position: relative; }
+.card--complete::after {
+  content: "★";
+  position: absolute; top: -7px; right: -7px;
+  z-index: 3;
+  width: 22px; height: 22px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 12px; font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
+  pointer-events: none;
+}
+
 /* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
    qu'une colonne, soit treize écrans pour les noyaux de Météno. On redescend
    le minimum, et les boutons se resserrent juste assez pour que « Normal » et
@@ -1135,4 +1180,17 @@
   .ftiles { grid-template-columns: repeat(auto-fill, minmax(152px, 1fr)); }
   .ftile .form__btn { padding: 9px 4px; gap: 3px; font-size: 11px; }
   .ftile__img { width: 52px; height: 52px; }
+
+  /* La recherche reste sous la main pendant qu'on parcourt la grille : sans
+     cela il fallait remonter des milliers de pixels pour changer de filtre. */
+  .toolbar {
+    position: sticky; top: 45px; z-index: 25;
+    margin-bottom: var(--sp-3);
+    padding: var(--sp-2) 0;
+    background: var(--bg);
+  }
+  /* Cibles tactiles : les raccourcis d'une vignette sont ce qu'on touche le
+     plus souvent, et 42 px de haut se rate encore à bout de bras. */
+  .toggle { padding: 9px 4px; }
+  .to-top { width: 50px; height: 50px; font-size: 21px; }
 }

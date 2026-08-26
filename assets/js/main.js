@@ -23,11 +23,37 @@ import { createDetailPanel } from "./ui/detail-panel.js";
 import { createQuest } from "./ui/quest.js";
 import { createSaveControls } from "./ui/save.js";
 import { createShortcuts } from "./ui/shortcuts.js";
+import { createToTop } from "./ui/to-top.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
 
+migrateStorage();
 initTheme();
 boot();
+
+/**
+ * Reprend ce qui etait range sous les anciennes cles `neodex.*`.
+ *
+ * Le site a change de nom ; les cles du localStorage aussi. Sans cette reprise,
+ * le renommage aurait jete d'un coup les cases cochees pas encore
+ * synchronisees, l'avancement des quetes, le theme et le jeton GitHub — des
+ * choses invisibles mais penibles a refaire.
+ *
+ * L'ancienne cle est conservee : si le renommage devait etre annule, rien
+ * n'est perdu. C'est quelques kilo-octets.
+ */
+function migrateStorage() {
+  try {
+    for (const [nom, cible] of Object.entries(CONFIG.storage)) {
+      const source = CONFIG.storageLegacy[nom];
+      if (!source || localStorage.getItem(cible) !== null) continue;
+      const valeur = localStorage.getItem(source);
+      if (valeur !== null) localStorage.setItem(cible, valeur);
+    }
+  } catch {
+    /* stockage bloque : on repart simplement de zero */
+  }
+}
 
 async function boot() {
   try {
@@ -59,6 +85,7 @@ function start(dataset) {
     status: "all",
     view: "auto",
     selectedId: 25,
+    ...loadFilters(),
     ...loadQuestState(),
   });
 
@@ -83,6 +110,7 @@ function start(dataset) {
     onSelect: (id) => {
       if (store.state.selectedId === id) detail.open();
       else store.set({ selectedId: id });
+      toTop.refresh();
     },
     onSearchInput: debounce((event) => store.set({ search: event.target.value }), 160),
     /**
@@ -110,6 +138,7 @@ function start(dataset) {
   const quest = createQuest(ctx);
   const save = createSaveControls(ctx);
   createShortcuts(ctx);
+  const toTop = createToTop();
 
   // Sur telephone, on quitte l'onglet plus souvent qu'on ne le ferme : c'est
   // le moment sur : on ecrit sans attendre la fin du delai de regroupement.
@@ -200,6 +229,7 @@ function start(dataset) {
       // suite. `sidebar.render()` refait les compteurs sur 1025 especes :
       // beaucoup trop cher pour un simple changement de filtre.
       sidebar.syncActive();
+      saveFilters(state);
       // La liste a change : « suivant » ne designe plus la meme fiche.
       detail.refreshSteps(dataset.byId.get(state.selectedId) || dataset.species[0]);
     }
@@ -257,8 +287,44 @@ function registerWorker() {
   }
 
   navigator.serviceWorker.register("sw.js").catch((error) => {
-    console.warn("NéoDex : cache hors ligne indisponible.", error);
+    console.warn("Funkylldex : cache hors ligne indisponible.", error);
   });
+}
+
+/* ---------------------- persistance des filtres -------------------------- */
+
+/**
+ * Les filtres survivent au rechargement.
+ *
+ * Sans cela, travailler « À terminer » filtré sur Gigamax et recharger la page
+ * — ou revenir sur le site plus tard — repartait de zero. La recherche, elle,
+ * n'est PAS gardee : c'est une intention du moment, la retrouver au retour
+ * ferait croire a une liste vide.
+ */
+const FILTRES_GARDES = ["type", "gen", "game", "form", "sort", "status", "view"];
+
+function loadFilters() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CONFIG.storage.filters) || "null");
+    if (!saved) return {};
+    const out = {};
+    for (const key of FILTRES_GARDES) {
+      if (typeof saved[key] === "string") out[key] = saved[key];
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function saveFilters(state) {
+  try {
+    const out = {};
+    for (const key of FILTRES_GARDES) out[key] = state[key];
+    localStorage.setItem(CONFIG.storage.filters, JSON.stringify(out));
+  } catch {
+    /* stockage indisponible : les filtres repartiront simplement a zero */
+  }
 }
 
 /* ------------------------- persistance des quetes ------------------------ */

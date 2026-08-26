@@ -134,7 +134,7 @@ export class GitHubSync {
 
   async write(reason, retry = true, keepalive = false) {
     this.emit("busy", "Enregistrement sur GitHub…");
-    const payload = this.collection.toExport("site NéoDex");
+    const payload = this.collection.toExport("site Funkylldex");
     const body = {
       message: `Collection : ${reason}`,
       content: encodeBase64(`${JSON.stringify(payload, null, 1)}\n`),
@@ -237,7 +237,7 @@ function withinKeepalive(text) {
   const size = new TextEncoder().encode(text).length;
   if (size <= KEEPALIVE_MAX_BYTES) return true;
   console.warn(
-    `NéoDex : collection trop volumineuse (${Math.round(size / 1024)} Ko) pour un envoi ` +
+    `Funkylldex : collection trop volumineuse (${Math.round(size / 1024)} Ko) pour un envoi ` +
       "`keepalive`. L'écriture en quittant l'onglet peut être perdue — synchronise " +
       "explicitement avant de fermer."
   );
