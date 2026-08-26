@@ -22,6 +22,7 @@ import { createGrid } from "./ui/dex-grid.js";
 import { createDetailPanel } from "./ui/detail-panel.js";
 import { createQuest } from "./ui/quest.js";
 import { createSaveControls } from "./ui/save.js";
+import { createShortcuts } from "./ui/shortcuts.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "sort", "status", "view"];
 
@@ -42,6 +43,8 @@ async function boot() {
 }
 
 function start(dataset) {
+  /** Liste filtree actuellement a l'ecran : c'est elle qui definit « suivant ». */
+  let visible = [];
   const collection = new Collection(dataset.baseCollection, dataset);
   const sync = new GitHubSync(collection);
   const planner = new HuntPlanner(dataset);
@@ -81,6 +84,23 @@ function start(dataset) {
       else store.set({ selectedId: id });
     },
     onSearchInput: debounce((event) => store.set({ search: event.target.value }), 160),
+    /**
+     * Voisins dans la liste filtree en cours. La fiche s'en sert pour ses
+     * fleches ‹ › : remonter une boite de HOME, c'est aller de 1 a 2 a 3, pas
+     * refermer la fiche et rechercher la vignette suivante a chaque fois.
+     */
+    neighbours: (id) => {
+      const index = visible.findIndex((p) => p.id === id);
+      if (index < 0) return { prev: null, next: null };
+      return { prev: visible[index - 1] || null, next: visible[index + 1] || null };
+    },
+    /** Se deplacer de `delta` dans la liste filtree (fleches et clavier). */
+    onStep: (delta) => {
+      const index = visible.findIndex((p) => p.id === store.state.selectedId);
+      if (index < 0) return;
+      const target = visible[index + delta];
+      if (target) store.set({ selectedId: target.id });
+    },
   };
 
   const sidebar = createSidebar(ctx);
@@ -88,6 +108,7 @@ function start(dataset) {
   const detail = createDetailPanel(ctx);
   const quest = createQuest(ctx);
   const save = createSaveControls(ctx);
+  createShortcuts(ctx);
 
   // Sur telephone, on quitte l'onglet plus souvent qu'on ne le ferme : c'est
   // le moment sur : on ecrit sans attendre la fin du delai de regroupement.
@@ -135,7 +156,8 @@ function start(dataset) {
   }
 
   function renderList() {
-    grid.render(applyFilters(dataset.species, store.state, collection, complete));
+    visible = applyFilters(dataset.species, store.state, collection, complete);
+    grid.render(visible);
   }
 
   function renderDetail(reveal = false) {
@@ -171,7 +193,11 @@ function start(dataset) {
   let previousSelected = store.state.selectedId;
 
   store.subscribe((state, changed) => {
-    if (FILTER_KEYS.some((key) => changed.has(key))) renderList();
+    if (FILTER_KEYS.some((key) => changed.has(key))) {
+      renderList();
+      // La liste a change : « suivant » ne designe plus la meme fiche.
+      detail.refreshSteps(dataset.byId.get(state.selectedId) || dataset.species[0]);
+    }
 
     if (changed.has("selectedId")) {
       grid.setSelected(state.selectedId, previousSelected);
@@ -199,6 +225,35 @@ function start(dataset) {
 
   document.getElementById("boot").remove();
   document.getElementById("app").hidden = false;
+
+  registerWorker();
+}
+
+/**
+ * Cache hors ligne. Enregistre apres le premier rendu : il n'a aucune raison
+ * de retarder l'affichage, et son absence ne doit rien empecher — un
+ * `file://`, un navigateur ancien ou un contexte non securise le refusent, le
+ * site marche pareil.
+ *
+ * `CONFIG.offline: false` fait le chemin inverse : desinscription et purge des
+ * caches. C'est la manette d'arret a distance decrite dans config.js.
+ */
+function registerWorker() {
+  if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
+
+  if (!CONFIG.offline) {
+    navigator.serviceWorker
+      .getRegistrations()
+      .then((list) => Promise.all(list.map((reg) => reg.unregister())))
+      .then(() => (window.caches ? caches.keys() : []))
+      .then((noms) => Promise.all([...noms].map((nom) => caches.delete(nom))))
+      .catch(() => {});
+    return;
+  }
+
+  navigator.serviceWorker.register("sw.js").catch((error) => {
+    console.warn("NéoDex : cache hors ligne indisponible.", error);
+  });
 }
 
 /* ------------------------- persistance des quetes ------------------------ */

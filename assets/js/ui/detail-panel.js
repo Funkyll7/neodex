@@ -54,6 +54,17 @@ export function createDetailPanel(ctx) {
     },
 
     /**
+     * Les filtres ont bouge sans que le Pokemon change : « suivant » ne
+     * designe plus la meme fiche. On remplace les deux fleches, et elles
+     * seules — reconstruire l'en-tete entier serait deja trop.
+     */
+    refreshSteps(species) {
+      if (shownId !== species.id) return;
+      const old = root.querySelector(".detail__steps");
+      if (old) old.replaceWith(stepper(species, ctx));
+    },
+
+    /**
      * @param {object} species
      * @param {boolean} reveal  vrai quand l'utilisateur vient de choisir une
      *   vignette : en une colonne la fiche est sous la grille, il faut y aller.
@@ -86,6 +97,11 @@ export function createDetailPanel(ctx) {
 
       if (opened) restoreGroups(root, opened);
       root.scrollTop = scroll;
+
+      // Annonce courte pour les lecteurs d'ecran, a la place de la relecture
+      // integrale de la fiche. Seulement quand on change vraiment de Pokemon :
+      // repeindre les memes cases n'est pas un evenement.
+      if (!sameSpecies) announce(species, ctx);
       shownId = species.id;
 
       // Choisir une vignette sur telephone ouvre la feuille par-dessus la
@@ -94,6 +110,22 @@ export function createDetailPanel(ctx) {
       if (reveal && !sameSpecies) sheet.open();
     },
   };
+}
+
+/**
+ * Ce qu'un lecteur d'ecran entend quand la fiche change : le nom, le numero,
+ * et l'avancement. Le reste est atteignable a la navigation normale — le
+ * deverser dans une region live n'aiderait personne.
+ */
+function announce(species, ctx) {
+  const node = document.getElementById("detail-live");
+  if (!node) return;
+  const progress = completionOf(species, ctx.collection);
+  node.textContent =
+    `${species.name}, n° ${species.id}. ` +
+    (progress.complete
+      ? `Tout obtenu, ${progress.total} case${progress.total > 1 ? "s" : ""}.`
+      : `${progress.done} sur ${progress.total} cases cochées.`);
 }
 
 /* ------------------------- feuille plein ecran --------------------------- */
@@ -157,6 +189,7 @@ function head(species, ctx) {
     el(
       "div.detail__head-row",
       el("span.detail__num", dexNumber(species.id)),
+      stepper(species, ctx),
       el("span.detail__tag", { dataset: { role: "tag" } }, "")
     ),
     el("h2.detail__name", species.name),
@@ -169,6 +202,39 @@ function head(species, ctx) {
   );
   fillHead(node, species, ctx);
   return node;
+}
+
+/**
+ * Les deux fleches ‹ › : le Pokemon precedent et le suivant *dans la liste
+ * filtree en cours*, pas dans le Pokedex entier. Filtrer sur « À terminer »
+ * puis avancer de fiche en fiche, c'est exactement le geste qu'on repete en
+ * remontant une boite de HOME.
+ *
+ * Le nom du voisin est dans l'infobulle : on sait ou l'on va avant de cliquer.
+ * Une extremite de liste desactive le bouton plutot que de le cacher, pour que
+ * l'en-tete ne bouge pas d'une fiche a l'autre.
+ */
+function stepper(species, ctx) {
+  const { prev, next } = ctx.neighbours(species.id);
+  const button = (target, delta, glyph, sens) => {
+    const label = target ? `${sens} : ${target.name}` : `Aucun Pokémon ${sens.toLowerCase()}`;
+    return el(
+      "button.detail__step",
+      {
+        type: "button",
+        disabled: !target,
+        title: label,
+        "aria-label": label,
+        onclick: () => ctx.onStep(delta),
+      },
+      glyph
+    );
+  };
+  return el(
+    "div.detail__steps",
+    button(prev, -1, "‹", "Précédent"),
+    button(next, 1, "›", "Suivant")
+  );
 }
 
 function updateHead(root, species, ctx) {

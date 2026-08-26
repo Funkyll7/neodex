@@ -328,6 +328,27 @@
 }
 .detail__head-row { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2); }
 .detail__num { font-family: var(--font-display); font-weight: 800; font-size: 13px; color: rgba(255,255,255,.85); }
+/* Fleches « Pokemon precedent / suivant ». Poussees a droite, juste avant la
+   pastille d'etat : l'en-tete garde la meme silhouette d'une fiche a l'autre,
+   y compris aux extremites de la liste ou les boutons sont desactives plutot
+   que retires. */
+.detail__steps { display: flex; gap: 4px; margin-left: auto; }
+.detail__step {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: var(--r-sm);
+  background: rgba(0, 0, 0, .26);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.detail__step:hover:not(:disabled) { background: rgba(255, 255, 255, .26); border-color: rgba(255, 255, 255, .5); }
+.detail__step:disabled { opacity: .32; cursor: default; }
+
 .detail__tag {
   border-radius: var(--r-pill); padding: 3px 10px;
   font-size: 10px; font-weight: 800;
