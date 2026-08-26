@@ -115,6 +115,7 @@ export function createSidebar(ctx) {
    * par main.js quand un filtre bouge.
    */
   function syncActive() {
+    searchInput.value = store.state.search;
     genSelect.value = store.state.gen;
     formSelect.value = store.state.form;
     gameSelect.value = store.state.game;

@@ -67,6 +67,7 @@ export const CONFIG = {
     quest: "funkylldex.quest.v1",
     prefs: "funkylldex.prefs.v1",
     filters: "funkylldex.filters.v1",
+    barsFold: "funkylldex.barsfold.v1",
     token: "funkylldex.github.v1",
   },
 

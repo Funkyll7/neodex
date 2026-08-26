@@ -24,6 +24,7 @@ import { createQuest } from "./ui/quest.js";
 import { createSaveControls } from "./ui/save.js";
 import { createShortcuts } from "./ui/shortcuts.js";
 import { createToTop } from "./ui/to-top.js";
+import { createActiveFilters } from "./ui/active-filters.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
 
@@ -139,6 +140,8 @@ function start(dataset) {
   const save = createSaveControls(ctx);
   createShortcuts(ctx);
   const toTop = createToTop();
+  const activeFilters = createActiveFilters(ctx);
+  createBarsFold();
 
   // Sur telephone, on quitte l'onglet plus souvent qu'on ne le ferme : c'est
   // le moment sur : on ecrit sans attendre la fin du delai de regroupement.
@@ -229,6 +232,7 @@ function start(dataset) {
       // suite. `sidebar.render()` refait les compteurs sur 1025 especes :
       // beaucoup trop cher pour un simple changement de filtre.
       sidebar.syncActive();
+      activeFilters.render();
       saveFilters(state);
       // La liste a change : « suivant » ne designe plus la meme fiche.
       detail.refreshSteps(dataset.byId.get(state.selectedId) || dataset.species[0]);
@@ -255,6 +259,7 @@ function start(dataset) {
 
   renderCounts();
   renderList();
+  activeFilters.render();
   renderDetail();
   quest.render();
 
@@ -288,6 +293,30 @@ function registerWorker() {
 
   navigator.serviceWorker.register("sw.js").catch((error) => {
     console.warn("Funkylldex : cache hors ligne indisponible.", error);
+  });
+}
+
+/**
+ * Le repli du détail de progression, retenu d'une visite à l'autre.
+ *
+ * Fermé par défaut : ces dix barres repoussaient « Statut » à 666 px du haut,
+ * hors de portée immédiate. Qui veut les consulter les ouvre une fois, et
+ * elles restent ouvertes.
+ */
+function createBarsFold() {
+  const fold = document.getElementById("bars-fold");
+  if (!fold) return;
+  try {
+    fold.open = localStorage.getItem(CONFIG.storage.barsFold) === "1";
+  } catch {
+    /* stockage bloque : ferme par defaut */
+  }
+  fold.addEventListener("toggle", () => {
+    try {
+      localStorage.setItem(CONFIG.storage.barsFold, fold.open ? "1" : "0");
+    } catch {
+      /* rien a faire */
+    }
   });
 }
 

@@ -69,6 +69,7 @@ Projet Poke/
 │           ├── save.js         exporter / importer / réinitialiser
 │           ├── shortcuts.js    raccourcis clavier (/ · ← → · 1 2 · Échap)
 │           ├── to-top.js       bouton « revenir en haut » (apparaît au défilement)
+│           ├── active-filters.js pastilles des filtres actifs + compteur du menu
 │           └── common.js       fragments partagés (pastilles de type, liens)
 │
 ├── data/

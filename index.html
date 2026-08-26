@@ -53,7 +53,13 @@
       <div class="bar" role="progressbar" aria-labelledby="stat-pct" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
         <div class="bar__fill" id="progress-fill"></div>
       </div>
-      <div id="progress-bars" class="bars"></div>
+      <!-- Repliable, et fermé par défaut : ces dix barres repoussaient
+           « Statut » à 666 px du haut, soit hors de portée immédiate. L'état
+           est retenu d'une visite à l'autre. -->
+      <details id="bars-fold" class="bars-fold">
+        <summary class="bars-fold__summary">Détail par forme</summary>
+        <div id="progress-bars" class="bars"></div>
+      </details>
     </section>
 
     <!-- Les filtres passent AVANT les statistiques détaillées. On consulte sa
@@ -159,6 +165,11 @@
         <div class="segmented" id="view-toggle" role="group" aria-label="Image affichée"></div>
         <p class="toolbar__count" id="result-count" aria-live="polite"></p>
       </div>
+
+      <!-- Ce qui filtre actuellement la liste, et de quoi le retirer d'un
+           geste. Sur téléphone la barre latérale est repliée : sans ce rappel,
+           un filtre oublié fait croire à un Pokédex incomplet. -->
+      <div id="active-filters" class="fchips" hidden></div>
 
       <div class="dex">
         <div class="dex__list">
