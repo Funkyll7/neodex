@@ -41,6 +41,19 @@ export const CONFIG = {
   /** Nombre de vignettes ajoutees a chaque palier de defilement. */
   pageSize: 120,
 
+  /**
+   * Cache hors ligne (sw.js). Interrupteur de secours : le passer a `false`
+   * ne se contente pas de ne plus enregistrer le service worker, il
+   * DESINSCRIT celui qui serait deja en place et vide ses caches.
+   *
+   * Sur un site sans etape de build, c'est la seule facon de reprendre la main
+   * a distance si un jour un worker se comporte mal : on pousse `false`, le
+   * prochain chargement fait le menage, et on repasse a `true` une fois le
+   * probleme corrige. Sans cela il faudrait ouvrir les outils de developpement
+   * sur chaque appareil.
+   */
+  offline: true,
+
   /** Cles localStorage. Changer de version repart d'une sauvegarde vierge. */
   storage: {
     marks: "neodex.marks.v1",

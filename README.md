@@ -17,6 +17,16 @@ les motifs de Prismillon, les crèmes de Charmilly — plutôt qu'en défilant s
 soixante fiches. Sur téléphone, choisir une vignette ouvre la fiche en feuille
 plein écran.
 
+La recherche accepte le numéro tel qu'il est affiché (`0025`), le nom en
+français ou en anglais, et **le nom d'une forme** : `alola`, `gigamax`,
+`savane`, `noyeau`. Les flèches `‹ ›` de la fiche — ou les touches `←` / `→` —
+passent au Pokémon suivant **de la liste filtrée** : filtrer sur « À terminer »
+puis avancer de fiche en fiche remonte une boîte de HOME sans jamais revenir à
+la grille. `/` va à la recherche.
+
+Le site fonctionne **hors ligne** une fois chargé : c'est fait pour cocher en
+jouant, là où le réseau manque.
+
 Site statique — pas de build, pas de dépendance, pas de serveur.
 
 > **La carte du projet est dans [PROJET.md](PROJET.md).** À lire avant toute

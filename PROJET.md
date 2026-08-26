@@ -27,6 +27,7 @@ Projet Poke/
 ├── README.md                   installation, lancement, mise en ligne
 ├── .gitignore                  ignore tools/.cache/ (300+ Mo reconstructibles)
 ├── .nojekyll                   empêche GitHub Pages de filtrer les dossiers
+├── sw.js                       cache hors ligne (voir § 7)
 │
 ├── assets/
 │   ├── css/
@@ -36,10 +37,11 @@ Projet Poke/
 │   │   └── components.css      briques d'interface : vignettes, fiche, tableau, quêtes
 │   ├── img/
 │   │   ├── favicon.svg         Poké Ball
-│   │   └── dynamax.svg         pastille Gigamax (glyphe original)
+│   │   ├── gigamax.png         pastille Gigamax
+│   │   └── gigamax-nb.png      la même, éteinte (case non cochée)
 │   └── js/
 │       ├── main.js             point d'entrée : charge, câble les vues, gère l'état
-│       ├── config.js           réglages (URL des sprites, pagination, clés localStorage)
+│       ├── config.js           réglages (sprites épinglés, pagination, localStorage, hors ligne)
 │       ├── core/
 │       │   ├── dom.js          el() / fill() — fabrication de DOM sans framework
 │       │   ├── store.js        état applicatif + abonnements groupés
@@ -52,7 +54,7 @@ Projet Poke/
 │       │   ├── sync.js         écrit data/collection.json dans le dépôt via l'API GitHub
 │       │   ├── completion.js   « tout obtenu ? » — cases exigées, l'impossible exclu
 │       │   ├── progress.js     compteurs globaux par case : tout / paires / formes / Gigamax
-│       │   └── filters.js      filtrage et tri de la liste
+│       │   └── filters.js      filtrage, recherche et tri de la liste
 │       └── ui/                 rendu, un module par zone d'écran
 │           ├── theme.js        bascule clair / sombre
 │           ├── sidebar.js      progression, filtres, tri
@@ -60,6 +62,7 @@ Projet Poke/
 │           ├── detail-panel.js fiche détaillée de droite
 │           ├── quest.js        onglet Quêtes et journal de chasse
 │           ├── save.js         exporter / importer / réinitialiser
+│           ├── shortcuts.js    raccourcis clavier (/ · ← → · Échap)
 │           └── common.js       fragments partagés (pastilles de type, liens)
 │
 ├── data/
@@ -341,6 +344,9 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | retoucher la feuille mobile | `ui/detail-panel.js` (`createSheet`) + bloc « Feuille mobile » de `components.css` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |
 | remonter la version des sprites | `assets/js/config.js` (`SPRITES_REF`) |
+| ajouter du texte à la recherche | `assets/js/core/data.js` (`searchIndex`) |
+| ajouter un raccourci clavier | `assets/js/ui/shortcuts.js` |
+| couper le cache hors ligne partout | `assets/js/config.js` (`offline: false`) |
 | changer le dépôt de synchronisation | `assets/js/config.js` (bloc `github`) |
 | corriger une case cochée à tort | dans le site : la synchronisation s'en occupe (§ 6) |
 | vérifier que les données se tiennent | `python tools/check_data.py` |
@@ -380,6 +386,35 @@ Deux règles en découlent :
    Pokémon. Corollaire : un libellé de bouton ne doit jamais dépendre de l'état
    coché (d'où le `✓` transparent de `.form__btn-check`), sinon il ne se mettra
    pas à jour.
+
+### Chercher, et se déplacer de fiche en fiche
+
+Deux règles, chacune née d'un vrai défaut d'usage.
+
+**Un numéro se compare à un numéro, jamais comme du texte.** Les vignettes
+affichent `#0025` : c'est ce qu'on recopie depuis une capture. L'ancienne
+recherche par sous-chaîne répondait alors « Pêchaminus », parce que `"1025"`
+contient `"025"` — un résultat unique, faux, et sans le moindre signe que
+quelque chose clochait. `numberQuery()` normalise (`#`, zéros de tête), puis on
+compare au numéro exact ou à un début de numéro. Le numéro exact remonte en
+première place quel que soit le tri.
+
+**Tout le reste cherche dans `species.search`**, construit une fois pour toutes
+par `core/data.js` : nom FR et EN, catégorie, noms de formes, clés PokeAPI,
+titres et variantes cosmétiques. C'est ce qui permet de taper « alola »,
+« gigamax » ou « savane ». Ajouter une source de texte à la recherche se fait
+là, dans `searchIndex()`, et nulle part ailleurs.
+
+**« Suivant » suit la liste filtrée, pas le Pokédex.** Les flèches `‹ ›` de la
+fiche et les touches `←` / `→` se déplacent dans ce qui est affiché. Filtrer
+sur « À terminer » puis avancer de fiche en fiche, c'est le geste qu'on répète
+en remontant une boîte de HOME. `main.js` garde la liste dans `visible` et
+l'expose par `ctx.neighbours()` et `ctx.onStep()` ; un changement de filtre
+appelle `detail.refreshSteps()`, qui remplace les deux flèches et rien d'autre.
+
+Les raccourcis vivent dans `ui/shortcuts.js`, avec une règle non négociable :
+**on ne détourne jamais une touche pendant que l'utilisateur écrit.** Un champ
+actif rend toutes les touches à la page, Échap excepté.
 
 ---
 
@@ -508,3 +543,36 @@ jette la couche locale et revient au fichier de référence.
 
 Vider les données du site dans le navigateur ne perd donc jamais que les
 modifications non encore synchronisées.
+
+---
+
+## 7. Le cache hors ligne
+
+`sw.js`, à la racine — un service worker doit y être pour couvrir tout le site.
+Le site sert à cocher des cases **pendant qu'on joue** : dans le train, en
+salle d'attente, exactement là où le réseau manque.
+
+Trois régimes, et le choix de chacun tient à une seule question : *servir une
+version périmée, est-ce grave ?*
+
+| Ressource | Régime | Pourquoi |
+|---|---|---|
+| `index.html`, CSS, JS | **réseau d'abord** | Le site se met à jour par un simple `git push`, sans build. Un worker qui servirait du code périmé figerait le site dans une version ancienne. C'est le piège classique. |
+| `data/collection.json` | **réseau d'abord** | C'est la collection. Servir la version d'hier ferait *disparaître* des cases cochées sous les yeux. Le cache n'est qu'un dernier recours hors ligne. |
+| Reste de `data/` | cache d'abord | Ne bouge qu'à une régénération. Rafraîchi en arrière-plan. |
+| Sprites, polices | cache d'abord | Les sprites sont épinglés sur un SHA (§ 4) : leur URL ne désignera **jamais** une autre image. Rien en cache ne peut devenir faux. |
+
+`api.github.com` n'est **jamais** intercepté : une écriture doit partir sur le
+réseau ou échouer franchement.
+
+### L'interrupteur de secours
+
+Sans étape de build, on ne peut pas demander à chaque appareil d'ouvrir les
+outils de développement. D'où `CONFIG.offline` : le passer à **`false`** ne se
+contente pas de ne plus enregistrer le worker — il **désinscrit** celui qui est
+en place et vide ses caches, au prochain chargement.
+
+C'est la manette d'arrêt à distance : si un jour un worker se comporte mal, on
+pousse `offline: false`, les appareils se nettoient seuls, et on repasse à
+`true` une fois le problème corrigé. Changer `VERSION` dans `sw.js` purge aussi
+les anciens caches.
