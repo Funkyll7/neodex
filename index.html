@@ -66,29 +66,34 @@
       <div id="status-pills" class="pills"></div>
     </section>
 
-    <section class="field">
-      <label class="panel__label" for="filter-gen">Génération</label>
-      <select id="filter-gen" class="select"></select>
-    </section>
-
-    <section class="field">
-      <label class="panel__label" for="filter-form">Forme</label>
-      <select id="filter-form" class="select"></select>
-    </section>
-
-    <section class="field">
-      <label class="panel__label" for="filter-game">Disponible dans</label>
-      <select id="filter-game" class="select"></select>
-    </section>
-
-    <section class="field">
-      <label class="panel__label" for="filter-sort">Trier par</label>
-      <select id="filter-sort" class="select">
-        <option value="num">Numéro national</option>
-        <option value="name">Nom (A → Z)</option>
-        <option value="type">Type</option>
-        <option value="stats">Total des stats</option>
-      </select>
+    <!-- Les quatre listes déroulantes sous un seul en-tête : quatre titres pour
+         quatre selects donnaient une colonne en accordéon, et chaque titre
+         pesait autant qu'un vrai bloc de la barre latérale. -->
+    <section class="panel filters" aria-label="Filtres et tri">
+      <h2 class="panel__label">Filtres</h2>
+      <div class="filters__grid">
+        <p class="field">
+          <label class="field__label" for="filter-gen">Génération</label>
+          <select id="filter-gen" class="select"></select>
+        </p>
+        <p class="field">
+          <label class="field__label" for="filter-form">Forme</label>
+          <select id="filter-form" class="select"></select>
+        </p>
+        <p class="field">
+          <label class="field__label" for="filter-game">Disponible dans</label>
+          <select id="filter-game" class="select"></select>
+        </p>
+        <p class="field">
+          <label class="field__label" for="filter-sort">Trier par</label>
+          <select id="filter-sort" class="select">
+            <option value="num">Numéro national</option>
+            <option value="name">Nom (A → Z)</option>
+            <option value="type">Type</option>
+            <option value="stats">Total des stats</option>
+          </select>
+        </p>
+      </div>
     </section>
 
     <section class="panel legend" aria-label="Légende du tableau de disponibilité">

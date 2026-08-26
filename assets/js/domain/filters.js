@@ -5,17 +5,20 @@
  */
 
 /**
- * `ico` remplace le glyphe qui prefixait le libelle : `shiny` pose le logo
- * chromatique en masque, `pair` les deux symboles en bleu. Les autres n'ont
- * pas d'icone — un « ★ » suffit pour « Complets » et il n'existe pas de logo
- * officiel pour « Capturés ».
+ * Les pastilles de statut.
+ *
+ * `shiny` et `pair` n'y figurent plus : les barres « Chromatiques » et
+ * « Paires ♂ / ♀ » de la barre laterale font deja exactement ce filtrage, et
+ * en donnant le compte en prime. Deux chemins pour le meme resultat, a dix
+ * centimetres l'un de l'autre, n'aidaient personne.
+ *
+ * Les valeurs, elles, restent gerees par `applyFilters` : ce sont ces barres
+ * qui les posent.
  */
 export const STATUS_FILTERS = [
   { value: "all", label: "Tous", key: "total" },
   { value: "owned", label: "Capturés", key: "owned" },
   { value: "missing", label: "Manquants", key: "missing" },
-  { value: "shiny", label: "Shiny", key: "shiny", ico: "shiny" },
-  { value: "pair", label: "Paire complète", key: "pair", ico: "pair" },
   { value: "complete", label: "★ Complets", key: "complete" },
   { value: "incomplete", label: "À terminer", key: "incomplete" },
 ];

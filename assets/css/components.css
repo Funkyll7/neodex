@@ -1106,6 +1106,19 @@
    texte. */
 .bars__icon.toggle__ico--shiny { width: 15px; height: 15px; background-color: var(--accent); }
 
+/* Les quatre listes déroulantes dans un seul panneau. Le libellé de chaque
+   champ est volontairement plus discret que le titre du panneau : c'est une
+   étiquette, pas une section. */
+.filters__grid { display: flex; flex-direction: column; gap: var(--sp-3); }
+.filters__grid .field { display: flex; flex-direction: column; gap: 5px; }
+.field__label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
 /* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
    qu'une colonne, soit treize écrans pour les noyaux de Météno. On redescend
    le minimum, et les boutons se resserrent juste assez pour que « Normal » et
