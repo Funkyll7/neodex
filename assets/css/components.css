@@ -316,6 +316,23 @@
 .toggle[aria-pressed="true"] { background: var(--type); color: #fff; }
 .toggle--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 
+/* Pastilles des boutons. Le bouton reste un flex pour que l'icône et le
+   ♂ / ♀ qui la suit restent collés et centrés ensemble. */
+.toggle { display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
+.toggle__ico { display: block; flex: none; width: 12px; height: 12px; }
+
+/* Anneau gris et blanc : DEUX tons, donc une image de fond. En masque il
+   deviendrait un disque plein et l'anneau disparaîtrait. */
+.toggle__ico--base { background: url("../img/base.png") center / contain no-repeat; }
+
+/* Logo chromatique : une seule couleur, donc un masque — il prend la couleur
+   du bouton, et suit donc l'état coché comme le thème. */
+.toggle__ico--shiny {
+  background-color: currentColor;
+  -webkit-mask: url("../img/shiny.png") center / contain no-repeat;
+  mask: url("../img/shiny.png") center / contain no-repeat;
+}
+
 /* ----------------------------- Fiche detaillee --------------------------- */
 .detail__head {
   padding: 18px 18px 20px;

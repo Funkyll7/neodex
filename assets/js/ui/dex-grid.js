@@ -242,20 +242,43 @@ function formTitle(species) {
  * d'une vignette de 150 px. Le libelle complet est dans le `title` et dans
  * l'`aria-label`.
  */
+/**
+ * Les pastilles des boutons.
+ *
+ * `base` et `shiny` sont des images posees en fond, pas du texte : les glyphes
+ * Unicode qu'elles remplacent (● et ✦) dependaient de la police installee et
+ * n'avaient rien a voir avec le vocabulaire visuel du jeu.
+ *
+ *   base   anneau gris et blanc — deux tons, donc une IMAGE : un masque en
+ *          ferait un disque plein et l'anneau disparaitrait ;
+ *   shiny  logo chromatique — une seule couleur, donc un MASQUE : il prend
+ *          la teinte du bouton, doree ici, et suit les deux themes.
+ */
+const icoBase = () => el("span.toggle__ico.toggle__ico--base", { "aria-hidden": "true" });
+const icoShiny = () => el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" });
+
 function quickToggles(species, ctx, color) {
   const base = species.cosmetic && species.cosmetic.baseVariant;
   const definitions = species.gd
     ? [
-        ["om", "♂", "Mâle normal", false],
-        ["of", "♀", "Femelle normale", false],
+        ["om", ["♂"], "Mâle normal", false],
+        ["of", ["♀"], "Femelle normale", false],
       ]
-    : [["om", "●", base ? `${base.name} — normal` : "Marquer comme capturé", false]];
+    : [["om", [icoBase()], base ? `${base.name} — normal` : "Marquer comme capturé", false]];
 
   if (!species.noShiny) {
     if (species.gd) {
-      definitions.push(["sm", "✦♂", "Shiny mâle", true], ["sf", "✦♀", "Shiny femelle", true]);
+      definitions.push(
+        ["sm", [icoShiny(), "♂"], "Shiny mâle", true],
+        ["sf", [icoShiny(), "♀"], "Shiny femelle", true]
+      );
     } else {
-      definitions.push(["sm", "✦", base ? `${base.name} — shiny` : "Marquer le shiny obtenu", true]);
+      definitions.push([
+        "sm",
+        [icoShiny()],
+        base ? `${base.name} — shiny` : "Marquer le shiny obtenu",
+        true,
+      ]);
     }
   }
 
@@ -263,8 +286,10 @@ function quickToggles(species, ctx, color) {
   // dans la fiche, ou elles sont accompagnees de leur sprite et de leur texte.
   const primary = species.primaryForm;
   if (primary) {
-    definitions.push([primary.slot, "◈", `${primary.name} — forme normale`, false]);
-    if (primary.shinyEntry) definitions.push([primary.shinySlot, "✦◈", `${primary.name} — shiny`, true]);
+    definitions.push([primary.slot, ["◈"], `${primary.name} — forme normale`, false]);
+    if (primary.shinyEntry) {
+      definitions.push([primary.shinySlot, [icoShiny(), "◈"], `${primary.name} — shiny`, true]);
+    }
   }
 
   return definitions.map(([slot, label, title, gold]) =>

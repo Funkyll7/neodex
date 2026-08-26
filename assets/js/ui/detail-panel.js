@@ -320,7 +320,16 @@ function slotButton(species, ctx, { slot, label, gold, female }) {
     },
     el(
       "span.slot__top",
-      el(female && !gold ? "span.slot__tag.slot__tag--f" : "span.slot__tag", gold ? "✦" : female ? "♀" : "♂"),
+      el(
+        female && !gold ? "span.slot__tag.slot__tag--f" : "span.slot__tag",
+        gold
+          ? el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
+          : species.gd
+            ? female
+              ? "♀"
+              : "♂"
+            : el("span.toggle__ico.toggle__ico--base", { "aria-hidden": "true" })
+      ),
       el("span.slot__check", "✓")
     ),
     spriteImg(species.id, {
@@ -436,7 +445,7 @@ function pickerCell(species, variant, ctx) {
           "aria-pressed": String(ctx.collection.has(species.id, variant.shinySlot)),
           dataset: { slot: variant.shinySlot, species: species.id },
         },
-        "✦"
+        el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
       )
     );
   } else {
@@ -708,11 +717,14 @@ function formButtons(form, species, ctx) {
     );
   }
 
-  const defs = [[form.slot, form.gendered ? "Normal ♂" : "Normal", false]];
-  if (form.gendered) defs.push([form.slotF, "Normal ♀", false]);
+  // Le logo chromatique remplace le ✦ : même pastille que sur les vignettes et
+  // dans la grille cosmétique, pour que « chromatique » se lise pareil partout.
+  const ico = () => el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" });
+  const defs = [[form.slot, [form.gendered ? "Normal ♂" : "Normal"], false]];
+  if (form.gendered) defs.push([form.slotF, ["Normal ♀"], false]);
   if (form.shinyEntry) {
-    defs.push([form.shinySlot, form.gendered ? "✦ Shiny ♂" : "✦ Shiny", true]);
-    if (form.gendered) defs.push([form.shinySlotF, "✦ Shiny ♀", true]);
+    defs.push([form.shinySlot, [ico(), form.gendered ? "Shiny ♂" : "Shiny"], true]);
+    if (form.gendered) defs.push([form.shinySlotF, [ico(), "Shiny ♀"], true]);
   }
 
   // Sur une forme Gigamax, l'emblème se pose sur la case elle-même : gris tant

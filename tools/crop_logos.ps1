@@ -110,6 +110,7 @@ $img = Join-Path $racine "assets/img"
 $src = Join-Path $img "sources"
 $jobs = @(
   @{ src = "shiny.jpg";       dst = "shiny.png";        size = 64 },
+  @{ src = "base.png";        dst = "base.png";         size = 48 },
   @{ src = "forme-alola.png";  dst = "forme-alola.png";  size = 96 },
   @{ src = "forme-galar.png";  dst = "forme-galar.png";  size = 96 },
   @{ src = "forme-paldea.png"; dst = "forme-paldea.png"; size = 96 }
