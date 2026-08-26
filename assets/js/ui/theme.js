@@ -33,15 +33,46 @@ export function initTheme() {
     if (!readPrefs().theme) apply(event.matches ? "light" : "dark");
   });
 
+  buildPicker();
+  initBouton();
+}
+
+/**
+ * Le bouton de la marque ouvre la palette.
+ *
+ * Il ne fait plus basculer clair / sombre : avec onze themes, un bouton qui
+ * en alterne deux laissait les neuf autres inaccessibles sans un second
+ * reglage ailleurs. Il devient donc l'entree unique — un panneau s'ouvre, on
+ * choisit, il se referme.
+ */
+function initBouton() {
   const button = document.getElementById("theme-toggle");
-  button.addEventListener("click", () => {
-    // Le raccourci ne fait que basculer clair / sombre. Depuis une region, il
-    // ramene au sombre : c'est ce qu'on attend d'un bouton « jour / nuit ».
-    const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
-    choisir(next);
+  const picker = document.getElementById("theme-picker");
+  if (!button || !picker) return;
+
+  const ouvrir = (etat) => {
+    picker.hidden = !etat;
+    button.setAttribute("aria-expanded", String(etat));
+  };
+
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    ouvrir(picker.hidden);
   });
 
-  buildPicker();
+  // Cliquer ailleurs referme : un panneau qui reste ouvert derriere soi est
+  // une gene, pas une aide.
+  document.addEventListener("click", (event) => {
+    if (!picker.hidden && !picker.contains(event.target)) ouvrir(false);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !picker.hidden) {
+      ouvrir(false);
+      button.focus();
+    }
+  });
+
+  picker.addEventListener("click", () => ouvrir(false));
 }
 
 /** Applique un theme, le retient, et remet le selecteur d'accord. */
@@ -121,10 +152,14 @@ function apply(theme) {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute("content", BANDEAU[theme] || BANDEAU.dark);
 
+  // Le bouton porte le nom du theme courant et en prend l'accent : il dit
+  // ainsi ou l'on est, sans avoir a ouvrir la palette.
+  const courant = THEMES.find((t) => t.value === theme);
   const button = document.getElementById("theme-toggle");
   if (button) {
     button.textContent = theme === "light" ? "☀" : "☾";
-    button.title = theme === "light" ? "Passer au thème sombre" : "Passer au thème clair";
+    const nom = courant ? courant.label : theme;
+    button.title = `Thème : ${nom} — cliquer pour changer`;
     button.setAttribute("aria-label", button.title);
   }
 }

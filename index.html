@@ -55,15 +55,14 @@
         <strong class="brand__title">Funkylldex</strong>
         <span class="brand__sub">Collection perso</span>
       </span>
-      <button type="button" id="theme-toggle" class="icon-btn" title="Basculer clair / sombre" aria-label="Basculer entre le thème clair et sombre">◐</button>
+      <button type="button" id="theme-toggle" class="icon-btn"
+              aria-expanded="false" aria-controls="theme-picker"
+              title="Changer de thème" aria-label="Changer de thème">◐</button>
     </div>
 
-    <!-- Replié : c'est un réglage qu'on pose une fois. Le bouton ◐ ci-dessus
-         reste le raccourci clair / sombre, celui qu'on utilise vraiment. -->
-    <details class="themes">
-      <summary class="themes__summary">Thème</summary>
-      <div id="theme-picker" class="themes__grid" role="group" aria-label="Choix du thème"></div>
-    </details>
+    <!-- Le bouton de la marque est la seule entrée vers les thèmes : un repli
+         « Thème » séparé faisait doublon avec lui. -->
+    <div id="theme-picker" class="themes__grid" role="group" aria-label="Choix du thème" hidden></div>
 
     <!-- Un seul panneau pour toute la progression : le pourcentage global, puis
          le détail par famille de formes et les trois angles généraux. Les

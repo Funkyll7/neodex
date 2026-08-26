@@ -1280,21 +1280,17 @@
 }
 
 /* ============================== Thèmes ================================== */
-/* Replié : c'est un réglage qu'on pose une fois. Le bouton ◐ de la marque
-   reste le raccourci jour / nuit, celui qu'on utilise vraiment. */
-.themes { margin-top: calc(-1 * var(--sp-2)); }
-.themes__summary {
-  cursor: pointer; list-style: none;
-  font-size: 10.5px; font-weight: 800; letter-spacing: .05em;
-  text-transform: uppercase; color: var(--text-faint);
+/* Le bouton de la marque ouvre cette palette : avec onze thèmes, un bouton qui
+   n'en alternait que deux laissait les neuf autres inaccessibles. */
+.themes__grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;
+  margin-top: calc(-1 * var(--sp-2));
+  padding: var(--sp-2);
+  border: 1px solid var(--border-strong); border-radius: var(--r-md);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-panel);
 }
-.themes__summary::-webkit-details-marker { display: none; }
-.themes__summary::after { content: " ▾"; }
-.themes[open] > .themes__summary { color: var(--text-soft); margin-bottom: var(--sp-2); }
-.themes[open] > .themes__summary::after { content: " ▴"; }
-.themes__summary:hover { color: var(--accent); }
-
-.themes__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.themes__grid[hidden] { display: none; }
 .swatch {
   display: flex; align-items: center; gap: 7px;
   cursor: pointer; text-align: left;
