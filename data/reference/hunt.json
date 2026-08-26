@@ -2,15 +2,16 @@
   "_comment": "Tout ce qui concerne la chasse au chromatique. 'byGame' = methode par defaut dans chaque jeu. 'templates' = methodes generiques, avec des variables {cible}, {nom}, {jeu} remplacees a l'affichage. 'rules' = listes d'exceptions.",
 
   "byGame": {
-    "gs": { "name": "Rencontre sauvage patiente", "odds": "1/8192", "steps": [
-      "Va sur la zone d'apparition et enregistre la partie juste avant.",
-      "Enchaîne les rencontres dans les hautes herbes : le chromatique est visible dès le scintillement d'apparition.",
-      "Garde des Balls et un Pokémon avec Hypnose / Cage-Éclair pour sécuriser la capture."
+    "gs": { "name": "Reproduction par DV (gène chromatique)", "odds": "1/64", "steps": [
+      "En Gén. II la chromaticité découle des DV, pas d'une valeur cachée : un parent porteur les transmet.",
+      "Procure-toi le Léviator rouge du Lac Colère, ou mieux un Métamorph à gène chromatique.",
+      "Reproduis-le avec l'espèce visée : 1/64 avec le Métamorph, 1/64 à 1/256 avec le Léviator selon le ratio de genre.",
+      "Faute de parent porteur, il reste la rencontre sauvage en boucle, à 1/8192."
     ]},
-    "c": { "name": "Rencontre sauvage patiente", "odds": "1/8192", "steps": [
-      "Repère la zone d'apparition et sauvegarde à côté.",
-      "Enchaîne les rencontres : le cri et le scintillement diffèrent pour un chromatique.",
-      "Prévois un Pokémon endormeur pour ne pas rater la capture."
+    "c": { "name": "Reproduction par DV (gène chromatique)", "odds": "1/64", "steps": [
+      "Même principe qu'Or/Argent : les DV du parent décident, donc un porteur transmet sa chance.",
+      "Le Léviator rouge du Lac Colère est le porteur le plus accessible ; un Métamorph à gène chromatique vaut mieux encore.",
+      "1/64 par œuf avec le Métamorph — 128 fois mieux que la rencontre sauvage à 1/8192."
     ]},
     "rs": { "name": "Rencontres sauvages en boucle", "odds": "1/8192", "steps": [
       "Sauvegarde sur la zone où l'espèce apparaît.",
@@ -43,12 +44,12 @@
       "Chaîne la même espèce en visant les touffes lointaines.",
       "À partir de 40 maillons, guette les touffes qui brillent."
     ]},
-    "bdsp": { "name": "Poké Radar + Charme Chroma", "odds": "~1/99", "steps": [
-      "Termine le Pokédex national pour débloquer le Charme Chroma, puis prends le Poké Radar.",
+    "bdsp": { "name": "Chaîne Poké Radar", "odds": "~1/99", "steps": [
+      "Prends le Poké Radar : le Charme Chroma n'agit PAS dessus dans ce jeu, malgré la description de l'objet. Il ne sert qu'à la Masuda, à 1/512.",
       "Chaîne l'espèce en visant les touffes les plus éloignées.",
       "Au-delà de 40 maillons, les touffes scintillantes sont des chromatiques garantis."
     ]},
-    "hgss": { "name": "Méthode Masuda (œufs)", "odds": "1/2048", "steps": [
+    "hgss": { "name": "Méthode Masuda (œufs)", "odds": "1/1638", "steps": [
       "Récupère un parent de langue étrangère (échange GTS / ami).",
       "Dépose-le à la Pension avec un Métamorph de ta langue.",
       "Fais éclore les œufs en boucle sur le Chemin Multi ou en vélo."
@@ -63,15 +64,17 @@
       "Ou surveille les essaims quotidiens du Poké Transfert / de la radio.",
       "Fais éclore ou enchaîne les rencontres sans t'arrêter."
     ]},
-    "xy": { "name": "Chaîne Poké Radar / Hordes", "odds": "~1/200", "steps": [
+    "xy": { "name": "Chaîne Poké Radar", "odds": "~1/100", "steps": [
       "Termine le Pokédex national pour le Charme Chroma si possible.",
-      "Utilise le Poké Radar (après le jeu) et chaîne la même espèce, ou attaque des hordes de 5 avec Vampigraine / Ronflement.",
-      "Le DexNav de ROSA n'existe pas ici : privilégie le radar sur une zone dégagée."
+      "Utilise le Poké Radar (après le jeu) et chaîne la même espèce : les touffes scintillantes partent de 1/8100 et descendent jusqu'à ~1/100 par touffe à la chaîne 40.",
+      "Le chaînage à l'hameçon vaut aussi ~1/100 : Attraction Royale, puis pêche sans interruption jusqu'à 20 maillons.",
+      "Les hordes, elles, ne valent que ~1/819 (~1/273 avec le Charme Chroma) : nettement moins bon."
     ]},
-    "oras": { "name": "Chaîne DexNav", "odds": "~1/512", "steps": [
-      "Ouvre le DexNav et repère l'espèce qui dépasse de l'herbe.",
-      "Approche accroupi sans faire de bruit et enfile les captures / KO de la même espèce.",
-      "À partir de 30 de chaîne, les chances grimpent nettement ; ne quitte jamais la zone."
+    "oras": { "name": "Chaînage à l'hameçon", "odds": "~1/100", "steps": [
+      "Pour une espèce pêchable, c'est de loin le meilleur taux du jeu : cinq fois mieux que le DexNav.",
+      "Équipe Attraction Royale, place-toi sur un point d'eau et pêche sans jamais bouger.",
+      "Chaque maillon ajoute deux tirages, jusqu'à 20 : ~1/100 à la chaîne maximale, ~1/95 avec le Charme Chroma.",
+      "Pour une espèce non pêchable, rabats-toi sur le DexNav : ~1/512 à partir de 30 de chaîne."
     ]},
     "sm": { "name": "Chaîne d'appels SOS", "odds": "~1/315", "steps": [
       "Équipe un Pokémon avec Faux-Chage et une capacité pour mettre la cible à bas PV.",
@@ -88,20 +91,22 @@
       "Attrape 31 fois la même espèce d'affilée sans en attraper d'autre.",
       "Le chromatique apparaît directement sur la carte, avec ses scintillements."
     ]},
-    "swsh": { "name": "Combo KO + Terres Sauvages", "odds": "~1/512", "steps": [
-      "Fais 500 KO de la même espèce pour maximiser la chance de Pokémon étincelant.",
+    "swsh": { "name": "Combo KO + Terres Sauvages", "odds": "~1/455", "steps": [
+      "Fais 500 KO de la même espèce : c'est le dernier palier, il donne 6 relances.",
       "Chasse dans les Terres Sauvages avec la météo qui fait apparaître l'espèce.",
-      "Le Charme Chroma (Pokédex de Galar complet) triple les chances."
+      "Le Charme Chroma (Pokédex de Galar complet) ajoute 2 relances : 1/585 sans lui, 1/455 avec. Il ne triple les chances que sur le taux nu."
     ]},
-    "pla": { "name": "Essaim massif + recherche parfaite", "odds": "~1/128", "steps": [
-      "Complète la recherche Pokédex de l'espèce jusqu'au niveau 10 (recherche parfaite).",
-      "Attends une apparition massive / massive rare et emporte des Baies et Bombes Fumigènes.",
+    "pla": { "name": "Apparition massive + recherche parfaite", "odds": "~1/128", "steps": [
+      "Complète la recherche Pokédex de l'espèce : le niveau 10 donne 2 relances, mais la recherche PARFAITE (toutes les tâches de la fiche) en donne 4. Ce sont deux paliers distincts.",
+      "Porte le Charme Chroma : 3 relances de plus, indispensables pour atteindre ce taux.",
+      "Vise une apparition massive ORDINAIRE : elle accorde 26 relances. La Chasse Massive n'en donne que 13 et plafonne à ~1/216.",
       "KO ou capture les 15 individus pour déclencher les vagues supplémentaires."
     ]},
     "sv": { "name": "Apparition massive + sandwich", "odds": "~1/512", "steps": [
       "Trouve une apparition massive de l'espèce sur la carte.",
-      "KO 60 individus pour atteindre le meilleur palier de chance.",
-      "Prépare un sandwich Encens Éclatant du bon type, puis reviens sur l'essaim sans changer de zone."
+      "KO 60 individus pour atteindre le meilleur palier : 30 KO ne donnent que 1/2048, 60 KO 1/1366.",
+      "Prépare un sandwich Aura Brillance niveau 3 du bon type, puis reviens sur l'essaim sans changer de zone.",
+      "Porte le Charme Chroma : les trois bonus cumulés sont nécessaires pour atteindre 1/512. Sans lui, 60 KO + sandwich plafonnent à 1/683."
     ]},
     "za": { "name": "Zones Sauvages de Lumiose", "odds": "~1/1365", "steps": [
       "Repère la Zone Sauvage où l'espèce apparaît : le peuplement change entre le jour et la nuit, et selon l'avancement du scénario.",
@@ -162,7 +167,7 @@
       "Reproduis les deux à la Pension{charme}.",
       "Fais éclore les œufs en boucle{evolution}."
     ],
-    "charme": " et porte le Charme Chroma (Pokédex complet) : le taux tombe à 1/512",
+    "charme": " et porte le Charme Chroma si le jeu le propose : à partir de la Gén. VI le taux tombe à 1/512, en Noir 2 / Blanc 2 à 1/1024. Les jeux de Gén. IV (DP, Pt, HGSS) n'ont pas de Charme Chroma du tout",
     "evolution": ", puis fais évoluer le chromatique en {nom}"
     }
   },
@@ -178,16 +183,16 @@
     { "odds": "1/4096",  "name": "Rencontre normale (Gén. VI+)", "how": "Taux de base. 1/8192 de la Gén. II à V." },
     { "odds": "1/683",   "name": "Méthode Masuda", "how": "Reproduire deux parents de langues de jeu différentes ; cumulable avec le Charme Chroma." },
     { "odds": "1/1365",  "name": "Charme Chroma", "how": "Obtenu après avoir complété le Pokédex national — triple les chances partout." },
-    { "odds": "~1/315",  "name": "Chaînes (SOS, pêche, Poké Radar, sandwichs)", "how": "Selon le jeu : appels SOS (SL / USUL), Poké Radar (DP / BDSP), sandwichs à l'Encens Éclatant (EV), essaims massifs (LA)." }
+    { "odds": "~1/100",  "name": "Chaînes (pêche, Poké Radar, SOS, sandwichs)", "how": "Selon le jeu, et les taux vont du simple au triple : chaînage à l'hameçon et Poké Radar (XY / ROSA / DEEPS) ~1/100, Poké Radar de DPPt 1/200, appels SOS (SL / USUL) ~1/315, apparitions massives + sandwich Aura Brillance (EV) ~1/512." }
   ],
 
   "rules": {
     "_comment": "giftLocked = jeux ou les Pokemon offerts sont shiny-locked. grassOnly = jeux dont la methode par defaut ne marche que dans les hautes herbes. staticSoftResetOk = jeux ou un legendaire statique peut vraiment etre soft-reset en chromatique. dynamaxRaid / ultraWormhole = numeros nationaux accessibles par ces methodes. grassEncounter = especes qu'on croise vraiment dans les hautes herbes.",
     "giftLocked": ["swsh", "sv", "pla", "lgpe", "za"],
     "grassOnly": ["dp", "pt", "bdsp", "xy"],
-    "staticSoftResetOk": ["gs", "c", "rs", "e", "frlg", "col", "dp", "pt", "hgss", "bw", "b2w2", "sm", "usum", "bdsp"],
-    "dynamaxRaid": [144, 145, 146, 150, 243, 244, 245, 249, 250, 377, 378, 379, 380, 381, 382, 383, 384, 480, 481, 482, 483, 484, 485, 486, 487, 488, 638, 639, 640, 641, 642, 643, 644, 645, 646, 716, 717, 718, 772, 773, 785, 786, 787, 788, 789, 790, 791, 792, 800, 803, 804, 805, 806],
-    "ultraWormhole": [144, 145, 146, 150, 243, 244, 245, 249, 250, 377, 378, 379, 380, 381, 382, 383, 384, 480, 481, 482, 483, 484, 485, 486, 487, 488, 638, 639, 640, 641, 642, 643, 644, 645, 646, 716, 717, 718],
+    "staticSoftResetOk": ["gs", "c", "rs", "e", "frlg", "col", "dp", "pt", "hgss", "bw", "b2w2", "oras", "usum", "lgpe", "swsh", "bdsp"],
+    "dynamaxRaid": [144, 145, 146, 150, 243, 244, 245, 249, 250, 380, 381, 382, 383, 384, 480, 481, 482, 483, 484, 485, 487, 488, 641, 642, 643, 644, 645, 646, 716, 717, 718, 785, 786, 787, 788, 791, 792, 793, 794, 795, 796, 797, 798, 799, 800, 805, 806],
+    "ultraWormhole": [144, 145, 146, 150, 243, 244, 245, 249, 250, 377, 378, 379, 380, 381, 382, 383, 384, 480, 481, 482, 483, 484, 485, 486, 487, 488, 638, 639, 640, 641, 642, 643, 644, 645, 646, 716, 717, 793, 794, 795, 796, 797, 798, 799],
     "grassEncounter": ["Pikachu", "Goupix", "Caninos", "Abra", "Évoli", "Tarsal", "Zorua", "Rondoudou", "Miaouss", "Absol", "Mimiqui", "Nidoran♀", "Nidoran♂", "Chuchmur", "Poichigeon"]
   }
 }
