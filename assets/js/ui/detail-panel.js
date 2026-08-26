@@ -49,6 +49,15 @@ export function createDetailPanel(ctx) {
           String(ctx.collection.has(Number(button.dataset.species), button.dataset.slot))
         );
       }
+      // Une tuile devient « terminée » ou cesse de l'être : on retourne la
+      // classe, on ne reconstruit pas. Les cases sont listées sur la tuile
+      // elle-même, il n'y a donc rien à recalculer côté données.
+      for (const tuile of root.querySelectorAll(".ftile[data-slots]")) {
+        const slots = tuile.dataset.slots.split(" ").filter(Boolean);
+        const id = Number(tuile.dataset.species);
+        const done = slots.length > 0 && slots.every((s) => ctx.collection.has(id, s));
+        tuile.classList.toggle("ftile--done", done);
+      }
       updateHead(root, species, ctx);
       updateCosmeticCount(root, species, ctx);
     },
@@ -559,28 +568,55 @@ const KIND_ICONS = {
 };
 
 /**
- * Ce qui se coche passe devant. Les Méga-Évolutions, la Primo-Résurgence et
- * les formes de combat n'ont pas d'entrée dans HOME : elles sont là pour
- * l'information, pas pour la collection, et elles n'ont donc rien à faire en
- * haut de la fiche.
- *
- * `other` passe **avant** `gmax` : chez Salarsen, la Forme Grave est une forme
- * à part entière qu'on obtient en jeu, alors que les deux Gigamax dépendent
- * d'un facteur séparé. La forme normale d'abord, ses Gigamax ensuite.
+ * Ordre d'affichage des familles. `other` passe **avant** `gmax` : chez
+ * Salarsen, la Forme Grave est une forme à part entière qu'on obtient en jeu,
+ * alors que ses deux Gigamax dépendent d'un facteur séparé.
  */
-const KIND_ORDER = ["alola", "galar", "hisui", "paldea", "other", "gmax"];
-const KIND_ORDER_LORE = ["mega", "primal", "battle", "cap"];
+const KIND_ORDER = [
+  "alola",
+  "galar",
+  "hisui",
+  "paldea",
+  "other",
+  "gmax",
+  "mega",
+  "primal",
+  "battle",
+  "cap",
+];
 
+const rangKind = (kind) => {
+  const i = KIND_ORDER.indexOf(kind);
+  return i < 0 ? KIND_ORDER.length : i;
+};
+
+/**
+ * Ce qui se coche passe devant — et « se cocher », c'est `form.entry`, pas la
+ * famille.
+ *
+ * Trier sur la famille était faux dans les deux sens. L'Amphinobi Forme Sacha
+ * est en famille `battle` mais porte `entry: 1` : il se retrouvait sous
+ * « il n'y a rien à y cocher » avec une vraie case, que `completion.js` exige
+ * pour compléter l'espèce. À l'inverse, douze formes en `entry: 0` — Kyurem
+ * Noir et Blanc, les deux Necrozma, les deux Sylveroy, l'Infinimax
+ * d'Éthernatos, les Formes Originelles — sont en famille `other` et passaient
+ * donc au-dessus du trait. Chez ces espèces-là, tout le bloc « à cocher »
+ * était incochable.
+ *
+ * On partitionne donc sur `entry`, et on ordonne par famille à l'intérieur de
+ * chaque moitié.
+ */
 function formsSection(species, ctx) {
   if (!species.forms.length) return null;
 
+  const cochables = species.forms.filter((f) => f.entry).sort((a, b) => rangKind(a.kind) - rangKind(b.kind));
   const groups = new Map();
   for (const form of species.forms) {
+    if (form.entry) continue;
     if (!groups.has(form.kind)) groups.set(form.kind, []);
     groups.get(form.kind).push(form);
   }
-  const aCocher = KIND_ORDER.filter((kind) => groups.has(kind));
-  const lore = KIND_ORDER_LORE.filter((kind) => groups.has(kind));
+  const lore = [...groups.keys()].sort((a, b) => rangKind(a) - rangKind(b));
 
   return el(
     "section.detail__section",
@@ -598,11 +634,8 @@ function formsSection(species, ctx) {
     // trois grilles d'une colonne, empilées, avec du vide sur les côtés. La
     // famille reste lisible sur la tuile — pastille dans le coin et libellé
     // au-dessus du nom — donc les titres de groupe ne manquent pas.
-    aCocher.length
-      ? el(
-          "div.ftiles",
-          aCocher.flatMap((kind) => groups.get(kind)).map((form) => formTile(form, species, ctx))
-        )
+    cochables.length
+      ? el("div.ftiles", cochables.map((form) => formTile(form, species, ctx)))
       : null,
     // Le trait ne sert pas qu'a decorer : il dit ou s'arrete la collection et
     // ou commence ce qui n'est la que pour l'information.
@@ -629,7 +662,10 @@ function formGroup(kind, forms, species, ctx) {
     "div.ftiles",
     forms.map((form) => formTile(form, species, ctx))
   );
-  const collapsible = !forms.some((form) => form.entry) && forms.length > 2;
+  // Ce groupe ne contient que des formes non cochables : au-dela de deux, on
+  // le replie pour ne pas repousser le reste de la fiche hors de portee
+  // (Pikachu a quatorze Mega... enfin, Florizarre et consorts en ont deux).
+  const collapsible = forms.length > 2;
   const icon = KIND_ICONS[kind];
   const titre = [
     icon ? el("img.forms__icon", { src: icon, alt: "", width: 17, height: 17, loading: "lazy" }) : null,
@@ -667,12 +703,21 @@ function formTile(form, species, ctx) {
   const games = dataset.games.filter((g) => form.games.has(g.code));
   const huntable = games.filter((g) => g.shinyOk !== false && !form.shinyLocked.has(g.code));
 
+  // Les cases de cette forme, dans l'ordre exact ou formButtons() les rend.
+  // On les inscrit sur la tuile : `syncMarks()` peut alors recalculer l'etat
+  // « terminee » sans rien reconstruire, comme il le fait deja pour les
+  // `aria-pressed`.
+  const slots = form.entry ? tileSlots(form) : [];
+  const done = slots.length > 0 && slots.every((s) => ctx.collection.has(species.id, s));
+
   const classes = ["div.ftile"];
   if (form.kind === "gmax") classes.push("ftile--gmax");
   if (!form.entry) classes.push("ftile--off");
+  if (done) classes.push("ftile--done");
 
   return el(
     classes.join("."),
+    { dataset: { slots: slots.join(" "), species: species.id } },
     el(
       "div.ftile__art",
       formImg(form, { alt: form.name, className: "ftile__img" }),
@@ -736,6 +781,21 @@ function formTile(form, species, ctx) {
  * male et une femelle distinctes (le Farfuret de Hisui). Aucune quand la forme
  * ne monte pas dans HOME — la fiche reste, seuls les boutons disparaissent.
  */
+/**
+ * Les cases d'une forme, dans le meme ordre que `formButtons()`.
+ * Les deux doivent rester d'accord : si l'une ajoute une case que l'autre
+ * ignore, une tuile pourrait passer « terminee » sans l'etre.
+ */
+function tileSlots(form) {
+  const slots = [form.slot];
+  if (form.gendered) slots.push(form.slotF);
+  if (form.shinyEntry) {
+    slots.push(form.shinySlot);
+    if (form.gendered) slots.push(form.shinySlotF);
+  }
+  return slots;
+}
+
 function formButtons(form, species, ctx) {
   if (!form.entry) {
     return el(

@@ -1017,12 +1017,62 @@
 .form__btn-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ftile .form__btn { padding: 10px 6px; gap: 4px; }
 
+/* ♂ / ♀ en bleu — la couleur des paires, la même que celle de la barre
+   « Paires ♂ / ♀ » de la barre latérale. Le bouton coché se remplit de la
+   couleur du type : on éclaircit alors le bleu pour qu'il tienne le contraste
+   dessus, plutôt que de le remplacer par du blanc et de perdre le repère. */
+.toggle__sex { color: var(--pair); font-weight: 800; }
+.toggle[aria-pressed="true"] .toggle__sex { color: color-mix(in srgb, var(--pair) 40%, #fff); }
+.toggle--gold[aria-pressed="true"] .toggle__sex { color: color-mix(in srgb, var(--pair) 62%, #000); }
+
+/* Le logo de la famille sur le bouton de variante : le bouton dit de quelle
+   variante il parle, au lieu du losange générique. */
+.toggle__fam { flex: none; display: block; }
+/* La barre d'outils et la grille se touchaient : `#tab-dex` est en
+   `display: block`, sans gap, et ni l'une ni l'autre ne portait de marge. Les
+   vignettes butaient donc contre le champ de recherche. Une marge plutôt qu'un
+   flex + gap sur `.tabpanel` : `display: flex` l'emporterait sur l'attribut
+   `hidden` et l'onglet caché resterait visible. */
+.toolbar { margin-bottom: var(--sp-4); }
+
+/* Pastilles du coin de la vignette : alignées sur la même colonne et
+   légèrement réduites, pour cesser de mordre sur l'illustration. */
+.card__spark { top: 3px; right: 3px; width: 13px; height: 13px; }
+.card__gmax { top: 18px; right: 3px; width: 13px; height: 13px; }
+
+/* Tuile terminée : toutes ses cases sont cochées. Le liseré doré et le fond
+   tiédi reprennent le langage des vignettes « ★ Complet » ; la coche du coin
+   se lit sans compter les boutons un par un. Le basculement se fait par
+   `syncMarks()`, sans reconstruire la tuile. */
+.ftile--done {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, var(--accent-wash), transparent 62%), var(--bg-sunken);
+  box-shadow: inset 0 0 0 1px var(--accent-border);
+}
+.ftile--done .ftile__art { background: color-mix(in srgb, var(--accent) 10%, var(--bg-inset)); }
+.ftile--done .ftile__name { color: var(--accent); }
+.ftile { position: relative; }
+.ftile--done::after {
+  content: "★";
+  position: absolute; top: -7px; right: -6px;
+  width: 19px; height: 19px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 11px; font-weight: 800;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ftile { transition: border-color .18s, background .18s, box-shadow .18s; }
+}
+
 /* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
    qu'une colonne, soit treize écrans pour les noyaux de Météno. On redescend
    le minimum, et les boutons se resserrent juste assez pour que « Normal » et
    « Shiny » tiennent quand même en entier.
-   Ce bloc est en fin de fichier À DESSEIN : les règles ajoutées après lui
-   l'écraseraient. */
+   Ce bloc est en fin de fichier À DESSEIN : toute règle ajoutée après lui
+   écraserait ces surcharges. */
 @media (max-width: 860px) {
   .ftiles { grid-template-columns: repeat(auto-fill, minmax(152px, 1fr)); }
   .ftile .form__btn { padding: 9px 4px; gap: 3px; font-size: 11px; }

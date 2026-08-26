@@ -256,21 +256,41 @@ function formTitle(species) {
  */
 const icoBase = () => el("span.toggle__ico.toggle__ico--base", { "aria-hidden": "true" });
 const icoShiny = () => el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" });
+/** ♂ / ♀ en bleu, la couleur des paires — la meme que dans la barre laterale. */
+const icoSexe = (glyphe) => el("span.toggle__sex", { "aria-hidden": "true" }, glyphe);
+
+/**
+ * Le logo de la famille de la forme principale, quand il en existe un : le
+ * bouton dit alors DE QUELLE variante il parle. Chez Florizarre ce sont ses
+ * Gigamax, chez Miaouss sa forme d'Alola. Le losange ◈ ne servait qu'a dire
+ * « une forme », sans preciser laquelle.
+ */
+const ICONES_FAMILLE = {
+  alola: "assets/img/forme-alola.png",
+  galar: "assets/img/forme-galar.png",
+  paldea: "assets/img/forme-paldea.png",
+  gmax: "assets/img/gigamax.png",
+};
+
+const icoFamille = (kind) =>
+  ICONES_FAMILLE[kind]
+    ? el("img.toggle__fam", { src: ICONES_FAMILLE[kind], alt: "", width: 13, height: 13, loading: "lazy" })
+    : "◈";
 
 function quickToggles(species, ctx, color) {
   const base = species.cosmetic && species.cosmetic.baseVariant;
   const definitions = species.gd
     ? [
-        ["om", ["♂"], "Mâle normal", false],
-        ["of", ["♀"], "Femelle normale", false],
+        ["om", [icoSexe("♂")], "Mâle normal", false],
+        ["of", [icoSexe("♀")], "Femelle normale", false],
       ]
     : [["om", [icoBase()], base ? `${base.name} — normal` : "Marquer comme capturé", false]];
 
   if (!species.noShiny) {
     if (species.gd) {
       definitions.push(
-        ["sm", [icoShiny(), "♂"], "Shiny mâle", true],
-        ["sf", [icoShiny(), "♀"], "Shiny femelle", true]
+        ["sm", [icoShiny(), icoSexe("♂")], "Shiny mâle", true],
+        ["sf", [icoShiny(), icoSexe("♀")], "Shiny femelle", true]
       );
     } else {
       definitions.push([
@@ -286,9 +306,14 @@ function quickToggles(species, ctx, color) {
   // dans la fiche, ou elles sont accompagnees de leur sprite et de leur texte.
   const primary = species.primaryForm;
   if (primary) {
-    definitions.push([primary.slot, ["◈"], `${primary.name} — forme normale`, false]);
+    definitions.push([primary.slot, [icoFamille(primary.kind)], `${primary.name} — forme normale`, false]);
     if (primary.shinyEntry) {
-      definitions.push([primary.shinySlot, [icoShiny(), "◈"], `${primary.name} — shiny`, true]);
+      definitions.push([
+        primary.shinySlot,
+        [icoShiny(), icoFamille(primary.kind)],
+        `${primary.name} — shiny`,
+        true,
+      ]);
     }
   }
 
