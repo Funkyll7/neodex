@@ -226,7 +226,9 @@ const BAR_GROUPS = [
     rows: [
       ["all", "Tout", null, "Toutes les cases du site : espèces, formes régionales, cosmétiques et Gigamax."],
       ["pairs", "Paires ♂ / ♀", null, "Espèces à apparence mâle et femelle distinctes dont les deux cases sont cochées."],
-      ["shiny", "Chromatiques", null, "Toutes les cases chromatiques du site, formes comprises."],
+      // « shiny » n'est pas un chemin d'image : le logo chromatique est posé en
+      // masque, pour prendre la couleur du thème comme partout ailleurs.
+      ["shiny", "Chromatiques", "shiny", "Toutes les cases chromatiques du site, formes comprises."],
     ],
   },
 ];
@@ -272,9 +274,11 @@ function renderBars(out, progress, store) {
             },
             el(
               "span.bars__head",
-              icon
-                ? el("img.bars__icon", { src: icon, alt: "", width: 15, height: 15, loading: "lazy" })
-                : null,
+              icon === "shiny"
+                ? el("span.toggle__ico.toggle__ico--shiny.bars__icon", { "aria-hidden": "true" })
+                : icon
+                  ? el("img.bars__icon", { src: icon, alt: "", width: 15, height: 15, loading: "lazy" })
+                  : null,
               el("span.bars__label", label),
               el("span.bars__value", `${value.done} / ${value.total}`),
               el("span.bars__pct", `${value.pct} %`)

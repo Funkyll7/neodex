@@ -1101,6 +1101,11 @@
    global : un trait le sépare du grand chiffre. */
 #progress-bars { margin-top: var(--sp-4); padding-top: var(--sp-3); border-top: 1px solid var(--border); }
 
+/* Le logo chromatique de la barre « Chromatiques » : même gabarit que les
+   logos de région à côté, et l'or du chromatique plutôt que la couleur du
+   texte. */
+.bars__icon.toggle__ico--shiny { width: 15px; height: 15px; background-color: var(--accent); }
+
 /* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
    qu'une colonne, soit treize écrans pour les noyaux de Météno. On redescend
    le minimum, et les boutons se resserrent juste assez pour que « Normal » et
