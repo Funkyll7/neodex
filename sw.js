@@ -30,8 +30,10 @@
  * reseau ou echouer franchement, jamais etre servie depuis un cache.
  */
 
-/* Changer ce numero purge les anciens caches au prochain chargement. */
-const VERSION = "neodex-v1";
+/* Changer ce numero purge les anciens caches au prochain chargement.
+   v2 : les reponses opaques (sprites) entrent enfin dans le cache. Les caches
+   construits sous v1 n'en contenaient aucune, autant repartir propre. */
+const VERSION = "neodex-v2";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;
@@ -102,13 +104,28 @@ self.addEventListener("fetch", (event) => {
 });
 
 /**
+ * Une reponse est-elle bonne a mettre en cache ?
+ *
+ * `response.ok` ne suffit pas. Les sprites viennent d'un autre domaine et sont
+ * demandes par des balises <img> : ce sont des requetes `no-cors`, dont la
+ * reponse est *opaque* — status 0, `ok` a false, contenu illisible pour nous.
+ * Elle s'affiche parfaitement, mais un test sur `ok` la rejette.
+ *
+ * Sans cette exception, les images — de loin le plus lourd, et la raison meme
+ * d'avoir un cache — n'y entraient jamais.
+ */
+function cachable(reponse) {
+  return Boolean(reponse) && (reponse.ok || reponse.type === "opaque");
+}
+
+/**
  * Reseau d'abord : la reponse fraiche gagne toujours, le cache ne sert que
  * lorsqu'elle n'arrive pas.
  */
 async function reseauDAbord(request, nomCache) {
   try {
     const reponse = await fetch(request);
-    if (reponse && reponse.ok) {
+    if (cachable(reponse)) {
       const cache = await caches.open(nomCache);
       cache.put(request, reponse.clone());
     }
@@ -132,14 +149,14 @@ async function cacheDAbord(request, nomCache) {
     // sans consequence puisqu'on a deja repondu.
     fetch(request)
       .then(async (reponse) => {
-        if (reponse && reponse.ok) (await caches.open(nomCache)).put(request, reponse.clone());
+        if (cachable(reponse)) (await caches.open(nomCache)).put(request, reponse.clone());
       })
       .catch(() => {});
     return enCache;
   }
 
   const reponse = await fetch(request);
-  if (reponse && reponse.ok) {
+  if (cachable(reponse)) {
     const cache = await caches.open(nomCache);
     cache.put(request, reponse.clone());
   }
