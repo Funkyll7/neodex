@@ -519,14 +519,34 @@ const KIND_TITLES = {
   galar: "Formes de Galar",
   hisui: "Formes de Hisui",
   paldea: "Formes de Paldéa",
+  other: "Autres formes",
+  gmax: "Formes Gigamax",
   mega: "Méga-Évolutions",
   primal: "Primo-Résurgence",
-  gmax: "Formes Gigamax",
-  cap: "Pikachu à casquette",
   battle: "Formes de combat",
-  other: "Autres formes",
+  cap: "Pikachu à casquette",
 };
-const KIND_ORDER = Object.keys(KIND_TITLES);
+
+/** Le logo officiel de la famille, quand il en existe un. */
+const KIND_ICONS = {
+  alola: "assets/img/forme-alola.png",
+  galar: "assets/img/forme-galar.png",
+  paldea: "assets/img/forme-paldea.png",
+  gmax: "assets/img/gigamax.png",
+};
+
+/**
+ * Ce qui se coche passe devant. Les Méga-Évolutions, la Primo-Résurgence et
+ * les formes de combat n'ont pas d'entrée dans HOME : elles sont là pour
+ * l'information, pas pour la collection, et elles n'ont donc rien à faire en
+ * haut de la fiche.
+ *
+ * `other` passe **avant** `gmax` : chez Salarsen, la Forme Grave est une forme
+ * à part entière qu'on obtient en jeu, alors que les deux Gigamax dépendent
+ * d'un facteur séparé. La forme normale d'abord, ses Gigamax ensuite.
+ */
+const KIND_ORDER = ["alola", "galar", "hisui", "paldea", "other", "gmax"];
+const KIND_ORDER_LORE = ["mega", "primal", "battle", "cap"];
 
 function formsSection(species, ctx) {
   if (!species.forms.length) return null;
@@ -536,7 +556,8 @@ function formsSection(species, ctx) {
     if (!groups.has(form.kind)) groups.set(form.kind, []);
     groups.get(form.kind).push(form);
   }
-  const ordered = KIND_ORDER.filter((kind) => groups.has(kind));
+  const aCocher = KIND_ORDER.filter((kind) => groups.has(kind));
+  const lore = KIND_ORDER_LORE.filter((kind) => groups.has(kind));
 
   return el(
     "section.detail__section",
@@ -547,9 +568,21 @@ function formsSection(species, ctx) {
     ),
     el(
       "p.detail__help",
-      "Chaque forme a son propre sprite normal et chromatique. Les Méga-Évolutions, les formes de combat et les fusions ne se cochent pas : elles n'ont pas d'entrée à elles dans HOME."
+      "Chaque forme a son propre sprite normal et chromatique. Ce qui se coche est en haut."
     ),
-    ordered.map((kind) => formGroup(kind, groups.get(kind), species, ctx))
+    aCocher.map((kind) => formGroup(kind, groups.get(kind), species, ctx)),
+    // Le trait ne sert pas qu'a decorer : il dit ou s'arrete la collection et
+    // ou commence ce qui n'est la que pour l'information.
+    lore.length
+      ? el(
+          "div.forms__lore",
+          el(
+            "p.forms__lore-note",
+            "Pour l'information seulement — ces formes n'ont pas d'entrée à elles dans HOME, il n'y a rien à y cocher."
+          ),
+          lore.map((kind) => formGroup(kind, groups.get(kind), species, ctx))
+        )
+      : null
   );
 }
 
@@ -564,15 +597,19 @@ function formGroup(kind, forms, species, ctx) {
     forms.map((form) => formTile(form, species, ctx))
   );
   const collapsible = !forms.some((form) => form.entry) && forms.length > 2;
-  const title = `${KIND_TITLES[kind]} · ${forms.length}`;
+  const icon = KIND_ICONS[kind];
+  const titre = [
+    icon ? el("img.forms__icon", { src: icon, alt: "", width: 17, height: 17, loading: "lazy" }) : null,
+    `${KIND_TITLES[kind]} · ${forms.length}`,
+  ];
 
   if (!collapsible) {
-    return el("div.forms__group", el("h4.forms__title", title), grid);
+    return el("div.forms__group", el("h4.forms__title", titre), grid);
   }
   return el(
     "details.forms__group.forms__group--fold",
     { dataset: { key: `${species.id}-${kind}` } },
-    el("summary.forms__title.forms__title--fold", title),
+    el("summary.forms__title.forms__title--fold", titre),
     grid
   );
 }
@@ -610,19 +647,25 @@ function formTile(form, species, ctx) {
         ? el(
             "span.ftile__shiny",
             formImg(form, { shiny: true, alt: `${form.name} chromatique`, className: "ftile__img" }),
-            el("span.ftile__spark", "✦")
+            el("span.ftile__spark", { title: "Version chromatique", "aria-hidden": "true" })
           )
+        : null,
+      // Le logo de la famille, en pastille : d'un coup d'œil on sait si la
+      // tuile est une forme d'Alola, de Galar, de Paldéa ou un Gigamax.
+      KIND_ICONS[form.kind]
+        ? el("img.ftile__kind", {
+            src: KIND_ICONS[form.kind],
+            alt: "",
+            title: KIND_TITLES[form.kind],
+            width: 18,
+            height: 18,
+            loading: "lazy",
+          })
         : null
     ),
     el(
       "div.ftile__id",
-      el(
-        "div.ftile__name",
-        form.kind === "gmax"
-          ? el("img.ftile__gmax", { src: "assets/img/gigamax.png", alt: "", width: 15, height: 15 })
-          : null,
-        form.name
-      ),
+      el("div.ftile__name", form.name),
       el(
         "div.ftile__chips",
         form.types.map((t) => typeChip(t, dataset.types[t] || "#8b8b8b"))

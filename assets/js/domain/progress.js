@@ -3,11 +3,24 @@
  *
  * `collection.counts()` répond à « combien d'espèces ai-je ? ». Ce module
  * répond à « combien de **cases** ai-je ? », ce qui n'est pas la même question :
- * un Miaouss capturé pèse une espèce, mais huit cases. Quatre décomptes, un par
- * barre affichée : tout, paires ♂ / ♀, formes alternatives, Gigamax.
+ * un Miaouss capturé pèse une espèce, mais huit cases.
+ *
+ * Les compteurs sont rangés en deux familles, parce qu'ils ne répondent pas à
+ * la même question :
+ *
+ *   `kinds`   « où en suis-je sur les formes ? » — une entrée par région, plus
+ *             les cosmétiques et les Gigamax. C'est un découpage du travail
+ *             qui reste : on voit d'un coup qu'il manque les Galar.
+ *   `overall` « où en suis-je en général ? » — tout, les paires ♂ / ♀, les
+ *             chromatiques. Trois angles sur la même collection.
+ *
+ * Un seul parcours de la collection alimente les deux.
  */
 
 import { requiredSlots } from "./completion.js";
+
+/** Familles de formes affichées, dans l'ordre de la barre latérale. */
+export const FORM_KINDS = ["alola", "galar", "hisui", "paldea", "other", "cosmetic", "gmax"];
 
 const empty = () => ({ done: 0, total: 0, pct: 0 });
 
@@ -22,14 +35,16 @@ function seal(bucket) {
 }
 
 /**
- * Parcourt toute la collection une seule fois et en tire les quatre barres.
- * @returns {{all, pairs, forms, gmax: {done, total, pct, shiny, pairs, pairsTotal}}}
+ * Parcourt toute la collection une seule fois et en tire tous les compteurs.
+ * @returns {{all, pairs, shiny, kinds, gmax}}
  */
 export function progressOf(speciesList, collection) {
   const all = empty();
   const pairs = empty();
-  const forms = empty();
-  const gmax = { ...empty(), shiny: 0, pairs: 0, pairsTotal: 0 };
+  const shiny = empty();
+  const kinds = {};
+  for (const kind of FORM_KINDS) kinds[kind] = empty();
+  const gmaxExtra = { shiny: 0, pairs: 0, pairsTotal: 0 };
 
   for (const species of speciesList) {
     for (const entry of requiredSlots(species)) {
@@ -42,37 +57,64 @@ export function progressOf(speciesList, collection) {
       bump(pairs, collection.has(species.id, "om") && collection.has(species.id, "of"));
     }
 
+    if (!species.noShiny) {
+      bump(shiny, collection.has(species.id, "sm"));
+      if (species.gd) bump(shiny, collection.has(species.id, "sf"));
+    }
+
     if (species.cosmetic && !species.cosmetic.info) {
       for (const variant of species.cosmetic.variants) {
-        if (variant.isBase) continue;
-        bump(forms, collection.has(species.id, variant.slot));
-        if (variant.shinyEntry) bump(forms, collection.has(species.id, variant.shinySlot));
+        if (variant.isBase || !variant.entry) continue;
+        bump(kinds.cosmetic, collection.has(species.id, variant.slot));
+        if (variant.shinyEntry) {
+          const owned = collection.has(species.id, variant.shinySlot);
+          bump(kinds.cosmetic, owned);
+          bump(shiny, owned);
+        }
       }
     }
 
     for (const form of species.forms) {
       if (!form.entry) continue;
-      const target = form.kind === "gmax" ? gmax : forms;
+      // Une catégorie sans barre à elle (Méga, formes de combat) retombe dans
+      // « Autres » : mieux vaut une ligne fourre-tout qu'une case qui n'est
+      // comptée nulle part.
+      const bucket = kinds[form.kind] || kinds.other;
       const owned = collection.has(species.id, form.slot);
-      const shiny = form.shinyEntry && collection.has(species.id, form.shinySlot);
+      const shinyOwned = form.shinyEntry && collection.has(species.id, form.shinySlot);
 
-      bump(target, owned);
-      if (form.gendered) bump(target, collection.has(species.id, form.slotF));
+      bump(bucket, owned);
+      if (form.gendered) bump(bucket, collection.has(species.id, form.slotF));
       if (form.shinyEntry) {
-        bump(target, shiny);
-        if (form.gendered) bump(target, collection.has(species.id, form.shinySlotF));
+        bump(bucket, shinyOwned);
+        bump(shiny, shinyOwned);
+        if (form.gendered) {
+          const f = collection.has(species.id, form.shinySlotF);
+          bump(bucket, f);
+          bump(shiny, f);
+        }
       }
 
       if (form.kind === "gmax") {
-        if (shiny) gmax.shiny += 1;
+        if (shinyOwned) gmaxExtra.shiny += 1;
         // « Paire » côté Gigamax : le normal ET le chromatique de la même forme.
         if (form.shinyEntry) {
-          gmax.pairsTotal += 1;
-          if (owned && shiny) gmax.pairs += 1;
+          gmaxExtra.pairsTotal += 1;
+          if (owned && shinyOwned) gmaxExtra.pairs += 1;
         }
       }
     }
   }
 
-  return { all: seal(all), pairs: seal(pairs), forms: seal(forms), gmax: seal(gmax) };
+  for (const kind of FORM_KINDS) seal(kinds[kind]);
+  Object.assign(kinds.gmax, gmaxExtra);
+
+  return {
+    all: seal(all),
+    pairs: seal(pairs),
+    shiny: seal(shiny),
+    kinds,
+    /** Raccourci : la barre Gigamax porte aussi ses paires et ses chromatiques. */
+    gmax: kinds.gmax,
+  };
 }

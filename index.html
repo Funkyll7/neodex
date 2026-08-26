@@ -50,10 +50,6 @@
       <div class="bar" role="progressbar" aria-labelledby="stat-pct" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
         <div class="bar__fill" id="progress-fill"></div>
       </div>
-      <ul class="progress-card__extra">
-        <li><span class="ico ico--shiny" aria-hidden="true">✦</span><span id="stat-shiny">0</span> shiny obtenus</li>
-        <li><span class="ico ico--pair" aria-hidden="true">♂♀</span><span id="stat-pair">0</span> paires complètes</li>
-      </ul>
     </section>
 
     <!-- Les filtres passent AVANT les statistiques détaillées. On consulte sa
@@ -91,25 +87,13 @@
       </select>
     </section>
 
-    <!-- Une barre par famille de cases : la ligne « Tout » compte chaque case
-         du site — espèces, formes régionales, cosmétiques et Gigamax. Remplie
-         par ui/sidebar.js à partir de domain/progress.js. -->
+    <!-- Deux groupes de barres, remplis par ui/sidebar.js depuis
+         domain/progress.js. « Formes » découpe le travail qui reste, région
+         par région ; « Ma collection » donne les trois angles généraux.
+         L'ancienne carte Gigabax séparée a disparu : elle répétait la barre
+         Gigamax et alourdissait la colonne pour rien. -->
     <section class="panel progress-card" aria-label="Progression détaillée">
-      <h2 class="panel__label">Dans le détail</h2>
       <div id="progress-bars" class="bars"></div>
-    </section>
-
-    <section class="panel gmax-card" aria-label="Gigamax">
-      <h2 class="panel__label"><img class="gmax-card__logo" src="assets/img/gigamax.png" alt="" width="16" height="16"> Gigamax</h2>
-      <p class="progress-card__pct"><span id="gmax-pct">0</span><span class="progress-card__unit">%</span></p>
-      <p class="progress-card__count"><span id="gmax-done">0</span> / <span id="gmax-total">0</span> cases Gigamax</p>
-      <div class="bar" role="progressbar" aria-labelledby="gmax-pct" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="gmax-bar">
-        <div class="bar__fill bar__fill--gmax" id="gmax-fill"></div>
-      </div>
-      <ul class="progress-card__extra">
-        <li><span class="ico ico--pair" aria-hidden="true">◈</span><span id="gmax-pairs">0</span> / <span id="gmax-pairs-total">0</span> paires complètes</li>
-        <li><span class="ico ico--shiny" aria-hidden="true">✦</span><span id="gmax-shiny">0</span> shiny obtenus</li>
-      </ul>
     </section>
 
     <section class="panel legend" aria-label="Légende du tableau de disponibilité">

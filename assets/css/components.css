@@ -45,18 +45,14 @@
 }
 .bar__fill--gmax { background: linear-gradient(90deg, #c9123f, #ff5f7e); }
 
-/* Une barre par famille de cases (tout / paires / formes / Gigamax). */
-.bars { display: flex; flex-direction: column; gap: 11px; }
+/* Barres de progression, groupees par « Formes » et « Ma collection ». */
+.bars { display: flex; flex-direction: column; }
 .bars__row { display: flex; flex-direction: column; }
-.bars__head { display: flex; align-items: baseline; gap: 6px; }
+.bars__row + .bars__row { margin-top: 11px; }
 .bars__label { font-size: 11.5px; font-weight: 800; color: var(--text-soft); }
-.bars__value { font-size: 10.5px; font-weight: 700; color: var(--text-ghost); margin-left: auto; }
+.bars__value { font-size: 10.5px; font-weight: 700; color: var(--text-ghost); }
 .bars__pct { font-size: 11px; font-weight: 800; color: var(--accent); min-width: 34px; text-align: right; }
 .bars .bar { margin-top: 5px; height: 6px; }
-
-.gmax-card { background: var(--bg-sunken); }
-.gmax-card .progress-card__pct { color: #ff5f7e; }
-.gmax-card__logo { vertical-align: -3px; margin-right: 4px; }
 
 /* ------------------------------- Pastilles ------------------------------- */
 .field { display: flex; flex-direction: column; }
@@ -262,10 +258,17 @@
 .card__img { width: 70px; height: 70px; max-width: 100%; object-fit: contain; transition: filter .2s; }
 .card--missing .card__img { filter: var(--sprite-dim); }
 .card--shiny-art .card__img { filter: drop-shadow(0 0 8px var(--accent-glow)); }
+/* Le logo chromatique, en MASQUE et non en image : le fichier est turquoise,
+   or le site code le chromatique en or. Un masque ne garde que la forme et
+   prend la couleur qu'on lui donne — donc `--accent`, qui suit déjà le thème
+   clair et le thème sombre. Une image aurait figé la couleur. */
 .card__spark {
-  position: absolute; top: 0; right: 0;
-  font-size: 12px; color: var(--accent);
-  text-shadow: 0 0 8px var(--accent-glow);
+  position: absolute; top: 1px; right: 1px;
+  width: 14px; height: 14px;
+  background-color: var(--accent);
+  -webkit-mask: url("../img/shiny.png") center / contain no-repeat;
+  mask: url("../img/shiny.png") center / contain no-repeat;
+  filter: drop-shadow(0 0 5px var(--accent-glow));
 }
 /* Emblème Gigamax, juste sous l'étoile chromatique. Gris tant que la forme
    n'est pas obtenue, en couleur ensuite — deux fichiers, on ne recolore pas
@@ -478,10 +481,21 @@
 .ftile__img { width: 56px; height: 56px; object-fit: contain; }
 .ftile__shiny { position: relative; display: inline-flex; }
 .ftile__shiny .ftile__img { filter: drop-shadow(0 0 6px var(--accent-glow)); }
+/* Même masque que sur les vignettes : une seule image pour tout le site. */
 .ftile__spark {
   position: absolute; right: 0; bottom: 2px;
-  font-size: 10px; color: var(--gold);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+  width: 12px; height: 12px;
+  background-color: var(--accent);
+  -webkit-mask: url("../img/shiny.png") center / contain no-repeat;
+  mask: url("../img/shiny.png") center / contain no-repeat;
+}
+
+/* Pastille de famille dans le coin de l'illustration. */
+.ftile__art { position: relative; }
+.ftile__kind {
+  position: absolute; top: 4px; left: 4px;
+  opacity: .9;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35));
 }
 
 .ftile__id { display: flex; flex-direction: column; gap: 5px; }
@@ -942,3 +956,30 @@
   .sync__input { font-size: 14px; padding: 13px var(--sp-3); }
   .btn-row .btn { padding: 13px 10px; }
 }
+
+/* ===================== Groupes de barres (barre latérale) ================= */
+.bars__group + .bars__group { margin-top: var(--sp-4); }
+.bars__group > .panel__label { margin-bottom: var(--sp-2); }
+.bars__icon { flex: none; vertical-align: -2px; }
+.bars__head { display: flex; align-items: center; gap: 6px; }
+.bars__label { flex: 1; min-width: 0; }
+
+/* ===================== Formes présentes pour l'information =============== */
+.forms__icon { flex: none; vertical-align: -3px; margin-right: 5px; }
+.forms__title { display: flex; align-items: center; gap: 0; }
+
+/* Ce qui ne se coche pas est mis a distance : un trait, un retrait de ton, et
+   une phrase qui dit pourquoi. On ne le cache pas — c'est de l'information
+   utile — mais il ne doit plus rivaliser avec ce qui se collectionne. */
+.forms__lore {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px dashed var(--border-strong);
+}
+.forms__lore-note {
+  margin-bottom: var(--sp-3);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.forms__lore .ftile { opacity: .85; }

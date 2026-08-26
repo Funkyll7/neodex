@@ -13,7 +13,7 @@ méthode de shiny hunt jeu par jeu. Soit 2 802 cases à cocher.
 
 - Site **100 % statique** : pas de build, pas de dépendance, pas de serveur.
   Le dossier tel quel se publie sur GitHub Pages.
-- Les scripts Python de `tools/` ne servent **qu'à préparer les données**.
+- Les scripts de `tools/` ne servent **qu'à préparer les données**.
   Le site ne les exécute jamais.
 
 ---
@@ -38,7 +38,12 @@ Projet Poke/
 │   ├── img/
 │   │   ├── favicon.svg         Poké Ball
 │   │   ├── gigamax.png         pastille Gigamax
-│   │   └── gigamax-nb.png      la même, éteinte (case non cochée)
+│   │   ├── gigamax-nb.png      la même, éteinte (case non cochée)
+│   │   ├── shiny.png           logo chromatique — utilisé en MASQUE CSS (§ 4)
+│   │   ├── forme-alola.png     logos de région, sur les tuiles et les barres
+│   │   ├── forme-galar.png
+│   │   ├── forme-paldea.png
+│   │   └── sources/            originaux non recadrés, hors du site
 │   └── js/
 │       ├── main.js             point d'entrée : charge, câble les vues, gère l'état
 │       ├── config.js           réglages (sprites épinglés, pagination, localStorage, hors ligne)
@@ -53,7 +58,7 @@ Projet Poke/
 │       │   ├── hunt.js         choix de la méthode de chasse, tirage des quêtes
 │       │   ├── sync.js         écrit data/collection.json dans le dépôt via l'API GitHub
 │       │   ├── completion.js   « tout obtenu ? » — cases exigées, l'impossible exclu
-│       │   ├── progress.js     compteurs globaux par case : tout / paires / formes / Gigamax
+│       │   ├── progress.js     compteurs par case : par région, Gigamax, paires, chromatiques
 │       │   └── filters.js      filtrage, recherche et tri de la liste
 │       └── ui/                 rendu, un module par zone d'écran
 │           ├── theme.js        bascule clair / sombre
@@ -88,8 +93,9 @@ Projet Poke/
 │   │                           Flabébé, Couafarel, Charmilly, Cheniti, Sancoki…)
 │   └── collection.json         ▲ GÉNÉRÉ puis corrigé — ma collection
 │
-├── tools/                      scripts Python, hors site
+├── tools/                      scripts hors site
 │   ├── check_data.py           vérifie la cohérence des renvois — n'écrit rien
+│   ├── crop_logos.ps1          recadre assets/img/sources/ (PowerShell, § 4)
 │   ├── build_dataset.py        régénère data/pokemon/ depuis PokeAPI
 │   ├── build_forms.py          régénère data/forms/ + vérifie chaque sprite
 │   ├── build_availability.py   régénère data/availability/ (Pokédex + rencontres)
@@ -342,7 +348,8 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | ajouter une section à la fiche | `assets/js/ui/detail-panel.js` |
 | retoucher la grille à cocher des cosmétiques | `ui/detail-panel.js` (`cosmeticPicker`) + bloc `.picker` de `components.css` |
 | changer la règle du « tout obtenu » | `assets/js/domain/completion.js` |
-| changer une barre de progression | `assets/js/domain/progress.js` + `ui/sidebar.js` |
+| changer une barre de progression | `assets/js/domain/progress.js` + `BAR_GROUPS` de `ui/sidebar.js` |
+| recadrer un logo | `tools/crop_logos.ps1`, sources dans `assets/img/sources/` |
 | retoucher la feuille mobile | `ui/detail-panel.js` (`createSheet`) + bloc « Feuille mobile » de `components.css` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |
 | remonter la version des sprites | `assets/js/config.js` (`SPRITES_REF`) |
@@ -410,6 +417,51 @@ familles qu'on cherche vraiment — Alola, Galar, Hisui, Paldéa, Gigamax,
 cosmétiques. Volontairement pas toutes les catégories de `KIND_TITLES` : les
 Méga, les formes de combat et les casquettes ne se cochent pas, en faire un
 filtre donnerait une liste qu'on ne peut pas terminer.
+
+**Ce qui se coche passe devant.** `KIND_ORDER` ne contient plus que les
+familles collectionnables — régions, `other`, Gigamax — et `KIND_ORDER_LORE`
+reçoit le reste : Méga, Primo, formes de combat, casquettes. Ces dernières
+sont rendues sous un trait, en retrait, avec une phrase qui dit pourquoi. On
+ne les cache pas — c'est de l'information utile — mais elles ne rivalisent
+plus avec ce qui se collectionne.
+
+`other` passe **avant** `gmax`, et ce n'est pas arbitraire : chez Salarsen, la
+Forme Grave est une forme à part entière qu'on obtient en jeu, alors que ses
+deux Gigamax dépendent d'un facteur séparé. La forme d'abord, ses Gigamax
+ensuite.
+
+### Les logos : masque pour le chromatique, image pour les régions
+
+Le logo chromatique (`shiny.png`) est posé en **masque CSS**, pas en `<img>` :
+le fichier est turquoise, or le site code le chromatique en or. Un masque ne
+garde que la forme et prend la couleur qu'on lui donne — donc `--accent`, qui
+suit déjà les deux thèmes. Une image aurait figé la couleur.
+
+Les logos de région sont multicolores : eux restent des `<img>`, en pastille
+dans le coin de l'illustration de chaque tuile et devant le titre de groupe.
+
+`tools/crop_logos.ps1` fabrique ces fichiers depuis `assets/img/sources/`. Le
+détourage ne peut pas être un simple « blanc → transparent » : **la flamme de
+Paldéa et la Poké Ball de Galar sont blanches**, elles seraient perforées. Le
+script remplit donc depuis les bords — seul le blanc relié au bord devient
+transparent, le blanc enfermé dans le dessin reste opaque.
+
+### Les barres de progression, en deux groupes
+
+`domain/progress.js` renvoie désormais un découpage par famille de formes
+(`kinds`) en plus des compteurs généraux, parce que les barres ne répondent
+pas à la même question :
+
+- **Formes** — Alola, Galar, Hisui, Paldéa, Autres, Cosmétiques, Gigamax.
+  C'est un découpage du travail qui reste : on voit d'un coup qu'il manque les
+  Galar.
+- **Ma collection** — Tout, Paires ♂ / ♀, Chromatiques. Trois angles sur la
+  même collection.
+
+L'ancienne carte Gigamax séparée a disparu : elle répétait une barre déjà
+présente et allongeait une colonne déjà chargée. Ses deux chiffres propres
+(paires normal + chromatique, chromatiques obtenus) restent calculés dans
+`progress.kinds.gmax`.
 
 ### Chercher, et se déplacer de fiche en fiche
 

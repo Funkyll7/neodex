@@ -190,7 +190,9 @@ function paint(node, species, ctx) {
     fill(
       art,
       spriteImg(species.id, { shiny: showShiny, female: showFemale, alt: species.name, className: "card__img" }),
-      showShiny ? el("span.card__spark", { title: "Version chromatique affichée" }, "✦") : null,
+      showShiny
+        ? el("span.card__spark", { title: "Version chromatique affichée", "aria-hidden": "true" })
+        : null,
       // Sous l'étoile chromatique : l'emblème Gigamax, gris tant que la forme
       // n'est pas obtenue. Rien du tout chez les espèces qui n'en ont pas.
       gmax === "none"

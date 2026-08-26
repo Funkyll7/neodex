@@ -26,3 +26,8 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+
+# Source d'origine de la pastille Gigamax : 966 Ko, aucun script ne s'en sert
+# (gigamax.png et gigamax-nb.png sont deja versionnes, prets a l'emploi).
+# Les quatre autres sources, elles, alimentent tools/crop_logos.ps1.
+assets/img/sources/gigamax.png

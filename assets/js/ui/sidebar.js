@@ -101,21 +101,9 @@ export function createSidebar(ctx) {
     pct: document.getElementById("stat-pct"),
     owned: document.getElementById("stat-owned"),
     total: document.getElementById("stat-total"),
-    shiny: document.getElementById("stat-shiny"),
-    pair: document.getElementById("stat-pair"),
     bar: document.getElementById("progress-bar"),
     fill: document.getElementById("progress-fill"),
     bars: document.getElementById("progress-bars"),
-    gmax: {
-      pct: document.getElementById("gmax-pct"),
-      done: document.getElementById("gmax-done"),
-      total: document.getElementById("gmax-total"),
-      pairs: document.getElementById("gmax-pairs"),
-      pairsTotal: document.getElementById("gmax-pairs-total"),
-      shiny: document.getElementById("gmax-shiny"),
-      bar: document.getElementById("gmax-bar"),
-      fill: document.getElementById("gmax-fill"),
-    },
   };
 
   return {
@@ -127,8 +115,6 @@ export function createSidebar(ctx) {
       out.pct.textContent = counts.pct;
       out.owned.textContent = counts.owned;
       out.total.textContent = counts.total;
-      out.shiny.textContent = counts.shiny;
-      out.pair.textContent = counts.pair;
       out.fill.style.width = `${counts.pct}%`;
       out.bar.setAttribute("aria-valuenow", counts.pct);
 
@@ -154,6 +140,7 @@ export function createSidebar(ctx) {
         button.setAttribute("aria-pressed", String(button.dataset.view === store.state.view));
       }
       genSelect.value = store.state.gen;
+      formSelect.value = store.state.form;
       gameSelect.value = store.state.game;
       sortSelect.value = store.state.sort;
       typeSelect.value = store.state.type;
@@ -164,44 +151,75 @@ export function createSidebar(ctx) {
 /* ------------------------------ barres de % ------------------------------ */
 
 /**
- * Quatre barres qui ne mesurent pas la meme chose : « Tout » compte chaque
- * case du site, les trois autres decoupent le total. Un pourcentage global
- * sans le detail ne dit pas ou l'on peche.
+ * Deux groupes, parce que les barres ne repondent pas a la meme question.
+ *
+ * « Formes » decoupe le travail qui reste, region par region : on voit d'un
+ * coup qu'il manque les Galar. « Ma collection » donne les trois angles
+ * generaux. Avant, quatre barres melangeaient les deux et une carte Gigamax
+ * separee repetait l'une d'elles — la colonne etait chargee sans rien dire de
+ * plus.
  */
+const BAR_GROUPS = [
+  {
+    title: "Formes",
+    rows: [
+      ["alola", "Alola", "assets/img/forme-alola.png", "Les 18 formes d'Alola, normales et chromatiques."],
+      ["galar", "Galar", "assets/img/forme-galar.png", "Les 20 formes de Galar, normales et chromatiques."],
+      ["hisui", "Hisui", null, "Les 16 formes de Hisui, normales et chromatiques."],
+      ["paldea", "Paldéa", "assets/img/forme-paldea.png", "Les 4 formes de Paldéa, normales et chromatiques."],
+      ["other", "Autres formes", null, "Formes alternatives hors régions : Motisma, Deoxys, Sylveroy, Salarsen Forme Grave…"],
+      ["cosmetic", "Cosmétiques", null, "Zarbi, Prismillon, Charmilly, Flabébé, saisons, capes…"],
+      ["gmax", "Gigamax", "assets/img/gigamax.png", "Les 34 formes Gigamax, normales et chromatiques."],
+    ],
+  },
+  {
+    title: "Ma collection",
+    rows: [
+      ["all", "Tout", null, "Toutes les cases du site : espèces, formes régionales, cosmétiques et Gigamax."],
+      ["pairs", "Paires ♂ / ♀", null, "Espèces à apparence mâle et femelle distinctes dont les deux cases sont cochées."],
+      ["shiny", "Chromatiques", null, "Toutes les cases chromatiques du site, formes comprises."],
+    ],
+  },
+];
+
 function renderBars(out, progress) {
   fill(
     out.bars,
-    [
-      ["Tout", progress.all, "Toutes les cases : espèces, formes régionales, formes cosmétiques et Gigamax."],
-      ["Paires ♂ / ♀", progress.pairs, "Espèces à apparence mâle et femelle distinctes dont les deux cases sont cochées."],
-      ["Formes", progress.forms, "Formes alternatives et cosmétiques, hors Gigamax."],
-      ["Gigamax", progress.gmax, "Les 34 formes Gigamax, normales et chromatiques."],
-    ].map(([label, value, title]) =>
+    BAR_GROUPS.map((group) =>
       el(
-        "div.bars__row",
-        { title },
-        el(
-          "div.bars__head",
-          el("span.bars__label", label),
-          el("span.bars__value", `${value.done} / ${value.total}`),
-          el("span.bars__pct", `${value.pct} %`)
-        ),
-        el(
-          "div.bar",
-          { role: "progressbar", "aria-label": label, "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(value.pct) },
-          el("div.bar__fill", { style: { width: `${value.pct}%` } })
-        )
+        "section.bars__group",
+        el("h2.panel__label", group.title),
+        group.rows.map(([key, label, icon, title]) => {
+          const value = progress.kinds[key] || progress[key];
+          if (!value) return null;
+          return el(
+            "div.bars__row",
+            { title },
+            el(
+              "div.bars__head",
+              icon
+                ? el("img.bars__icon", { src: icon, alt: "", width: 15, height: 15, loading: "lazy" })
+                : null,
+              el("span.bars__label", label),
+              el("span.bars__value", `${value.done} / ${value.total}`),
+              el("span.bars__pct", `${value.pct} %`)
+            ),
+            el(
+              "div.bar",
+              {
+                role: "progressbar",
+                "aria-label": label,
+                "aria-valuemin": "0",
+                "aria-valuemax": "100",
+                "aria-valuenow": String(value.pct),
+              },
+              el(key === "gmax" ? "div.bar__fill.bar__fill--gmax" : "div.bar__fill", {
+                style: { width: `${value.pct}%` },
+              })
+            )
+          );
+        })
       )
     )
   );
-
-  const g = progress.gmax;
-  out.gmax.pct.textContent = g.pct;
-  out.gmax.done.textContent = g.done;
-  out.gmax.total.textContent = g.total;
-  out.gmax.pairs.textContent = g.pairs;
-  out.gmax.pairsTotal.textContent = g.pairsTotal;
-  out.gmax.shiny.textContent = g.shiny;
-  out.gmax.fill.style.width = `${g.pct}%`;
-  out.gmax.bar.setAttribute("aria-valuenow", g.pct);
 }

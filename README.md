@@ -19,8 +19,15 @@ crèmes de Charmilly. Une tuile chacune, les sprites normal et chromatique côte
 repli. Sur téléphone, choisir une vignette ouvre la fiche en feuille plein
 écran.
 
+**Ce qui se coche est en haut.** Les formes régionales, les Gigamax et les
+formes à part entière viennent d'abord ; les Méga-Évolutions, la
+Primo-Résurgence et les formes de combat sont reléguées sous un trait — elles
+n'ont pas d'entrée dans HOME, il n'y a rien à y cocher.
+
 Le filtre **Forme** isole les formes d'Alola, de Galar, de Hisui, de Paldéa,
-les Gigamax et les cosmétiques.
+les Gigamax et les cosmétiques. La barre latérale suit la même logique : un
+groupe **Formes**, région par région, et un groupe **Ma collection** — tout,
+paires ♂ / ♀, chromatiques.
 
 La recherche accepte le numéro tel qu'il est affiché (`0025`), le nom en
 français ou en anglais, et **le nom d'une forme** : `alola`, `gigamax`,
