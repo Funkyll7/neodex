@@ -1246,6 +1246,38 @@
   .card__img, .ftile__img, .slot__img { animation: none; }
   .card { transition: none; }
 }
+}
+
+/* ============================ État vide ================================= */
+/* Il dit quoi faire, pas seulement qu'il n'y a rien : le plus souvent c'est un
+   filtre oublié, et le bouton le retire. */
+.empty {
+  display: flex; flex-direction: column; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-6) var(--sp-4);
+  text-align: center;
+}
+.empty[hidden] { display: none; }
+.empty__ball {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--bg-inset) 50%, var(--bg-sunken) 50%);
+  border: 3px solid var(--border-strong);
+  box-shadow: inset 0 0 0 2px var(--bg);
+  opacity: .8;
+}
+.empty__title { font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--text-soft); }
+.empty__hint { font-size: 12.5px; color: var(--text-faint); margin-bottom: var(--sp-2); }
+
+/* ================== Vignette teintée par son type ======================== */
+/* L'illustration reposait sur un gris uniforme : la grille était juste. Une
+   teinte très diluée du type premier lui donne son air, sans nuire au sprite
+   ni au contraste du texte, qui vit ailleurs sur la carte. */
+.card__art {
+  background: radial-gradient(circle at 50% 42%,
+    color-mix(in srgb, var(--type) 22%, transparent),
+    transparent 70%);
+  border-radius: var(--r-md);
+}
 
 /* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
    qu'une colonne, soit treize écrans pour les noyaux de Météno. On redescend
@@ -1268,4 +1300,12 @@
   .toggle { padding: 9px 4px; }
   .to-top { width: 50px; height: 50px; font-size: 21px; }
   .fchips { margin-bottom: var(--sp-2); }
+
+  /* Marges de sécurité : encoche en haut, barre d'accueil en bas. Sans elles,
+     une fois l'application installée en plein écran, le bouton de fermeture
+     passait sous l'encoche et le bas de la fiche sous la barre d'accueil. */
+  .nav-toggle { padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+  body.sheet-open .detail { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body.sheet-open .sheet__close { top: calc(6vh + 10px + env(safe-area-inset-top, 0px)); }
+  .main { padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
 }

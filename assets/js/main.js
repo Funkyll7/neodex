@@ -242,6 +242,7 @@ function start(dataset) {
       grid.setSelected(state.selectedId, previousSelected);
       previousSelected = state.selectedId;
       renderDetail(true);
+      saveFilters(state);
     }
 
     if (changed.has("tab")) renderTabs();
@@ -331,6 +332,8 @@ function createBarsFold() {
  * ferait croire a une liste vide.
  */
 const FILTRES_GARDES = ["type", "gen", "game", "form", "sort", "status", "view"];
+/** Le dernier Pokemon consulte : rouvrir le site le retrouve ouvert. */
+const DERNIER = "selectedId";
 
 function loadFilters() {
   try {
@@ -340,6 +343,7 @@ function loadFilters() {
     for (const key of FILTRES_GARDES) {
       if (typeof saved[key] === "string") out[key] = saved[key];
     }
+    if (Number.isInteger(saved[DERNIER])) out[DERNIER] = saved[DERNIER];
     return out;
   } catch {
     return {};
@@ -350,6 +354,7 @@ function saveFilters(state) {
   try {
     const out = {};
     for (const key of FILTRES_GARDES) out[key] = state[key];
+    out[DERNIER] = state[DERNIER];
     localStorage.setItem(CONFIG.storage.filters, JSON.stringify(out));
   } catch {
     /* stockage indisponible : les filtres repartiront simplement a zero */

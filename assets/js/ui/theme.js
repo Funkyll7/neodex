@@ -41,8 +41,18 @@ export function initTheme() {
   });
 }
 
+/** Fond de page de chaque theme, recopie de theme.css. */
+const BANDEAU = { dark: "#0a0d17", light: "#f2f4f9" };
+
 function apply(theme) {
   document.documentElement.dataset.theme = theme;
+
+  // Le bandeau du navigateur — et, une fois l'application installee, la barre
+  // systeme — prend cette couleur. Sans cette mise a jour, un site passe en
+  // clair gardait un bandeau noir au-dessus de lui.
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", BANDEAU[theme] || BANDEAU.dark);
+
   const button = document.getElementById("theme-toggle");
   if (button) {
     button.textContent = theme === "light" ? "☀" : "☾";

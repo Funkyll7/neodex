@@ -21,22 +21,34 @@ export function createSidebar(ctx) {
 
   /* --------------------------- remplissage --------------------------- */
 
+  // La region parle plus que le chiffre romain : on retient « Hoenn » bien
+  // avant « Génération III ».
   setOptions(
     genSelect,
     [
       { value: "all", label: "Toutes générations" },
-      ...Object.entries(dataset.generations).map(([value, g]) => ({ value, label: g.label })),
+      ...Object.entries(dataset.generations).map(([value, g]) => ({
+        value,
+        label: g.region ? `${g.label} — ${g.region}` : g.label,
+      })),
     ],
     store.state.gen
   );
 
+  // Vingt-trois jeux a plat se lisent mal : on les regroupe par generation,
+  // c'est l'ordre dans lequel on les a en tete.
+  const parGeneration = new Map();
+  for (const jeu of dataset.games) {
+    const gen = dataset.generations[jeu.gen] || {};
+    const titre = gen.region ? `${gen.label} — ${gen.region}` : `Génération ${jeu.gen}`;
+    if (!parGeneration.has(titre)) parGeneration.set(titre, []);
+    parGeneration.get(titre).push({ value: jeu.code, label: jeu.name });
+  }
   setOptions(
     gameSelect,
-    [
-      { value: "all", label: "N'importe quel jeu" },
-      ...dataset.games.map((g) => ({ value: g.code, label: g.name })),
-    ],
-    store.state.game
+    [{ value: "all", label: "N'importe quel jeu" }],
+    store.state.game,
+    [...parGeneration].map(([label, options]) => ({ label, options }))
   );
 
   setOptions(formSelect, FORM_FILTERS, store.state.form);

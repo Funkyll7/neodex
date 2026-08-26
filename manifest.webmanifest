@@ -1,0 +1,27 @@
+{
+  "name": "Funkylldex — collection perso",
+  "short_name": "Funkylldex",
+  "description": "Pokédex personnel : suivi de collection, formes, chromatiques et shiny hunt.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0d17",
+  "theme_color": "#0a0d17",
+  "categories": ["games", "utilities"],
+  "icons": [
+    { "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quêtes de shiny hunt",
+      "short_name": "Quêtes",
+      "url": "./?tab=quest",
+      "icons": [{ "src": "assets/img/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

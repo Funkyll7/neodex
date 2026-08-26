@@ -60,10 +60,26 @@ export function fill(node, ...children) {
 
 export const $ = (selector, scope = document) => scope.querySelector(selector);
 
-/** Remplit un <select> et restaure la valeur courante si elle existe encore. */
-export function setOptions(select, options, current) {
-  select.replaceChildren(
-    ...options.map((o) => el("option", { value: o.value }, o.label))
-  );
+/**
+ * Remplit un <select> et restaure la valeur courante si elle existe encore.
+ *
+ * @param {Array}  options  choix de premier niveau
+ * @param {*}      current  valeur a reselectionner
+ * @param {Array} [groups]  groupes <optgroup>, ajoutes apres les options
+ *   simples : `[{ label, options: [{ value, label }] }]`. Vingt-trois jeux a
+ *   plat se lisent mal ; regroupes par generation, on les retrouve.
+ */
+export function setOptions(select, options, current, groups) {
+  const noeuds = options.map((o) => el("option", { value: o.value }, o.label));
+  for (const groupe of groups || []) {
+    noeuds.push(
+      el(
+        "optgroup",
+        { label: groupe.label },
+        groupe.options.map((o) => el("option", { value: o.value }, o.label))
+      )
+    );
+  }
+  select.replaceChildren(...noeuds);
   if (current !== undefined) select.value = current;
 }

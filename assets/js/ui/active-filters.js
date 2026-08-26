@@ -20,6 +20,11 @@ export function createActiveFilters(ctx) {
   const navToggle = document.getElementById("nav-toggle");
   const { store, dataset } = ctx;
 
+  // Le bouton de l'etat vide retire tout : quand la liste est vide, c'est
+  // presque toujours un filtre oublie.
+  const vide = document.getElementById("empty-clear");
+  if (vide) vide.addEventListener("click", () => store.set({ ...NEUTRE }));
+
   const libelle = (cle, valeur) => {
     if (cle === "search") return `« ${valeur} »`;
     if (cle === "type") return valeur;

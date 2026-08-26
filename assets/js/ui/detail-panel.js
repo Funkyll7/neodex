@@ -24,7 +24,7 @@ import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
-  const sheet = createSheet(root);
+  const sheet = createSheet(root, ctx);
   let shownId = null;
 
   // Un seul ecouteur pour toutes les cases de la fiche, pose une fois pour
@@ -145,7 +145,7 @@ function announce(species, ctx) {
  * de la page derriere est bloque tant que la feuille est ouverte, sinon on
  * fait defiler la grille en croyant faire defiler la fiche.
  */
-function createSheet(root) {
+function createSheet(root, ctxGlobal) {
   const backdrop = document.getElementById("detail-backdrop");
   const closeButton = document.getElementById("detail-close");
   const mobile = window.matchMedia("(max-width: 860px)");
@@ -211,23 +211,37 @@ function createSheet(root) {
     if (!event.matches) close();
   });
 
-  glisserPourFermer(root, close);
+  glisser(root, close, ctxGlobal);
   return { open, close };
 }
 
 /**
- * Tirer la feuille vers le bas pour la fermer, le geste attendu sur telephone.
+ * Les deux gestes de la feuille.
  *
- * Le glissement n'est pris en compte que si la fiche est deja tout en haut :
- * sinon on empecherait de la faire defiler, ce qui est autrement plus utile.
+ *   vers le bas    fermer — le geste attendu pour un panneau qui monte du bas.
+ *                  Pris en compte seulement si la fiche est deja tout en haut,
+ *                  sinon on l'empecherait de defiler, ce qui sert davantage.
+ *   vers le cote   Pokemon precedent / suivant, comme les fleches ‹ › de
+ *                  l'en-tete. C'est le geste qu'on cherche instinctivement en
+ *                  remontant une boite.
+ *
+ * Un seul suivi pour les deux : la direction dominante du premier mouvement
+ * decide, et l'autre axe est alors ignore jusqu'a la fin du geste. Sans cela,
+ * un glissement de biais fermerait la feuille ET changerait de Pokemon.
  */
-function glisserPourFermer(root, close) {
-  let depart = null;
+function glisser(root, close, ctx) {
+  const SEUIL = 80;
+  let x0 = null;
+  let y0 = null;
+  let axe = null;
 
   root.addEventListener(
     "touchstart",
     (event) => {
-      depart = root.scrollTop <= 0 && event.touches.length === 1 ? event.touches[0].clientY : null;
+      if (event.touches.length !== 1) return;
+      x0 = event.touches[0].clientX;
+      y0 = event.touches[0].clientY;
+      axe = null;
     },
     { passive: true }
   );
@@ -235,20 +249,33 @@ function glisserPourFermer(root, close) {
   root.addEventListener(
     "touchmove",
     (event) => {
-      if (depart === null) return;
-      const delta = event.touches[0].clientY - depart;
-      // Un glissement vers le haut annule : l'utilisateur veut lire, pas fermer.
-      if (delta < 0) depart = null;
-      else if (delta > 90) {
-        depart = null;
-        close();
+      if (x0 === null) return;
+      const dx = event.touches[0].clientX - x0;
+      const dy = event.touches[0].clientY - y0;
+
+      if (!axe && Math.max(Math.abs(dx), Math.abs(dy)) > 12) {
+        axe = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      }
+
+      if (axe === "y") {
+        // Vers le haut : on veut lire, pas fermer. Et si la fiche est deja
+        // defilee, le geste lui appartient.
+        if (dy > SEUIL && root.scrollTop <= 0) {
+          x0 = null;
+          close();
+        }
+      } else if (axe === "x" && Math.abs(dx) > SEUIL) {
+        const sens = dx < 0 ? 1 : -1;
+        x0 = null;
+        ctx.onStep(sens);
       }
     },
     { passive: true }
   );
 
   root.addEventListener("touchend", () => {
-    depart = null;
+    x0 = null;
+    axe = null;
   });
 }
 
