@@ -106,7 +106,36 @@ export function createSidebar(ctx) {
     bars: document.getElementById("progress-bars"),
   };
 
+  /**
+   * Remet les controles en accord avec l'etat, sans rien recalculer.
+   *
+   * `render()` refait les compteurs, ce qui reparcourt les 1025 especes : trop
+   * cher a chaque changement de filtre. Or une barre cliquee doit s'allumer
+   * tout de suite, et le select « Forme » suivre. D'ou ce chemin leger, appele
+   * par main.js quand un filtre bouge.
+   */
+  function syncActive() {
+    genSelect.value = store.state.gen;
+    formSelect.value = store.state.form;
+    gameSelect.value = store.state.game;
+    sortSelect.value = store.state.sort;
+    typeSelect.value = store.state.type;
+
+    for (const pill of pills.children) {
+      pill.setAttribute("aria-pressed", String(pill.dataset.value === store.state.status));
+    }
+    for (const row of out.bars.querySelectorAll(".bars__row")) {
+      const actif = row.dataset.cible !== "all" && store.state[row.dataset.filtre] === row.dataset.cible;
+      row.setAttribute("aria-pressed", String(actif));
+    }
+    for (const button of viewToggle.children) {
+      button.setAttribute("aria-pressed", String(button.dataset.view === store.state.view));
+    }
+  }
+
   return {
+    syncActive,
+
     /**
      * @param {object} counts    decompte par espece (combien en ai-je ?)
      * @param {object} progress  decompte par case (combien de cases ai-je ?)
@@ -118,7 +147,7 @@ export function createSidebar(ctx) {
       out.fill.style.width = `${counts.pct}%`;
       out.bar.setAttribute("aria-valuenow", counts.pct);
 
-      if (progress) renderBars(out, progress);
+      if (progress) renderBars(out, progress, store);
 
       fill(
         pills,
@@ -128,9 +157,20 @@ export function createSidebar(ctx) {
             {
               type: "button",
               "aria-pressed": String(store.state.status === filter.value),
+              dataset: { value: filter.value },
               onclick: () => store.set({ status: filter.value }),
             },
-            el("span", filter.label),
+            el(
+              "span.pill__name",
+              // Même vocabulaire visuel que les vignettes et les tuiles : le
+              // logo chromatique en masque, le ♂ / ♀ en bleu.
+              filter.ico === "shiny"
+                ? el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
+                : filter.ico === "pair"
+                  ? el("span.toggle__sex", { "aria-hidden": "true" }, "♂♀")
+                  : null,
+              filter.label
+            ),
             el("span.pill__count", counts[filter.key])
           )
         )
@@ -155,25 +195,34 @@ export function createSidebar(ctx) {
  *
  * « Formes » decoupe le travail qui reste, region par region : on voit d'un
  * coup qu'il manque les Galar. « Ma collection » donne les trois angles
- * generaux. Avant, quatre barres melangeaient les deux et une carte Gigamax
- * separee repetait l'une d'elles — la colonne etait chargee sans rien dire de
- * plus.
+ * generaux.
+ *
+ * Chaque barre est un BOUTON : cliquer « Alola » ne filtre pas seulement la
+ * liste, il repond a la question qu'on vient de se poser en lisant la barre —
+ * « il m'en manque douze, lesquels ? ». Recliquer la meme barre revient a tout.
+ *
+ * `filtre` dit quelle cle d'etat la barre pilote : `form` pour les familles de
+ * formes, `status` pour les trois angles generaux.
  */
 const BAR_GROUPS = [
   {
     title: "Formes",
+    filtre: "form",
     rows: [
       ["alola", "Alola", "assets/img/forme-alola.png", "Les 18 formes d'Alola, normales et chromatiques."],
       ["galar", "Galar", "assets/img/forme-galar.png", "Les 20 formes de Galar, normales et chromatiques."],
-      ["hisui", "Hisui", null, "Les 16 formes de Hisui, normales et chromatiques."],
+      ["hisui", "Hisui", "assets/img/forme-hisui.png", "Les 16 formes de Hisui, normales et chromatiques."],
       ["paldea", "Paldéa", "assets/img/forme-paldea.png", "Les 4 formes de Paldéa, normales et chromatiques."],
-      ["other", "Autres formes", null, "Formes alternatives hors régions : Motisma, Deoxys, Sylveroy, Salarsen Forme Grave…"],
-      ["cosmetic", "Cosmétiques", null, "Zarbi, Prismillon, Charmilly, Flabébé, saisons, capes…"],
       ["gmax", "Gigamax", "assets/img/gigamax.png", "Les 34 formes Gigamax, normales et chromatiques."],
+      // « Autres formes » et « Cosmétiques » n'ont plus de barre : ce sont des
+      // fourre-tout sans logo, qui allongeaient la colonne sans répondre à une
+      // question qu'on se pose. Ils restent comptés dans « Tout » et
+      // atteignables par le select « Forme ».
     ],
   },
   {
     title: "Ma collection",
+    filtre: "status",
     rows: [
       ["all", "Tout", null, "Toutes les cases du site : espèces, formes régionales, cosmétiques et Gigamax."],
       ["pairs", "Paires ♂ / ♀", null, "Espèces à apparence mâle et femelle distinctes dont les deux cases sont cochées."],
@@ -182,7 +231,14 @@ const BAR_GROUPS = [
   },
 ];
 
-function renderBars(out, progress) {
+/**
+ * La cle de la barre n'est pas toujours celle du filtre : la barre « Paires »
+ * compte des cases (`pairs`), le filtre s'appelle `pair` ; « Tout » n'est pas
+ * un filtre du tout, c'est le retour a l'etat neutre.
+ */
+const CLE_FILTRE = { all: "all", pairs: "pair", shiny: "shiny" };
+
+function renderBars(out, progress, store) {
   fill(
     out.bars,
     BAR_GROUPS.map((group) =>
@@ -192,11 +248,30 @@ function renderBars(out, progress) {
         group.rows.map(([key, label, icon, title]) => {
           const value = progress.kinds[key] || progress[key];
           if (!value) return null;
+
+          const cible = group.filtre === "form" ? key : CLE_FILTRE[key] || key;
+          const actif = store.state[group.filtre] === cible && cible !== "all";
+          // On relit l'etat au clic plutot que de fermer sur `actif` : la barre
+          // n'est pas reconstruite a chaque changement de filtre (voir
+          // `syncActive`), la valeur capturee serait vite perimee.
+          const bascule = () => {
+            const courant = store.state[group.filtre];
+            store.set({ [group.filtre]: courant === cible ? "all" : cible });
+          };
+
           return el(
-            "div.bars__row",
-            { title },
+            "button.bars__row",
+            {
+              type: "button",
+              title: `${title}\nCliquer pour ${actif ? "retirer le filtre" : "n'afficher que ceux-là"}.`,
+              "aria-pressed": String(actif),
+              // Lus par `syncActive()` : la barre doit s'allumer sans qu'on
+              // reconstruise tout le bloc.
+              dataset: { filtre: group.filtre, cible },
+              onclick: bascule,
+            },
             el(
-              "div.bars__head",
+              "span.bars__head",
               icon
                 ? el("img.bars__icon", { src: icon, alt: "", width: 15, height: 15, loading: "lazy" })
                 : null,
@@ -205,7 +280,7 @@ function renderBars(out, progress) {
               el("span.bars__pct", `${value.pct} %`)
             ),
             el(
-              "div.bar",
+              "span.bar",
               {
                 role: "progressbar",
                 "aria-label": label,
@@ -213,7 +288,7 @@ function renderBars(out, progress) {
                 "aria-valuemax": "100",
                 "aria-valuenow": String(value.pct),
               },
-              el(key === "gmax" ? "div.bar__fill.bar__fill--gmax" : "div.bar__fill", {
+              el(key === "gmax" ? "span.bar__fill.bar__fill--gmax" : "span.bar__fill", {
                 style: { width: `${value.pct}%` },
               })
             )

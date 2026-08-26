@@ -563,6 +563,7 @@ const KIND_SHORT = {
 const KIND_ICONS = {
   alola: "assets/img/forme-alola.png",
   galar: "assets/img/forme-galar.png",
+  hisui: "assets/img/forme-hisui.png",
   paldea: "assets/img/forme-paldea.png",
   gmax: "assets/img/gigamax.png",
 };
@@ -807,11 +808,30 @@ function formButtons(form, species, ctx) {
   // Le logo chromatique remplace le ✦ : même pastille que sur les vignettes et
   // dans la grille cosmétique, pour que « chromatique » se lise pareil partout.
   const ico = () => el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" });
-  const defs = [[form.slot, [form.gendered ? "Normal ♂" : "Normal"], false]];
-  if (form.gendered) defs.push([form.slotF, ["Normal ♀"], false]);
+  const sexe = (g) => el("span.toggle__sex", { "aria-hidden": "true" }, g);
+
+  // Une forme à dimorphisme a QUATRE boutons dans une tuile de 172 px :
+  // « Normal ♂ » n'y tient pas et se faisait rogner en « Norma… », ce qui
+  // effaçait justement le seul repère utile. Chez le Farfuret de Hisui, les
+  // deux cases normales devenaient indiscernables. On garde donc le symbole
+  // seul, comme sur les raccourcis de vignette — le libellé complet reste dans
+  // l'infobulle et dans le nom accessible.
+  const defs = form.gendered
+    ? [
+        [form.slot, [sexe("♂")], false, "Normal mâle"],
+        [form.slotF, [sexe("♀")], false, "Normal femelle"],
+      ]
+    : [[form.slot, ["Normal"], false, "Normal"]];
+
   if (form.shinyEntry) {
-    defs.push([form.shinySlot, [ico(), form.gendered ? "Shiny ♂" : "Shiny"], true]);
-    if (form.gendered) defs.push([form.shinySlotF, [ico(), "Shiny ♀"], true]);
+    if (form.gendered) {
+      defs.push(
+        [form.shinySlot, [ico(), sexe("♂")], true, "Chromatique mâle"],
+        [form.shinySlotF, [ico(), sexe("♀")], true, "Chromatique femelle"]
+      );
+    } else {
+      defs.push([form.shinySlot, [ico(), "Shiny"], true, "Chromatique"]);
+    }
   }
 
   // L'emblème Gigamax ne se pose plus sur le bouton : la tuile le porte déjà
@@ -820,11 +840,16 @@ function formButtons(form, species, ctx) {
   // tenaient plus, et « Normal » se faisait rogner.
   return el(
     form.gendered ? "div.form__btns.form__btns--four" : "div.form__btns",
-    defs.map(([slot, label, gold]) =>
+    defs.map(([slot, label, gold, nom]) =>
       el(
         gold ? "button.form__btn.form__btn--gold" : "button.form__btn",
         {
           type: "button",
+          // Le bouton ne montre qu'un symbole chez une forme à dimorphisme :
+          // le libellé complet doit donc rester atteignable, à la souris comme
+          // au lecteur d'écran.
+          title: `${form.name} — ${nom}`,
+          "aria-label": `${form.name} — ${nom}`,
           "aria-pressed": String(ctx.collection.has(species.id, slot)),
           dataset: { slot, species: species.id },
         },

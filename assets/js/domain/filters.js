@@ -4,12 +4,18 @@
  * critere, ajouter une clause ici et le controle correspondant dans ui/sidebar.js.
  */
 
+/**
+ * `ico` remplace le glyphe qui prefixait le libelle : `shiny` pose le logo
+ * chromatique en masque, `pair` les deux symboles en bleu. Les autres n'ont
+ * pas d'icone — un « ★ » suffit pour « Complets » et il n'existe pas de logo
+ * officiel pour « Capturés ».
+ */
 export const STATUS_FILTERS = [
   { value: "all", label: "Tous", key: "total" },
   { value: "owned", label: "Capturés", key: "owned" },
   { value: "missing", label: "Manquants", key: "missing" },
-  { value: "shiny", label: "✦ Shiny", key: "shiny" },
-  { value: "pair", label: "♂♀ Paire complète", key: "pair" },
+  { value: "shiny", label: "Shiny", key: "shiny", ico: "shiny" },
+  { value: "pair", label: "Paire complète", key: "pair", ico: "pair" },
   { value: "complete", label: "★ Complets", key: "complete" },
   { value: "incomplete", label: "À terminer", key: "incomplete" },
 ];
@@ -28,6 +34,7 @@ export const FORM_FILTERS = [
   { value: "galar", label: "Formes de Galar" },
   { value: "hisui", label: "Formes de Hisui" },
   { value: "paldea", label: "Formes de Paldéa" },
+  { value: "other", label: "Autres formes" },
   { value: "gmax", label: "Formes Gigamax" },
   { value: "cosmetic", label: "Formes cosmétiques" },
 ];

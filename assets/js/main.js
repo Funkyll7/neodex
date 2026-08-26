@@ -196,6 +196,10 @@ function start(dataset) {
   store.subscribe((state, changed) => {
     if (FILTER_KEYS.some((key) => changed.has(key))) {
       renderList();
+      // Les barres cliquables et les pastilles doivent s'allumer tout de
+      // suite. `sidebar.render()` refait les compteurs sur 1025 especes :
+      // beaucoup trop cher pour un simple changement de filtre.
+      sidebar.syncActive();
       // La liste a change : « suivant » ne designe plus la meme fiche.
       detail.refreshSteps(dataset.byId.get(state.selectedId) || dataset.species[0]);
     }

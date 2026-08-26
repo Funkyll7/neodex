@@ -268,6 +268,7 @@ const icoSexe = (glyphe) => el("span.toggle__sex", { "aria-hidden": "true" }, gl
 const ICONES_FAMILLE = {
   alola: "assets/img/forme-alola.png",
   galar: "assets/img/forme-galar.png",
+  hisui: "assets/img/forme-hisui.png",
   paldea: "assets/img/forme-paldea.png",
   gmax: "assets/img/gigamax.png",
 };
@@ -319,7 +320,15 @@ function quickToggles(species, ctx, color) {
 
   return definitions.map(([slot, label, title, gold]) =>
     el(
-      gold ? "button.toggle.toggle--gold" : "button.toggle",
+      [
+        "button.toggle",
+        gold ? "toggle--gold" : "",
+        // Marque les cases ♂ / ♀ : cochées, elles se remplissent du bleu des
+        // paires au lieu de la couleur du type. Voir components.css.
+        label.some((n) => n && n.classList && n.classList.contains("toggle__sex")) ? "toggle--sex" : "",
+      ]
+        .filter(Boolean)
+        .join("."),
       {
         type: "button",
         title,
