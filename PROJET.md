@@ -307,11 +307,14 @@ Deux entrées de filtre s'y rattachent : « ★ Complets » et « À terminer »
 ### Compteurs globaux
 
 `assets/js/domain/progress.js` répond à l'autre question : « combien de **cases**
-ai-je, sur les 2 802 du site ? ». Il produit quatre barres pour la barre
-latérale — Tout, Paires ♂ / ♀, Formes, Gigamax — plus le bloc Gigamax (paires
-normal + chromatique, chromatiques obtenus). À ne pas confondre avec
-`collection.counts()`, qui compte des **espèces** : un Miaouss capturé pèse une
-espèce et huit cases.
+ai-je, sur les 2 802 du site ? ». C'est ce total qui porte le grand chiffre de
+la barre latérale, sous le titre « Progression totale ».
+
+À ne pas confondre avec `collection.counts()`, qui compte des **espèces** : un
+Miaouss capturé pèse une espèce et huit cases. Les deux sont affichés, mais
+séparément et sous deux noms distincts — « Progression totale » pour les cases,
+« Progression Pokédex » pour les espèces, cette dernière étant une barre du
+groupe « Ma collection ».
 
 ### Le shiny lock
 
@@ -457,8 +460,10 @@ pas à la même question :
 - **Formes** — Alola, Galar, Hisui, Paldéa, Autres, Cosmétiques, Gigamax.
   C'est un découpage du travail qui reste : on voit d'un coup qu'il manque les
   Galar.
-- **Ma collection** — Tout, Paires ♂ / ♀, Chromatiques. Trois angles sur la
-  même collection.
+- **Ma collection** — Progression Pokédex, Paires ♂ / ♀, Chromatiques. Trois
+  angles sur la même collection. « Progression Pokédex » est la seule barre à
+  compter des espèces et non des cases : elle vient de `collection.counts()`,
+  pas de `progress`.
 
 L'ancienne carte Gigamax séparée a disparu : elle répétait une barre déjà
 présente et allongeait une colonne déjà chargée. Ses deux chiffres propres

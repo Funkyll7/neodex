@@ -142,13 +142,17 @@ export function createSidebar(ctx) {
      * @param {object} progress  decompte par case (combien de cases ai-je ?)
      */
     render(counts, progress) {
-      out.pct.textContent = counts.pct;
-      out.owned.textContent = counts.owned;
-      out.total.textContent = counts.total;
-      out.fill.style.width = `${counts.pct}%`;
-      out.bar.setAttribute("aria-valuenow", counts.pct);
+      // Le grand chiffre compte les CASES, pas les especes : c'est la vraie
+      // progression du site. Le decompte d'especes descend dans « Ma
+      // collection », sous son propre nom.
+      const total = (progress && progress.all) || { done: 0, total: 0, pct: 0 };
+      out.pct.textContent = total.pct;
+      out.owned.textContent = total.done;
+      out.total.textContent = total.total;
+      out.fill.style.width = `${total.pct}%`;
+      out.bar.setAttribute("aria-valuenow", total.pct);
 
-      if (progress) renderBars(out, progress, store);
+      if (progress) renderBars(out, progress, counts, store);
 
       fill(
         pills,
@@ -225,10 +229,10 @@ const BAR_GROUPS = [
     title: "Ma collection",
     filtre: "status",
     rows: [
-      // « Progression totale » et non « Tout » : l'en-tête du panneau compte
-      // des ESPÈCES (1013 / 1025), cette barre compte des CASES (1733 / 2802).
-      // Deux mesures différentes, deux noms différents.
-      ["all", "Progression totale", null, "Toutes les cases du site : espèces, formes régionales, cosmétiques et Gigamax."],
+      // Le decompte d'ESPECES — combien de Pokemon distincts sont capturés,
+      // sans compter leurs formes. Le total en CASES, lui, est le grand
+      // chiffre en tete du panneau.
+      ["dex", "Progression Pokédex", null, "Espèces distinctes capturées, formes non comprises. Le grand chiffre au-dessus compte les cases, celui-ci compte les Pokémon."],
       ["pairs", "Paires ♂ / ♀", null, "Espèces à apparence mâle et femelle distinctes dont les deux cases sont cochées."],
       // « shiny » n'est pas un chemin d'image : le logo chromatique est posé en
       // masque, pour prendre la couleur du thème comme partout ailleurs.
@@ -242,9 +246,13 @@ const BAR_GROUPS = [
  * compte des cases (`pairs`), le filtre s'appelle `pair` ; « Tout » n'est pas
  * un filtre du tout, c'est le retour a l'etat neutre.
  */
-const CLE_FILTRE = { all: "all", pairs: "pair", shiny: "shiny" };
+const CLE_FILTRE = { dex: "owned", pairs: "pair", shiny: "shiny" };
 
-function renderBars(out, progress, store) {
+function renderBars(out, progress, counts, store) {
+  // « Progression Pokédex » ne vient pas de `progress` : c'est le seul
+  // compteur d'ESPECES de la liste, il vit dans `collection.counts()`.
+  const especes = { done: counts.owned, total: counts.total, pct: counts.pct };
+
   fill(
     out.bars,
     BAR_GROUPS.map((group) =>
@@ -252,7 +260,7 @@ function renderBars(out, progress, store) {
         "section.bars__group",
         el("h2.panel__label", group.title),
         group.rows.map(([key, label, icon, title]) => {
-          const value = progress.kinds[key] || progress[key];
+          const value = key === "dex" ? especes : progress.kinds[key] || progress[key];
           if (!value) return null;
 
           const cible = group.filtre === "form" ? key : CLE_FILTRE[key] || key;

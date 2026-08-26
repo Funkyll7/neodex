@@ -47,9 +47,13 @@
          le détail par famille de formes et les trois angles généraux. Les
          barres sont cliquables — chacune applique son propre filtre. -->
     <section class="panel progress-card" aria-label="Progression">
-      <h2 class="panel__label">Progression Pokédex</h2>
+      <!-- Le chiffre principal compte les CASES : c'est la vraie progression du
+           site, formes et cosmétiques comprises. Le décompte d'espèces, lui,
+           est descendu dans « Ma collection » — il ne mesure pas la même chose
+           et ne pouvait pas porter le même nom. -->
+      <h2 class="panel__label">Progression totale</h2>
       <p class="progress-card__pct"><span id="stat-pct">0</span><span class="progress-card__unit">%</span></p>
-      <p class="progress-card__count"><span id="stat-owned">0</span> / <span id="stat-total">0</span> capturés</p>
+      <p class="progress-card__count"><span id="stat-owned">0</span> / <span id="stat-total">0</span> cases cochées</p>
       <div class="bar" role="progressbar" aria-labelledby="stat-pct" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
         <div class="bar__fill" id="progress-fill"></div>
       </div>
