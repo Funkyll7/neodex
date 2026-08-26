@@ -461,10 +461,12 @@
    ====================================================================== */
 .ftiles {
   display: grid;
-  /* 150 px : deux colonnes tiennent dans la fiche de 420 px du bureau, et la
-     feuille mobile, plus large, en met trois. En dessous, les deux sprites
-     cote a cote ne passent plus. */
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  /* 172 px : en dessous, « Normal » et « Shiny » se faisaient rogner dans
+     leurs boutons — deux boutons par tuile, chacun avec sa coche et son logo.
+     Toutes les formes cochables partagent cette grille, familles confondues :
+     une grille par famille donnait une colonne par famille et du vide sur les
+     côtés dès qu'une famille n'avait qu'une forme (Miaouss). */
+  grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
   gap: var(--sp-3);
 }
 
@@ -1000,3 +1002,29 @@
   color: var(--text-muted);
 }
 .forms__lore .ftile { opacity: .85; }
+
+/* Libellé de famille sur la tuile — il remplace le titre de groupe supprimé. */
+.ftile__fam {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* Le libellé du bouton se réduit plutôt que de déborder. Le ✓ et le logo, eux,
+   gardent leur taille : ce sont eux qui portent l'état. */
+.form__btn-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ftile .form__btn { padding: 10px 6px; gap: 4px; }
+
+/* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
+   qu'une colonne, soit treize écrans pour les noyaux de Météno. On redescend
+   le minimum, et les boutons se resserrent juste assez pour que « Normal » et
+   « Shiny » tiennent quand même en entier.
+   Ce bloc est en fin de fichier À DESSEIN : les règles ajoutées après lui
+   l'écraseraient. */
+@media (max-width: 860px) {
+  .ftiles { grid-template-columns: repeat(auto-fill, minmax(152px, 1fr)); }
+  .ftile .form__btn { padding: 9px 4px; gap: 3px; font-size: 11px; }
+  .ftile__img { width: 52px; height: 52px; }
+}

@@ -536,6 +536,20 @@ const KIND_TITLES = {
   cap: "Pikachu à casquette",
 };
 
+/** Libellé court, porté par la tuile depuis la suppression des titres de groupe. */
+const KIND_SHORT = {
+  alola: "Alola",
+  galar: "Galar",
+  hisui: "Hisui",
+  paldea: "Paldéa",
+  other: "Forme",
+  gmax: "Gigamax",
+  mega: "Méga",
+  primal: "Primo",
+  battle: "Combat",
+  cap: "Casquette",
+};
+
 /** Le logo officiel de la famille, quand il en existe un. */
 const KIND_ICONS = {
   alola: "assets/img/forme-alola.png",
@@ -579,7 +593,17 @@ function formsSection(species, ctx) {
       "p.detail__help",
       "Chaque forme a son propre sprite normal et chromatique. Ce qui se coche est en haut."
     ),
-    aCocher.map((kind) => formGroup(kind, groups.get(kind), species, ctx)),
+    // UNE seule grille pour tout ce qui se coche, et non une grille par
+    // famille : chez Miaouss, trois familles d'une forme chacune donnaient
+    // trois grilles d'une colonne, empilées, avec du vide sur les côtés. La
+    // famille reste lisible sur la tuile — pastille dans le coin et libellé
+    // au-dessus du nom — donc les titres de groupe ne manquent pas.
+    aCocher.length
+      ? el(
+          "div.ftiles",
+          aCocher.flatMap((kind) => groups.get(kind)).map((form) => formTile(form, species, ctx))
+        )
+      : null,
     // Le trait ne sert pas qu'a decorer : il dit ou s'arrete la collection et
     // ou commence ce qui n'est la que pour l'information.
     lore.length
@@ -674,6 +698,9 @@ function formTile(form, species, ctx) {
     ),
     el(
       "div.ftile__id",
+      // Remplace le titre de groupe supprimé : la famille reste écrite, mais
+      // sur la tuile, ce qui laisse toutes les formes dans une même grille.
+      el("span.ftile__fam", KIND_SHORT[form.kind] || KIND_TITLES[form.kind] || ""),
       el("div.ftile__name", form.name),
       el(
         "div.ftile__chips",
@@ -727,29 +754,22 @@ function formButtons(form, species, ctx) {
     if (form.gendered) defs.push([form.shinySlotF, [ico(), "Shiny ♀"], true]);
   }
 
-  // Sur une forme Gigamax, l'emblème se pose sur la case elle-même : gris tant
-  // qu'elle n'est pas cochée, en couleur une fois obtenue. Le basculement se
-  // fait en CSS, sur l'attribut aria-pressed.
-  const gmax = form.kind === "gmax";
-
+  // L'emblème Gigamax ne se pose plus sur le bouton : la tuile le porte déjà
+  // en pastille dans le coin de l'illustration. À deux boutons par tuile, un
+  // emblème de 16 px plus le ✓ plus le logo chromatique plus le libellé ne
+  // tenaient plus, et « Normal » se faisait rogner.
   return el(
     form.gendered ? "div.form__btns.form__btns--four" : "div.form__btns",
     defs.map(([slot, label, gold]) =>
       el(
-        [
-          gold ? "button.form__btn.form__btn--gold" : "button.form__btn",
-          gmax ? "form__btn--gmax" : "",
-        ]
-          .filter(Boolean)
-          .join("."),
+        gold ? "button.form__btn.form__btn--gold" : "button.form__btn",
         {
           type: "button",
           "aria-pressed": String(ctx.collection.has(species.id, slot)),
           dataset: { slot, species: species.id },
         },
-        gmax ? el("span.form__btn-icon", { "aria-hidden": "true" }) : null,
         el("span.form__btn-check", "✓"),
-        label
+        el("span.form__btn-label", label)
       )
     )
   );
