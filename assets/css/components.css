@@ -1279,6 +1279,42 @@
   border-radius: var(--r-md);
 }
 
+/* ============================== Thèmes ================================== */
+/* Replié : c'est un réglage qu'on pose une fois. Le bouton ◐ de la marque
+   reste le raccourci jour / nuit, celui qu'on utilise vraiment. */
+.themes { margin-top: calc(-1 * var(--sp-2)); }
+.themes__summary {
+  cursor: pointer; list-style: none;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+.themes__summary::-webkit-details-marker { display: none; }
+.themes__summary::after { content: " ▾"; }
+.themes[open] > .themes__summary { color: var(--text-soft); margin-bottom: var(--sp-2); }
+.themes[open] > .themes__summary::after { content: " ▴"; }
+.themes__summary:hover { color: var(--accent); }
+
+.themes__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.swatch {
+  display: flex; align-items: center; gap: 7px;
+  cursor: pointer; text-align: left;
+  border: 1px solid var(--border-strong); border-radius: 9px;
+  background: var(--bg-sunken); color: var(--text-soft);
+  padding: 7px 8px;
+  font: inherit; font-size: 11px; font-weight: 800;
+}
+.swatch:hover { background: var(--bg-hover); }
+.swatch[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+/* La pastille montre les deux couleurs qui font le thème : son fond de page
+   et son accent. C'est plus parlant que le nom seul. */
+.swatch__dot {
+  flex: none; width: 15px; height: 15px; border-radius: 50%;
+  background: var(--sw-bg);
+  border: 1px solid var(--border-strong);
+  box-shadow: inset 0 0 0 3px var(--sw-fg);
+}
+.swatch__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
    qu'une colonne, soit treize écrans pour les noyaux de Météno. On redescend
    le minimum, et les boutons se resserrent juste assez pour que « Normal » et
@@ -1290,7 +1326,6 @@
   .ftile .form__btn { padding: 9px 4px; gap: 3px; font-size: 11px; }
   .ftile__img { width: 52px; height: 52px; }
 
-  /* La recherche reste sous la main pendant qu'on parcourt la grille. */
   .toolbar {
     position: sticky; top: 45px; z-index: 25;
     margin-bottom: var(--sp-3);
@@ -1300,6 +1335,7 @@
   .toggle { padding: 9px 4px; }
   .to-top { width: 50px; height: 50px; font-size: 21px; }
   .fchips { margin-bottom: var(--sp-2); }
+  .themes__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
   /* Marges de sécurité : encoche en haut, barre d'accueil en bas. Sans elles,
      une fois l'application installée en plein écran, le bouton de fermeture

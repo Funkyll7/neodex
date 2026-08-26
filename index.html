@@ -58,6 +58,13 @@
       <button type="button" id="theme-toggle" class="icon-btn" title="Basculer clair / sombre" aria-label="Basculer entre le thème clair et sombre">◐</button>
     </div>
 
+    <!-- Replié : c'est un réglage qu'on pose une fois. Le bouton ◐ ci-dessus
+         reste le raccourci clair / sombre, celui qu'on utilise vraiment. -->
+    <details class="themes">
+      <summary class="themes__summary">Thème</summary>
+      <div id="theme-picker" class="themes__grid" role="group" aria-label="Choix du thème"></div>
+    </details>
+
     <!-- Un seul panneau pour toute la progression : le pourcentage global, puis
          le détail par famille de formes et les trois angles généraux. Les
          barres sont cliquables — chacune applique son propre filtre. -->
