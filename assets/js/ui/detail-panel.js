@@ -816,21 +816,25 @@ function formButtons(form, species, ctx) {
   // deux cases normales devenaient indiscernables. On garde donc le symbole
   // seul, comme sur les raccourcis de vignette — le libellé complet reste dans
   // l'infobulle et dans le nom accessible.
+  // Trois fentes distinctes, et c'est voulu : la coche, le logo, le libellé.
+  // Glisser le logo DANS le libellé le faisait retomber à la ligne — il est en
+  // `display: block` et le libellé n'est pas un conteneur flex — d'où des
+  // boutons de 48 px au lieu de 36, au contenu sur deux étages.
   const defs = form.gendered
     ? [
-        [form.slot, [sexe("♂")], false, "Normal mâle"],
-        [form.slotF, [sexe("♀")], false, "Normal femelle"],
+        [form.slot, null, sexe("♂"), false, "Normal mâle"],
+        [form.slotF, null, sexe("♀"), false, "Normal femelle"],
       ]
-    : [[form.slot, ["Normal"], false, "Normal"]];
+    : [[form.slot, null, "Normal", false, "Normal"]];
 
   if (form.shinyEntry) {
     if (form.gendered) {
       defs.push(
-        [form.shinySlot, [ico(), sexe("♂")], true, "Chromatique mâle"],
-        [form.shinySlotF, [ico(), sexe("♀")], true, "Chromatique femelle"]
+        [form.shinySlot, ico(), sexe("♂"), true, "Chromatique mâle"],
+        [form.shinySlotF, ico(), sexe("♀"), true, "Chromatique femelle"]
       );
     } else {
-      defs.push([form.shinySlot, [ico(), "Shiny"], true, "Chromatique"]);
+      defs.push([form.shinySlot, ico(), "Shiny", true, "Chromatique"]);
     }
   }
 
@@ -840,7 +844,7 @@ function formButtons(form, species, ctx) {
   // tenaient plus, et « Normal » se faisait rogner.
   return el(
     form.gendered ? "div.form__btns.form__btns--four" : "div.form__btns",
-    defs.map(([slot, label, gold, nom]) =>
+    defs.map(([slot, icone, label, gold, nom]) =>
       el(
         gold ? "button.form__btn.form__btn--gold" : "button.form__btn",
         {
@@ -854,6 +858,7 @@ function formButtons(form, species, ctx) {
           dataset: { slot, species: species.id },
         },
         el("span.form__btn-check", "✓"),
+        icone,
         el("span.form__btn-label", label)
       )
     )
