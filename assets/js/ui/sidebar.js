@@ -225,7 +225,10 @@ const BAR_GROUPS = [
     title: "Ma collection",
     filtre: "status",
     rows: [
-      ["all", "Tout", null, "Toutes les cases du site : espèces, formes régionales, cosmétiques et Gigamax."],
+      // « Progression totale » et non « Tout » : l'en-tête du panneau compte
+      // des ESPÈCES (1013 / 1025), cette barre compte des CASES (1733 / 2802).
+      // Deux mesures différentes, deux noms différents.
+      ["all", "Progression totale", null, "Toutes les cases du site : espèces, formes régionales, cosmétiques et Gigamax."],
       ["pairs", "Paires ♂ / ♀", null, "Espèces à apparence mâle et femelle distinctes dont les deux cases sont cochées."],
       // « shiny » n'est pas un chemin d'image : le logo chromatique est posé en
       // masque, pour prendre la couleur du thème comme partout ailleurs.
