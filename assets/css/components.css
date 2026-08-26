@@ -433,6 +433,83 @@
 .forms__title--fold:hover { background: var(--bg-hover); color: var(--text-muted); }
 .forms__list { display: flex; flex-direction: column; gap: var(--sp-3); }
 
+/* =========================== Tuiles de formes ============================
+   Les formes se lisent en grille, comme les variantes cosmetiques. Avant,
+   chaque forme etait une carte pleine largeur : trois formes remplissaient
+   un ecran et on ne voyait jamais ce qu'il restait a cocher.
+   Le detail curate a la main descend dans le repli `.ftile__more`.
+   ====================================================================== */
+.ftiles {
+  display: grid;
+  /* 150 px : deux colonnes tiennent dans la fiche de 420 px du bureau, et la
+     feuille mobile, plus large, en met trois. En dessous, les deux sprites
+     cote a cote ne passent plus. */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--sp-3);
+}
+
+.ftile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  transition: border-color .18s, background .18s;
+}
+.ftile:hover { border-color: var(--accent-border); background: var(--bg-inset); }
+/* Une forme qui ne monte pas dans HOME : presente pour l'inventaire, mais
+   visiblement en retrait — il n'y a rien a y cocher. */
+.ftile--off { opacity: .72; }
+.ftile--gmax { border-color: color-mix(in srgb, var(--gold) 34%, var(--border-strong)); }
+
+/* Les deux sprites cote a cote : normal a gauche, chromatique a droite.
+   Voir les deux d'un coup evite d'avoir a basculer pour comparer. */
+.ftile__art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 72px;
+  border-radius: 10px;
+  background: var(--bg-inset);
+}
+.ftile__img { width: 56px; height: 56px; object-fit: contain; }
+.ftile__shiny { position: relative; display: inline-flex; }
+.ftile__shiny .ftile__img { filter: drop-shadow(0 0 6px var(--accent-glow)); }
+.ftile__spark {
+  position: absolute; right: 0; bottom: 2px;
+  font-size: 10px; color: var(--gold);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+}
+
+.ftile__id { display: flex; flex-direction: column; gap: 5px; }
+.ftile__name {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 12.5px; line-height: 1.2; color: var(--text);
+}
+.ftile__gmax { flex: none; }
+.ftile__chips { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* Les cases restent hors du repli : c'est ce qu'on vient faire ici. */
+.ftile .form__btns { margin-top: auto; }
+
+.ftile__more { border-top: 1px solid var(--border); padding-top: 7px; }
+.ftile__summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.ftile__summary::-webkit-details-marker { display: none; }
+.ftile__summary::after { content: " ▾"; }
+.ftile__more[open] > .ftile__summary { color: var(--text-soft); margin-bottom: 6px; }
+.ftile__more[open] > .ftile__summary::after { content: " ▴"; }
+.ftile__summary:hover { color: var(--accent); }
+
 .form { background: var(--bg-sunken); border: 1px solid var(--border-strong); border-radius: 14px; padding: var(--sp-3); }
 .form--gmax { border-color: color-mix(in srgb, #ff5f7e 40%, transparent); }
 .form__head { display: flex; gap: var(--sp-3); align-items: center; }

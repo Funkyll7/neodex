@@ -14,6 +14,24 @@ export const STATUS_FILTERS = [
   { value: "incomplete", label: "À terminer", key: "incomplete" },
 ];
 
+/**
+ * Filtre « Forme » : les familles de formes qu'on cherche vraiment a lister.
+ *
+ * Volontairement pas toutes les categories de `KIND_TITLES` : les Mega, les
+ * formes de combat et les casquettes ne se cochent pas, en faire un filtre
+ * donnerait une liste qu'on ne peut pas completer. Hisui accompagne Alola,
+ * Galar et Paldea — les quatre regions vont ensemble.
+ */
+export const FORM_FILTERS = [
+  { value: "all", label: "Toutes les formes" },
+  { value: "alola", label: "Formes d'Alola" },
+  { value: "galar", label: "Formes de Galar" },
+  { value: "hisui", label: "Formes de Hisui" },
+  { value: "paldea", label: "Formes de Paldéa" },
+  { value: "gmax", label: "Formes Gigamax" },
+  { value: "cosmetic", label: "Formes cosmétiques" },
+];
+
 export const SORTS = {
   num: (a, b) => a.id - b.id,
   name: (a, b) => a.name.localeCompare(b.name, "fr"),
@@ -32,6 +50,7 @@ export function applyFilters(species, state, collection, isComplete = () => fals
     if (state.type !== "all" && !p.types.includes(state.type)) return false;
     if (state.gen !== "all" && String(p.gen) !== state.gen) return false;
     if (state.game !== "all" && !p.games.has(state.game)) return false;
+    if (state.form !== "all" && !hasForm(p, state.form)) return false;
 
     switch (state.status) {
       case "owned":
@@ -61,6 +80,16 @@ export function applyFilters(species, state, collection, isComplete = () => fals
     if (exact > 0) list.unshift(list.splice(exact, 1)[0]);
   }
   return list;
+}
+
+/**
+ * Cette espece a-t-elle une forme de la famille demandee ?
+ * `cosmetic` est a part : les Zarbi, Prismillon & co ne sont pas des formes au
+ * sens de data/forms/, ils vivent dans leur propre groupe.
+ */
+function hasForm(species, kind) {
+  if (kind === "cosmetic") return Boolean(species.cosmetic && !species.cosmetic.info);
+  return species.forms.some((form) => form.kind === kind);
 }
 
 /**

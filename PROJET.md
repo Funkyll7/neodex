@@ -336,6 +336,8 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | ajouter un jeu à la série | `data/reference/games.json` (dont ses `vg`) |
 | changer une méthode de chasse ou un taux | `data/reference/hunt.json` |
 | ajouter un filtre | `assets/js/domain/filters.js` + un contrôle dans `index.html` et `ui/sidebar.js` |
+| ajouter une famille au filtre « Forme » | `assets/js/domain/filters.js` (`FORM_FILTERS`) |
+| retoucher une tuile de forme | `ui/detail-panel.js` (`formTile`) + bloc `.ftile` de `components.css` |
 | changer l'apparence d'une vignette | `assets/js/ui/dex-grid.js` + `components.css` |
 | ajouter une section à la fiche | `assets/js/ui/detail-panel.js` |
 | retoucher la grille à cocher des cosmétiques | `ui/detail-panel.js` (`cosmeticPicker`) + bloc `.picker` de `components.css` |
@@ -386,6 +388,28 @@ Deux règles en découlent :
    Pokémon. Corollaire : un libellé de bouton ne doit jamais dépendre de l'état
    coché (d'où le `✓` transparent de `.form__btn-check`), sinon il ne se mettra
    pas à jour.
+
+### Les formes se lisent en grille
+
+`formTile()` remplace l'ancienne carte pleine largeur. Trois formes
+remplissaient un écran ; Météno en a treize, Motisma cinq — on ne voyait
+jamais ce qu'il restait à cocher sans défiler longuement. Les formes se lisent
+donc comme les variantes cosmétiques : une tuile chacune, deux colonnes sur
+téléphone, trois sur grand écran.
+
+Rien n'est perdu. Le détail écrit à la main — où l'obtenir, les jeux, le
+verrou chromatique, la note — descend dans un repli `.ftile__more` par tuile.
+Sa clé `data-key` le fait survivre à une repeinte, comme les autres replis.
+
+**Les cases restent hors du repli** : cocher est ce qu'on vient faire ici, ça
+ne se cache pas derrière un clic. Les deux sprites, normal et chromatique, sont
+côte à côte : on compare sans basculer.
+
+Le filtre « Forme » (`FORM_FILTERS` dans `domain/filters.js`) liste les
+familles qu'on cherche vraiment — Alola, Galar, Hisui, Paldéa, Gigamax,
+cosmétiques. Volontairement pas toutes les catégories de `KIND_TITLES` : les
+Méga, les formes de combat et les casquettes ne se cochent pas, en faire un
+filtre donnerait une liste qu'on ne peut pas terminer.
 
 ### Chercher, et se déplacer de fiche en fiche
 

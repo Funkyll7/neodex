@@ -12,10 +12,15 @@ qu'on ait à l'ouvrir. Un Pokémon dont tout l'obtenable est coché passe en dor
 badge « ★ Complet ». La barre latérale suit quatre progressions distinctes :
 tout, paires ♂ / ♀, formes, Gigamax.
 
-Les formes cosmétiques se cochent dans une **grille** — les lettres des Zarbi,
-les motifs de Prismillon, les crèmes de Charmilly — plutôt qu'en défilant sur
-soixante fiches. Sur téléphone, choisir une vignette ouvre la fiche en feuille
-plein écran.
+**Toutes les formes se cochent dans une grille** — les régionales, les
+Gigamax, les Méga comme les lettres des Zarbi, les motifs de Prismillon ou les
+crèmes de Charmilly. Une tuile chacune, les sprites normal et chromatique côte
+à côte, et le détail (où l'obtenir, les jeux, le verrou chromatique) dans un
+repli. Sur téléphone, choisir une vignette ouvre la fiche en feuille plein
+écran.
+
+Le filtre **Forme** isole les formes d'Alola, de Galar, de Hisui, de Paldéa,
+les Gigamax et les cosmétiques.
 
 La recherche accepte le numéro tel qu'il est affiché (`0025`), le nom en
 français ou en anglais, et **le nom d'une forme** : `alola`, `gigamax`,

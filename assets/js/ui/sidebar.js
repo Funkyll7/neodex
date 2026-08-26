@@ -5,13 +5,14 @@
  */
 
 import { el, fill, setOptions } from "../core/dom.js";
-import { STATUS_FILTERS } from "../domain/filters.js";
+import { STATUS_FILTERS, FORM_FILTERS } from "../domain/filters.js";
 
 export function createSidebar(ctx) {
   const { dataset, store } = ctx;
 
   const pills = document.getElementById("status-pills");
   const genSelect = document.getElementById("filter-gen");
+  const formSelect = document.getElementById("filter-form");
   const gameSelect = document.getElementById("filter-game");
   const sortSelect = document.getElementById("filter-sort");
   const typeSelect = document.getElementById("filter-type");
@@ -37,6 +38,8 @@ export function createSidebar(ctx) {
     ],
     store.state.game
   );
+
+  setOptions(formSelect, FORM_FILTERS, store.state.form);
 
   setOptions(
     typeSelect,
@@ -71,6 +74,7 @@ export function createSidebar(ctx) {
   /* ----------------------------- ecouteurs ---------------------------- */
 
   genSelect.addEventListener("change", () => store.set({ gen: genSelect.value }));
+  formSelect.addEventListener("change", () => store.set({ form: formSelect.value }));
   gameSelect.addEventListener("change", () => store.set({ game: gameSelect.value }));
   sortSelect.addEventListener("change", () => store.set({ sort: sortSelect.value }));
   typeSelect.addEventListener("change", () => store.set({ type: typeSelect.value }));

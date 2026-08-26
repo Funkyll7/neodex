@@ -24,7 +24,7 @@ import { createQuest } from "./ui/quest.js";
 import { createSaveControls } from "./ui/save.js";
 import { createShortcuts } from "./ui/shortcuts.js";
 
-const FILTER_KEYS = ["search", "type", "gen", "game", "sort", "status", "view"];
+const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
 
 initTheme();
 boot();
@@ -54,6 +54,7 @@ function start(dataset) {
     type: "all",
     gen: "all",
     game: "all",
+    form: "all",
     sort: "num",
     status: "all",
     view: "auto",

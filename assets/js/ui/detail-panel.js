@@ -559,74 +559,98 @@ function formsSection(species, ctx) {
  * quatorze cartes, et elles poussent le reste de la fiche hors de portee.
  */
 function formGroup(kind, forms, species, ctx) {
-  const cards = forms.map((form) => formCard(form, species, ctx));
+  const grid = el(
+    "div.ftiles",
+    forms.map((form) => formTile(form, species, ctx))
+  );
   const collapsible = !forms.some((form) => form.entry) && forms.length > 2;
   const title = `${KIND_TITLES[kind]} · ${forms.length}`;
 
   if (!collapsible) {
-    return el("div.forms__group", el("h4.forms__title", title), el("div.forms__list", cards));
+    return el("div.forms__group", el("h4.forms__title", title), grid);
   }
   return el(
     "details.forms__group.forms__group--fold",
     { dataset: { key: `${species.id}-${kind}` } },
     el("summary.forms__title.forms__title--fold", title),
-    el("div.forms__list", cards)
+    grid
   );
 }
 
-function formCard(form, species, ctx) {
+/**
+ * Une forme = une tuile, comme les variantes cosmetiques.
+ *
+ * Avant, chaque forme etait une carte pleine largeur avec son texte, ses jeux
+ * et son bloc chromatique : trois formes remplissaient un ecran, et il fallait
+ * defiler longtemps pour voir ce qu'il restait a cocher. Une grille de tuiles
+ * montre tout d'un coup — c'est ce que fait deja la grille des Zarbi.
+ *
+ * Rien n'est perdu pour autant : le detail curate a la main (ou l'obtenir, les
+ * jeux, le verrou chromatique) descend dans un repli par tuile. Sa cle
+ * `data-key` le fait survivre a une repeinte, comme les autres replis.
+ *
+ * Les cases restent **hors** du repli : c'est ce qu'on vient faire, ça ne se
+ * cache pas derriere un clic.
+ */
+function formTile(form, species, ctx) {
   const { dataset } = ctx;
   const games = dataset.games.filter((g) => form.games.has(g.code));
   const huntable = games.filter((g) => g.shinyOk !== false && !form.shinyLocked.has(g.code));
 
+  const classes = ["div.ftile"];
+  if (form.kind === "gmax") classes.push("ftile--gmax");
+  if (!form.entry) classes.push("ftile--off");
+
   return el(
-    form.kind === "gmax" ? "article.form.form--gmax" : "article.form",
+    classes.join("."),
     el(
-      "div.form__head",
+      "div.ftile__art",
+      formImg(form, { alt: form.name, className: "ftile__img" }),
+      form.hasShinySprite
+        ? el(
+            "span.ftile__shiny",
+            formImg(form, { shiny: true, alt: `${form.name} chromatique`, className: "ftile__img" }),
+            el("span.ftile__spark", "✦")
+          )
+        : null
+    ),
+    el(
+      "div.ftile__id",
       el(
-        "div.form__arts",
-        el("span.form__art", formImg(form, { alt: form.name, className: "form__img" })),
-        form.hasShinySprite
-          ? el(
-              "span.form__art.form__art--shiny",
-              formImg(form, { shiny: true, alt: `${form.name} chromatique`, className: "form__img" }),
-              el("span.form__spark", "✦")
-            )
-          : null
+        "div.ftile__name",
+        form.kind === "gmax"
+          ? el("img.ftile__gmax", { src: "assets/img/gigamax.png", alt: "", width: 15, height: 15 })
+          : null,
+        form.name
       ),
       el(
-        "div.form__id",
-        el(
-          "div.form__name",
-          form.kind === "gmax"
-            ? el("img.form__gmax", { src: "assets/img/gigamax.png", alt: "", width: 18, height: 18 })
-            : null,
-          form.name
-        ),
-        el(
-          "div.form__chips",
-          form.types.map((t) => typeChip(t, dataset.types[t] || "#8b8b8b"))
-        ),
-        el("div.form__label", form.label)
+        "div.ftile__chips",
+        form.types.map((t) => typeChip(t, dataset.types[t] || "#8b8b8b"))
       )
     ),
-    form.where ? el("p.form__text", form.where) : null,
-    el(
-      "p.form__games",
-      games.length
-        ? ["Présente dans : ", el("strong", games.map((g) => g.name).join(" · "))]
-        : "Aucun jeu de la série principale ne la propose — transfert HOME uniquement."
-    ),
-    shinyLine(form, huntable, games, species, ctx),
-    form.note ? el("p.form__note", form.note) : null,
     formButtons(form, species, ctx),
     el(
-      "a.info__link",
-      { href: pokepediaUrl(form.name), target: "_blank", rel: "noopener" },
-      "Fiche de la forme ↗"
+      "details.ftile__more",
+      { dataset: { key: `${species.id}-${form.key}` } },
+      el("summary.ftile__summary", "Détails"),
+      form.where ? el("p.form__text", form.where) : null,
+      el(
+        "p.form__games",
+        games.length
+          ? ["Présente dans : ", el("strong", games.map((g) => g.name).join(" · "))]
+          : "Aucun jeu de la série principale ne la propose — transfert HOME uniquement."
+      ),
+      shinyLine(form, huntable, games, species, ctx),
+      form.note ? el("p.form__note", form.note) : null,
+      el(
+        "a.info__link",
+        { href: pokepediaUrl(form.name), target: "_blank", rel: "noopener" },
+        "Fiche de la forme ↗"
+      )
     )
   );
 }
+
 
 /**
  * Les cases d'une forme : une, deux, ou quatre quand la forme a une apparence
