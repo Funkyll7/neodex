@@ -284,9 +284,17 @@ function openedGroups(root) {
   return new Set([...root.querySelectorAll("details[open][data-key]")].map((n) => n.dataset.key));
 }
 
+/**
+ * On repose l'etat EXACT releve avant la repeinte, ouvert comme ferme.
+ *
+ * Se contenter de rouvrir ce qui l'etait suffisait tant que tous les replis
+ * naissaient fermes. Depuis que certains naissent ouverts — les casquettes de
+ * Pikachu, les variantes cosmetiques en general — un repli que l'utilisateur
+ * venait de fermer se rouvrait a la premiere repeinte.
+ */
 function restoreGroups(root, opened) {
   for (const node of root.querySelectorAll("details[data-key]")) {
-    if (opened.has(node.dataset.key)) node.open = true;
+    node.open = opened.has(node.dataset.key);
   }
 }
 
@@ -477,14 +485,20 @@ function cosmeticPicker(species, cosmetic, ctx) {
         ? "Chaque variante est une entrée distincte dans HOME : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique. La première tuile est la forme de base de l'espèce."
         : "Chaque variante est une entrée distincte dans HOME, en plus de la forme classique ci-dessus : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique."
     ),
-    cosmetic.fold
-      ? el(
-          "details.picker__fold",
-          { dataset: { key: `picker-${species.id}` } },
-          el("summary.forms__title.forms__title--fold", `Afficher les ${cosmetic.variants.length} variantes`),
-          grid
-        )
-      : grid,
+    // TOUS les groupes cosmétiques se replient, pas seulement les plus longs :
+    // les quatorze casquettes de Pikachu poussaient le reste de la fiche hors
+    // de portée sans qu'on puisse les ranger. `fold` ne décide donc plus que
+    // de l'état initial — replié pour les 63 Charmilly, déplié pour le reste.
+    // La clé `data-key` fait survivre l'état à une repeinte.
+    el(
+      "details.picker__fold",
+      { open: !cosmetic.fold, dataset: { key: `picker-${species.id}` } },
+      el(
+        "summary.forms__title.forms__title--fold",
+        `${cosmetic.variants.length} variantes`
+      ),
+      grid
+    ),
     cosmetic.where ? el("p.form__text", cosmetic.where) : null,
     cosmetic.note ? el("p.form__note", cosmetic.note) : null
   );
