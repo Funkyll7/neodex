@@ -1021,7 +1021,7 @@
    « Paires ♂ / ♀ » de la barre latérale. Le bouton coché se remplit de la
    couleur du type : on éclaircit alors le bleu pour qu'il tienne le contraste
    dessus, plutôt que de le remplacer par du blanc et de perdre le repère. */
-.toggle__sex { color: var(--pair); font-weight: 800; }
+.toggle__sex { color: var(--pair); font-weight: 800; font-size: 13px; line-height: 1; }
 .toggle[aria-pressed="true"] .toggle__sex { color: color-mix(in srgb, var(--pair) 40%, #fff); }
 .toggle--gold[aria-pressed="true"] .toggle__sex { color: color-mix(in srgb, var(--pair) 62%, #000); }
 
