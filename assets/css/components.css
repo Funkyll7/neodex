@@ -36,8 +36,14 @@
 .ico--shiny { color: var(--accent); }
 .ico--pair { color: var(--pair); }
 
-.bar { margin-top: 10px; height: 8px; border-radius: var(--r-pill); background: var(--border); overflow: hidden; }
+/* `display: block` explicite : dans la barre latérale ces deux éléments sont
+   des <span>, parce qu'une ligne de progression est un <button> et qu'un
+   bouton ne peut pas contenir de <div>. Sans cette déclaration ils restent
+   `inline`, où `width` et `height` n'ont aucun effet — les barres s'affichaient
+   vides. */
+.bar { display: block; margin-top: 10px; height: 8px; border-radius: var(--r-pill); background: var(--border); overflow: hidden; }
 .bar__fill {
+  display: block;
   height: 100%; width: 0;
   border-radius: var(--r-pill);
   background: linear-gradient(90deg, var(--gold), var(--gold-soft));
