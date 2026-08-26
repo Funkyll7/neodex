@@ -86,6 +86,7 @@ Projet Poke/
 │   └── collection.json         ▲ GÉNÉRÉ puis corrigé — ma collection
 │
 ├── tools/                      scripts Python, hors site
+│   ├── check_data.py           vérifie la cohérence des renvois — n'écrit rien
 │   ├── build_dataset.py        régénère data/pokemon/ depuis PokeAPI
 │   ├── build_forms.py          régénère data/forms/ + vérifie chaque sprite
 │   ├── build_availability.py   régénère data/availability/ (Pokédex + rencontres)
@@ -159,11 +160,30 @@ Le verrouillage chromatique ne se met **plus** ici : il vit dans
 | `f<id>` / `f<id>s` | forme alternative n° `<id>` (id PokeAPI), normale / chromatique |
 | `f<id>f` / `f<id>sf` | la même en femelle, pour les formes à dimorphisme (Farfuret de Hisui) |
 | `x<n>-<clef>` / `y<n>-<clef>` | forme cosmétique — `x201-b` = Zarbi B, `y666-savanna` = Prismillon Savane chromatique |
-| `vo` / `vs` | ancien schéma : la **première** forme collectionnable de l'espèce |
+| `vo` / `vs` / `vof` / `vsf` | ancien schéma, **supprimé** — voir ci-dessous |
 
 `of` et `sf` ne sont proposées que si l'espèce a `gd: 1` (dimorphisme visible).
-`vo` / `vs` restent lus et écrits pour la forme principale, ce qui garde les
-collections déjà exportées valables.
+
+### Pourquoi `vo` / `vs` ont disparu
+
+Ces quatre cases désignaient « la première forme collectionnable de l'espèce ».
+Une position, pas une identité : dès qu'une forme apparaissait, changeait de
+statut ou passait en `hidden`, `vo` se mettait à désigner **un autre Pokémon**,
+sans que rien ne le signale. Trois collections s'y sont perdues — Floette,
+Météno et Melmetal, dont la seule forme cochable est en `shiny: "none"` : la
+règle de l'époque excluait ces formes du choix, l'espèce se retrouvait sans
+forme principale, et la case cochée ne désignait plus rien.
+
+Chaque forme porte donc désormais **sa** case `f<id>`, toujours la même.
+Les 107 marques héritées de `data/collection.json` ont été converties une fois
+pour toutes ; `migrateLegacySlots()` dans `domain/collection.js` fait la même
+conversion à la volée, au chargement, à l'import d'une vieille sauvegarde et au
+« Recharger » — une sauvegarde exportée avant la bascule reste donc lisible.
+Une marque héritée qu'aucune forme ne peut accueillir est laissée intacte
+plutôt que posée au hasard.
+
+`species.primaryForm` existe toujours, mais ne sert plus qu'à choisir le
+raccourci affiché sur la vignette : il ne décide plus d'aucun nom de case.
 
 Chez les espèces à formes cosmétiques, **la variante de base réutilise `om` /
 `sm`** : le Zarbi A, la Prismillon Motif Floral, la Flabébé Fleur Rouge *sont*
@@ -320,8 +340,10 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | changer une barre de progression | `assets/js/domain/progress.js` + `ui/sidebar.js` |
 | retoucher la feuille mobile | `ui/detail-panel.js` (`createSheet`) + bloc « Feuille mobile » de `components.css` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |
+| remonter la version des sprites | `assets/js/config.js` (`SPRITES_REF`) |
 | changer le dépôt de synchronisation | `assets/js/config.js` (bloc `github`) |
 | corriger une case cochée à tort | dans le site : la synchronisation s'en occupe (§ 6) |
+| vérifier que les données se tiennent | `python tools/check_data.py` |
 
 **Règles de tenue du code**
 
@@ -331,6 +353,12 @@ sur l'espèce se propage automatiquement à toutes ses formes.
   et les polices viennent de l'extérieur.
 - Commentaires et textes d'interface en français.
 - **Une case cochée ne reconstruit jamais son propre bouton.** Voir ci-dessous.
+- **Une case porte une identité, jamais une position.** C'est ce qui a tué
+  `vo` / `vs` (§ 2) : un nom de case ne doit jamais dépendre du rang d'une
+  forme dans une liste qu'un script régénère.
+- Les sprites viennent d'un **SHA épinglé** de `PokeAPI/sprites`, pas de
+  `master` : une réorganisation en amont ne doit pas pouvoir casser toutes les
+  images d'un coup, sans prévenir et sans qu'on ait rien changé ici.
 
 ### Cocher une case : délégation et repeinte
 
@@ -376,6 +404,29 @@ Les trois premiers sont ceux qui font tourner le site ; ils acceptent tous
 `--cache` pour réutiliser les CSV déjà téléchargés. `build_forms.py` accepte en
 plus `--offline`, qui se contente du cache de sprites local sans interroger le
 réseau. Les deux derniers ne servent qu'à relire les captures d'écran.
+
+### `check_data.py` — le filet des couches écrites à la main
+
+```bash
+python tools/check_data.py
+```
+
+Les fichiers de `data/details/` et `data/reference/` renvoient à des
+identifiants qui vivent dans les fichiers générés. Rien ne garantit que ces
+renvois restent valides : une forme disparaît d'une régénération, un code de
+jeu est mal tapé, une case cochée désigne une forme qui n'existe plus. Le site
+ignore silencieusement ce qu'il ne comprend pas — c'est le bon comportement à
+l'affichage, mais ça laisse pourrir les données sans prévenir.
+
+Le script fait le tour de ces renvois : espèces et formes inconnues, codes de
+jeu inventés, clés JSON en double, cases héritées non migrées. Il n'écrit
+rien et sort en code 1 s'il trouve quelque chose. À lancer après toute retouche
+manuelle d'un fichier de `data/`.
+
+Ce qu'il ne fait **pas** : rejouer la fusion des couches. Le total de cases, le
+« tout obtenu » et les formes principales en dépendent — les redupliquer en
+Python les ferait diverger de `core/data.js` à la première évolution. Ces
+chiffres-là se lisent dans la barre latérale du site.
 
 ### `read_screenshots.py` — ce qu'il fait et ce qu'il vaut
 
@@ -425,10 +476,22 @@ c'est le navigateur qui commite.
    navigateur, et nulle part ailleurs. « Oublier » l'efface.
 3. Chaque case cochée programme une écriture ; les suivantes la repoussent de
    `CONFIG.github.delayMs` (4 s). Cocher dix cases fait donc un seul commit.
+   Un plafond, `maxDelayMs` (30 s), borne ce report : sans lui, cocher une case
+   toutes les trois secondes repousserait le minuteur indéfiniment et rien ne
+   partirait jamais.
 4. Quitter l'onglet (`visibilitychange`) déclenche l'écriture immédiatement :
-   sur téléphone, c'est le cas courant.
+   sur téléphone, c'est le cas courant. Cette requête-là part en `keepalive`,
+   sinon elle meurt avec la page qu'on vient de quitter — c'est-à-dire
+   précisément dans le cas qu'elle est censée couvrir. Le corps est alors
+   plafonné à 64 Ko par la norme : au-delà, `sync.js` renonce au `keepalive`,
+   prévient en console, et l'envoi redevient ordinaire.
 5. **Recharger** reprend ce que contient le dépôt — utile quand on a coché
-   depuis un autre appareil.
+   depuis un autre appareil. Le fichier ramené repasse par la conversion des
+   cases héritées (§ 2), au cas où il daterait d'avant.
+
+Valider une quête coche une case comme n'importe quel clic, et déclenche donc
+la même écriture. `onCollectionChange()` ne fait que repeindre : c'est
+`onToggle` — et l'appel explicite de `ui/quest.js` — qui programment l'envoi.
 
 Le `sha` du fichier distant est relu avant chaque écriture ; en cas de conflit
 (quelqu'un a commité entre-temps), l'écriture est retentée une fois avec le

@@ -90,6 +90,16 @@ python tools/build_availability.py
 Les trois acceptent `--cache` pour réutiliser les CSV déjà téléchargés, et ne
 touchent jamais aux fichiers écrits à la main.
 
+Après toute retouche manuelle d'un fichier de `data/`, un filet :
+
+```bash
+python tools/check_data.py
+```
+
+Il vérifie que les fichiers écrits à la main renvoient à des espèces, des
+formes et des jeux qui existent vraiment. Il n'écrit rien et sort en code 1
+s'il trouve quelque chose.
+
 ```bash
 python tools/fetch_sprites.py
 python tools/read_screenshots.py

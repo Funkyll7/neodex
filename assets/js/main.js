@@ -42,7 +42,7 @@ async function boot() {
 }
 
 function start(dataset) {
-  const collection = new Collection(dataset.baseCollection);
+  const collection = new Collection(dataset.baseCollection, dataset);
   const sync = new GitHubSync(collection);
   const planner = new HuntPlanner(dataset);
   const store = createStore({
@@ -93,7 +93,9 @@ function start(dataset) {
   // le moment sur : on ecrit sans attendre la fin du delai de regroupement.
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden" && collection.dirtyCount) {
-      sync.flush("sortie de l'application").catch(() => {});
+      // `keepalive` : la page peut etre gelee ou tuee juste apres. Sans lui,
+      // la requete part avec elle — or c'est justement le cas courant.
+      sync.flush("sortie de l'application", true).catch(() => {});
     }
   });
 

@@ -187,21 +187,21 @@ function merge(entry, detail = {}, avail = {}, rawForms = [], context) {
   const forms = (rawForms || [])
     .filter((form) => !((context.formDetails.forms || {})[form.key] || {}).hidden)
     .map((form) => mergeForm(form, species, context));
-  // La premiere forme cochable garde les anciennes cases `vo` / `vs` :
-  // les collections deja exportees restent lisibles telles quelles.
-  const primary = forms.findIndex((f) => f.entry && f.shiny !== "none");
-  if (primary >= 0) {
-    forms[primary] = Object.freeze({
-      ...forms[primary],
-      slot: "vo",
-      shinySlot: "vs",
-      slotF: "vof",
-      shinySlotF: "vsf",
-    });
-  }
+  // Chaque forme garde SA case `f<id>`, toujours. Les anciennes cases `vo` /
+  // `vs` etaient positionnelles — « la premiere forme cochable » — donc elles
+  // changeaient de Pokemon des qu'une forme apparaissait ou changeait de
+  // statut. Trois collections s'y sont perdues (Floette, Meteno, Melmetal).
+  // Elles sont converties une fois pour toutes a la lecture, voir
+  // `migrateLegacySlots()` dans domain/collection.js.
+  const primary = forms.findIndex((f) => f.entry);
 
   species.forms = forms;
-  /** Forme principale : la premiere que l'on peut reellement collectionner. */
+  /**
+   * Forme principale : la premiere reellement cochable. Ne sert plus qu'a
+   * choisir le raccourci affiche sur la vignette — elle ne decide plus
+   * d'aucun nom de case. Une forme sans chromatique compte : ne pas la
+   * confondre avec `shinyEntry`, qui repond a une tout autre question.
+   */
   species.primaryForm = primary >= 0 ? forms[primary] : null;
   species.cosmetic = cosmeticGroup(context.cosmeticGroups[String(entry.id)], species);
   /** Tout ce qui se compte comme « une forme » dans la vignette. */

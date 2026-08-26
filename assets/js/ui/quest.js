@@ -27,6 +27,10 @@ export function createQuest(ctx) {
       const game = ctx.dataset.gamesByCode.get(quest.game);
       const method = ctx.planner.methodFor(quest.game, species);
       ctx.collection.mark(species.id, "sm");
+      // Valider une quete coche une case comme n'importe quel clic : elle doit
+      // donc partir vers le depot. `onCollectionChange` ne fait que repeindre,
+      // c'est `onToggle` qui programme l'ecriture — d'ou cet appel explicite.
+      ctx.sync.schedule(`${species.name} shiny (quête)`);
       ctx.store.set((s) => ({
         questDone: s.questDone + 1,
         questLog: [

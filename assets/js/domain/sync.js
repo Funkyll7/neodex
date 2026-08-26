@@ -19,6 +19,14 @@ import { CONFIG } from "../config.js";
 
 const API = "https://api.github.com";
 
+/**
+ * `keepalive` permet a une requete de survivre a la fermeture de la page, mais
+ * la norme plafonne son corps a 64 Ko. On garde une marge : au-dela, la
+ * requete serait rejetee d'emblee, ce qui serait pire que le risque qu'elle
+ * couvre. Une collection complete tourne autour de 50 Ko encodee.
+ */
+const KEEPALIVE_MAX_BYTES = 60 * 1024;
+
 export class GitHubSync {
   constructor(collection) {
     this.collection = collection;
@@ -29,6 +37,8 @@ export class GitHubSync {
     this.state = { status: this.token ? "idle" : "off", message: "", at: null };
     this.listeners = new Set();
     this.timer = null;
+    /** Date de la premiere modification en attente, pour plafonner le delai. */
+    this.pendingSince = null;
     this.inFlight = null;
   }
 
@@ -111,17 +121,18 @@ export class GitHubSync {
    * Ecrit la collection courante dans le depot.
    * @param {string} reason  ce qui apparaitra dans le message de commit.
    */
-  async push(reason = "mise à jour depuis le site") {
+  async push(reason = "mise à jour depuis le site", keepalive = false) {
     if (!this.configured) throw new Error("aucun jeton enregistré");
     // Une seule ecriture a la fois : deux PUT concurrents se voleraient le sha.
     if (this.inFlight) return this.inFlight;
-    this.inFlight = this.write(reason).finally(() => {
+    this.pendingSince = null;
+    this.inFlight = this.write(reason, true, keepalive).finally(() => {
       this.inFlight = null;
     });
     return this.inFlight;
   }
 
-  async write(reason, retry = true) {
+  async write(reason, retry = true, keepalive = false) {
     this.emit("busy", "Enregistrement sur GitHub…");
     const payload = this.collection.toExport("site NéoDex");
     const body = {
@@ -133,9 +144,11 @@ export class GitHubSync {
 
     try {
       if (!this.sha) await this.fetchRemote();
+      const text = JSON.stringify({ ...body, sha: this.sha });
       const data = await this.call(this.contentsUrl, {
         method: "PUT",
-        body: JSON.stringify({ ...body, sha: this.sha }),
+        body: text,
+        keepalive: keepalive && withinKeepalive(text),
       });
       this.sha = data.content && data.content.sha;
       // Ce qui est dans le depot devient la nouvelle reference : plus rien
@@ -163,17 +176,27 @@ export class GitHubSync {
     if (!this.configured) return;
     clearTimeout(this.timer);
     this.emit("pending", "Modification en attente…");
+    if (this.pendingSince === null) this.pendingSince = Date.now();
+    // Plafond : sans lui, cocher une case toutes les trois secondes repousse
+    // le minuteur indefiniment et rien ne part jamais. Passe `maxDelayMs`
+    // depuis la premiere modification en attente, on ecrit sans discuter.
+    const waited = Date.now() - this.pendingSince;
+    const delay = Math.max(0, Math.min(CONFIG.github.delayMs, CONFIG.github.maxDelayMs - waited));
     this.timer = setTimeout(() => {
       this.push(reason).catch(() => {
         /* l'etat d'erreur est deja diffuse par write() */
       });
-    }, CONFIG.github.delayMs);
+    }, delay);
   }
 
-  /** Force l'ecriture immediate (bouton, ou fermeture de l'onglet). */
-  flush(reason = "mise à jour depuis le site") {
+  /**
+   * Force l'ecriture immediate (bouton, ou fermeture de l'onglet).
+   * @param {boolean} [keepalive]  laisser la requete survivre au demontage de
+   *   la page — indispensable quand on quitte l'onglet sur telephone.
+   */
+  flush(reason = "mise à jour depuis le site", keepalive = false) {
     clearTimeout(this.timer);
-    return this.push(reason);
+    return this.push(reason, keepalive);
   }
 }
 
@@ -204,6 +227,22 @@ function clearToken() {
 }
 
 /* -------------------------------- helpers -------------------------------- */
+
+/**
+ * Le corps tient-il sous le plafond `keepalive` ? Au-dela, on renonce a
+ * l'option plutot que de voir la requete refusee : l'envoi redevient
+ * ordinaire, donc vulnerable a la fermeture de l'onglet, mais il part.
+ */
+function withinKeepalive(text) {
+  const size = new TextEncoder().encode(text).length;
+  if (size <= KEEPALIVE_MAX_BYTES) return true;
+  console.warn(
+    `NéoDex : collection trop volumineuse (${Math.round(size / 1024)} Ko) pour un envoi ` +
+      "`keepalive`. L'écriture en quittant l'onglet peut être perdue — synchronise " +
+      "explicitement avant de fermer."
+  );
+  return false;
+}
 
 /** Messages d'erreur en francais, orientes « quoi faire ». */
 function describe(status, message) {

@@ -11,8 +11,13 @@
  *   x<n>-<clef>  forme cosmetique (Zarbi, Prismillon, Charmilly…), normale
  *   y<n>-<clef>  la meme, chromatique
  *
- * `vo` / `vs` sont l'ancien schema, quand une espece n'avait qu'une variante :
- * ils restent lus et rattaches a la forme principale, mais ne sont plus ecrits.
+ * `vo` / `vs` / `vof` / `vsf` sont l'ancien schema, positionnel : ils
+ * designaient « la premiere forme cochable de l'espece », donc ils changeaient
+ * de Pokemon des qu'une forme apparaissait ou changeait de statut. Ils ne sont
+ * plus ni ecrits ni lus tels quels : `migrateLegacySlots()` les convertit une
+ * fois pour toutes vers la case explicite `f<id>` de la forme concernee, a la
+ * construction et a chaque import. Une marque heritee qu'aucune forme ne peut
+ * accueillir est laissee intacte plutot que posee au hasard.
  *
  * Deux sources empilees :
  *   - data/collection.json  la reference commitee dans le depot
@@ -33,10 +38,34 @@ const COSMETIC_SLOT = /^[xy]\d+-[a-z0-9-]+$/;
 
 const isSlot = (key) => SLOT_KEYS.includes(key) || FORM_SLOT.test(key) || COSMETIC_SLOT.test(key);
 
+/** Ancienne case -> champ de la forme principale qui la remplace. */
+const LEGACY_SLOTS = { vo: "slot", vs: "shinySlot", vof: "slotF", vsf: "shinySlotF" };
+
 export class Collection {
-  constructor(base) {
+  /**
+   * @param {object} base     contenu de data/collection.json
+   * @param {object} [dataset] jeu de donnees fusionne, pour convertir les
+   *   anciennes cases positionnelles. Sans lui, elles restent en l'etat.
+   */
+  constructor(base, dataset = null) {
+    this.dataset = dataset;
     this.base = sanitize(base && base.marks);
     this.local = readLocal();
+    this.migrateLegacySlots();
+  }
+
+  /**
+   * Convertit les cases heritees `vo` / `vs` / `vof` / `vsf` vers la case
+   * explicite de la forme qu'elles designaient. Idempotent : une fois la
+   * conversion faite, il n'y a plus rien a convertir.
+   *
+   * Sert a deux moments : au chargement, pour un depot pas encore migre, et
+   * a l'import d'une sauvegarde exportee avant la migration.
+   */
+  migrateLegacySlots() {
+    if (!this.dataset) return;
+    migrateLayer(this.base, this.dataset);
+    if (migrateLayer(this.local, this.dataset)) writeLocal(this.local);
   }
 
   /** Marques effectives d'une espece (jamais null). */
@@ -144,6 +173,8 @@ export class Collection {
   /** Remplace entierement la couche locale (import de fichier). */
   replaceLocal(marks) {
     this.local = sanitize(marks);
+    // Le fichier importe peut dater d'avant la migration des cases heritees.
+    if (this.dataset) migrateLayer(this.local, this.dataset);
     writeLocal(this.local);
   }
 
@@ -154,6 +185,9 @@ export class Collection {
    */
   commitLocal(marks) {
     this.base = sanitize(marks);
+    // « Recharger » ramene le fichier du depot, qui peut etre plus ancien que
+    // la migration des cases heritees.
+    if (this.dataset) migrateLayer(this.base, this.dataset);
     this.local = {};
     writeLocal(this.local);
   }
@@ -181,6 +215,29 @@ function writeLocal(marks) {
   } catch {
     // Quota depasse ou stockage bloque : on continue sans persister.
   }
+}
+
+/**
+ * Convertit sur place les cases heritees d'une couche de marques.
+ * @returns {boolean} vrai si quelque chose a bouge.
+ */
+function migrateLayer(layer, dataset) {
+  let touched = false;
+  for (const [id, marks] of Object.entries(layer)) {
+    for (const key of Object.keys(marks)) {
+      const field = LEGACY_SLOTS[key];
+      if (!field) continue;
+      const species = dataset.byId.get(Number(id));
+      const target = species && species.primaryForm && species.primaryForm[field];
+      // Aucune forme cochable pour l'accueillir : on garde la marque telle
+      // quelle. Elle ne compte pas, mais elle n'est pas perdue non plus.
+      if (!target || target === key) continue;
+      marks[target] = 1;
+      delete marks[key];
+      touched = true;
+    }
+  }
+  return touched;
 }
 
 /** Ne garde que des ids numeriques et des cases connues. */
