@@ -31,9 +31,10 @@
  */
 
 /* Changer ce numero purge les anciens caches au prochain chargement.
-   v2 : les reponses opaques (sprites) entrent enfin dans le cache. Les caches
-   construits sous v1 n'en contenaient aucune, autant repartir propre. */
-const VERSION = "neodex-v2";
+   v2 : les reponses opaques (sprites) entrent enfin dans le cache.
+   v3 : les requetes de la coquille contournent le cache HTTP. Les caches v2
+        contiennent du JS perime, il faut les jeter. */
+const VERSION = "neodex-v3";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;
@@ -58,7 +59,15 @@ self.addEventListener("install", (event) => {
       .open(SHELL)
       // `addAll` echoue en bloc si un seul fichier manque. On prefere un cache
       // partiel a une installation qui ne se fait jamais.
-      .then((cache) => Promise.allSettled(SHELL_FILES.map((file) => cache.add(file))))
+      // `no-store` pour la meme raison qu'ailleurs : `cache.add()` passerait
+      // sinon par le cache HTTP, et on installerait une coquille deja perimee.
+      .then((cache) =>
+        Promise.allSettled(
+          SHELL_FILES.map((file) =>
+            fetch(file, { cache: "no-store" }).then((r) => (r.ok ? cache.put(file, r) : null))
+          )
+        )
+      )
       .then(() => self.skipWaiting())
   );
 });
@@ -124,7 +133,15 @@ function cachable(reponse) {
  */
 async function reseauDAbord(request, nomCache) {
   try {
-    const reponse = await fetch(request);
+    // `cache: "no-store"` n'est pas un detail : sans lui, ce `fetch` passe par
+    // le cache HTTP du navigateur. GitHub Pages sert le JS avec un `max-age`,
+    // donc « aller au reseau » pouvait rendre une copie vieille de plusieurs
+    // minutes — et le worker la rangeait ensuite dans SON cache.
+    //
+    // C'est exactement comme ca que le site a servi un index.html neuf avec un
+    // sidebar.js perime, et s'est arrete sur « Cannot set properties of null ».
+    // « Reseau d'abord » ne veut rien dire si le reseau repond depuis un cache.
+    const reponse = await fetch(request, { cache: "no-store" });
     if (cachable(reponse)) {
       const cache = await caches.open(nomCache);
       cache.put(request, reponse.clone());
