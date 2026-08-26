@@ -7,7 +7,7 @@ Flabébé, les tailles de Couafarel, les saisons de Vivaldaim…), ma collection
 (normal / chromatique, formes ♂ et ♀), la disponibilité jeu par jeu, le
 verrouillage chromatique et la méthode de shiny hunt détaillée pour chaque jeu.
 
-**2 806 cases** en tout. Chaque vignette affiche les siennes — `3/8` — sans
+**2 802 cases** en tout. Chaque vignette affiche les siennes — `3/8` — sans
 qu'on ait à l'ouvrir. Un Pokémon dont tout l'obtenable est coché passe en doré,
 badge « ★ Complet ». La barre latérale suit quatre progressions distinctes :
 tout, paires ♂ / ♀, formes, Gigamax.

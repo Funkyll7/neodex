@@ -9,7 +9,7 @@ NéoDex est un Pokédex personnel : suivi de collection sur les 1025 espèces,
 leurs 304 formes alternatives (Alola, Galar, Hisui, Paldéa, Méga-Évolutions,
 Gigamax…) et leurs 160 formes cosmétiques (Zarbi, Prismillon, Charmilly…),
 formes ♂ / ♀, chromatiques, disponibilité par jeu, verrouillage chromatique et
-méthode de shiny hunt jeu par jeu. Soit 2 806 cases à cocher.
+méthode de shiny hunt jeu par jeu. Soit 2 802 cases à cocher.
 
 - Site **100 % statique** : pas de build, pas de dépendance, pas de serveur.
   Le dossier tel quel se publie sur GitHub Pages.
@@ -230,8 +230,10 @@ Clés d'un groupe : `title`, `base` (la variante qui *est* la forme par défaut)
 `where`, `note`, `layout` (`compact` pour les lettres, `wide` pour les motifs),
 `fold` (replié d'office — les 63 Charmilly), `info` (aucune case à cocher :
 le seul Pichu Troizépi), `spriteSet` (`classic` quand la forme n'a pas de rendu
-HOME). Clés d'une variante : `key`, `name`, `short`, `where`, `noshiny`,
-`nosprite`.
+HOME). Clés d'une variante : `key`, `name`, `short`, `where`, `sprite` (le nom
+du fichier quand il ne se déduit pas de `<id>-<key>`), `noshiny`, `nosprite`,
+`noentry` (`1` = la variante s'affiche mais ne peut pas entrer dans HOME : ni
+case normale, ni case chromatique — les six Pikachu Cosplayeur de Hoenn).
 
 ### « Tout obtenu »
 
@@ -252,12 +254,14 @@ avoir en boîte — il compte. Trois soustractions, et trois seulement :
 Attention à ne pas confondre `always` et `noShiny` dans `shiny-locks.json` :
 `always` dit « la série principale ne le génère jamais » — c'est une
 information de **chasse**, elle ne retire rien du « tout obtenu ». Shaymin,
-Darkrai, Phione, Manaphy, Meloetta, Genesect, Arceus, Volcanion, Zeraora, les
-Gardiens d'Alola, Regieleki, Regidrago, Solgaleo, Lunala, Koraidon et Miraidon
-sont dans ce cas : pas chassables, mais leur chromatique existe, donc exigé.
+Darkrai, Phione, Manaphy, Meloetta, Genesect, Arceus, Volcanion, Zeraora,
+Diancie, les Gardiens d'Alola, Regieleki, Regidrago, Solgaleo, Lunala, Koraidon
+et Miraidon sont dans ce cas : pas chassables, mais leur chromatique existe,
+donc exigé.
 
-Concrètement : Bulbizarre demande 2 cases, Miaouss 8, Pikachu 20, Zarbi 56,
-Prismillon 39, Charmilly 128, Ogerpon 1 (aucun chromatique nulle part).
+Concrètement : Bulbizarre demande 2 cases, Miaouss 8, Pikachu 15, Zarbi 56,
+Prismillon 39, Charmilly 128, Diancie 2, Melmetal 3, Ogerpon 1 (aucun
+chromatique nulle part).
 
 Chaque vignette affiche son compteur — `3/8` — à côté du losange qui compte les
 formes : on sait ce que le Pokémon réclame sans ouvrir la fiche. Une vignette
@@ -272,7 +276,7 @@ Deux entrées de filtre s'y rattachent : « ★ Complets » et « À terminer »
 ### Compteurs globaux
 
 `assets/js/domain/progress.js` répond à l'autre question : « combien de **cases**
-ai-je, sur les 2 806 du site ? ». Il produit quatre barres pour la barre
+ai-je, sur les 2 802 du site ? ». Il produit quatre barres pour la barre
 latérale — Tout, Paires ♂ / ♀, Formes, Gigamax — plus le bloc Gigamax (paires
 normal + chromatique, chromatiques obtenus). À ne pas confondre avec
 `collection.counts()`, qui compte des **espèces** : un Miaouss capturé pèse une
