@@ -132,9 +132,9 @@ export class GitHubSync {
     return this.inFlight;
   }
 
-  async write(reason, retry = true, keepalive = false) {
+  async write(reason, retry = true, keepalive = false, marksImposees = null) {
     this.emit("busy", "Enregistrement sur GitHub…");
-    const payload = this.collection.toExport("site Funkylldex");
+    const payload = this.collection.toExport("site Funkylldex", marksImposees);
     const body = {
       message: `Collection : ${reason}`,
       content: encodeBase64(`${JSON.stringify(payload, null, 1)}\n`),
@@ -157,15 +157,46 @@ export class GitHubSync {
       this.emit("ok", "Enregistré dans le dépôt.");
       return data;
     } catch (error) {
-      // 409 / 422 : le fichier a bouge depuis notre derniere lecture. On relit
-      // le sha et on recommence une fois. Une 404, elle, ne se repare pas.
+      // 409 / 422 : le fichier a bouge depuis notre derniere lecture — un autre
+      // appareil a coche quelque chose. On relit, on FUSIONNE, et on recommence
+      // une fois. Une 404, elle, ne se repare pas.
+      //
+      // Reecrire l'etat local tel quel, comme on le faisait, effacait ce que
+      // l'autre appareil venait d'ajouter : cocher sur le telephone puis laisser
+      // le navigateur enregistrer suffisait a perdre la case.
       if (retry && /^Conflit/.test(error.message)) {
-        this.sha = null;
-        return this.write(reason, false);
+        this.emit("busy", "Fusion avec le dépôt…");
+        const distant = await this.fetchRemote();
+        const fusionne = this.collection.fusionnerAvec(distant.marks);
+        return this.write(reason, false, false, fusionne);
       }
       this.emit("error", error.message);
       throw error;
     }
+  }
+
+  /**
+   * Relit le depot et absorbe ce qui a ete coche ailleurs.
+   *
+   * Sans cela, un onglet reste ouvert ignore tout des cases cochees sur le
+   * telephone jusqu'a son prochain rechargement — et les affiche donc a tort
+   * comme manquantes.
+   *
+   * @returns {Promise<boolean>} vrai si l'affichage doit etre refait.
+   */
+  async relire() {
+    if (!this.configured || this.inFlight) return false;
+    const shaConnu = this.sha;
+    const distant = await this.fetchRemote();
+    // Meme sha : le depot n'a pas bouge, rien a faire. On evite ainsi de
+    // reconstruire la grille a chaque retour sur l'onglet.
+    if (shaConnu && shaConnu === this.sha) return false;
+
+    // `adopterDistant` et non `commitLocal` : le depot ne contient pas encore
+    // ce qui est coche ici, vider la couche locale le perdrait.
+    const change = this.collection.adopterDistant(distant.marks);
+    if (change) this.emit("ok", "Mis à jour depuis le dépôt.");
+    return change;
   }
 
   /**

@@ -202,12 +202,109 @@ export class Collection {
     };
   }
 
-  /** Objet pret a etre ecrit dans data/collection.json. */
-  toExport(source = "export navigateur") {
-    const merged = { ...this.base };
-    for (const [id, marks] of Object.entries(this.local)) {
-      if (Object.keys(marks).length) merged[id] = marks;
-      else delete merged[id];
+  /**
+   * Fusion a trois voies avec l'etat du depot.
+   *
+   * `this.base` est l'ancetre commun — ce que le depot contenait la derniere
+   * fois qu'on l'a lu ; la couche locale porte nos modifications ; l'argument
+   * porte celles venues d'ailleurs. Sans cette fusion, un conflit se resolvait
+   * en reecrivant l'etat local en entier, et une case cochee sur le telephone
+   * pendant que le navigateur avait le site ouvert disparaissait.
+   *
+   * Une propriete agreable tombe du fait qu'une case ne vaut que oui ou non :
+   * si notre valeur differe de la leur, l'une des deux est forcement restee
+   * egale a l'ancetre — c'est donc l'autre qui a bouge, et elle gagne. Il n'y
+   * a jamais de desaccord reel a arbitrer, donc aucune regle a inventer.
+   *
+   * @param {object} distantMarks  les marques lues dans le depot
+   * @returns {object} les marques fusionnees, pretes a etre reecrites
+   */
+  fusionnerAvec(distantMarks) {
+    const distant = sanitize(distantMarks);
+    // Le depot peut etre plus ancien que la migration des cases heritees.
+    if (this.dataset) migrateLayer(distant, this.dataset);
+
+    const resultat = {};
+    const ids = new Set([
+      ...Object.keys(this.base),
+      ...Object.keys(this.local),
+      ...Object.keys(distant),
+    ]);
+
+    for (const id of ids) {
+      const ancetre = this.base[id] || {};
+      // La couche locale remplace l'entree entiere d'une espece : une case
+      // absente de `local[id]` mais presente dans l'ancetre est une case
+      // decochee ici, pas une case dont on n'aurait rien dit.
+      const notre = this.local[id] || ancetre;
+      const leur = distant[id] || {};
+
+      const cases = {};
+      for (const slot of new Set([
+        ...Object.keys(ancetre),
+        ...Object.keys(notre),
+        ...Object.keys(leur),
+      ])) {
+        const a = Boolean(ancetre[slot]);
+        const n = Boolean(notre[slot]);
+        const l = Boolean(leur[slot]);
+        // n === l : tout le monde est d'accord.
+        // a === l : eux n'ont pas bouge, donc c'est nous.
+        // sinon   : nous n'avons pas bouge, donc c'est eux.
+        if (n === l ? n : a === l ? n : l) cases[slot] = 1;
+      }
+
+      if (Object.keys(cases).length) resultat[id] = cases;
+    }
+
+    return resultat;
+  }
+
+  /**
+   * Le depot devient le nouvel ancetre, sans rien perdre de ce qui attend.
+   *
+   * A ne pas confondre avec `commitLocal`, qui s'emploie apres une ecriture
+   * reussie et vide la couche locale parce que le depot la contient desormais.
+   * Ici le depot ne contient PAS nos modifications : les vider les perdrait.
+   * On repose donc l'ancetre sur ce qu'on vient de lire, et on garde en attente
+   * exactement ce qui l'en ecarte.
+   *
+   * @param {object} distantMarks  les marques lues dans le depot
+   * @returns {boolean} vrai si l'affichage doit etre refait
+   */
+  adopterDistant(distantMarks) {
+    const fusionne = this.fusionnerAvec(distantMarks);
+    const avant = this.toExport("comparaison").marks;
+
+    const distant = sanitize(distantMarks);
+    if (this.dataset) migrateLayer(distant, this.dataset);
+    this.base = distant;
+
+    const local = {};
+    for (const id of new Set([...Object.keys(fusionne), ...Object.keys(distant)])) {
+      const voulu = fusionne[id] || {};
+      if (!sameMarks(voulu, distant[id] || {})) local[id] = voulu;
+    }
+    this.local = local;
+    writeLocal(this.local);
+
+    return !sameCollections(avant, this.toExport("comparaison").marks);
+  }
+
+  /**
+   * Objet pret a etre ecrit dans data/collection.json.
+   *
+   * @param {string} [source]
+   * @param {object} [marksImposees]  marques a ecrire telles quelles, au lieu
+   *   de l'empilement base + local. Sert a la fusion apres conflit.
+   */
+  toExport(source = "export navigateur", marksImposees = null) {
+    const merged = marksImposees ? sanitize(marksImposees) : { ...this.base };
+    if (!marksImposees) {
+      for (const [id, marks] of Object.entries(this.local)) {
+        if (Object.keys(marks).length) merged[id] = marks;
+        else delete merged[id];
+      }
     }
     const ordered = {};
     for (const id of Object.keys(merged).sort((a, b) => Number(a) - Number(b))) {
@@ -306,5 +403,12 @@ function sanitize(raw) {
 function sameMarks(a = {}, b = {}) {
   const slots = new Set([...Object.keys(a), ...Object.keys(b)]);
   for (const slot of slots) if (Boolean(a[slot]) !== Boolean(b[slot])) return false;
+  return true;
+}
+
+/** La meme comparaison, mais d'une collection entiere a une autre. */
+function sameCollections(a = {}, b = {}) {
+  const ids = new Set([...Object.keys(a), ...Object.keys(b)]);
+  for (const id of ids) if (!sameMarks(a[id], b[id])) return false;
   return true;
 }

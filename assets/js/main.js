@@ -256,6 +256,23 @@ function start(dataset) {
       // `keepalive` : la page peut etre gelee ou tuee juste apres. Sans lui,
       // la requete part avec elle — or c'est justement le cas courant.
       sync.flush("sortie de l'application", true).catch(() => {});
+      return;
+    }
+
+    // Au retour, on va voir ce qui a ete coche ailleurs. Un onglet laisse
+    // ouvert sur l'ordinateur ignorait sinon tout du telephone jusqu'a son
+    // prochain rechargement, et affichait a tort des cases comme manquantes.
+    if (document.visibilityState === "visible") {
+      sync
+        .relire()
+        .then((change) => {
+          if (!change) return;
+          renderCounts();
+          renderList();
+        })
+        // Hors ligne, ou jeton absent : on garde ce qu'on affiche. Ce n'est
+        // pas une erreur a montrer, juste une occasion manquee.
+        .catch(() => {});
     }
   });
 
