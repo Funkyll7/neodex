@@ -64,7 +64,7 @@ const MIN_PIXELS = 260; // en dessous, la case est vide
  */
 const STRICT = 6.0;
 const RELACHE = 10.0;
-const RELACHE_ETROIT = 14.0;
+const RELACHE_ETROIT = 13.0;
 const LARGEUR_ETROITE = 8;
 const PASSES = 6;
 
@@ -85,6 +85,11 @@ export function signatureDepuisImageData(imageData, seuilAlpha = 140) {
     }
   }
   if (n < 40) return null;
+  // Le meme bouchage que sur les captures, et pour la meme raison : il faut
+  // que les deux cotes de la comparaison decrivent la silhouette de la meme
+  // maniere. Boucher d'un seul cote coutait cher — Florizarre, dont les
+  // petales laissent de vrais trous, passait de 2,3 a 9,6.
+  boucherTrous(masque, width, height);
   return empaqueter(data, width, height, masque);
 }
 
@@ -296,6 +301,23 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
   if (somme(solide) < MIN_PIXELS) solide = morpho(morpho(plein, w, h, 3, false), w, h, 3, true);
   if (somme(solide) < MIN_PIXELS) return null;
 
+  // La toile ne fait pas que salir le fond : la ou elle passe sur le sprite,
+  // elle le coupe en deux. Prendre bêtement la plus grosse tache donnait alors
+  // le ventre de Carabaffe tout seul, et l'empreinte devenait un gros plan
+  // orange. On raccorde d'abord les morceaux voisins, on choisit ensuite.
+  const ponte = composantePrincipale(morpho(solide, w, h, 5, true), w, h);
+  if (!ponte) return null;
+  for (let p = 0; p < w * h; p++) if (!ponte[p]) solide[p] = 0;
+  if (somme(solide) < MIN_PIXELS) return null;
+
+  // `solide` ignore la toile : c'est donc lui, et lui seul, qui fixe le cadre.
+  //
+  // La reprise des pixels du sprite blanchis par la passe 1 se fait ensuite a
+  // l'interieur de ce cadre. L'inverse — laisser `plein` decider du cadre — a
+  // coute cher : un trait de la toile qui frole le sprite lui reste connecte,
+  // etire la boite jusqu'au bord de la case, et le sprite se retrouve ecrase
+  // en diagonale dans un coin de l'empreinte. Bulbizarre marquait alors 14 et
+  // ressortait en Arbok.
   let rx0 = w;
   let ry0 = h;
   let rx1 = -1;
@@ -309,9 +331,10 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
       if (y > ry1) ry1 = y;
     }
   }
-  if (rx1 < 0) return null;
 
-  const marge = 7;
+  // Quelques pixels de jeu : un contour clair du sprite deborde du cadre
+  // solide, mais pas de quoi laisser la toile traverser la case.
+  const marge = 4;
   const fx0 = Math.max(0, rx0 - marge);
   const fx1 = Math.min(w - 1, rx1 + marge);
   const fy0 = Math.max(0, ry0 - marge);
@@ -329,7 +352,101 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
     }
   }
   if (n < MIN_PIXELS) return null;
+  boucherTrous(masque, w, h);
   return empaqueter(patch, w, h, masque);
+}
+
+/**
+ * Rebouche les perforations fines de la silhouette — et elles seules.
+ *
+ * Un trait de la toile qui passe sur le sprite l'eclaircit vers la couleur du
+ * fond : ces pixels-la retombent sous le seuil de difference et perforent la
+ * silhouette. Bulbizarre en ressortait strie de noir la ou la reference est
+ * pleine — couleur juste, silhouette a 72 sur 255.
+ *
+ * Mais tout boucher coute plus que ca ne rapporte : Florizarre, dont les
+ * petales laissent de vrais ajours, passait alors de 2,3 a 9,6. Ces ajours-la
+ * existent aussi dans la reference, il faut les garder.
+ *
+ * Ce qui separe les deux n'est pas la taille mais l'epaisseur : une rayure de
+ * toile est fine, un ajour entre deux petales est large. On ne bouche donc que
+ * les trous qui ne survivent pas a une erosion — l'ouverture morphologique
+ * repond exactement a cette question.
+ */
+function boucherTrous(masque, w, h) {
+  const dehors = new Uint8Array(w * h);
+  const file = new Int32Array(w * h);
+  let queue = 0;
+  const pousser = (p) => {
+    if (!masque[p] && !dehors[p]) {
+      dehors[p] = 1;
+      file[queue++] = p;
+    }
+  };
+  for (let x = 0; x < w; x++) pousser(x), pousser((h - 1) * w + x);
+  for (let y = 0; y < h; y++) pousser(y * w), pousser(y * w + w - 1);
+
+  let tete = 0;
+  while (tete < queue) {
+    const p = file[tete++];
+    const x = p % w;
+    if (x > 0) pousser(p - 1);
+    if (x < w - 1) pousser(p + 1);
+    if (p >= w) pousser(p - w);
+    if (p < w * (h - 1)) pousser(p + w);
+  }
+
+  const trous = new Uint8Array(w * h);
+  for (let p = 0; p < w * h; p++) if (!masque[p] && !dehors[p]) trous[p] = 1;
+
+  const larges = morpho(morpho(trous, w, h, 2, false), w, h, 2, true);
+  for (let p = 0; p < w * h; p++) if (trous[p] && !larges[p]) masque[p] = 1;
+}
+
+/**
+ * Ne garde que la plus grosse tache du masque.
+ *
+ * Une case de HOME ne contient pas que le sprite : une etoile decore le coin
+ * haut-droit des chromatiques, la toile du fond laisse des miettes que
+ * l'ouverture n'a pas mangees, et le voisin mord parfois le bord. Tout cela
+ * entrait dans le cadre utile — et un cadre trop large ecrase le sprite dans
+ * un coin de l'empreinte 20x20, ou il ne ressemble plus a rien. Un Bulbizarre
+ * parfaitement cadre marquait 20 pour cette seule raison : son etoile.
+ *
+ * Le sprite est, de loin, la plus grosse tache connexe de la case.
+ */
+function composantePrincipale(masque, w, h) {
+  const vu = new Uint8Array(w * h);
+  const file = new Int32Array(w * h);
+  const meilleurs = new Int32Array(w * h);
+  let tailleMax = 0;
+
+  for (let depart = 0; depart < w * h; depart++) {
+    if (!masque[depart] || vu[depart]) continue;
+    let tete = 0;
+    let queue = 0;
+    file[queue++] = depart;
+    vu[depart] = 1;
+    while (tete < queue) {
+      const p = file[tete++];
+      const x = p % w;
+      // 4-connexite : en 8-connexite, un seul pixel de toile en diagonale
+      // recolle l'etoile au sprite et le tri ne sert plus a rien.
+      if (x > 0 && masque[p - 1] && !vu[p - 1]) file[queue++] = p - 1, (vu[p - 1] = 1);
+      if (x < w - 1 && masque[p + 1] && !vu[p + 1]) file[queue++] = p + 1, (vu[p + 1] = 1);
+      if (p >= w && masque[p - w] && !vu[p - w]) file[queue++] = p - w, (vu[p - w] = 1);
+      if (p < w * (h - 1) && masque[p + w] && !vu[p + w]) file[queue++] = p + w, (vu[p + w] = 1);
+    }
+    if (queue > tailleMax) {
+      tailleMax = queue;
+      meilleurs.set(file.subarray(0, queue));
+    }
+  }
+
+  if (!tailleMax) return null;
+  const sortie = new Uint8Array(w * h);
+  for (let i = 0; i < tailleMax; i++) sortie[meilleurs[i]] = 1;
+  return sortie;
 }
 
 const somme = (a) => {
@@ -420,35 +537,81 @@ export function detecterGrille(imageData) {
     for (let x = 0; x < width; x++) n += avant[y * width + x];
     profilY[y] = n;
   }
-  const maxY = Math.max(...profilY);
-  const lignesBrutes = paquets(profilY, maxY * 0.1, Math.round(pasX * 0.12)).filter(
-    ([a, b]) => b - a > pasX * 0.25
-  );
-  if (!lignesBrutes.length) return null;
+
+  // Les lignes ne se lisent PAS comme les colonnes.
+  //
+  // Découper le profil en paquets marche horizontalement — cinq colonnes bien
+  // séparées — et échoue verticalement : un Papilusion ailes déployées touche
+  // presque la ligne suivante, un Aspicot laisse un grand vide. Sur de vraies
+  // captures, les bandes dérivaient de vingt-cinq pixels et deux lignes
+  // voisines fusionnaient — l'une des trois n'en rendait que quatre sur sept.
+  //
+  // Or la grille de HOME est RÉGULIÈRE. On cherche donc son pas, puis sa
+  // phase, et on pose un maillage parfait. Le pas par autocorrélation : le
+  // profil se ressemble à lui-même décalé d'exactement une ligne.
+  const pasY = pasPeriodique(profilY, yDebut, height, Math.round(pasX * 0.8), Math.round(pasX * 2.2));
+  if (!pasY) return null;
+
+  // La phase : parmi les décalages possibles, celui qui fait tomber le plus de
+  // matière au centre des cases.
+  let phase = 0;
+  let meilleure = -1;
+  const demiBande = Math.round(pasY * 0.3);
+  for (let p = 0; p < pasY; p++) {
+    let total = 0;
+    for (let centre = yDebut + p; centre < height; centre += pasY) {
+      for (let y = Math.max(0, centre - demiBande); y < Math.min(height, centre + demiBande); y++) {
+        total += profilY[y];
+      }
+    }
+    if (total > meilleure) {
+      meilleure = total;
+      phase = p;
+    }
+  }
 
   // Une ligne coupée par un bord donnerait un sprite tronqué, donc une
-  // reconnaissance fausse — et, pire, une fausse ancre pour ses voisines. Les
-  // captures se chevauchent, ces cases reviennent dans la suivante.
-  //
-  // On les reconnaît à leur HAUTEUR, et non à leur proximité du bord : une
-  // ligne complète mesure à peu près comme les autres, une ligne coupée est
-  // franchement plus courte. Le test par le bord se laissait piéger dès qu'un
-  // trait du motif touchait le haut de la première ligne — il en perdait une
-  // entière à chaque capture.
-  const hauteurs = lignesBrutes.map(([a, b]) => b - a).sort((x, y) => x - y);
-  const mediane = hauteurs[hauteurs.length >> 1];
-  const lignes = lignesBrutes
-    .filter(([a, b]) => b - a >= mediane * 0.6 && a > 0 && b < height - 2)
-    .map(([a, b]) => Math.round((a + b) / 2));
+  // reconnaissance fausse — et, pire, une fausse ancre pour ses voisines. On
+  // ne garde que les lignes entièrement dans l'image ; les captures se
+  // chevauchent, celles du bord reviennent dans la suivante.
+  const haut = Math.round(pasY * 0.27);
+  const bas = Math.round(pasY * 0.31);
+  const lignes = [];
+  for (let centre = yDebut + phase; centre < height; centre += pasY) {
+    if (centre - haut < 0 || centre + bas >= height) continue;
+    lignes.push(centre);
+  }
   if (!lignes.length) return null;
 
-  return {
-    colonnes,
-    lignes,
-    demiL: Math.round(pasX * 0.48),
-    haut: Math.round(pasX * 0.42),
-    bas: Math.round(pasX * 0.48),
-  };
+  return { colonnes, lignes, demiL: Math.round(pasX * 0.48), haut, bas, pasY };
+}
+
+/**
+ * Le pas d'une grille régulière, par autocorrélation du profil.
+ *
+ * On décale le profil sur lui-même et on regarde à quel décalage il se
+ * ressemble le plus. Ce décalage-là est le pas — et c'est vrai même si des
+ * lignes manquent, se touchent, ou sont coupées par un bord, ce qui est
+ * exactement le cas d'une capture d'écran.
+ */
+function pasPeriodique(profil, debut, fin, pasMin, pasMax) {
+  let meilleur = 0;
+  let score = -1;
+  for (let p = pasMin; p <= pasMax; p++) {
+    let somme = 0;
+    let n = 0;
+    for (let y = debut; y + p < fin; y++) {
+      somme += profil[y] * profil[y + p];
+      n += 1;
+    }
+    if (!n) continue;
+    const moyenne = somme / n;
+    if (moyenne > score) {
+      score = moyenne;
+      meilleur = p;
+    }
+  }
+  return meilleur || null;
 }
 
 /**
