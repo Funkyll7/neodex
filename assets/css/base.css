@@ -4,6 +4,20 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* L'attribut `hidden` doit gagner contre toute règle de `display`.
+ *
+ * Le navigateur ne lui donne qu'un `display: none` de feuille par défaut, que
+ * le moindre sélecteur de classe écrase. `.fchips { display: flex }` suffisait
+ * donc à laisser la zone des filtres actifs visible alors que le JavaScript
+ * l'avait bel et bien masquée : on retirait « Manquants », la liste repassait
+ * à 1025 Pokémon, mais la pastille restait à l'écran. Le filtre était parti,
+ * il n'en avait plus l'air.
+ *
+ * `!important` est ici le bon outil, et pas un aveu d'échec : `hidden` est une
+ * affirmation du HTML sur l'existence même de l'élément, elle prime sur toute
+ * décision de mise en page. */
+[hidden] { display: none !important; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
