@@ -348,6 +348,16 @@
 /* Pastilles des boutons. Le bouton reste un flex pour que l'icône et le
    ♂ / ♀ qui la suit restent collés et centrés ensemble. */
 .toggle { display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
+
+/* Deux pastilles côte à côte — le chromatique suivi du logo de forme — mesurent
+   12 + 3 + 13 pixels, soit 28, quand la boîte de contenu du bouton n'en offre
+   que 24,6 une fois ses marges déduites. Le couple débordait donc, et comme le
+   bouton masque ce qui dépasse, le second logo se retrouvait plaqué contre le
+   bord droit : centré sur le papier, décentré à l'œil.
+
+   On reprend la place sur les marges latérales, qui ne servaient à rien ici :
+   ce sont les pastilles qui donnent sa largeur au bouton, pas son texte. */
+.toggle:has(.toggle__fam) { padding-left: 2px; padding-right: 2px; gap: 2px; }
 .toggle__ico { display: block; flex: none; width: 12px; height: 12px; }
 
 /* Les trois pastilles sont des MASQUES : elles prennent la couleur du bouton,
@@ -1117,7 +1127,43 @@
 
 /* Le logo de la famille sur le bouton de variante : le bouton dit de quelle
    variante il parle, au lieu du losange générique. */
-.toggle__fam { flex: none; display: block; }
+/* Le logo de famille est cerné d'un liseré blanc.
+ *
+ * Ses voisins — la Poké Ball, le chromatique — sont des masques : ils prennent
+ * la couleur du bouton, donc ils se voient toujours. Celui-ci est une vraie
+ * image, en couleurs, et le fond du bouton coché est la couleur du TYPE. Toute
+ * rencontre est donc possible, et certaines s'annulent : le logo d'Alola est
+ * orange, Sabelette est de type Sol, et le logo disparaissait purement et
+ * simplement. Paldéa sur un type Feu, Hisui sur un Électrik, même histoire.
+ *
+ * Le masquer en une seule couleur aurait réglé le contraste en supprimant ce
+ * qui distingue les logos entre eux — Alola, Galar et Paldéa seraient devenus
+ * trois taches blanches interchangeables. Le liseré détache la silhouette du
+ * fond sans rien retirer : chaque logo garde ses couleurs.
+ *
+ * Deux ombres floutées, et non un contour net : chacune s'applique au résultat
+ * de la précédente, donc la serrée assure la lisibilité et la large l'entoure
+ * d'un halo. Un liseré d'un pixel séparait bien le logo du fond, mais durcissait
+ * la vignette ; l'aura détache sans trancher. */
+.toggle__fam {
+  flex: none;
+  display: block;
+  width: 13px;
+  height: 13px;
+  filter:
+    drop-shadow(0 0 1.5px #fff)
+    drop-shadow(0 0 3px rgba(255, 255, 255, .8));
+}
+
+/* Bouton non coché : le liseré s'éteint avec lui. Blanc sur un bouton sombre,
+   il criait plus fort que l'état qu'il décrit.
+   `currentColor` est la couleur dont sont déjà faites les pastilles voisines du
+   même bouton : le logo pèse ainsi exactement le même poids qu'elles. */
+.toggle[aria-pressed="false"] .toggle__fam {
+  filter:
+    drop-shadow(0 0 1.5px currentColor)
+    drop-shadow(0 0 3px currentColor);
+}
 /* La barre d'outils et la grille se touchaient : `#tab-dex` est en
    `display: block`, sans gap, et ni l'une ni l'autre ne portait de marge. Les
    vignettes butaient donc contre le champ de recherche. Une marge plutôt qu'un
