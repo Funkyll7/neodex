@@ -310,21 +310,29 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
   for (let p = 0; p < w * h; p++) if (!ponte[p]) solide[p] = 0;
   if (somme(solide) < MIN_PIXELS) return null;
 
-  // `solide` ignore la toile : c'est donc lui, et lui seul, qui fixe le cadre.
+  // Reste le cas inverse : les parties blanches du sprite, que la passe 1 a
+  // jetees en les prenant pour de la toile. Les ailes de Papilusion en sont
+  // faites, et un cadre pose sur `solide` seul les coupe — Papilusion tombait
+  // a 18,4 sur sa propre reference, derriere un Aspicot a 13.
   //
-  // La reprise des pixels du sprite blanchis par la passe 1 se fait ensuite a
-  // l'interieur de ce cadre. L'inverse — laisser `plein` decider du cadre — a
-  // coute cher : un trait de la toile qui frole le sprite lui reste connecte,
-  // etire la boite jusqu'au bord de la case, et le sprite se retrouve ecrase
-  // en diagonale dans un coin de l'empreinte. Bulbizarre marquait alors 14 et
-  // ressortait en Arbok.
+  // Ce qui separe une aile d'un trait de toile n'est pas la couleur, c'est
+  // l'epaisseur. On repart donc de `plein` debarrasse de ses structures fines,
+  // et on ne garde que ce qui tient au sprite. Laisser `plein` brut decider du
+  // cadre coutait bien plus cher : un trait qui frole le sprite lui reste
+  // connecte, etire la boite jusqu'au bord de la case, et le sprite finit
+  // ecrase en diagonale dans un coin de l'empreinte — Bulbizarre marquait
+  // alors 14 et ressortait en Arbok.
+  const epais = morpho(morpho(plein, w, h, 2, false), w, h, 2, true);
+  for (let p = 0; p < w * h; p++) if (solide[p]) epais[p] = 1;
+  const etendu = composanteDe(epais, solide, w, h) || solide;
+
   let rx0 = w;
   let ry0 = h;
   let rx1 = -1;
   let ry1 = -1;
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      if (!solide[y * w + x]) continue;
+      if (!etendu[y * w + x]) continue;
       if (x < rx0) rx0 = x;
       if (x > rx1) rx1 = x;
       if (y < ry0) ry0 = y;
@@ -401,6 +409,37 @@ function boucherTrous(masque, w, h) {
 
   const larges = morpho(morpho(trous, w, h, 2, false), w, h, 2, true);
   for (let p = 0; p < w * h; p++) if (trous[p] && !larges[p]) masque[p] = 1;
+}
+
+/**
+ * Les taches du masque qui touchent au moins une graine.
+ *
+ * Sert a etendre le sprite a ses parties claires sans ramasser la toile : les
+ * graines sont le sprite deja sur, le masque est ce qui pourrait lui
+ * appartenir, et seul ce qui tient a lui est retenu.
+ */
+function composanteDe(masque, graines, w, h) {
+  const vu = new Uint8Array(w * h);
+  const file = new Int32Array(w * h);
+  let tete = 0;
+  let queue = 0;
+  for (let p = 0; p < w * h; p++) {
+    if (graines[p] && masque[p] && !vu[p]) {
+      vu[p] = 1;
+      file[queue++] = p;
+    }
+  }
+  if (!queue) return null;
+
+  while (tete < queue) {
+    const p = file[tete++];
+    const x = p % w;
+    if (x > 0 && masque[p - 1] && !vu[p - 1]) file[queue++] = p - 1, (vu[p - 1] = 1);
+    if (x < w - 1 && masque[p + 1] && !vu[p + 1]) file[queue++] = p + 1, (vu[p + 1] = 1);
+    if (p >= w && masque[p - w] && !vu[p - w]) file[queue++] = p - w, (vu[p - w] = 1);
+    if (p < w * (h - 1) && masque[p + w] && !vu[p + w]) file[queue++] = p + w, (vu[p + w] = 1);
+  }
+  return vu;
 }
 
 /**
