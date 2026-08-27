@@ -55,6 +55,7 @@ export const GO_FILTERS = [
   { value: "all", label: "Tous" },
   { value: "missing", label: "À attraper" },
   { value: "noshiny", label: "Sans shiny" },
+  { value: "absent", label: "Pas dans GO" },
 ];
 
 /**
@@ -78,8 +79,16 @@ export function applyGoFilters(species, state, collection) {
         // Meme raison : une espece dont GO n'a pas encore sorti le chromatique
         // n'a rien a faire dans une liste de choses a faire.
         return p.goShiny && !collection.has(p.id, "gs");
+      // Les 73 absentes, sur demande. Elles gardent un filtre a elles plutot
+      // que de disparaitre : savoir ce qui manque au jeu fait partie de ce
+      // qu'on vient chercher ici.
+      case "absent":
+        return !p.goReleased;
+      // « Tous », c'est tous les OBTENABLES. Y compter les 73 absentes
+      // affichait « 1025 » a cote de « 952 attrapés » : le chiffre meme qu'on
+      // venait de corriger partout ailleurs.
       default:
-        return true;
+        return p.goReleased;
     }
   });
 

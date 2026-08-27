@@ -23,6 +23,9 @@
 #      logotypes en couleur, ces coins la faisaient ressembler a une vignette
 #      collee. En COULEUR et non en masque, pour la meme raison — un symbole
 #      monochrome entre deux logos en couleur faisait tache.
+#      Le cercle se cale sur la PASTILLE et non sur la toile : elle y est posee
+#      de travers, 16 px trop a droite et 12 px trop haut. Un cercle centre sur
+#      la toile rognait son anneau d'un cote et laissait du vert de l'autre.
 #
 #   3. logo-home.png / logo-go.png
 #      Logos couleur des deux onglets. Ils arrivent deja detoures : il suffit de
@@ -232,7 +235,7 @@ public static class Logos
     // faisaient ressembler a une vignette collee plutot qu'a un logo. On garde
     // donc le disque et on jette le reste — le bord est adouci sur deux pixels
     // pour ne pas laisser un contour en escalier a 21 px.
-    public static string Rond(string src, string dst, int size)
+    public static string Rond(string src, string dst, int size, double cxIn, double cyIn, double rIn)
     {
         using (Bitmap orig = new Bitmap(src))
         {
@@ -240,8 +243,42 @@ public static class Logos
             Bitmap a = new Bitmap(W, H, PixelFormat.Format32bppArgb);
             using (Graphics g0 = Graphics.FromImage(a)) { g0.DrawImage(orig, 0, 0, W, H); }
 
-            double cx = (W - 1) / 2.0, cy = (H - 1) / 2.0;
-            double r = Math.Min(W, H) / 2.0;
+            double cx = cxIn, cy = cyIn;
+            double r = rIn;
+
+            // Detection automatique quand aucun cercle n'est impose.
+            //
+            // Le centre de la TOILE ne convient pas : la pastille est posee de
+            // travers dans son image d'origine — decalee de 16 px a droite et
+            // de 12 px en haut. Un cercle centre sur la toile rognait donc son
+            // anneau d'un cote et laissait du vert de l'autre.
+            //
+            // On repere le disque BLEU, qui est la pastille elle-meme. Son
+            // etendue HORIZONTALE donne le centre et le rayon : verticalement
+            // le disque touche le bord de l'image et se trouve donc rogne, ce
+            // qui fausserait la mesure. Le blanc du symbole creuse le bleu au
+            // milieu, mais pas sur les cotes : l'etendue reste juste.
+            if (r <= 0)
+            {
+                int bx0 = W, bx1 = -1;
+                double sy = 0; int n = 0;
+                for (int y = 0; y < H; y++)
+                    for (int x = 0; x < W; x++)
+                    {
+                        Color c = a.GetPixel(x, y);
+                        if (c.A > 128 && c.B > 130 && c.B > c.R + 50 && c.B > c.G + 30)
+                        {
+                            if (x < bx0) bx0 = x;
+                            if (x > bx1) bx1 = x;
+                            sy += y; n++;
+                        }
+                    }
+                if (bx1 < 0) { bx0 = 0; bx1 = W - 1; n = 1; sy = (H - 1) / 2.0; }
+                cx = (bx0 + bx1) / 2.0;
+                cy = sy / n;
+                // 6 % de marge : l'anneau blanc qui entoure le disque bleu.
+                r = (bx1 - bx0 + 1) / 2.0 * 1.06;
+            }
             double doux = Math.Max(1.0, r * 0.02);
 
             BitmapData bd = a.LockBits(new Rectangle(0, 0, W, H), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
@@ -315,7 +352,7 @@ $b = Join-Path $src "capture.jpg"
 "capture-forme.png    " + [Logos]::MasqueForme($b, (Join-Path $img "capture-forme.png"), 64)
 "logo-home.png        " + [Logos]::Couleur((Join-Path $src "pokemon-home.png"), (Join-Path $img "logo-home.png"), 72)
 "logo-go.png          " + [Logos]::Couleur((Join-Path $src "pokemon-go.png"), (Join-Path $img "logo-go.png"), 72)
-"logo-quete.png       " + [Logos]::Rond((Join-Path $src "quete.png"), (Join-Path $img "logo-quete.png"), 96)
+"logo-quete.png       " + [Logos]::Rond((Join-Path $src "quete.png"), (Join-Path $img "logo-quete.png"), 96, 0, 0, 0)
 
 foreach ($f in @("capture.png", "capture-forme.png", "logo-home.png", "logo-go.png", "logo-quete.png")) {
   $p = Join-Path $img $f
