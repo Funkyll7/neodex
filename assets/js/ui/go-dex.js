@@ -1,15 +1,17 @@
 /**
  * go-dex.js — le livingdex Pokémon GO.
  *
- * Un Pokédex volontairement plus simple que l'autre : GO ne connaît ni forme
- * régionale, ni Gigamax, ni case ♂ / ♀. Une espèce y vaut deux cases — attrapé,
- * chromatique — et rien de plus. Recopier la vignette du Pokédex HOME, avec ses
- * six boutons et son compteur de formes, aurait affiché six cases dont quatre
- * n'existent pas dans le jeu.
+ * Un Pokédex volontairement plus simple que l'autre. On y range des BOÎTES :
+ * les 1025 espèces, plus les 55 formes régionales que le jeu propose — dans GO,
+ * un Miaouss d'Alola occupe une boîte à lui, exactement comme celui de Kanto.
+ * Deux cases par boîte, attrapé et chromatique, et rien de plus : ni Méga, ni
+ * Gigamax, ni cosmétique, ni case ♂ / ♀. Recopier la vignette du Pokédex HOME
+ * aurait affiché six cases dont quatre n'existent pas dans le jeu.
  *
  * Les deux collections ne se mélangent jamais : les cases GO s'appellent `gn`
- * et `gs`, `completion.js` ne les regarde pas, et le pourcentage HOME ne bouge
- * pas d'un point quand on coche ici.
+ * et `gs` pour une espèce, `gf<id>` et `gf<id>s` pour une forme. `completion.js`
+ * ne les regarde pas, et le pourcentage HOME ne bouge pas d'un point quand on
+ * coche ici.
  *
  * Mêmes deux principes que dex-grid.js, et pour les mêmes raisons :
  *   - un seul écouteur, délégué sur la grille, jamais détruit ;
@@ -20,7 +22,7 @@
 
 import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
-import { spriteImg } from "../domain/sprites.js";
+import { spriteImg, formImg } from "../domain/sprites.js";
 import { applyGoFilters } from "../domain/filters.js";
 import { goProgressOf } from "../domain/progress.js";
 import { dexNumber } from "./common.js";
@@ -63,7 +65,7 @@ export function createGoDex(ctx) {
 
   function appendPage() {
     const next = list.slice(shown, shown + CONFIG.pageSize);
-    grid.append(...next.map((species) => carte(species, ctx)));
+    grid.append(...next.map((entry) => carte(entry, ctx)));
     shown += next.length;
   }
 
@@ -101,7 +103,7 @@ export function createGoDex(ctx) {
   /* -------------------------------- rendu ------------------------------ */
 
   function renderStats() {
-    const progress = goProgressOf(dataset.species, collection);
+    const progress = goProgressOf(dataset.goEntries, collection);
     out.owned.textContent = progress.owned;
     out.ownedTotal.textContent = progress.total;
     out.shiny.textContent = progress.shiny;
@@ -115,7 +117,7 @@ export function createGoDex(ctx) {
   return {
     /** Rendu complet : la liste filtrée a changé. */
     render() {
-      list = applyGoFilters(dataset.species, store.state, collection);
+      list = applyGoFilters(dataset.goEntries, store.state, collection);
       shown = 0;
       grid.replaceChildren();
       empty.hidden = list.length > 0;
@@ -126,18 +128,26 @@ export function createGoDex(ctx) {
       rearmer();
     },
 
-    /** Une case vient d'être cochée : on repeint une vignette et les chiffres. */
-    refresh(id) {
+    /**
+     * Une case vient d'être cochée : on repeint la vignette et les chiffres.
+     *
+     * Une espèce peut avoir plusieurs boîtes à l'écran — la sienne et ses
+     * formes régionales — et cocher l'une ne touche pas les autres. On repeint
+     * donc la boîte visée, pas toutes celles qui portent ce numéro.
+     */
+    refresh(id, slot) {
       renderStats();
-      const node = grid.querySelector(`[data-id="${id}"]`);
+      const entry = list.find((e) => e.id === id && (e.slot === slot || e.shinySlot === slot));
+      if (!entry) return;
+      const node = grid.querySelector(`[data-key="${entry.key}"]`);
       if (!node) return;
-      peindre(node, dataset.byId.get(id), ctx);
+      peindre(node, entry, ctx);
       // La vignette ne correspond plus au filtre en cours : on la BARRE au lieu
-      // de reconstruire 1025 vignettes sous le doigt. Reconstruire décalait la
-      // liste d'un cran et remettait le défilement au premier palier — chaque
-      // Pokémon attrapé coûtait alors une remontée de liste entière.
+      // de reconstruire un millier de vignettes sous le doigt. Reconstruire
+      // décalait la liste d'un cran et remettait le défilement au premier
+      // palier — chaque Pokémon attrapé coûtait une remontée de liste entière.
       if (store.state.goStatus !== "all") {
-        const encore = applyGoFilters([dataset.byId.get(id)], store.state, collection).length > 0;
+        const encore = applyGoFilters([entry], store.state, collection).length > 0;
         node.classList.toggle("gcard--stale", !encore);
       }
     },
@@ -155,88 +165,105 @@ export function createGoDex(ctx) {
 
 /* -------------------------------- vignette ------------------------------- */
 
-function carte(species, ctx) {
+function carte(entry, ctx) {
+  const species = entry.species;
   const color = ctx.dataset.types[species.types[0]] || "#8b8b8b";
   const node = el(
     "div.gcard",
-    { "--type": color, dataset: { id: species.id }, role: "listitem" },
-    el("span.gcard__num", dexNumber(species.id)),
+    {
+      "--type": color,
+      dataset: { key: entry.key, id: entry.id, slot: entry.slot },
+      role: "listitem",
+    },
+    el(
+      "span.gcard__num",
+      dexNumber(entry.id),
+      // La famille de la forme, en toutes lettres. Deux boîtes portent le même
+      // numéro : sans elle, le Miaouss d'Alola et celui de Kanto ne se
+      // distinguaient que par leur sprite, à 56 px.
+      entry.kind ? el("span.gcard__kind", KIND_COURT[entry.kind] || entry.kind) : null
+    ),
     el("span.gcard__art"),
-    el("span.gcard__name", species.name),
+    el("span.gcard__name", { title: entry.name }, entry.name),
     el(
       "div.gcard__toggles",
       // Pas encore dans Pokémon GO : rien ne se coche. La vignette reste dans
       // la grille — savoir qu'un Pokémon manque au jeu fait partie de ce qu'on
       // vient chercher ici — mais ses deux cases deviennent muettes, et elle
       // ne compte dans aucun total.
-      !species.goReleased
-        ? el(
-            "span.gcard__absent",
-            { title: "Pas encore obtenable dans Pokémon GO" },
-            "Pas dans GO"
-          )
+      !entry.released
+        ? el("span.gcard__absent", { title: "Pas encore obtenable dans Pokémon GO" }, "Pas dans GO")
         : el(
             "button.gcard__btn",
             {
               type: "button",
-              dataset: { goSlot: "gn", species: species.id },
-              title: `${species.name} — attrapé dans Pokémon GO`,
-              "aria-label": `${species.name} — attrapé dans Pokémon GO`,
+              dataset: { goSlot: entry.slot, species: entry.id },
+              title: `${entry.name} — attrapé dans Pokémon GO`,
+              "aria-label": `${entry.name} — attrapé dans Pokémon GO`,
             },
             el("span.toggle__ico.toggle__ico--capture", { "aria-hidden": "true" })
           ),
       // Pas de bouton chromatique quand GO n'en a jamais sorti : une case qu'on
       // ne peut pas cocher n'a rien à faire sous le doigt. Un rappel muet prend
       // sa place, pour que la vignette garde sa silhouette dans la grille.
-      !species.goReleased
+      !entry.released
         ? null
-        : species.goShiny
-        ? el(
-            "button.gcard__btn.gcard__btn--gold",
-            {
-              type: "button",
-              dataset: { goSlot: "gs", species: species.id },
-              title: `${species.name} — chromatique dans Pokémon GO`,
-              "aria-label": `${species.name} — chromatique dans Pokémon GO`,
-            },
-            el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
-          )
-        : el(
-            "span.gcard__btn.gcard__btn--vide",
-            { title: "Aucun chromatique dans Pokémon GO à ce jour", "aria-hidden": "true" },
-            "—"
-          )
+        : entry.shiny
+          ? el(
+              "button.gcard__btn.gcard__btn--gold",
+              {
+                type: "button",
+                dataset: { goSlot: entry.shinySlot, species: entry.id },
+                title: `${entry.name} — chromatique dans Pokémon GO`,
+                "aria-label": `${entry.name} — chromatique dans Pokémon GO`,
+              },
+              el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
+            )
+          : el(
+              "span.gcard__btn.gcard__btn--vide",
+              { title: "Aucun chromatique dans Pokémon GO à ce jour", "aria-hidden": "true" },
+              "—"
+            )
     )
   );
-  peindre(node, species, ctx);
+  peindre(node, entry, ctx);
   return node;
 }
+
+/** Libellé court de la famille, posé à côté du numéro. */
+const KIND_COURT = { alola: "Alola", galar: "Galar", hisui: "Hisui", paldea: "Paldéa" };
 
 /**
  * Remet la vignette à l'état de la collection. Les boutons ne sont jamais
  * remplacés : on ne fait que retourner leur `aria-pressed`.
  */
-function peindre(node, species, ctx) {
+function peindre(node, entry, ctx) {
   const { collection } = ctx;
-  const attrape = collection.has(species.id, "gn");
-  const shiny = collection.has(species.id, "gs");
+  const attrape = collection.has(entry.id, entry.slot);
+  const shiny = collection.has(entry.id, entry.shinySlot);
 
   node.className = [
     "gcard",
-    !species.goReleased ? "gcard--absent" : attrape ? "gcard--owned" : "gcard--missing",
+    !entry.released ? "gcard--absent" : attrape ? "gcard--owned" : "gcard--missing",
+    // Le chromatique sans le normal : on l'a bien en boîte, dire « je n'ai
+    // rien » en passant l'image en gris était faux. Même règle que le Pokédex
+    // HOME, où c'est `.card--partial` qui la porte.
+    !attrape && shiny ? "gcard--partial" : "",
     shiny ? "gcard--shiny" : "",
     attrape && shiny ? "gcard--complete" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
-  node.title = !species.goReleased
+  node.title = !entry.released
     ? "Pas encore obtenable dans Pokémon GO"
     : attrape && shiny
       ? "Attrapé et chromatique"
       : attrape
         ? "Attrapé"
-        : "À attraper";
+        : shiny
+          ? "Chromatique obtenu, pas la version normale"
+          : "À attraper";
 
   // Le chromatique obtenu prend la place du sprite normal : c'est celui dont on
   // est fier, et c'est celui qu'on cherche des yeux en parcourant la grille.
@@ -244,10 +271,15 @@ function peindre(node, species, ctx) {
   const key = String(shiny);
   if (art.dataset.key !== key) {
     art.dataset.key = key;
-    fill(art, spriteImg(species.id, { shiny, alt: species.name, className: "gcard__img" }));
+    fill(
+      art,
+      entry.form
+        ? formImg(entry.form, { shiny, alt: entry.name, className: "gcard__img" })
+        : spriteImg(entry.id, { shiny, alt: entry.name, className: "gcard__img" })
+    );
   }
 
   for (const bouton of node.querySelectorAll("[data-go-slot]")) {
-    bouton.setAttribute("aria-pressed", String(collection.has(species.id, bouton.dataset.goSlot)));
+    bouton.setAttribute("aria-pressed", String(collection.has(entry.id, bouton.dataset.goSlot)));
   }
 }

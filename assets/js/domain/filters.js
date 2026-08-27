@@ -60,13 +60,19 @@ export const GO_FILTERS = [
 
 /**
  * Meme grammaire de recherche que le Pokedex HOME — numero exact ou debut de
- * numero, sinon `species.search` — mais sur les seules cases GO.
+ * numero, sinon `species.search` — mais sur les BOITES de GO : les especes et
+ * les 55 formes regionales que le jeu propose.
+ *
+ * L'ordre de `dataset.goEntries` est deja celui des boites — chaque espece
+ * suivie de ses formes — et on n'y touche pas : un livingdex se range comme le
+ * jeu le range, pas par ordre alphabetique.
  */
-export function applyGoFilters(species, state, collection) {
+export function applyGoFilters(entries, state, collection) {
   const query = (state.goSearch || "").trim().toLowerCase();
   const number = numberQuery(query);
 
-  const list = species.filter((p) => {
+  const list = entries.filter((e) => {
+    const p = e.species;
     if (query && !matches(p, query, number)) return false;
     if (state.goType !== "all" && !p.types.includes(state.goType)) return false;
     if (state.goGen !== "all" && String(p.gen) !== state.goGen) return false;
@@ -74,29 +80,28 @@ export function applyGoFilters(species, state, collection) {
       // « A attraper » ne propose que ce qui EST attrapable : les 73 especes
       // absentes du jeu y seraient restees pour toujours.
       case "missing":
-        return p.goReleased && !collection.has(p.id, "gn");
+        return e.released && !collection.has(e.id, e.slot);
       case "noshiny":
-        // Meme raison : une espece dont GO n'a pas encore sorti le chromatique
+        // Meme raison : une boite dont GO n'a pas encore sorti le chromatique
         // n'a rien a faire dans une liste de choses a faire.
-        return p.goShiny && !collection.has(p.id, "gs");
+        return e.shiny && !collection.has(e.id, e.shinySlot);
       // Les 73 absentes, sur demande. Elles gardent un filtre a elles plutot
       // que de disparaitre : savoir ce qui manque au jeu fait partie de ce
       // qu'on vient chercher ici.
       case "absent":
-        return !p.goReleased;
+        return !e.released;
       // « Tous », c'est tous les OBTENABLES. Y compter les 73 absentes
       // affichait « 1025 » a cote de « 952 attrapés » : le chiffre meme qu'on
       // venait de corriger partout ailleurs.
       default:
-        return p.goReleased;
+        return e.released;
     }
   });
 
-  // Toujours par numero national : un livingdex se range dans l'ordre des
-  // boites, pas par ordre alphabetique.
-  list.sort((a, b) => a.id - b.id);
+  // Un numero tape en entier remonte sa boite de base en tete, comme dans
+  // l'autre Pokedex.
   if (number !== null) {
-    const exact = list.findIndex((p) => p.id === number);
+    const exact = list.findIndex((e) => e.id === number && !e.form);
     if (exact > 0) list.unshift(list.splice(exact, 1)[0]);
   }
   return list;

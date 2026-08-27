@@ -1543,6 +1543,22 @@
 }
 .gcard--missing { opacity: .55; }
 .gcard--missing .gcard__img { filter: var(--sprite-dim); }
+/* Le chromatique sans le normal : on l'a bien en boîte, le passer en gris
+   disait le contraire. Même règle que `.card--partial` du Pokédex HOME. */
+.gcard--partial { opacity: .85; }
+.gcard--partial .gcard__img { filter: none; }
+/* Deux boîtes portent le même numéro dès qu'une forme régionale existe : la
+   famille est écrite à côté, sinon le Miaouss d'Alola et celui de Kanto ne se
+   distinguaient que par leur sprite, à 56 px. */
+.gcard__kind {
+  margin-left: 4px;
+  padding: 0 4px;
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 9px; font-weight: 800; letter-spacing: .02em;
+}
 .gcard--owned { border-color: color-mix(in srgb, var(--type) 45%, transparent); }
 .gcard--complete { border-color: var(--accent-border); background: var(--accent-wash); }
 .gcard__num { font-family: var(--font-display); font-weight: 800; font-size: 10px; color: var(--text-faint); }

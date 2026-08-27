@@ -148,10 +148,9 @@ function start(dataset) {
       // Les deux Pokedex peuvent etre concernes, et l'entree ne dit pas lequel
       // est a l'ecran. Repeindre les deux coute deux vignettes ; se tromper
       // coute une case qui reste cochee sous les yeux apres l'annulation.
-      if (touches.size === 1) {
-        const id = [...touches][0];
-        onCollectionChange(id);
-        go.refresh(id);
+      if (touches.size === 1 && entries.length === 1) {
+        onCollectionChange(entries[0].id);
+        go.refresh(entries[0].id, entries[0].slot);
       } else {
         onCollectionChange();
         go.render();
@@ -185,7 +184,7 @@ function start(dataset) {
         { id, slot, before: avant },
       ]);
       tapCase();
-      go.refresh(id);
+      go.refresh(id, slot);
       // La colonne de gauche affiche la progression GO tant qu'on est sur cet
       // onglet : elle doit suivre chaque case, comme elle suit celles de HOME.
       renderCounts();
@@ -270,7 +269,7 @@ function start(dataset) {
    */
   function renderTabs() {
     const counts = collection.counts(dataset.species, complete);
-    const goCounts = goProgressOf(dataset.species, collection);
+    const goCounts = goProgressOf(dataset.goEntries, collection);
     fill(
       tabsRoot,
       [
@@ -315,7 +314,7 @@ function start(dataset) {
     sidebar.render(
       collection.counts(dataset.species, complete),
       progressOf(dataset.species, collection),
-      goProgressOf(dataset.species, collection)
+      goProgressOf(dataset.goEntries, collection)
     );
     save.render();
     renderTabs();
@@ -450,7 +449,7 @@ function registerWorker() {
   });
 }
 
-/** Les deux cases du Pokedex GO, que `requiredSlots()` ne connait pas : elles
+/** Les cases du Pokedex GO, que `requiredSlots()` ne connait pas : elles
     n'entrent pas dans la progression HOME, donc il ne les nomme jamais. */
 const GO_LABELS = { gn: "GO — attrapé", gs: "GO — chromatique" };
 
@@ -464,6 +463,14 @@ const GO_LABELS = { gn: "GO — attrapé", gs: "GO — chromatique" };
 function slotLabel(species, slot) {
   if (GO_LABELS[slot]) return GO_LABELS[slot];
   if (!species) return slot;
+  // Une forme regionale dans GO : `gf10091` / `gf10091s`. Son nom vient de la
+  // forme elle-meme, `requiredSlots()` ne parle que des cases HOME.
+  const go = /^gf(\d+)(s?)$/.exec(slot);
+  if (go) {
+    const forme = species.forms.find((f) => String(f.id) === go[1]);
+    const nom = forme ? forme.name : `forme ${go[1]}`;
+    return `GO — ${nom}${go[2] ? " chromatique" : ""}`;
+  }
   const entree = requiredSlots(species).find((e) => e.slot === slot);
   return entree ? entree.label : slot;
 }

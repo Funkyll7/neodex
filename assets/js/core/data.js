@@ -89,6 +89,20 @@ export async function loadDataset() {
      * raccourcit a chaque mise a jour du jeu.
      */
     goAbsent: new Set(goRef.absents || []),
+    /**
+     * Formes regionales presentes dans GO, en « <numero>-<region> ». GO n'a ni
+     * Mega, ni Gigamax, ni cosmetique : seules ces quatre familles s'y rangent
+     * dans une boite a part, et ce sont donc les seules qui comptent ici.
+     */
+    goFormes: new Set(goRef.formes || []),
+    goFormesShiny: new Set(goRef.formesShiny || []),
+    /**
+     * Formes que la cle « <numero>-<region> » ramasse a tort : Serebii ne donne
+     * que l'espece et la region, et deux formes du depot peuvent partager ce
+     * couple. Une exclusion nommee plutot qu'une heuristique — un Mode Transe
+     * ne se reconnait a rien d'automatique.
+     */
+    goFormesExclues: new Set(goRef.formesExclues || []),
   };
 
   const species = baseChunks
@@ -116,7 +130,62 @@ export async function loadDataset() {
     baseCollection: collection,
     /** Toutes les formes, a plat — pratique pour les compteurs. */
     forms: species.flatMap((p) => p.forms),
+    /** Ce que le Pokedex GO range dans des boites. Voir `goEntries()`. */
+    goEntries: goEntries(species),
   };
+}
+
+/**
+ * Ce que le Pokedex GO range dans des boites : les 1025 especes, plus les 55
+ * formes regionales que le jeu propose.
+ *
+ * Une liste PLATE d'entrees, et non les especes avec leurs formes en dessous :
+ * dans GO, une forme d'Alola n'est pas un detail de son espece, c'est une boite
+ * de plus a remplir. La grille les traite donc a egalite, exactement comme le
+ * jeu — et chaque entree porte ses deux cases, son sprite et son nom.
+ *
+ * Seules les quatre familles regionales entrent ici. GO n'a ni Mega, ni
+ * Gigamax, ni forme cosmetique : les proposer aurait donne des boites qu'aucun
+ * joueur ne peut remplir.
+ */
+const REGIONS_GO = new Set(["alola", "galar", "hisui", "paldea"]);
+
+function goEntries(species) {
+  const entries = [];
+  for (const p of species) {
+    entries.push(
+      Object.freeze({
+        key: String(p.id),
+        id: p.id,
+        species: p,
+        form: null,
+        name: p.name,
+        kind: null,
+        slot: "gn",
+        shinySlot: "gs",
+        released: p.goReleased,
+        shiny: p.goShiny,
+      })
+    );
+    for (const form of p.forms) {
+      if (!REGIONS_GO.has(form.kind) || !form.goReleased) continue;
+      entries.push(
+        Object.freeze({
+          key: form.slot,
+          id: p.id,
+          species: p,
+          form,
+          name: form.name,
+          kind: form.kind,
+          slot: form.goSlot,
+          shinySlot: form.goShinySlot,
+          released: true,
+          shiny: form.goShiny,
+        })
+      );
+    }
+  }
+  return entries;
 }
 
 /* ------------------------------ index prealables ------------------------- */
@@ -322,6 +391,18 @@ function mergeForm(form, species, context) {
     shinySlotF: `f${form.id}sf`,
     /** Un sprite chromatique existe-t-il seulement ? */
     hasShinySprite,
+    /**
+     * Le Pokedex GO, a part. Une forme regionale y est un Pokemon de plus a
+     * ranger dans une boite, comme dans HOME — mais GO n'a ni Mega, ni
+     * Gigamax, ni cosmetique, et il sort ses formes a son propre rythme.
+     * Les deux cases GO de la forme, sans rapport avec les quatre de HOME.
+     */
+    goReleased:
+      context.goFormes.has(`${species.id}-${form.kind}`) && !context.goFormesExclues.has(form.key),
+    goShiny:
+      context.goFormesShiny.has(`${species.id}-${form.kind}`) && !context.goFormesExclues.has(form.key),
+    goSlot: `gf${form.id}`,
+    goShinySlot: `gf${form.id}s`,
   });
 }
 

@@ -25,12 +25,15 @@ export const FORM_KINDS = ["alola", "galar", "hisui", "paldea", "other", "cosmet
 /**
  * Le livingdex Pokémon GO, compté à part.
  *
- * Deux cases par espèce et rien d'autre — GO n'a ni forme régionale, ni case
- * ♂ / ♀. Il ne partage donc AUCUN compteur avec le Pokédex HOME : mélanger les
- * deux ferait un pourcentage qui ne veut rien dire, puisque ce ne sont pas les
- * mêmes Pokémon qu'on range.
+ * Deux cases par **boîte** — attrapé, chromatique. Une boîte, c'est une espèce
+ * ou l'une des 55 formes régionales que GO propose : dans le jeu, un Miaouss
+ * d'Alola occupe une boîte à lui, exactement comme le Miaouss de Kanto. Pas de
+ * case ♂ / ♀, pas de Méga, pas de Gigamax, pas de cosmétique.
+ *
+ * Aucun compteur n'est partagé avec le Pokédex HOME : mélanger les deux ferait
+ * un pourcentage qui ne veut rien dire, puisque ce ne sont pas les mêmes cases.
  */
-export function goProgressOf(speciesList, collection) {
+export function goProgressOf(entries, collection) {
   let owned = 0;
   let shiny = 0;
   // Aucun des deux dénominateurs n'est 1025, et pour deux raisons distinctes :
@@ -43,22 +46,22 @@ export function goProgressOf(speciesList, collection) {
   // listes sont relevées sur Serebii, voir data/reference/go.json.
   let total = 0;
   let shinyTotal = 0;
-  for (const species of speciesList) {
-    if (!species.goReleased) continue;
+  for (const entry of entries) {
+    if (!entry.released) continue;
     total += 1;
-    if (collection.has(species.id, "gn")) owned += 1;
-    if (!species.goShiny) continue;
+    if (collection.has(entry.id, entry.slot)) owned += 1;
+    if (!entry.shiny) continue;
     shinyTotal += 1;
-    if (collection.has(species.id, "gs")) shiny += 1;
+    if (collection.has(entry.id, entry.shinySlot)) shiny += 1;
   }
   const cases = total + shinyTotal;
   return {
     owned,
     shiny,
-    /** Especes obtenables : le denominateur de « attrapes ». */
+    /** Boites obtenables : le denominateur de « attrapes ». */
     total,
-    /** Especes montrees dans la grille, absentes du jeu comprises. */
-    listees: speciesList.length,
+    /** Boites montrees dans la grille, absentes du jeu comprises. */
+    listees: entries.length,
     shinyTotal,
     done: owned + shiny,
     cases,

@@ -14,6 +14,7 @@
  *   f<id>s       la meme, chromatique
  *   f<id>f       la meme, femelle (formes a dimorphisme : Farfuret de Hisui)
  *   f<id>sf      la meme, chromatique femelle
+ *   gf<id>       forme regionale dans Pokemon GO, normale ; gf<id>s chromatique
  *   x<n>-<clef>  forme cosmetique (Zarbi, Prismillon, Charmilly…), normale
  *   y<n>-<clef>  la meme, chromatique
  *
@@ -39,6 +40,12 @@ export const SLOT_KEYS = ["om", "of", "sm", "sf", "gn", "gs", "vo", "vs", "vof",
 
 /** Cases de forme : "f10161", "f10161s" (chromatique), "…f" (femelle). */
 const FORM_SLOT = /^f\d+s?f?$/;
+/**
+ * Cases d'une forme regionale dans Pokemon GO : "gf10161", "gf10161s".
+ * Le prefixe `gf` les separe des cases HOME de la meme forme (`f10161`) :
+ * avoir le Miaouss d'Alola dans GO ne le met pas dans une boite de HOME.
+ */
+const GO_FORM_SLOT = /^gf\d+s?$/;
 /** Cases de forme cosmetique : "x201-b" (normale), "y201-b" (chromatique). */
 const COSMETIC_SLOT = /^[xy]\d+-[a-z0-9-]+$/;
 /**
@@ -58,7 +65,8 @@ const aUneCosmetique = (marks, lettre) => {
   return false;
 };
 
-const isSlot = (key) => SLOT_KEYS.includes(key) || FORM_SLOT.test(key) || COSMETIC_SLOT.test(key);
+const isSlot = (key) =>
+  SLOT_KEYS.includes(key) || FORM_SLOT.test(key) || GO_FORM_SLOT.test(key) || COSMETIC_SLOT.test(key);
 
 /** Ancienne case -> champ de la forme principale qui la remplace. */
 const LEGACY_SLOTS = { vo: "slot", vs: "shinySlot", vof: "slotF", vsf: "shinySlotF" };
