@@ -165,20 +165,32 @@ function carte(species, ctx) {
     el("span.gcard__name", species.name),
     el(
       "div.gcard__toggles",
-      el(
-        "button.gcard__btn",
-        {
-          type: "button",
-          dataset: { goSlot: "gn", species: species.id },
-          title: `${species.name} — attrapé dans Pokémon GO`,
-          "aria-label": `${species.name} — attrapé dans Pokémon GO`,
-        },
-        el("span.toggle__ico.toggle__ico--capture", { "aria-hidden": "true" })
-      ),
+      // Pas encore dans Pokémon GO : rien ne se coche. La vignette reste dans
+      // la grille — savoir qu'un Pokémon manque au jeu fait partie de ce qu'on
+      // vient chercher ici — mais ses deux cases deviennent muettes, et elle
+      // ne compte dans aucun total.
+      !species.goReleased
+        ? el(
+            "span.gcard__absent",
+            { title: "Pas encore obtenable dans Pokémon GO" },
+            "Pas dans GO"
+          )
+        : el(
+            "button.gcard__btn",
+            {
+              type: "button",
+              dataset: { goSlot: "gn", species: species.id },
+              title: `${species.name} — attrapé dans Pokémon GO`,
+              "aria-label": `${species.name} — attrapé dans Pokémon GO`,
+            },
+            el("span.toggle__ico.toggle__ico--capture", { "aria-hidden": "true" })
+          ),
       // Pas de bouton chromatique quand GO n'en a jamais sorti : une case qu'on
       // ne peut pas cocher n'a rien à faire sous le doigt. Un rappel muet prend
       // sa place, pour que la vignette garde sa silhouette dans la grille.
-      species.goShiny
+      !species.goReleased
+        ? null
+        : species.goShiny
         ? el(
             "button.gcard__btn.gcard__btn--gold",
             {
@@ -211,14 +223,20 @@ function peindre(node, species, ctx) {
 
   node.className = [
     "gcard",
-    attrape ? "gcard--owned" : "gcard--missing",
+    !species.goReleased ? "gcard--absent" : attrape ? "gcard--owned" : "gcard--missing",
     shiny ? "gcard--shiny" : "",
     attrape && shiny ? "gcard--complete" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
-  node.title = attrape && shiny ? "Attrapé et chromatique" : attrape ? "Attrapé" : "À attraper";
+  node.title = !species.goReleased
+    ? "Pas encore obtenable dans Pokémon GO"
+    : attrape && shiny
+      ? "Attrapé et chromatique"
+      : attrape
+        ? "Attrapé"
+        : "À attraper";
 
   // Le chromatique obtenu prend la place du sprite normal : c'est celui dont on
   // est fier, et c'est celui qu'on cherche des yeux en parcourant la grille.

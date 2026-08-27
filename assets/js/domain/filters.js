@@ -70,11 +70,13 @@ export function applyGoFilters(species, state, collection) {
     if (state.goType !== "all" && !p.types.includes(state.goType)) return false;
     if (state.goGen !== "all" && String(p.gen) !== state.goGen) return false;
     switch (state.goStatus) {
+      // « A attraper » ne propose que ce qui EST attrapable : les 73 especes
+      // absentes du jeu y seraient restees pour toujours.
       case "missing":
-        return !collection.has(p.id, "gn");
+        return p.goReleased && !collection.has(p.id, "gn");
       case "noshiny":
-        // Une espece dont GO n'a jamais sorti le chromatique n'a rien a faire
-        // dans cette liste : elle y resterait pour toujours.
+        // Meme raison : une espece dont GO n'a pas encore sorti le chromatique
+        // n'a rien a faire dans une liste de choses a faire.
         return p.goShiny && !collection.has(p.id, "gs");
       default:
         return true;

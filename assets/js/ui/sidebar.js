@@ -200,7 +200,7 @@ export function createSidebar(ctx) {
       const filtres = surGo() ? GO_FILTERS : STATUS_FILTERS;
       const cleStatut = surGo() ? "goStatus" : "status";
       const decompte = surGo()
-        ? { all: go.total, missing: go.total - go.owned, noshiny: go.shinyTotal - go.shiny }
+        ? { all: go.listees, missing: go.total - go.owned, noshiny: go.shinyTotal - go.shiny }
         : counts;
 
       fill(

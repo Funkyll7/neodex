@@ -39,10 +39,15 @@ la grille. `/` va à la recherche.
 **Trois onglets.** *Pokédex Pokémon HOME* est celui décrit ci-dessus, avec ses
 formes et ses 2 802 cases. *Pokédex Pokémon GO* est un livingdex à part,
 volontairement plus simple : GO ne connaît ni forme régionale, ni Gigamax, ni
-case ♂ / ♀, donc deux cases par espèce — attrapé, chromatique — et 2 050 en
-tout. Les deux collections vivent dans le même `data/collection.json` mais ne
-partagent aucun compteur : cocher dans l'un ne fait pas bouger le pourcentage
-de l'autre. *Quêtes* propose une cible de shiny hunt à la fois.
+case ♂ / ♀, donc deux cases par espèce — attrapé, chromatique. **1 840 cases**,
+et pas 2 050 : 73 espèces ne sont pas encore obtenables dans GO, et 64 des 952
+restantes n'ont pas encore de chromatique. La grille les montre quand même,
+grisées et sans case — savoir qu'un Pokémon manque au jeu fait partie de ce
+qu'on vient chercher. Les deux listes sont relevées sur Serebii
+(`data/reference/go.json`). Les deux collections vivent dans le même
+`data/collection.json` mais ne partagent aucun compteur : cocher dans l'un ne
+fait pas bouger le pourcentage de l'autre. *Quêtes* propose une cible de shiny
+hunt à la fois.
 
 **Vingt-six thèmes**, en quatre familles : Base (sombre, clair), Couleurs (une
 palette par teinte), Légendaires (un par région) et Starters (un trio par

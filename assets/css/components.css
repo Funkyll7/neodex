@@ -1564,6 +1564,21 @@
 .gcard__btn:hover { filter: brightness(1.15); }
 .gcard__btn[aria-pressed="true"] { background: var(--type); color: #fff; }
 .gcard__btn--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+/* Pas encore obtenable dans Pokémon GO. La vignette reste dans la grille —
+   savoir qu'un Pokémon manque au jeu fait partie de ce qu'on vient chercher —
+   mais elle ne porte aucune case et ne compte dans aucun total. */
+.gcard--absent { opacity: .38; }
+.gcard--absent .gcard__img { filter: var(--sprite-dim); }
+.gcard__absent {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px dashed var(--border); border-radius: var(--r-sm);
+  padding: 7px 4px;
+  color: var(--text-ghost);
+  font-size: 9.5px; font-weight: 800; letter-spacing: .03em;
+  white-space: nowrap;
+}
+
 /* Aucun chromatique dans GO a ce jour : la place du bouton reste tenue, pour
    que les vignettes gardent la meme silhouette dans la grille, mais rien ne se
    coche — une case impossible sous le doigt est pire qu'une case absente. */

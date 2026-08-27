@@ -92,7 +92,9 @@ Projet Poke/
 │   │   ├── generations.json    jeu d'origine et année par génération
 │   │   ├── games.json          23 jeux de la série principale (+ version groups)
 │   │   ├── hunt.json           méthodes de shiny hunt, taux, règles d'exception
-│   │   └── shiny-locks.json    verrou chromatique par jeu, + `noShiny` (jamais nulle part)
+│   │   ├── shiny-locks.json    verrou chromatique par jeu, + `noShiny` (jamais nulle part)
+│   │   └── go.json             Pokémon GO : les 73 espèces pas encore obtenables
+│   │                           et les 889 chromatiques (relevé Serebii)
 │   ├── details/                ✎ écrit à la main, enrichissement par Pokémon
 │   │   ├── gen-1.json … gen-9.json    où le trouver, corrections de jeux
 │   │   ├── forms.json          où obtenir chaque forme, par catégorie et au cas par cas
@@ -220,6 +222,13 @@ sprite de la forme possédée, en couleur, au lieu de laisser croire qu'on n'a
 rien. Elle porte alors `.card--partial`, ni possédée ni absente.
 
 ### Les deux cases du Pokédex Pokémon GO
+
+Le total n'est pas 1025 × 2. 73 espèces sont marquées « Not Currently
+Available » par Serebii — Arceus, Manaphy, les Trésors du Fléau, la moitié de
+Paldéa — et 64 des 952 restantes n'ont pas encore de chromatique dans GO. La
+grille les montre quand même, grisées et sans case : savoir qu'un Pokémon
+manque au jeu fait partie de ce qu'on vient chercher. Les deux listes sont dans
+`data/reference/go.json`.
 
 `gn` et `gs` vivent dans le même `marks[id]` que tout le reste : un seul
 fichier, une seule synchronisation, un seul export. Elles n'apparaissent jamais
@@ -384,6 +393,7 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | refaire une pastille de bouton ou un logo d'onglet | `tools/make_logos.ps1` |
 | ajouter un thème | un bloc dans `theme.css` + une ligne dans `ui/themes-list.js` |
 | toucher au Pokédex Pokémon GO | `ui/go-dex.js` + `applyGoFilters` et `goProgressOf` |
+| mettre à jour ce que GO propose | `data/reference/go.json` (blocs `absents` et `shiny`) |
 | changer ce qui compte comme « possédé » | `domain/collection.js` (`isOwned`) + `domain/display.js` |
 | retoucher la feuille mobile | `ui/detail-panel.js` (`createSheet`) + bloc « Feuille mobile » de `components.css` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |

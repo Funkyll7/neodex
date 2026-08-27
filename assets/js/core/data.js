@@ -83,6 +83,12 @@ export async function loadDataset() {
      * jamais existe : un compteur impossible a terminer.
      */
     goShiny: new Set(goRef.shiny || []),
+    /**
+     * Les 73 especes que Serebii marque « Not Currently Available ». On stocke
+     * les ABSENTES et non les presentes : c'est la liste qui bouge, et elle
+     * raccourcit a chaque mise a jour du jeu.
+     */
+    goAbsent: new Set(goRef.absents || []),
   };
 
   const species = baseChunks
@@ -174,12 +180,19 @@ function merge(entry, detail = {}, avail = {}, rawForms = [], context) {
      */
     noShiny: context.noShiny.has(entry.id),
     /**
+     * Cette espece est-elle obtenable dans Pokemon GO aujourd'hui ?
+     * 73 ne le sont pas — Arceus, Manaphy, les Tresors du Fleau, la moitie de
+     * Paldea. Les compter donnait un livingdex de 1025 cases dont 73
+     * impossibles a cocher.
+     */
+    goReleased: !context.goAbsent.has(entry.id),
+    /**
      * Le chromatique de cette espece existe-t-il dans Pokemon GO ?
      * Question distincte de `noShiny` : GO sort ses chromatiques a son propre
      * rythme, et beaucoup de Pokemon recents n'en ont pas encore alors que la
      * serie principale, elle, en a un depuis longtemps.
      */
-    goShiny: context.goShiny.has(entry.id),
+    goShiny: context.goShiny.has(entry.id) && !context.goAbsent.has(entry.id),
     where: detail.where || "",
     note: detail.note || "",
     habitat: detail.hab || "",

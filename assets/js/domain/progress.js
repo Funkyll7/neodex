@@ -33,23 +33,32 @@ export const FORM_KINDS = ["alola", "galar", "hisui", "paldea", "other", "cosmet
 export function goProgressOf(speciesList, collection) {
   let owned = 0;
   let shiny = 0;
-  // Le dénominateur des chromatiques n'est PAS 1025. GO sort ses chromatiques
-  // à son propre rythme : 136 espèces n'en ont aucun à ce jour, dont les 69
-  // dernières de Paldéa. Les compter aurait donné une barre impossible à
-  // terminer — voir data/reference/go.json.
+  // Aucun des deux dénominateurs n'est 1025, et pour deux raisons distinctes :
+  //   - 73 espèces ne sont pas obtenables dans GO à ce jour (Arceus, Manaphy,
+  //     les Trésors du Fléau, la moitié de Paldéa) : elles ne peuvent pas
+  //     entrer dans une boîte, donc elles ne comptent pas ;
+  //   - parmi les 952 restantes, 64 n'ont pas encore de chromatique — GO les
+  //     sort à son propre rythme.
+  // Les compter aurait donné deux barres impossibles à terminer. Les deux
+  // listes sont relevées sur Serebii, voir data/reference/go.json.
+  let total = 0;
   let shinyTotal = 0;
   for (const species of speciesList) {
+    if (!species.goReleased) continue;
+    total += 1;
     if (collection.has(species.id, "gn")) owned += 1;
     if (!species.goShiny) continue;
     shinyTotal += 1;
     if (collection.has(species.id, "gs")) shiny += 1;
   }
-  const total = speciesList.length;
   const cases = total + shinyTotal;
   return {
     owned,
     shiny,
+    /** Especes obtenables : le denominateur de « attrapes ». */
     total,
+    /** Especes montrees dans la grille, absentes du jeu comprises. */
+    listees: speciesList.length,
     shinyTotal,
     done: owned + shiny,
     cases,
