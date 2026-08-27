@@ -463,20 +463,26 @@ const somme = (a) => {
 function paquets(profil, seuil, creuxTolere) {
   const groupes = [];
   let debut = -1;
+  let dernier = -1;
   let creux = 0;
   for (let i = 0; i < profil.length; i++) {
     if (profil[i] > seuil) {
       if (debut < 0) debut = i;
+      dernier = i;
       creux = 0;
     } else if (debut >= 0) {
       creux += 1;
       if (creux > creuxTolere) {
-        groupes.push([debut, i - creux]);
+        groupes.push([debut, dernier]);
         debut = -1;
       }
     }
   }
-  if (debut >= 0) groupes.push([debut, profil.length - 1]);
+  // Le dernier groupe se referme sur son dernier indice au-dessus du seuil, et
+  // non sur la fin du tableau : sinon un groupe qui s'arrete a quelques pixels
+  // du bord parait toucher le bord, et le filtre « ligne rognee » jette une
+  // ligne pourtant entiere — jusqu'a cinq Pokemon perdus sans laisser de trace.
+  if (debut >= 0) groupes.push([debut, dernier]);
   return groupes;
 }
 
@@ -635,7 +641,20 @@ export function lireCases(imageData, grille) {
       const cx = g.colonnes[c];
       if (cx - g.demiL < 0 || cx + g.demiL >= width) continue;
       if (cy - g.haut < 0 || cy + g.bas >= height) continue;
-      if (sousUnBouton(data, width, cx, cy, g)) continue;
+
+      // Les deux boutons flottants de HOME sont ancres en bas de l'ecran : ils
+      // ne peuvent recouvrir que la derniere ligne. N'interroger qu'elle evite
+      // que le test se declenche sur un Pokemon vert ou blanc du milieu de la
+      // grille — Florizarre atteint 0,76 pour un seuil a 0,85, la marge est
+      // trop mince pour l'appliquer partout.
+      const derniereLigne = r === g.lignes.length - 1;
+      if (derniereLigne && sousUnBouton(data, width, cx, cy, g)) {
+        // Recensee malgre tout, sans empreinte : une case ecartee en silence
+        // ne figurerait nulle part, et un Pokemon disparaitrait sans que rien
+        // ne le signale. Ainsi elle ressort « non lue » a la relecture.
+        cases.push({ ligne: r, colonne: c, vecteur: null, cachee: true });
+        continue;
+      }
       cases.push({ ligne: r, colonne: c, vecteur: signatureDeCase(data, width, profil, cx, cy, g) });
     }
   }
