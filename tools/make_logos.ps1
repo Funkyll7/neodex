@@ -17,12 +17,12 @@
 #      les formes sans logo de famille (Salarsen Forme Grave, Keldeo Resolu)
 #      n'affichaient qu'un ◈ nu.
 #
-#   2. quete.png
-#      Meme principe, mais a l'envers : l'icone de quete est un symbole BLANC
-#      sur une pastille bleue et verte. Elle rejoint le vocabulaire du site en
-#      masque plutot qu'en image — elle prend alors la couleur de l'onglet,
-#      grise au repos et doree une fois choisi, exactement comme le ✦ qu'elle
-#      remplace, et elle suit les vingt-six themes sans variante a fabriquer.
+#   2. logo-quete.png
+#      L'icone de l'onglet Quetes, decoupee en rond. Elle arrive en carre
+#      arrondi dont les coins verts debordent de la pastille : a cote des deux
+#      logotypes en couleur, ces coins la faisaient ressembler a une vignette
+#      collee. En COULEUR et non en masque, pour la meme raison — un symbole
+#      monochrome entre deux logos en couleur faisait tache.
 #
 #   3. logo-home.png / logo-go.png
 #      Logos couleur des deux onglets. Ils arrivent deja detoures : il suffit de
@@ -225,6 +225,56 @@ public static class Logos
         return string.Format("balle 80% + losange -> {0}x{0}", size);
     }
 
+    // Logo couleur decoupe en rond.
+    //
+    // L'icone de quete arrive en carre arrondi, avec des coins verts qui
+    // debordent de la pastille. A cote des logos HOME et GO, ces coins la
+    // faisaient ressembler a une vignette collee plutot qu'a un logo. On garde
+    // donc le disque et on jette le reste — le bord est adouci sur deux pixels
+    // pour ne pas laisser un contour en escalier a 21 px.
+    public static string Rond(string src, string dst, int size)
+    {
+        using (Bitmap orig = new Bitmap(src))
+        {
+            int W = orig.Width, H = orig.Height;
+            Bitmap a = new Bitmap(W, H, PixelFormat.Format32bppArgb);
+            using (Graphics g0 = Graphics.FromImage(a)) { g0.DrawImage(orig, 0, 0, W, H); }
+
+            double cx = (W - 1) / 2.0, cy = (H - 1) / 2.0;
+            double r = Math.Min(W, H) / 2.0;
+            double doux = Math.Max(1.0, r * 0.02);
+
+            BitmapData bd = a.LockBits(new Rectangle(0, 0, W, H), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+            byte[] px = new byte[bd.Stride * H];
+            System.Runtime.InteropServices.Marshal.Copy(bd.Scan0, px, 0, px.Length);
+            for (int y = 0; y < H; y++)
+                for (int x = 0; x < W; x++)
+                {
+                    int i = y * bd.Stride + x * 4;
+                    double d = Math.Sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+                    double k = d <= r - doux ? 1.0 : (d >= r ? 0.0 : (r - d) / doux);
+                    px[i + 3] = (byte)Math.Round(px[i + 3] * k);
+                }
+            System.Runtime.InteropServices.Marshal.Copy(px, 0, bd.Scan0, px.Length);
+            a.UnlockBits(bd);
+
+            Rectangle box = Boite(a);
+            Bitmap prem = a.Clone(new Rectangle(0, 0, W, H), PixelFormat.Format32bppPArgb);
+            Bitmap outBmp = new Bitmap(size, size, PixelFormat.Format32bppArgb);
+            using (Graphics g = Graphics.FromImage(outBmp))
+            {
+                g.Clear(Color.Transparent);
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.DrawImage(prem, new RectangleF(0, 0, size, size),
+                    new RectangleF(box.X, box.Y, box.Width, box.Height), GraphicsUnit.Pixel);
+            }
+            outBmp.Save(dst, ImageFormat.Png);
+            outBmp.Dispose(); prem.Dispose(); a.Dispose();
+            return string.Format("{0}x{1} -> disque {2}x{3} -> {4}x{4}", W, H, box.Width, box.Height, size);
+        }
+    }
+
     // Logo couleur : recadrage sur la boite englobante, hauteur imposee.
     public static string Couleur(string src, string dst, int hauteur)
     {
@@ -265,9 +315,9 @@ $b = Join-Path $src "capture.jpg"
 "capture-forme.png    " + [Logos]::MasqueForme($b, (Join-Path $img "capture-forme.png"), 64)
 "logo-home.png        " + [Logos]::Couleur((Join-Path $src "pokemon-home.png"), (Join-Path $img "logo-home.png"), 72)
 "logo-go.png          " + [Logos]::Couleur((Join-Path $src "pokemon-go.png"), (Join-Path $img "logo-go.png"), 72)
-"quete.png            " + [Logos]::MasqueBlanc((Join-Path $src "quete.png"), (Join-Path $img "quete.png"), 64)
+"logo-quete.png       " + [Logos]::Rond((Join-Path $src "quete.png"), (Join-Path $img "logo-quete.png"), 96)
 
-foreach ($f in @("capture.png", "capture-forme.png", "logo-home.png", "logo-go.png", "quete.png")) {
+foreach ($f in @("capture.png", "capture-forme.png", "logo-home.png", "logo-go.png", "logo-quete.png")) {
   $p = Join-Path $img $f
   "  $($f.PadRight(20)) $([math]::Round((Get-Item $p).Length / 1KB, 1)) Ko"
 }

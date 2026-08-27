@@ -36,7 +36,9 @@ export function createGoDex(ctx) {
 
   const out = {
     owned: document.getElementById("go-owned"),
+    ownedTotal: document.getElementById("go-owned-total"),
     shiny: document.getElementById("go-shiny"),
+    shinyTotal: document.getElementById("go-shiny-total"),
     pct: document.getElementById("go-pct"),
     bar: document.getElementById("go-bar"),
     fill: document.getElementById("go-fill"),
@@ -101,7 +103,9 @@ export function createGoDex(ctx) {
   function renderStats() {
     const progress = goProgressOf(dataset.species, collection);
     out.owned.textContent = progress.owned;
+    out.ownedTotal.textContent = progress.total;
     out.shiny.textContent = progress.shiny;
+    out.shinyTotal.textContent = progress.shinyTotal;
     out.pct.textContent = progress.pct;
     out.fill.style.width = `${progress.pct}%`;
     out.bar.setAttribute("aria-valuenow", progress.pct);
@@ -171,16 +175,25 @@ function carte(species, ctx) {
         },
         el("span.toggle__ico.toggle__ico--capture", { "aria-hidden": "true" })
       ),
-      el(
-        "button.gcard__btn.gcard__btn--gold",
-        {
-          type: "button",
-          dataset: { goSlot: "gs", species: species.id },
-          title: `${species.name} — chromatique dans Pokémon GO`,
-          "aria-label": `${species.name} — chromatique dans Pokémon GO`,
-        },
-        el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
-      )
+      // Pas de bouton chromatique quand GO n'en a jamais sorti : une case qu'on
+      // ne peut pas cocher n'a rien à faire sous le doigt. Un rappel muet prend
+      // sa place, pour que la vignette garde sa silhouette dans la grille.
+      species.goShiny
+        ? el(
+            "button.gcard__btn.gcard__btn--gold",
+            {
+              type: "button",
+              dataset: { goSlot: "gs", species: species.id },
+              title: `${species.name} — chromatique dans Pokémon GO`,
+              "aria-label": `${species.name} — chromatique dans Pokémon GO`,
+            },
+            el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
+          )
+        : el(
+            "span.gcard__btn.gcard__btn--vide",
+            { title: "Aucun chromatique dans Pokémon GO à ce jour", "aria-hidden": "true" },
+            "—"
+          )
     )
   );
   peindre(node, species, ctx);

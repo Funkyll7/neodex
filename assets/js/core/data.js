@@ -36,7 +36,7 @@ function loadOptional(path, fallback) {
 }
 
 export async function loadDataset() {
-  const [manifest, typesRef, gensRef, gamesRef, huntRef, locksRef, formDetails, cosmeticRef] =
+  const [manifest, typesRef, gensRef, gamesRef, huntRef, locksRef, formDetails, cosmeticRef, goRef] =
     await Promise.all([
       loadJson("pokemon/manifest.json"),
       loadJson("reference/types.json"),
@@ -46,6 +46,7 @@ export async function loadDataset() {
       loadOptional("reference/shiny-locks.json", { always: {}, noShiny: {}, byGame: {}, forms: {} }),
       loadOptional("details/forms.json", { defaults: {}, bySince: {}, forms: {} }),
       loadOptional("details/cosmetic-forms.json", { groups: {} }),
+      loadOptional("reference/go.json", { shiny: [] }),
     ]);
 
   const gens = manifest.generations.map((g) => g.gen);
@@ -75,6 +76,13 @@ export async function loadDataset() {
     noShiny: new Set((locksRef.noShiny && locksRef.noShiny.species) || []),
     formDetails,
     cosmeticGroups: cosmeticRef.groups || {},
+    /**
+     * Especes dont le chromatique existe dans Pokemon GO, formes de base
+     * seulement (data/reference/go.json, releve sur Serebii). Sans cette
+     * liste, le livingdex GO demandait 1025 chromatiques dont 136 n'ont
+     * jamais existe : un compteur impossible a terminer.
+     */
+    goShiny: new Set(goRef.shiny || []),
   };
 
   const species = baseChunks
@@ -165,6 +173,13 @@ function merge(entry, detail = {}, avail = {}, rawForms = [], context) {
      * puisqu'une distribution a pu en produire un.
      */
     noShiny: context.noShiny.has(entry.id),
+    /**
+     * Le chromatique de cette espece existe-t-il dans Pokemon GO ?
+     * Question distincte de `noShiny` : GO sort ses chromatiques a son propre
+     * rythme, et beaucoup de Pokemon recents n'en ont pas encore alors que la
+     * serie principale, elle, en a un depuis longtemps.
+     */
+    goShiny: context.goShiny.has(entry.id),
     where: detail.where || "",
     note: detail.note || "",
     habitat: detail.hab || "",

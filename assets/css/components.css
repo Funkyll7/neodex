@@ -167,17 +167,6 @@
 }
 .tab[aria-selected="true"] .tab__logo { filter: none; }
 
-/* L'onglet Quêtes n'a pas de logotype officiel : son icône est un MASQUE, donc
-   elle prend la couleur de l'onglet — grise au repos, dorée une fois choisi,
-   exactement comme le ✦ qu'elle remplace. Pas de filtre de désaturation ici :
-   `currentColor` fait déjà tout le travail, et il suit les vingt-six thèmes
-   sans qu'on ait à fabriquer une variante. */
-.tab__quete {
-  width: 21px; height: 21px; flex: none;
-  background-color: currentColor;
-  -webkit-mask: url("../img/quete.png") center / contain no-repeat;
-  mask: url("../img/quete.png") center / contain no-repeat;
-}
 
 /* Un seul des deux libellés s'affiche à la fois — voir la requête mobile. */
 .tab__court { display: none; }
@@ -1575,6 +1564,16 @@
 .gcard__btn:hover { filter: brightness(1.15); }
 .gcard__btn[aria-pressed="true"] { background: var(--type); color: #fff; }
 .gcard__btn--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+/* Aucun chromatique dans GO a ce jour : la place du bouton reste tenue, pour
+   que les vignettes gardent la meme silhouette dans la grille, mais rien ne se
+   coche — une case impossible sous le doigt est pire qu'une case absente. */
+.gcard__btn--vide {
+  cursor: default;
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--text-ghost);
+  font-size: 11px; font-weight: 800;
+}
 .gcard__btn .toggle__ico { width: 13px; height: 13px; }
 
 /* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
@@ -1637,7 +1636,6 @@
   .tab__long { display: none; }
   .tab__court { display: inline; }
   .tab__logo { height: 19px; }
-  .tab__quete { width: 18px; height: 18px; }
   .tab__badge { padding: 2px 6px; font-size: 10px; }
 
   /* Vignettes GO : au pouce, un bouton de 7 px de haut se rate. On élargit la

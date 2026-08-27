@@ -276,10 +276,10 @@ function start(dataset) {
       [
         ["dex", "assets/img/logo-home.png", "Pokédex Pokémon HOME", "HOME", `${counts.owned}/${counts.total}`],
         ["go", "assets/img/logo-go.png", "Pokédex Pokémon GO", "GO", `${goCounts.owned}/${goCounts.total}`],
-        // « quete » n'est pas un chemin d'image : l'onglet Quêtes n'a pas de
-        // logotype officiel, son icone est posee en masque pour prendre la
-        // couleur de l'onglet. Voir `.tab__quete` dans components.css.
-        ["quest", "quete", "Quêtes", "Quêtes", String(store.state.questDone)],
+        // Une pastille en couleur comme ses deux voisines, et non un symbole
+        // monochrome : le ✦ qu'elle remplace faisait tache a cote de deux
+        // logotypes en couleur.
+        ["quest", "assets/img/logo-quete.png", "Quêtes", "Quêtes", String(store.state.questDone)],
       ].map(([value, logo, long, court, badge]) =>
         el(
           "button.tab",
@@ -291,11 +291,7 @@ function start(dataset) {
             "aria-selected": String(store.state.tab === value),
             onclick: () => store.set({ tab: value }),
           },
-          logo === "quete"
-            ? el("span.tab__quete", { "aria-hidden": "true" })
-            : logo
-              ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" })
-              : null,
+          logo ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" }) : null,
           el("span.tab__long", long),
           el("span.tab__court", court),
           el("span.tab__badge", badge)
@@ -388,6 +384,14 @@ function start(dataset) {
       // pas `syncActive()` — ce ne sont pas les memes pastilles ni les memes
       // barres, il faut les reconstruire.
       renderCounts();
+      // Et on rederive la liste et ses pastilles depuis l'etat, au lieu de
+      // faire confiance a ce qui etait affiche avant la bascule. Un aller-
+      // retour entre les onglets laissait, dans un cas rapporte, la pastille
+      // « Manquants » allumee au-dessus d'une liste qui ne l'etait pas. Deux
+      // millisecondes de filtrage valent mieux qu'un rappel de filtre qui ment
+      // sur ce qu'on a sous les yeux.
+      renderList();
+      activeFilters.render();
       // La grille GO ne peut pas se mesurer tant que son panneau est `hidden` :
       // elle n'aurait charge qu'un seul palier, et le defilement infini
       // n'aurait jamais demarre.

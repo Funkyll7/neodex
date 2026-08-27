@@ -33,16 +33,24 @@ export const FORM_KINDS = ["alola", "galar", "hisui", "paldea", "other", "cosmet
 export function goProgressOf(speciesList, collection) {
   let owned = 0;
   let shiny = 0;
+  // Le dénominateur des chromatiques n'est PAS 1025. GO sort ses chromatiques
+  // à son propre rythme : 136 espèces n'en ont aucun à ce jour, dont les 69
+  // dernières de Paldéa. Les compter aurait donné une barre impossible à
+  // terminer — voir data/reference/go.json.
+  let shinyTotal = 0;
   for (const species of speciesList) {
     if (collection.has(species.id, "gn")) owned += 1;
+    if (!species.goShiny) continue;
+    shinyTotal += 1;
     if (collection.has(species.id, "gs")) shiny += 1;
   }
   const total = speciesList.length;
-  const cases = total * 2;
+  const cases = total + shinyTotal;
   return {
     owned,
     shiny,
     total,
+    shinyTotal,
     done: owned + shiny,
     cases,
     pct: cases ? Math.round(((owned + shiny) / cases) * 100) : 0,

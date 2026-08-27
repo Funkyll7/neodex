@@ -200,7 +200,7 @@ export function createSidebar(ctx) {
       const filtres = surGo() ? GO_FILTERS : STATUS_FILTERS;
       const cleStatut = surGo() ? "goStatus" : "status";
       const decompte = surGo()
-        ? { all: go.total, missing: go.total - go.owned, noshiny: go.total - go.shiny }
+        ? { all: go.total, missing: go.total - go.owned, noshiny: go.shinyTotal - go.shiny }
         : counts;
 
       fill(
@@ -364,7 +364,7 @@ const CLE_FILTRE = { dex: "owned", pairs: "pair", shiny: "shiny" };
 function renderGoBars(out, go, store) {
   const lignes = [
     ["missing", "Attrapés", null, go.owned, go.total, "Ceux qu'il reste à attraper."],
-    ["noshiny", "Chromatiques", "shiny", go.shiny, go.total, "Ceux dont le chromatique manque."],
+    ["noshiny", "Chromatiques", "shiny", go.shiny, go.shinyTotal, "Ceux dont le chromatique manque. GO n'en a pas sorti pour tout le monde : le total ne compte que ceux qui en ont un."],
   ];
 
   fill(

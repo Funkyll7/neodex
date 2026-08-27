@@ -73,7 +73,9 @@ export function applyGoFilters(species, state, collection) {
       case "missing":
         return !collection.has(p.id, "gn");
       case "noshiny":
-        return !collection.has(p.id, "gs");
+        // Une espece dont GO n'a jamais sorti le chromatique n'a rien a faire
+        // dans cette liste : elle y resterait pour toujours.
+        return p.goShiny && !collection.has(p.id, "gs");
       default:
         return true;
     }

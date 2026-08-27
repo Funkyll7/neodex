@@ -311,12 +311,15 @@
         <div class="go-head__stats">
           <p class="go-stat">
             <span class="go-stat__ico toggle__ico toggle__ico--capture" aria-hidden="true"></span>
-            <span class="go-stat__value"><span id="go-owned">0</span> / 1025</span>
+            <span class="go-stat__value"><span id="go-owned">0</span> / <span id="go-owned-total">1025</span></span>
             <span class="go-stat__label">attrapés</span>
           </p>
+          <!-- Le total des chromatiques n'est pas 1025 : GO sort les siens à son
+               propre rythme et 136 espèces n'en ont aucun à ce jour. Relevé sur
+               Serebii, voir data/reference/go.json. -->
           <p class="go-stat go-stat--shiny">
             <span class="go-stat__ico toggle__ico toggle__ico--shiny" aria-hidden="true"></span>
-            <span class="go-stat__value"><span id="go-shiny">0</span> / 1025</span>
+            <span class="go-stat__value"><span id="go-shiny">0</span> / <span id="go-shiny-total">889</span></span>
             <span class="go-stat__label">chromatiques</span>
           </p>
         </div>
