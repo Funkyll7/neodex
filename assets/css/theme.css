@@ -109,100 +109,367 @@
 }
 
 /* =============================================================================
-   THÈMES DE RÉGION
-   Huit variantes bâties sur le thème sombre : elles n'en redéfinissent que les
-   fonds, les bordures et l'accent. Les tons de texte, eux, ne bougent pas —
-   c'est ce qui garantit que le contraste reste bon sans avoir à le revérifier
-   huit fois.
-   Chaque palette part du légendaire emblématique de sa génération.
+   THÈMES
+   Vingt-six palettes réparties en quatre familles : Base, Couleurs,
+   Légendaires, Starters.
+
+   RÈGLE COMMUNE À TOUS LES BLOCS CI-DESSOUS — un thème ne redéfinit que des
+   jetons de FOND, de BORDURE et d'ACCENT. Jamais les tons de texte.
+   La raison est simple : le texte est le seul endroit où le contraste se
+   joue vraiment. En le laissant tranquille, on n'a à valider les couples
+   texte/fond qu'une fois pour le thème sombre, pas vingt-six fois. En
+   contrepartie, chaque fond reste dans la plage validée : --text tient 7:1
+   et --text-soft 4.5:1, y compris sur --bg-hover qui est la surface la plus
+   claire du thème.
+   Les jetons --accent-* forment un tout : --accent-ink est l'encre posée SUR
+   l'accent, elle suit donc l'accent et ne compte pas comme un ton de texte.
+
+   Seule exception : les deux thèmes clairs des familles (« Reshiram » et les
+   starters d'Alola). Un fond blanc ne peut pas se contenter des jetons de
+   fond — il lui faut aussi l'encre, les ombres, l'atténuation des sprites et
+   les couleurs de disponibilité du thème Clair, sinon il hérite de réglages
+   pensés pour le noir et le texte devient illisible. Ces blocs les reprennent
+   donc explicitement, et c'est pour cela qu'il n'y en a que deux.
    ========================================================================== */
 
-/* Kanto — Mewtwo, la première Poké Ball : rouge sur charbon chaud. */
+/* --- Invariant : les deux cases ♂ / ♀ ------------------------------------
+   Le glyphe ♂ / ♀ est peint en noir par-dessus ces deux fonds : ils doivent
+   donc rester des tons moyens, dans tous les thèmes sans exception. On les
+   fige ici, après le thème Clair, plutôt que de laisser chaque palette les
+   retoucher — c'est la seule paire de couleurs du site qui ne doit jamais
+   bouger, autant que ce soit écrit à un seul endroit. */
+:root,
+:root[data-theme] {
+  --pair: #6fb7ff;
+  --female: #ff8fd0;
+}
+
+/* =============================================================================
+   FAMILLE « COULEURS »
+   Une palette par teinte, et rien d'autre : le fond, les bordures et l'accent
+   viennent tous de la même couleur. Ce sont les thèmes neutres du lot, ceux
+   qu'on choisit pour une couleur et pas pour une référence. Leur structure est
+   volontairement identique d'une teinte à l'autre — c'est ce qui en fait une
+   gamme plutôt qu'une collection.
+   ========================================================================== */
+
+/* Rubis — le rouge profond de la pierre sur un charbon qui garde sa chaleur. */
+:root[data-theme="rubis"] {
+  color-scheme: dark;
+  --bg: #150c0f; --bg-raised: #211519; --bg-sunken: #1a1013; --bg-inset: #26191d; --bg-hover: #2f2025;
+  --border: #3a2329; --border-strong: #4d2f36;
+  --gold: #f2586c; --gold-soft: #ff9273;
+  --accent: #f2586c; --accent-ink: #2a0308;
+  --accent-glow: rgba(242, 88, 108, .45); --accent-wash: rgba(242, 88, 108, .13); --accent-border: #55212b;
+}
+
+/* Ambre — la résine chaude : orange sur un brun fumé, sans une once de bleu. */
+:root[data-theme="ambre"] {
+  color-scheme: dark;
+  --bg: #13100a; --bg-raised: #201a12; --bg-sunken: #181410; --bg-inset: #251e15; --bg-hover: #2e251a;
+  --border: #3a2e1d; --border-strong: #4e3e27;
+  --gold: #ff9f2e; --gold-soft: #ffd07a;
+  --accent: #ff9f2e; --accent-ink: #2c1800;
+  --accent-glow: rgba(255, 159, 46, .45); --accent-wash: rgba(255, 159, 46, .13); --accent-border: #54390f;
+}
+
+/* Émeraude — le vert de la gemme, posé sur une nuit qui tire déjà au vert. */
+:root[data-theme="emeraude"] {
+  color-scheme: dark;
+  --bg: #091310; --bg-raised: #12201b; --bg-sunken: #0d1815; --bg-inset: #16261f; --bg-hover: #1c2f27;
+  --border: #1f382c; --border-strong: #2c5040;
+  --gold: #45cf8d; --gold-soft: #9ee5a8;
+  --accent: #45cf8d; --accent-ink: #022317;
+  --accent-glow: rgba(69, 207, 141, .45); --accent-wash: rgba(69, 207, 141, .13); --accent-border: #1c4f39;
+}
+
+/* Turquoise — l'eau peu profonde : cyan franc sur un bleu-vert éteint. */
+:root[data-theme="turquoise"] {
+  color-scheme: dark;
+  --bg: #06141a; --bg-raised: #0e2229; --bg-sunken: #091a20; --bg-inset: #12292f; --bg-hover: #17333a;
+  --border: #173a45; --border-strong: #22525f;
+  --gold: #36ced8; --gold-soft: #8ce9e0;
+  --accent: #36ced8; --accent-ink: #032329;
+  --accent-glow: rgba(54, 206, 216, .45); --accent-wash: rgba(54, 206, 216, .13); --accent-border: #16505a;
+}
+
+/* Saphir — le bleu roi sur une nuit d'encre, la teinte la plus classique du lot. */
+:root[data-theme="saphir"] {
+  color-scheme: dark;
+  --bg: #080d1c; --bg-raised: #10182f; --bg-sunken: #0b1123; --bg-inset: #141d38; --bg-hover: #1a2544;
+  --border: #1f2c50; --border-strong: #2c3e70;
+  --gold: #5b8dff; --gold-soft: #a6c4ff;
+  --accent: #5b8dff; --accent-ink: #04112c;
+  --accent-glow: rgba(91, 141, 255, .45); --accent-wash: rgba(91, 141, 255, .13); --accent-border: #23376b;
+}
+
+/* Améthyste — le violet de la pierre brute sur un fond prune. */
+:root[data-theme="amethyste"] {
+  color-scheme: dark;
+  --bg: #100b1a; --bg-raised: #1c1429; --bg-sunken: #150f21; --bg-inset: #211830; --bg-hover: #291f3b;
+  --border: #2e2145; --border-strong: #40305e;
+  --gold: #a97dff; --gold-soft: #d5bcff;
+  --accent: #a97dff; --accent-ink: #1a0940;
+  --accent-glow: rgba(169, 125, 255, .45); --accent-wash: rgba(169, 125, 255, .13); --accent-border: #3c2a66;
+}
+
+/* =============================================================================
+   FAMILLE « LÉGENDAIRES »
+   Une région, son légendaire, sa palette. Contrairement à la gamme Couleurs,
+   ces neuf-là ne partagent aucune structure : chacune a un trait qui la
+   distingue au premier coup d'œil — des bordures d'une autre teinte que le
+   fond, un écart de surfaces inhabituel, un fond franchement chaud ou
+   franchement froid. C'est voulu : neuf variantes qui ne changeraient que
+   l'accent sur un même noir seraient neuf fois le même thème.
+   Les valeurs (kanto, johto, …) sont restées celles des régions : elles
+   dorment déjà dans les préférences enregistrées, les renommer aurait renvoyé
+   tout le monde au thème par défaut.
+   ========================================================================== */
+
+/* Kanto — Mewtwo : le laboratoire, pas la gemme. Béton froid et neutre,
+   surfaces presque plates, bordures d'acier — et la seule couleur de l'écran
+   est cette lavande psychique. */
 :root[data-theme="kanto"] {
   color-scheme: dark;
-  --bg: #120b0c; --bg-raised: #1d1315; --bg-sunken: #170f10; --bg-inset: #221619; --bg-hover: #2a1b1e;
-  --border: #33211f; --border-strong: #422a28;
-  --gold: #ff6b4a; --gold-soft: #ff9c6e;
-  --accent: #ff6b4a; --accent-ink: #2a0d05;
-  --accent-glow: rgba(255, 107, 74, .45); --accent-wash: rgba(255, 107, 74, .13); --accent-border: #4a221a;
+  --bg: #0f1015; --bg-raised: #191a20; --bg-sunken: #131419; --bg-inset: #1d1e25; --bg-hover: #23242c;
+  --border: #2c2e39; --border-strong: #3d404e;
+  --gold: #c3aef2; --gold-soft: #e6d8ff;
+  --accent: #c3aef2; --accent-ink: #1c0d3a;
+  --accent-glow: rgba(195, 174, 242, .42); --accent-wash: rgba(195, 174, 242, .12); --accent-border: #3a3159;
 }
 
-/* Johto — Ho-Oh : l'or et l'ambre sur un brun profond. */
+/* Johto — Ho-Oh : le sépia des plumes brûlées, l'or de la queue, et des
+   bordures vertes — l'arc-en-ciel de l'oiseau est là, dans le trait qui
+   entoure chaque carte. C'est ce vert sur brun qui empêche de le confondre
+   avec Ambre. */
 :root[data-theme="johto"] {
   color-scheme: dark;
-  --bg: #130f07; --bg-raised: #1e1810; --bg-sunken: #18130b; --bg-inset: #241d13; --bg-hover: #2c2418;
-  --border: #362b1a; --border-strong: #463823;
-  --gold: #f2b134; --gold-soft: #ffd06b;
-  --accent: #f2b134; --accent-ink: #2b1e05;
-  --accent-glow: rgba(242, 177, 52, .45); --accent-wash: rgba(242, 177, 52, .13); --accent-border: #4a3a15;
+  --bg: #140f09; --bg-raised: #211a12; --bg-sunken: #191410; --bg-inset: #261f16; --bg-hover: #2f271b;
+  --border: #2f4030; --border-strong: #435a3d;
+  --gold: #ff7f3a; --gold-soft: #ffcf5e;
+  --accent: #ff7f3a; --accent-ink: #2b0d00;
+  --accent-glow: rgba(255, 127, 58, .45); --accent-wash: rgba(255, 127, 58, .13); --accent-border: #4f2a12;
 }
 
-/* Hoenn — Kyogre : les grands fonds, turquoise sur bleu de mer. */
+/* Hoenn — Kyogre : l'abysse. Le fond descend presque au noir tandis que les
+   panneaux remontent en plein bleu : c'est le thème où l'écart entre le fond
+   et les surfaces est le plus large, comme une lumière sous l'eau. */
 :root[data-theme="hoenn"] {
   color-scheme: dark;
-  --bg: #04141a; --bg-raised: #0a1f27; --bg-sunken: #071a21; --bg-inset: #0d2630; --bg-hover: #112f3a;
-  --border: #14343f; --border-strong: #1d4552;
-  --gold: #2ec5c0; --gold-soft: #6fe3d6;
-  --accent: #2ec5c0; --accent-ink: #032420;
-  --accent-glow: rgba(46, 197, 192, .45); --accent-wash: rgba(46, 197, 192, .13); --accent-border: #13494a;
+  --bg: #030913; --bg-raised: #0c1c33; --bg-sunken: #061020; --bg-inset: #10233d; --bg-hover: #152c4b;
+  --border: #163050; --border-strong: #204570;
+  --gold: #2ea8ff; --gold-soft: #8ae4ff;
+  --accent: #2ea8ff; --accent-ink: #01152b;
+  --accent-glow: rgba(46, 168, 255, .45); --accent-wash: rgba(46, 168, 255, .13); --accent-border: #17395f;
 }
 
-/* Sinnoh — Dialga : l'acier et le temps, bleu froid sur ardoise. */
+/* Sinnoh — Dialga : l'acier et le diamant. Le fond est le plus clair des
+   thèmes sombres et les bordures les plus visibles — du métal, pas de la
+   nuit. L'accent est un platine désaturé : c'est le seul thème du lot qui
+   n'a pas de couleur à proprement parler. */
 :root[data-theme="sinnoh"] {
   color-scheme: dark;
-  --bg: #090f1c; --bg-raised: #101827; --bg-sunken: #0c1322; --bg-inset: #141e30; --bg-hover: #1a2740;
-  --border: #1e2b45; --border-strong: #2a3a5c;
-  --gold: #5aa9ff; --gold-soft: #9ecdff;
-  --accent: #5aa9ff; --accent-ink: #05192f;
-  --accent-glow: rgba(90, 169, 255, .45); --accent-wash: rgba(90, 169, 255, .13); --accent-border: #1d3a5c;
+  --bg: #141822; --bg-raised: #222836; --bg-sunken: #191e29; --bg-inset: #272e3e; --bg-hover: #2f374a;
+  --border: #3a4356; --border-strong: #505c76;
+  --gold: #a9c9e8; --gold-soft: #e2eefa;
+  --accent: #a9c9e8; --accent-ink: #0b1724;
+  --accent-glow: rgba(169, 201, 232, .40); --accent-wash: rgba(169, 201, 232, .12); --accent-border: #46566e;
 }
 
-/* Unys — Zekrom : l'éclair blanc-bleu sur un noir presque pur. */
+/* Unys — Reshiram : le dragon blanc, donc un thème clair. Ivoire chaud,
+   bordures de sable, flamme en accent.
+   Il reprend l'encre, les ombres, l'atténuation des sprites et les couleurs
+   de disponibilité du thème Clair : sur du blanc, les réglages du thème
+   sombre ne tiennent pas. */
 :root[data-theme="unys"] {
-  color-scheme: dark;
-  --bg: #08090d; --bg-raised: #101218; --bg-sunken: #0c0e13; --bg-inset: #14171f; --bg-hover: #1b1f29;
-  --border: #1e222c; --border-strong: #2b3140;
-  --gold: #7fd1ff; --gold-soft: #c0e9ff;
-  --accent: #7fd1ff; --accent-ink: #04202e;
-  --accent-glow: rgba(127, 209, 255, .45); --accent-wash: rgba(127, 209, 255, .13); --accent-border: #1c3a4a;
+  color-scheme: light;
+  --bg: #f6f2ea; --bg-raised: #fffdf9; --bg-sunken: #fbf8f2; --bg-inset: #efe9dd; --bg-hover: #eae2d3;
+  --border: #e2dacb; --border-strong: #cabfa9;
+
+  --text: #221c14; --text-soft: #4d4234; --text-muted: #665b4a; --text-faint: #8a7e6b; --text-ghost: #ada291;
+
+  --gold: #a04516; --gold-soft: #e08a35;
+  --accent: #a04516; --accent-ink: #fffaf3;
+  --accent-glow: rgba(160, 69, 22, .32); --accent-wash: rgba(160, 69, 22, .10); --accent-border: #e3c39c;
+
+  --avail-ok: #2f7a4f; --avail-nolock: #b5651f; --avail-event: #8b47ac; --avail-event-lock: #2f74b8;
+  --shadow-panel: 0 1px 2px rgba(52, 40, 26, .06), 0 6px 18px rgba(52, 40, 26, .06);
+  --sprite-dim: grayscale(1) brightness(1.05) opacity(.55);
 }
 
-/* Kalos — Xerneas : le prisme, rose-violet sur nuit bleutée. */
+/* Kalos — Xerneas : le prisme. Nuit indigo, bordures franchement bleues, et
+   une barre de progression qui part de l'or pour finir en cyan — les bois du
+   cerf font exactement ça. */
 :root[data-theme="kalos"] {
   color-scheme: dark;
-  --bg: #0f0a18; --bg-raised: #181022; --bg-sunken: #130c1c; --bg-inset: #1e142b; --bg-hover: #261a36;
-  --border: #2a1c3c; --border-strong: #3a2851;
-  --gold: #e07be0; --gold-soft: #f3aef0;
-  --accent: #e07be0; --accent-ink: #2b0a2a;
-  --accent-glow: rgba(224, 123, 224, .45); --accent-wash: rgba(224, 123, 224, .13); --accent-border: #45204a;
+  --bg: #0a0c1e; --bg-raised: #151932; --bg-sunken: #0e1126; --bg-inset: #1a1e3b; --bg-hover: #212648;
+  --border: #282e5c; --border-strong: #38407c;
+  --gold: #f0d27a; --gold-soft: #7fd8ff;
+  --accent: #f0d27a; --accent-ink: #2a2205;
+  --accent-glow: rgba(240, 210, 122, .42); --accent-wash: rgba(240, 210, 122, .12); --accent-border: #4a4029;
 }
 
-/* Alola — Solgaleo : le soleil, orange chaud sur lagon sombre. */
+/* Alola — Solgaleo : midi sur le lagon. Le fond est froid et vert d'eau,
+   l'accent est un blanc chaud d'incandescence : accent chaud sur fond froid,
+   c'est l'inverse exact de Turquoise, qui part de la même mer. */
 :root[data-theme="alola"] {
   color-scheme: dark;
-  --bg: #05171a; --bg-raised: #0b2226; --bg-sunken: #081d20; --bg-inset: #0f2a2e; --bg-hover: #143439;
-  --border: #17383c; --border-strong: #204a4f;
-  --gold: #ffb02e; --gold-soft: #ffd070;
-  --accent: #ffb02e; --accent-ink: #2c1c00;
-  --accent-glow: rgba(255, 176, 46, .45); --accent-wash: rgba(255, 176, 46, .13); --accent-border: #4a3413;
+  --bg: #06181a; --bg-raised: #0f2a2c; --bg-sunken: #091f21; --bg-inset: #133134; --bg-hover: #193c3f;
+  --border: #1d484a; --border-strong: #2a6163;
+  --gold: #ffe7c2; --gold-soft: #ffab3d;
+  --accent: #ffe7c2; --accent-ink: #2b1c00;
+  --accent-glow: rgba(255, 231, 194, .42); --accent-wash: rgba(255, 231, 194, .12); --accent-border: #4d3a1c;
 }
 
-/* Galar — Zacian : le cramoisi de l'épée sur un violet d'acier. */
+/* Galar — Zacian : le cramoisi de la crinière et l'or de la lame, posés sur
+   un acier bleu-nuit parfaitement neutre. Rubis fait du rouge sur du rouge ;
+   ici le rouge est seul au milieu du froid. */
 :root[data-theme="galar"] {
   color-scheme: dark;
-  --bg: #100c15; --bg-raised: #19131f; --bg-sunken: #140f19; --bg-inset: #1f1727; --bg-hover: #281e32;
-  --border: #2b2036; --border-strong: #3a2c48;
-  --gold: #e05a7d; --gold-soft: #ff92ab;
-  --accent: #e05a7d; --accent-ink: #2c0713;
-  --accent-glow: rgba(224, 90, 125, .45); --accent-wash: rgba(224, 90, 125, .13); --accent-border: #4a2030;
+  --bg: #0d121b; --bg-raised: #181f2d; --bg-sunken: #111622; --bg-inset: #1c2334; --bg-hover: #232c40;
+  --border: #2a3446; --border-strong: #3b4860;
+  --gold: #f2637f; --gold-soft: #ffc45e;
+  --accent: #f2637f; --accent-ink: #2c0512;
+  --accent-glow: rgba(242, 99, 127, .45); --accent-wash: rgba(242, 99, 127, .13); --accent-border: #4d2534;
 }
 
-/* Paldéa — Koraidon et Miraidon : le violet du futur sur nuit profonde. */
+/* Paldéa — Koraidon et Miraidon : l'Écarlate et le Violet réunis. Fond noir
+   violacé, bordures violettes, accent écarlate — les deux mascottes se
+   partagent l'écran au lieu qu'on ait à en choisir une. */
 :root[data-theme="paldea"] {
   color-scheme: dark;
-  --bg: #0d0916; --bg-raised: #161020; --bg-sunken: #110c1a; --bg-inset: #1c1429; --bg-hover: #241a34;
-  --border: #281d3a; --border-strong: #37294f;
-  --gold: #a06bff; --gold-soft: #c8a4ff;
-  --accent: #a06bff; --accent-ink: #1c0940;
-  --accent-glow: rgba(160, 107, 255, .45); --accent-wash: rgba(160, 107, 255, .13); --accent-border: #38214f;
+  --bg: #09070f; --bg-raised: #13101d; --bg-sunken: #0d0a15; --bg-inset: #171324; --bg-hover: #1e182e;
+  --border: #33234e; --border-strong: #472f6c;
+  --gold: #ff5f43; --gold-soft: #b07cff;
+  --accent: #ff5f43; --accent-ink: #2b0700;
+  --accent-glow: rgba(255, 95, 67, .45); --accent-wash: rgba(255, 95, 67, .13); --accent-border: #4d2436;
+}
+
+/* =============================================================================
+   FAMILLE « STARTERS »
+   Une région, son trio de départ. La règle de construction est la même
+   partout : le type du starter mis en avant devient l'accent, un deuxième
+   type devient --gold-soft — les deux se retrouvent donc dans le dégradé des
+   barres de progression — et le troisième part dans les bordures, où il tient
+   tout l'écran sans jamais crier.
+   Le fond, lui, ne vient pas des starters mais du paysage de la région : c'est
+   ce qui empêche neuf trios plante/feu/eau de se ressembler.
+   L'accent alterne d'une région à l'autre (plante, feu, eau, plante, …) pour
+   que deux voisins dans la palette ne soient jamais de la même couleur.
+   ========================================================================== */
+
+/* Kanto — Bulbizarre, Salamèche, Carapuce : le vert-gris de Bourg Palette,
+   le bulbe en accent, la flamme dans le dégradé, l'eau dans les bordures. */
+:root[data-theme="starters-kanto"] {
+  color-scheme: dark;
+  --bg: #0a100c; --bg-raised: #151d17; --bg-sunken: #0f1611; --bg-inset: #19221b; --bg-hover: #202b22;
+  --border: #22384f; --border-strong: #2f4d6e;
+  --gold: #6cc86a; --gold-soft: #ff9a4d;
+  --accent: #6cc86a; --accent-ink: #04200a;
+  --accent-glow: rgba(108, 200, 106, .42); --accent-wash: rgba(108, 200, 106, .12); --accent-border: #1e4a2a;
+}
+
+/* Johto — Germignon, Héricendre, Kaiminus : un fond de cendre encore tiède,
+   la flamme d'Héricendre en accent, la feuille dans le dégradé, la mâchoire
+   bleue de Kaiminus dans les bordures. */
+:root[data-theme="starters-johto"] {
+  color-scheme: dark;
+  --bg: #110f0c; --bg-raised: #1d1a16; --bg-sunken: #151310; --bg-inset: #221e19; --bg-hover: #2a251f;
+  --border: #1d3f52; --border-strong: #295571;
+  --gold: #ff8a3c; --gold-soft: #b6d96a;
+  --accent: #ff8a3c; --accent-ink: #2b0f00;
+  --accent-glow: rgba(255, 138, 60, .45); --accent-wash: rgba(255, 138, 60, .13); --accent-border: #4e2a12;
+}
+
+/* Hoenn — Arcko, Poussifeu, Gobou : basalte et mer. Fond bleu-vert froid,
+   accent cyan, et des bordures orange brûlé — le volcan cerne l'océan. */
+:root[data-theme="starters-hoenn"] {
+  color-scheme: dark;
+  --bg: #061315; --bg-raised: #0e2124; --bg-sunken: #09191b; --bg-inset: #12282a; --bg-hover: #173234;
+  --border: #4a2c1a; --border-strong: #653c22;
+  --gold: #4cc6e8; --gold-soft: #7fd98a;
+  --accent: #4cc6e8; --accent-ink: #02222b;
+  --accent-glow: rgba(76, 198, 232, .45); --accent-wash: rgba(76, 198, 232, .13); --accent-border: #1a4a5a;
+}
+
+/* Sinnoh — Tortipouss, Ouisticram, Tiplouf : la neige de Frimapic. Fond
+   gris-bleu et surfaces claires, le vert olive de la carapace en accent, le
+   bleu glacé de Tiplouf dans les bordures. */
+:root[data-theme="starters-sinnoh"] {
+  color-scheme: dark;
+  --bg: #121620; --bg-raised: #1f2534; --bg-sunken: #171b27; --bg-inset: #252c3d; --bg-hover: #2e364a;
+  --border: #2b3f5c; --border-strong: #3c5678;
+  --gold: #9fc46a; --gold-soft: #ffab5e;
+  --accent: #9fc46a; --accent-ink: #16220a;
+  --accent-glow: rgba(159, 196, 106, .42); --accent-wash: rgba(159, 196, 106, .12); --accent-border: #3c4a1e;
+}
+
+/* Unys — Vipélierre, Gruikui, Moustillon : le béton de Volucité, gris pur et
+   sans température. La coquille de Moustillon en accent, la vigne dans le
+   dégradé, la brique de Gruikui dans les bordures. */
+:root[data-theme="starters-unys"] {
+  color-scheme: dark;
+  --bg: #0f0f11; --bg-raised: #1a1a1d; --bg-sunken: #131315; --bg-inset: #1e1e22; --bg-hover: #26262b;
+  --border: #47291f; --border-strong: #5f382a;
+  --gold: #7fbdec; --gold-soft: #8fd47a;
+  --accent: #7fbdec; --accent-ink: #04182c;
+  --accent-glow: rgba(127, 189, 236, .42); --accent-wash: rgba(127, 189, 236, .12); --accent-border: #234a68;
+}
+
+/* Kalos — Marisson, Feunnec, Grenousse : la pierre lavande d'Illumis au
+   crépuscule. Le doré de Feunnec en accent, la bogue de Marisson dans le
+   dégradé, le bleu de Grenousse dans les bordures. */
+:root[data-theme="starters-kalos"] {
+  color-scheme: dark;
+  --bg: #100f16; --bg-raised: #1b1a23; --bg-sunken: #14131b; --bg-inset: #1f1e29; --bg-hover: #272632;
+  --border: #2a3a6a; --border-strong: #3a4f8c;
+  --gold: #f5c04f; --gold-soft: #b8d96a;
+  --accent: #f5c04f; --accent-ink: #2c1e00;
+  --accent-glow: rgba(245, 192, 79, .42); --accent-wash: rgba(245, 192, 79, .12); --accent-border: #4d3d14;
+}
+
+/* Alola — Brindibou, Flamiaou, Otaquin : le sable et le lagon, donc un thème
+   clair. Le vert profond de Brindibou en accent, le roux de Flamiaou dans le
+   dégradé, l'eau claire dans les bordures.
+   Comme Reshiram, il reprend l'encre, les ombres, les sprites et les couleurs
+   de disponibilité du thème Clair — sur du blanc, rien d'autre ne tient. */
+:root[data-theme="starters-alola"] {
+  color-scheme: light;
+  --bg: #eef5f4; --bg-raised: #ffffff; --bg-sunken: #f5faf9; --bg-inset: #e6eeee; --bg-hover: #dde8e9;
+  --border: #cfdfe1; --border-strong: #a9c6cb;
+
+  --text: #10201f; --text-soft: #395051; --text-muted: #4f6668; --text-faint: #6d8385; --text-ghost: #93a7a9;
+
+  --gold: #1c7049; --gold-soft: #cf7524;
+  --accent: #1c7049; --accent-ink: #ffffff;
+  --accent-glow: rgba(28, 112, 73, .30); --accent-wash: rgba(28, 112, 73, .10); --accent-border: #a9d0bb;
+
+  --avail-ok: #2f7a4f; --avail-nolock: #b5651f; --avail-event: #8b47ac; --avail-event-lock: #2f74b8;
+  --shadow-panel: 0 1px 2px rgba(16, 32, 31, .06), 0 6px 18px rgba(16, 32, 31, .06);
+  --sprite-dim: grayscale(1) brightness(1.05) opacity(.55);
+}
+
+/* Galar — Ouistempo, Flambino, Larméléon : la brume des Highlands. Les
+   surfaces se détachent à peine du fond — c'est le thème le plus plat du
+   lot — et le bleu de Larméléon perce cette grisaille, avec la flamme de
+   Flambino en bordure. */
+:root[data-theme="starters-galar"] {
+  color-scheme: dark;
+  --bg: #101410; --bg-raised: #171c17; --bg-sunken: #131813; --bg-inset: #1a1f1a; --bg-hover: #202520;
+  --border: #4a2226; --border-strong: #663039;
+  --gold: #5090e0; --gold-soft: #8fd47a;
+  --accent: #5090e0; --accent-ink: #03122c;
+  --accent-glow: rgba(80, 144, 224, .42); --accent-wash: rgba(80, 144, 224, .12); --accent-border: #21406a;
+}
+
+/* Paldéa — Poussacha, Chochodile, Coiffeton : la terre d'ocre et les
+   oliviers. Le feu de Chochodile en accent, le vert olive dans le dégradé,
+   l'eau turquoise dans les bordures. */
+:root[data-theme="starters-paldea"] {
+  color-scheme: dark;
+  --bg: #12110a; --bg-raised: #1e1c12; --bg-sunken: #17150e; --bg-inset: #232016; --bg-hover: #2b271b;
+  --border: #1d4a45; --border-strong: #2b6660;
+  --gold: #ff6b3d; --gold-soft: #b9cf5e;
+  --accent: #ff6b3d; --accent-ink: #2b0a00;
+  --accent-glow: rgba(255, 107, 61, .45); --accent-wash: rgba(255, 107, 61, .13); --accent-border: #4e2716;
 }

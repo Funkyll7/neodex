@@ -68,6 +68,9 @@ export const CONFIG = {
     prefs: "funkylldex.prefs.v1",
     filters: "funkylldex.filters.v1",
     barsFold: "funkylldex.barsfold.v1",
+    /** Ou l'on en etait dans la grille, pour y revenir a la visite suivante. */
+    spot: "funkylldex.spot.v1",
+    saveFold: "funkylldex.savefold.v1",
     token: "funkylldex.github.v1",
   },
 

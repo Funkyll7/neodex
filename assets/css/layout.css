@@ -109,6 +109,10 @@
 .quest-side { display: flex; flex-direction: column; gap: var(--sp-3); }
 
 .nav-toggle { display: none; }
+/* Le tiroir de filtres n'existe qu'en dessous de 860 px : sur grand écran la
+   barre latérale est une colonne, elle n'a ni fond assombri ni croix. */
+.nav-backdrop { display: none; }
+.nav-close { display: none; }
 
 /* ------------------------- Tablette et paysage --------------------------- */
 @media (max-width: 1180px) {
@@ -152,6 +156,46 @@
     border-bottom: 1px solid var(--border);
   }
   .sidebar[hidden] { display: none; }
+
+  /* ---------------------------- Tiroir de filtres ------------------------ */
+  /* La barre latérale était un bloc normal, tout en haut du document :
+     appuyer sur « Filtres » depuis le milieu du Pokédex n'affichait rien tant
+     qu'on n'était pas remonté de quelques milliers de pixels. Elle se pose
+     maintenant PAR-DESSUS la page, là où l'on se trouve. Voir createTiroir()
+     dans ui/sidebar.js. */
+  .nav-backdrop {
+    display: block;
+    position: fixed; inset: 0; z-index: 55;
+    background: rgba(0, 0, 0, .55);
+    animation: sheet-fade .18s ease-out;
+  }
+  .nav-backdrop[hidden] { display: none; }
+  .nav-close { display: inline-flex; }
+
+  /* Le corps ne défile plus derrière : sinon on croit faire glisser le tiroir
+     et c'est la grille qui bouge dessous. */
+  body.nav-open { overflow: hidden; }
+
+  body.nav-open .sidebar {
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    width: min(340px, 88vw);
+    z-index: 56;
+    height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+    box-shadow: 14px 0 40px rgba(0, 0, 0, .45);
+    /* Encoche en haut, barre d'accueil en bas : une fois l'application
+       installée en plein écran, le titre passait sous l'encoche. */
+    padding-top: calc(var(--sp-4) + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(var(--sp-6) + env(safe-area-inset-bottom, 0px));
+    /* Une animation, pas une transition : le panneau passe de `display: none`
+       à visible, et une transition ne se joue jamais dans ce sens-là. */
+    animation: nav-in .22s cubic-bezier(.22, .8, .3, 1);
+  }
+  @keyframes nav-in { from { transform: translateX(-100%); } to { transform: none; } }
 
   .main { padding: var(--sp-4) var(--sp-3) 40px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-3); }

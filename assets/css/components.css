@@ -156,6 +156,19 @@
 }
 .tab[aria-selected="true"] .tab__badge { background: var(--accent-wash); color: var(--accent); }
 
+/* Le logo officiel de chaque Pokédex. Il n'est pas décoratif : « Pokédex
+   Pokémon HOME » et « Pokédex Pokémon GO » ne diffèrent que par leur dernier
+   mot, et c'est le logo qu'on reconnaît en premier. Grisé sur l'onglet
+   inactif, en couleur sur l'actif — même grammaire que le texte à côté. */
+.tab__logo {
+  height: 22px; width: auto; flex: none;
+  filter: saturate(.25) opacity(.6);
+  transition: filter .18s;
+}
+.tab[aria-selected="true"] .tab__logo { filter: none; }
+/* Un seul des deux libellés s'affiche à la fois — voir la requête mobile. */
+.tab__court { display: none; }
+
 /* ----------------------------- Barre d'outils ---------------------------- */
 .toolbar { display: flex; gap: var(--sp-3); flex-wrap: wrap; align-items: center; }
 .search { position: relative; flex: 1; min-width: 210px; }
@@ -200,6 +213,13 @@
 }
 .card:hover { background: var(--bg-hover); }
 .card--missing { opacity: .5; }
+/* Ni possédé ni absent : on a une FORME de ce Pokémon, pas sa forme de base.
+   La vignette montre alors le sprite de la forme possédée (domain/display.js),
+   en couleur et presque à pleine opacité — dire « je n'ai rien » d'un Miaouss
+   d'Alola bien rangé en boîte était faux. Le liseré reste celui d'une vignette
+   incomplète : il reste bien quelque chose à attraper. */
+.card--partial { opacity: .82; }
+.card--partial .card__img { filter: none; }
 .card--owned { border-color: color-mix(in srgb, var(--type) 45%, transparent); }
 .card--shiny { border-color: var(--accent-border); }
 .card--selected { background: var(--bg-hover); border-color: var(--type); }
@@ -327,17 +347,40 @@
 .toggle { display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
 .toggle__ico { display: block; flex: none; width: 12px; height: 12px; }
 
-/* Anneau gris et blanc : DEUX tons, donc une image de fond. En masque il
-   deviendrait un disque plein et l'anneau disparaîtrait. */
-.toggle__ico--base { background: url("../img/base.png") center / contain no-repeat; }
+/* Les trois pastilles sont des MASQUES : elles prennent la couleur du bouton,
+   donc elles suivent l'état coché et le thème sans qu'on ait à en fabriquer
+   une variante claire et une variante sombre.
 
-/* Logo chromatique : une seule couleur, donc un masque — il prend la couleur
-   du bouton, et suit donc l'état coché comme le thème. */
+   L'ancien anneau gris et blanc (base.png) était une image de fond, et c'était
+   son défaut : deux tons figés, qui ne bougeaient ni avec l'état du bouton ni
+   avec le thème, et qui ne ressemblaient à rien du jeu. La Poké Ball pleine
+   dit « attrapé » sans qu'on ait à l'apprendre.
+
+   `capture-forme` est la même Poké Ball, marquée du losange ◈ — le glyphe que
+   le site employait déjà pour dire « une forme ». Elle sert aux formes dont la
+   famille n'a pas de logo officiel : Salarsen Forme Grave, Keldeo Forme
+   Résolue, Motisma… qui n'affichaient qu'un ◈ nu. */
+.toggle__ico--capture,
+.toggle__ico--capture-forme,
 .toggle__ico--shiny {
   background-color: currentColor;
-  -webkit-mask: url("../img/shiny.png") center / contain no-repeat;
-  mask: url("../img/shiny.png") center / contain no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
 }
+.toggle__ico--capture {
+  -webkit-mask-image: url("../img/capture.png"); mask-image: url("../img/capture.png");
+}
+.toggle__ico--capture-forme {
+  -webkit-mask-image: url("../img/capture-forme.png"); mask-image: url("../img/capture-forme.png");
+}
+.toggle__ico--shiny {
+  -webkit-mask-image: url("../img/shiny.png"); mask-image: url("../img/shiny.png");
+}
+/* Le losange déborde à droite : sans ce point de large en plus, la Poké Ball
+   se réduisait pour lui faire de la place et paraissait plus petite que celle
+   du bouton voisin. */
+.toggle__ico--capture-forme { width: 14px; }
 
 /* ----------------------------- Fiche detaillee --------------------------- */
 .detail__head {
@@ -521,6 +564,14 @@
   position: absolute; top: 4px; left: 4px;
   opacity: .9;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35));
+}
+/* La pastille de repli, pour les familles sans logo officiel. En masque, donc
+   elle prend le ton du texte de la tuile au lieu d'imposer une couleur. */
+.ftile__kind--capture {
+  width: 20px; height: 18px;
+  background-color: var(--text-muted);
+  -webkit-mask: url("../img/capture-forme.png") center / contain no-repeat;
+  mask: url("../img/capture-forme.png") center / contain no-repeat;
 }
 
 .ftile__id { display: flex; flex-direction: column; gap: 5px; }
@@ -1209,6 +1260,22 @@
 .bars-fold[open] > .bars-fold__summary::after { content: " ▴"; }
 .bars-fold__summary:hover { color: var(--accent); }
 
+/* Sauvegarde et synchronisation : deux panneaux devenus un repli.
+   Ils occupaient quatre-vingts pour cent du tiroir mobile pour des commandes
+   qu'on n'utilise plus qu'en cas de pépin. Même grammaire que le détail de
+   progression au-dessus : un titre, un chevron, l'état retenu. */
+.save-fold { padding: var(--sp-3) var(--sp-4); }
+.save-fold__summary {
+  cursor: pointer; list-style: none;
+  margin: 0;
+}
+.save-fold__summary::-webkit-details-marker { display: none; }
+.save-fold__summary::after { content: " ▾"; }
+.save-fold[open] > .save-fold__summary::after { content: " ▴"; }
+.save-fold[open] > .save-fold__summary { margin-bottom: var(--sp-3); }
+.save-fold__summary:hover { color: var(--accent); }
+.save-fold .field + .field { margin-top: var(--sp-4); }
+
 /* ======================== Filtres actifs, en pastilles =================== */
 .fchips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--sp-3); }
 .fchip {
@@ -1306,17 +1373,31 @@
 }
 
 /* ============================== Thèmes ================================== */
-/* Le bouton de la marque ouvre cette palette : avec onze thèmes, un bouton qui
-   n'en alternait que deux laissait les neuf autres inaccessibles. */
-.themes__grid {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;
+/* Le bouton de la marque ouvre cette palette : avec vingt-six thèmes, un
+   bouton qui n'en alternait que deux laissait les autres inaccessibles.
+
+   Quatre familles, quatre titres. Vingt-six pastilles d'affilée formaient un
+   mur qu'on parcourait sans rien y chercher ; le titre dit ce qu'on regarde.
+   Et une hauteur bornée : déroulée en entier, la palette poussait « Statut »
+   et les filtres à plus d'un écran du haut de la colonne. */
+.themes {
+  display: flex; flex-direction: column; gap: var(--sp-3);
   margin-top: calc(-1 * var(--sp-2));
   padding: var(--sp-2);
+  max-height: min(60vh, 460px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--border-strong); border-radius: var(--r-md);
   background: var(--bg-raised);
   box-shadow: var(--shadow-panel);
 }
-.themes__grid[hidden] { display: none; }
+.themes[hidden] { display: none; }
+.themes__catname {
+  margin: 0 0 5px;
+  font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.themes__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 .swatch {
   display: flex; align-items: center; gap: 7px;
   cursor: pointer; text-align: left;
@@ -1336,6 +1417,143 @@
   box-shadow: inset 0 0 0 3px var(--sw-fg);
 }
 .swatch__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ============ La grille ne se relit plus en entier à chaque case ========== */
+/* 1025 vignettes, c'est plus de 22 000 nœuds. Or le navigateur remet en page
+   TOUT le document dès qu'une seule boîte change de taille — et cocher une case
+   change au moins un texte, celui du compteur « 3/8 ». Mesuré sur cette
+   grille : 24 ms de mise en page pour un compteur qui passe de « 3/8 » à
+   « 4/8 » sur UNE vignette. Avec cette règle : moins d'une milliseconde. Ce
+   n'est pas une micro-optimisation, c'est la différence entre une case qui
+   répond au doigt et une case qui accroche.
+
+   Posée sur `.card__select` et NON sur `.card`, et ce n'est pas indifférent :
+   `content-visibility` impose aussi la containment de peinture, qui rogne tout
+   ce qui déborde de la boîte. Or la pastille « ★ » d'une vignette terminée
+   déborde de 7 px (`.card--complete::after`, `top: -7px`), la vignette se
+   soulève au survol et projette une ombre. Tout cela vit sur `.card`, qui reste
+   donc intacte ; le bouton intérieur, lui, ne laisse rien dépasser.
+
+   `auto` dans `contain-intrinsic-size` : le navigateur retient la hauteur
+   réellement mesurée une fois la vignette passée à l'écran. Sans lui, un nom
+   sur deux lignes ferait sauter la barre de défilement pendant la descente. */
+.card__select {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 170px;
+}
+
+/* ============ Vignette rangée : terminée alors qu'un filtre l'exclut ====== */
+/* Elle ne disparaît plus sous le doigt — voir `setStale()` dans ui/dex-grid.js.
+   Elle reste cliquable : on vient peut-être de la terminer par erreur. */
+.card--stale { opacity: .45; }
+.card--stale .card__name { text-decoration: line-through; }
+.card--stale::before {
+  content: "rangé";
+  position: absolute; top: 6px; left: 6px; z-index: 3;
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  color: var(--text-faint);
+  font-size: 9px; font-weight: 800; letter-spacing: .04em;
+  pointer-events: none;
+}
+/* La grille GO a la même vignette rangée, avec sa propre classe : les deux
+   cartes ne partagent aucun style, seulement la règle d'usage. */
+.gcard--stale { opacity: .45; }
+.gcard--stale .gcard__name { text-decoration: line-through; }
+
+/* ====================== Bandeau « Annuler » ============================== */
+/* Il dit ce qui vient d'être coché et le défait d'un appui. En bas, sous le
+   pouce : c'est là que se trouve la main, et c'est là que l'erreur se répare.
+   Il laisse la place au bouton « revenir en haut », à droite. */
+.undo {
+  position: fixed;
+  z-index: 50;
+  left: 12px; right: 78px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  max-width: 460px;
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: 9px 10px 9px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--bg-raised);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .38);
+  animation: undo-in .16s ease-out;
+}
+/* `display: flex` l'emporterait sur l'attribut `hidden` : il faut le dire. */
+.undo[hidden] { display: none; }
+.undo__text {
+  flex: 1; min-width: 0;
+  font-size: 12.5px; font-weight: 700; color: var(--text-soft);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.undo__btn {
+  flex: none; cursor: pointer;
+  border: 1px solid var(--accent-border); border-radius: var(--r-sm);
+  background: var(--accent-wash); color: var(--accent);
+  padding: 8px 13px;
+  font: inherit; font-size: 12px; font-weight: 800;
+}
+.undo__btn:hover { background: var(--bg-hover); }
+.undo__btn:disabled { opacity: .45; cursor: default; }
+@keyframes undo-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ========================== Pokédex Pokémon GO =========================== */
+/* Deux cases par espèce et rien d'autre : la vignette peut donc être beaucoup
+   plus petite que celle du Pokédex HOME, et la grille beaucoup plus dense.
+   C'est le but — un livingdex GO se parcourt boîte par boîte, on veut en voir
+   trente d'un coup d'œil, pas huit. */
+.go-head { padding: var(--sp-4) var(--sp-4) var(--sp-3); }
+.go-head__top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.go-head__logo { height: 34px; width: auto; }
+.go-head__pct {
+  margin: 0;
+  font-family: var(--font-display); font-weight: 800; font-size: 30px; line-height: 1;
+  color: var(--accent);
+}
+.go-head__stats { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin: var(--sp-3) 0 var(--sp-2); }
+.go-stat { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 13px; color: var(--text-soft); }
+.go-stat__ico { width: 15px; height: 15px; color: var(--text-muted); }
+.go-stat--shiny .go-stat__ico { color: var(--accent); }
+.go-stat__value { font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+.go-stat__label { color: var(--text-faint); }
+
+.grid--go { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: var(--sp-2); }
+
+.gcard {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 7px 6px 6px;
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--bg-raised);
+  /* Mille vignettes dans une page : le navigateur n'a aucune raison de
+     calculer la mise en page de celles qui sont hors écran. */
+  content-visibility: auto;
+  contain-intrinsic-size: 152px;
+}
+.gcard--missing { opacity: .55; }
+.gcard--missing .gcard__img { filter: var(--sprite-dim); }
+.gcard--owned { border-color: color-mix(in srgb, var(--type) 45%, transparent); }
+.gcard--complete { border-color: var(--accent-border); background: var(--accent-wash); }
+.gcard__num { font-family: var(--font-display); font-weight: 800; font-size: 10px; color: var(--text-faint); }
+.gcard__art { display: block; height: 56px; }
+.gcard__img { width: 56px; height: 56px; object-fit: contain; }
+.gcard__name {
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-weight: 800; font-size: 11.5px; color: var(--text-soft);
+}
+.gcard__toggles { display: flex; gap: 4px; width: 100%; margin-top: 4px; }
+.gcard__btn {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; border: none; border-radius: var(--r-sm);
+  padding: 7px 4px;
+  background: var(--bg-inset);
+  color: var(--text-muted);
+}
+.gcard__btn:hover { filter: brightness(1.15); }
+.gcard__btn[aria-pressed="true"] { background: var(--type); color: #fff; }
+.gcard__btn--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.gcard__btn .toggle__ico { width: 13px; height: 13px; }
 
 /* Sur téléphone la feuille fait toute la largeur : 172 px n'y laissait plus
    qu'une colonne, soit treize écrans pour les noyaux de Météno. On redescend
@@ -1389,6 +1607,25 @@
   .to-top { width: 50px; height: 50px; font-size: 21px; }
   .fchips { margin-bottom: var(--sp-2); }
   .themes__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  /* Trois onglets sur 375 px : « Pokédex Pokémon HOME » et « Pokédex Pokémon
+     GO » ne tiennent pas, et les tronquer donnerait deux fois « Pokédex
+     Poké… ». Le logo porte alors l'identité, le mot final la précise. */
+  .tab { font-size: 12.5px; gap: 5px; padding: 9px 2px 10px; }
+  .tab__long { display: none; }
+  .tab__court { display: inline; }
+  .tab__logo { height: 19px; }
+  .tab__badge { padding: 2px 6px; font-size: 10px; }
+
+  /* Vignettes GO : au pouce, un bouton de 7 px de haut se rate. On élargit la
+     cible sans agrandir la vignette — c'est la case qu'on vise, pas l'image. */
+  .grid--go { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+  .gcard__btn { padding: 10px 4px; }
+  .gcard__name { font-size: 12px; }
+  .go-head { padding: var(--sp-3); }
+  .go-head__logo { height: 28px; }
+  .go-head__pct { font-size: 26px; }
+  .go-head__stats { gap: var(--sp-3); margin: var(--sp-2) 0; }
 
   /* Marges de sécurité : encoche en haut, barre d'accueil en bas. Sans elles,
      une fois l'application installée en plein écran, le bouton de fermeture

@@ -10,6 +10,8 @@
  * bouton de fermeture au meme endroit.
  */
 
+import { defilementDoux } from "./common.js";
+
 const SEUIL = 900;
 
 export function createToTop() {
@@ -22,9 +24,11 @@ export function createToTop() {
   bouton.textContent = "↑";
 
   bouton.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    const recherche = document.getElementById("search");
-    if (recherche) recherche.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: defilementDoux() });
+    // On ne donne PLUS le focus au champ de recherche. Sur telephone, cela
+    // ouvrait le clavier sur la moitie basse de l'ecran alors qu'on demandait
+    // seulement a remonter la liste : il fallait ensuite viser le vide pour le
+    // refermer, et la moitie de la grille restait cachee entre-temps.
   });
 
   document.body.append(bouton);

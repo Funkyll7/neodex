@@ -6,8 +6,10 @@
 #
 # La solution par defaut est un remplissage depuis les bords : seul le blanc
 # relie au bord devient transparent, le blanc enferme dans le dessin reste
-# opaque. Le logo de Hisui fait exception (mode "tout") : son blanc interieur
-# n'appartient pas au symbole, c'est le fond de la pastille.
+# opaque. Deux logos font exception (mode "tout") : Hisui, dont le blanc
+# interieur n'est pas le symbole mais le fond de sa pastille, et Alola, dont
+# l'anneau blanc entre le soleil orange et la spirale bleue faisait une grosse
+# tache claire au milieu du logo sur les tuiles sombres.
 # On calcule ensuite la boite englobante et on redimensionne.
 #
 # En PowerShell et non en Python, contrairement au reste de tools/ : ce script
@@ -140,8 +142,7 @@ $img = Join-Path $racine "assets/img"
 $src = Join-Path $img "sources"
 $jobs = @(
   @{ src = "shiny.jpg";       dst = "shiny.png";        size = 64; mode = "bords" },
-  @{ src = "base.png";        dst = "base.png";         size = 48; mode = "bords" },
-  @{ src = "forme-alola.png";  dst = "forme-alola.png";  size = 96; mode = "bords" },
+  @{ src = "forme-alola.png";  dst = "forme-alola.png";  size = 96; mode = "tout"  },
   @{ src = "forme-galar.png";  dst = "forme-galar.png";  size = 96; mode = "bords" },
   @{ src = "forme-hisui.jpg";  dst = "forme-hisui.png";  size = 96; mode = "tout"  },
   @{ src = "forme-paldea.png"; dst = "forme-paldea.png"; size = 96; mode = "bords" }

@@ -14,19 +14,24 @@ import { Collection } from "./domain/collection.js";
 import { GitHubSync } from "./domain/sync.js";
 import { HuntPlanner } from "./domain/hunt.js";
 import { applyFilters } from "./domain/filters.js";
-import { isComplete } from "./domain/completion.js";
-import { progressOf } from "./domain/progress.js";
+import { isComplete, requiredSlots } from "./domain/completion.js";
+import { progressOf, goProgressOf } from "./domain/progress.js";
 import { initTheme } from "./ui/theme.js";
 import { createSidebar } from "./ui/sidebar.js";
 import { createGrid } from "./ui/dex-grid.js";
+import { createGoDex } from "./ui/go-dex.js";
 import { createDetailPanel } from "./ui/detail-panel.js";
 import { createQuest } from "./ui/quest.js";
 import { createSaveControls } from "./ui/save.js";
 import { createShortcuts } from "./ui/shortcuts.js";
 import { createToTop } from "./ui/to-top.js";
 import { createActiveFilters } from "./ui/active-filters.js";
+import { createUndo } from "./ui/undo.js";
+import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
+/** Les filtres du Pokedex GO, qui ne pilotent que sa grille a lui. */
+const GO_KEYS = ["goSearch", "goGen", "goStatus"];
 
 migrateStorage();
 initTheme();
@@ -86,6 +91,9 @@ function start(dataset) {
     status: "all",
     view: "auto",
     selectedId: 25,
+    goSearch: "",
+    goGen: "all",
+    goStatus: "all",
     ...loadFilters(),
     ...loadQuestState(),
   });
@@ -96,11 +104,57 @@ function start(dataset) {
     sync,
     planner,
     store,
+    /**
+     * Cocher une case, en gardant de quoi revenir en arriere.
+     * L'etat d'avant est releve AVANT la bascule : c'est lui, et non l'inverse
+     * de l'etat courant, que « Annuler » remettra en place.
+     */
     onToggle: (id, slot) => {
-      collection.toggle(id, slot);
+      const avant = collection.has(id, slot);
       const species = dataset.byId.get(id);
+      const etaitComplet = species ? complete(species) : false;
+      collection.toggle(id, slot);
       sync.schedule(species ? species.name : `n° ${id}`);
+      undo.record(
+        `Case ${avant ? "décochée" : "cochée"} · ${species ? species.name : `n° ${id}`}` +
+          ` — ${slotLabel(species, slot)}`,
+        [{ id, slot, before: avant }]
+      );
+      // Deux impulsions quand le Pokemon vient de basculer sur « complet » :
+      // c'est le seul evenement de la session qui merite d'etre remarque sans
+      // regarder l'ecran.
+      if (species && !etaitComplet && complete(species)) tapComplet();
+      else tapCase();
       onCollectionChange(id);
+    },
+
+    /**
+     * Remet un lot de cases dans l'etat qu'elles avaient. Appele par
+     * `ui/undo.js`, et par lui seul.
+     *
+     * `toggle()` est une bascule : on ne la declenche que sur les cases qui ne
+     * sont pas deja dans l'etat voulu. Sans ce test, annuler un lot dont une
+     * case a ete recochee a la main la decocherait.
+     */
+    restoreMarks: (entries) => {
+      const touches = new Set();
+      for (const { id, slot, before } of entries) {
+        if (collection.has(id, slot) !== before) collection.toggle(id, slot);
+        touches.add(id);
+      }
+      sync.schedule("annulation depuis le site");
+      tapAnnule();
+      // Les deux Pokedex peuvent etre concernes, et l'entree ne dit pas lequel
+      // est a l'ecran. Repeindre les deux coute deux vignettes ; se tromper
+      // coute une case qui reste cochee sous les yeux apres l'annulation.
+      if (touches.size === 1) {
+        const id = [...touches][0];
+        onCollectionChange(id);
+        go.refresh(id);
+      } else {
+        onCollectionChange();
+        go.render();
+      }
     },
     onCollectionChange: (id) => onCollectionChange(id),
     /**
@@ -114,6 +168,27 @@ function start(dataset) {
       toTop.refresh();
     },
     onSearchInput: debounce((event) => store.set({ search: event.target.value }), 160),
+    /**
+     * Une case du Pokedex GO. Chemin separe de `onToggle` : il n'y a ici ni
+     * fiche a resynchroniser ni vignette HOME a repeindre, et surtout aucun
+     * compteur HOME a refaire — cocher un GO ne change pas d'un point la
+     * progression de l'autre Pokedex.
+     */
+    onGoToggle: (id, slot) => {
+      const avant = collection.has(id, slot);
+      collection.toggle(id, slot);
+      const species = dataset.byId.get(id);
+      const nom = species ? species.name : `n° ${id}`;
+      sync.schedule(`${nom} (GO)`);
+      undo.record(`Case ${avant ? "décochée" : "cochée"} · ${nom} — ${slotLabel(species, slot)}`, [
+        { id, slot, before: avant },
+      ]);
+      tapCase();
+      go.refresh(id);
+      save.render();
+      renderTabs();
+    },
+    onGoSearchInput: debounce((event) => store.set({ goSearch: event.target.value }), 160),
     /**
      * Voisins dans la liste filtree en cours. La fiche s'en sert pour ses
      * fleches ‹ › : remonter une boite de HOME, c'est aller de 1 a 2 a 3, pas
@@ -135,13 +210,15 @@ function start(dataset) {
 
   const sidebar = createSidebar(ctx);
   const grid = createGrid(ctx);
+  const go = createGoDex(ctx);
   const detail = createDetailPanel(ctx);
   const quest = createQuest(ctx);
   const save = createSaveControls(ctx);
   createShortcuts(ctx);
   const toTop = createToTop();
   const activeFilters = createActiveFilters(ctx);
-  createBarsFold();
+  const undo = createUndo(ctx);
+  createFolds();
 
   // Sur telephone, on quitte l'onglet plus souvent qu'on ne le ferme : c'est
   // le moment sur : on ecrit sans attendre la fin du delai de regroupement.
@@ -154,7 +231,11 @@ function start(dataset) {
   });
 
   const tabsRoot = document.getElementById("tabs");
-  const panels = { dex: document.getElementById("tab-dex"), quest: document.getElementById("tab-quest") };
+  const panels = {
+    dex: document.getElementById("tab-dex"),
+    go: document.getElementById("tab-go"),
+    quest: document.getElementById("tab-quest"),
+  };
 
   if (!store.state.quest) store.set({ quest: planner.roll(collection) });
 
@@ -163,29 +244,56 @@ function start(dataset) {
   /** « Tout obtenu » : dépend des formes et du verrou chromatique. */
   const complete = (species) => isComplete(species, collection);
 
+  /**
+   * Cette espece a-t-elle encore sa place dans la liste affichee ?
+   *
+   * On repasse par `applyFilters` avec une liste d'un seul element plutot que
+   * de reecrire la regle ici : le jour ou un filtre change, les deux chemins ne
+   * pourront pas diverger.
+   */
+  const stillVisible = (species) =>
+    applyFilters([species], store.state, collection, complete).length > 0;
+
+  /**
+   * Les trois onglets.
+   *
+   * Deux Pokedex distincts, donc deux noms explicites : « Pokédex » tout court
+   * ne disait plus lequel. Le logo officiel fait le reste du travail — sur
+   * telephone il reste seul avec le nom court, le nom long ne tiendrait pas.
+   *
+   * `long` et `court` sont deux nœuds, pas un texte tronque en CSS : couper
+   * « Pokédex Pokémon HOME » avec des points de suspension aurait donne
+   * « Pokédex Poké… » sur les deux onglets, c'est-a-dire deux libelles
+   * identiques.
+   */
   function renderTabs() {
     const counts = collection.counts(dataset.species, complete);
+    const goCounts = goProgressOf(dataset.species, collection);
     fill(
       tabsRoot,
       [
-        ["dex", "Pokédex", `${counts.owned}/${counts.total}`],
-        ["quest", "✦ Quêtes", String(store.state.questDone)],
-      ].map(([value, label, badge]) =>
+        ["dex", "assets/img/logo-home.png", "Pokédex Pokémon HOME", "HOME", `${counts.owned}/${counts.total}`],
+        ["go", "assets/img/logo-go.png", "Pokédex Pokémon GO", "GO", `${goCounts.owned}/${goCounts.total}`],
+        ["quest", null, "✦ Quêtes", "✦ Quêtes", String(store.state.questDone)],
+      ].map(([value, logo, long, court, badge]) =>
         el(
           "button.tab",
           {
             type: "button",
             role: "tab",
+            title: long,
+            "aria-label": long,
             "aria-selected": String(store.state.tab === value),
             onclick: () => store.set({ tab: value }),
           },
-          label,
+          logo ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" }) : null,
+          el("span.tab__long", long),
+          el("span.tab__court", court),
           el("span.tab__badge", badge)
         )
       )
     );
-    panels.dex.hidden = store.state.tab !== "dex";
-    panels.quest.hidden = store.state.tab !== "quest";
+    for (const [nom, panneau] of Object.entries(panels)) panneau.hidden = store.state.tab !== nom;
   }
 
   function renderList() {
@@ -215,11 +323,20 @@ function start(dataset) {
     if (id === undefined) {
       renderList();
       renderDetail();
+      // Un import ou une reinitialisation touche aussi les cases GO : la grille
+      // de l'autre onglet n'est plus a jour, meme si on ne la regarde pas.
+      go.render();
       return;
     }
     grid.refresh(id);
-    // Les filtres « capturés / manquants / shiny » peuvent exclure la carte.
-    if (store.state.status !== "all") renderList();
+    // Les filtres « capturés / manquants / complets » peuvent exclure la carte.
+    // On la BARRE au lieu de reconstruire la liste : voir `grid.setStale()`.
+    // Seul `status` depend de la collection ; les autres filtres ne peuvent
+    // pas changer d'avis parce qu'une case a bascule.
+    if (store.state.status !== "all") {
+      const species = dataset.byId.get(id);
+      if (species) grid.setStale(id, !stillVisible(species));
+    }
     detail.syncMarks(dataset.byId.get(id) || dataset.species[0]);
   }
 
@@ -245,7 +362,19 @@ function start(dataset) {
       saveFilters(state);
     }
 
-    if (changed.has("tab")) renderTabs();
+    // L'onglet ouvert est retenu d'une visite a l'autre : on revient sur le
+    // site pour continuer ce qu'on faisait, pas pour rechoisir son Pokedex.
+    if (changed.has("tab") || GO_KEYS.some((key) => changed.has(key))) saveFilters(state);
+
+    if (GO_KEYS.some((key) => changed.has(key))) go.render();
+
+    if (changed.has("tab")) {
+      renderTabs();
+      // La grille GO ne peut pas se mesurer tant que son panneau est `hidden` :
+      // elle n'aurait charge qu'un seul palier, et le defilement infini
+      // n'aurait jamais demarre.
+      if (state.tab === "go") go.reveal();
+    }
     if (changed.has("quest") || changed.has("questDone") || changed.has("questSkipped")) {
       quest.render();
       renderTabs();
@@ -263,6 +392,8 @@ function start(dataset) {
   activeFilters.render();
   renderDetail();
   quest.render();
+  go.render();
+  if (store.state.tab === "go") go.reveal();
 
   document.getElementById("boot").remove();
   document.getElementById("app").hidden = false;
@@ -297,28 +428,52 @@ function registerWorker() {
   });
 }
 
+/** Les deux cases du Pokedex GO, que `requiredSlots()` ne connait pas : elles
+    n'entrent pas dans la progression HOME, donc il ne les nomme jamais. */
+const GO_LABELS = { gn: "GO — attrapé", gs: "GO — chromatique" };
+
 /**
- * Le repli du détail de progression, retenu d'une visite à l'autre.
+ * Le nom lisible d'une case — « Normal ♀ », « Miaouss d'Alola shiny ».
  *
- * Fermé par défaut : ces dix barres repoussaient « Statut » à 666 px du haut,
- * hors de portée immédiate. Qui veut les consulter les ouvre une fois, et
- * elles restent ouvertes.
+ * On relit `requiredSlots()` plutot que d'inventer une table de libelles :
+ * c'est deja lui qui nomme les cases dans le « tout obtenu », et deux
+ * vocabulaires pour la meme case seraient un piege a maintenance.
  */
-function createBarsFold() {
-  const fold = document.getElementById("bars-fold");
-  if (!fold) return;
-  try {
-    fold.open = localStorage.getItem(CONFIG.storage.barsFold) === "1";
-  } catch {
-    /* stockage bloque : ferme par defaut */
-  }
-  fold.addEventListener("toggle", () => {
+function slotLabel(species, slot) {
+  if (GO_LABELS[slot]) return GO_LABELS[slot];
+  if (!species) return slot;
+  const entree = requiredSlots(species).find((e) => e.slot === slot);
+  return entree ? entree.label : slot;
+}
+
+/**
+ * Les replis de la barre latérale, retenus d'une visite à l'autre.
+ *
+ * Fermés par défaut, et pour la même raison dans les deux cas : dépliés, ils
+ * repoussaient les commandes utiles à plus d'un écran du haut de la colonne —
+ * les dix barres de progression d'un côté, les six boutons de sauvegarde de
+ * l'autre. Qui s'en sert les ouvre une fois, et ils restent ouverts.
+ */
+function createFolds() {
+  for (const [id, cle] of [
+    ["bars-fold", CONFIG.storage.barsFold],
+    ["save-fold", CONFIG.storage.saveFold],
+  ]) {
+    const fold = document.getElementById(id);
+    if (!fold) continue;
     try {
-      localStorage.setItem(CONFIG.storage.barsFold, fold.open ? "1" : "0");
+      fold.open = localStorage.getItem(cle) === "1";
     } catch {
-      /* rien a faire */
+      /* stockage bloque : ferme par defaut */
     }
-  });
+    fold.addEventListener("toggle", () => {
+      try {
+        localStorage.setItem(cle, fold.open ? "1" : "0");
+      } catch {
+        /* rien a faire */
+      }
+    });
+  }
 }
 
 /* ---------------------- persistance des filtres -------------------------- */
@@ -331,7 +486,7 @@ function createBarsFold() {
  * n'est PAS gardee : c'est une intention du moment, la retrouver au retour
  * ferait croire a une liste vide.
  */
-const FILTRES_GARDES = ["type", "gen", "game", "form", "sort", "status", "view"];
+const FILTRES_GARDES = ["type", "gen", "game", "form", "sort", "status", "view", "goGen", "goStatus", "tab"];
 /** Le dernier Pokemon consulte : rouvrir le site le retrouve ouvert. */
 const DERNIER = "selectedId";
 

@@ -16,6 +16,16 @@ export function typeChip(name, color, size = "sm") {
   return el(size === "lg" ? "span.chip.chip--lg" : "span.chip", { "--type": color }, name);
 }
 
+/**
+ * Le mode de defilement a employer pour un `scrollTo` / `scrollIntoView`.
+ *
+ * La regle `prefers-reduced-motion` de base.css coupe les animations CSS, mais
+ * elle ne peut rien contre un defilement pilote en JavaScript : `behavior:
+ * "smooth"` reste doux quoi qu'il arrive. C'est a l'appelant de demander.
+ */
+export const defilementDoux = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+
 /** Liens externes : Poképédia attend des underscores, Bulbapedia aussi. */
 export const wikiSlug = (name) => encodeURIComponent(String(name).replace(/ /g, "_"));
 

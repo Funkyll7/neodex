@@ -1,9 +1,11 @@
 /**
- * theme.js — bascule clair / sombre.
+ * theme.js — le choix du thème.
  * Le choix est memorise ; sans choix explicite on suit le reglage du systeme.
  */
 
 import { CONFIG } from "../config.js";
+import { el, fill } from "../core/dom.js";
+import { THEMES } from "./themes-list.js";
 
 const KEY = CONFIG.storage.prefs;
 
@@ -26,7 +28,11 @@ function writePrefs(prefs) {
 export function initTheme() {
   const media = window.matchMedia("(prefers-color-scheme: light)");
   const saved = readPrefs().theme;
-  apply(saved || (media.matches ? "light" : "dark"));
+  // Un theme enregistre qui n'existe plus — une palette renommee, un fichier de
+  // preferences venu d'une autre machine — ne doit pas laisser la page sans
+  // aucune couleur : on retombe alors sur le reglage systeme.
+  const connu = saved && THEMES.some((t) => t.value === saved);
+  apply(connu ? saved : media.matches ? "light" : "dark");
 
   // Sans choix explicite, on suit les changements de reglage systeme.
   media.addEventListener("change", (event) => {
@@ -40,10 +46,10 @@ export function initTheme() {
 /**
  * Le bouton de la marque ouvre la palette.
  *
- * Il ne fait plus basculer clair / sombre : avec onze themes, un bouton qui
- * en alterne deux laissait les neuf autres inaccessibles sans un second
- * reglage ailleurs. Il devient donc l'entree unique — un panneau s'ouvre, on
- * choisit, il se referme.
+ * Il ne fait plus basculer clair / sombre : avec vingt-six themes, un bouton
+ * qui en alterne deux laissait les vingt-quatre autres inaccessibles sans un
+ * second reglage ailleurs. Il devient donc l'entree unique — un panneau
+ * s'ouvre, on choisit, il se referme.
  */
 function initBouton() {
   const button = document.getElementById("theme-toggle");
@@ -53,6 +59,13 @@ function initBouton() {
   const ouvrir = (etat) => {
     picker.hidden = !etat;
     button.setAttribute("aria-expanded", String(etat));
+    // La palette s'ouvre sur la famille courante : avec quatre familles, elle
+    // s'ouvrait sinon systematiquement sur « Base » et il fallait faire defiler
+    // pour retrouver ou l'on etait.
+    if (etat) {
+      const actif = picker.querySelector('[aria-pressed="true"]');
+      if (actif) actif.scrollIntoView({ block: "nearest" });
+    }
   };
 
   button.addEventListener("click", (event) => {
@@ -72,7 +85,9 @@ function initBouton() {
     }
   });
 
-  picker.addEventListener("click", () => ouvrir(false));
+  picker.addEventListener("click", (event) => {
+    if (event.target.closest(".swatch")) ouvrir(false);
+  });
 }
 
 /** Applique un theme, le retient, et remet le selecteur d'accord. */
@@ -82,25 +97,50 @@ function choisir(theme) {
   syncPicker();
 }
 
+/**
+ * La palette, coupee en familles.
+ *
+ * Vingt-six pastilles d'affilee formaient un mur qu'on parcourait sans rien y
+ * chercher. Les quatre titres disent ce qu'on regarde — une couleur, un
+ * legendaire, un trio de depart — et rendent la liste consultable.
+ */
 function buildPicker() {
   const root = document.getElementById("theme-picker");
   if (!root) return;
 
-  root.replaceChildren(
-    ...THEMES.map((t) => {
-      const bouton = document.createElement("button");
-      bouton.type = "button";
-      bouton.className = "swatch";
-      bouton.dataset.theme = t.value;
-      bouton.title = t.label;
-      bouton.setAttribute("aria-label", `Thème ${t.label}`);
-      bouton.style.setProperty("--sw-bg", t.bandeau);
-      bouton.style.setProperty("--sw-fg", t.pastille);
-      bouton.append(Object.assign(document.createElement("span"), { className: "swatch__dot" }));
-      bouton.append(Object.assign(document.createElement("span"), { className: "swatch__name", textContent: t.label }));
-      bouton.addEventListener("click", () => choisir(t.value));
-      return bouton;
-    })
+  const familles = new Map();
+  for (const theme of THEMES) {
+    if (!familles.has(theme.groupe)) familles.set(theme.groupe, []);
+    familles.get(theme.groupe).push(theme);
+  }
+
+  fill(
+    root,
+    [...familles].map(([titre, liste]) =>
+      el(
+        "section.themes__cat",
+        el("h3.themes__catname", titre),
+        el(
+          "div.themes__grid",
+          liste.map((t) =>
+            el(
+              "button.swatch",
+              {
+                type: "button",
+                dataset: { theme: t.value },
+                title: t.label,
+                "aria-label": `Thème ${t.label}`,
+                "--sw-bg": t.bandeau,
+                "--sw-fg": t.pastille,
+                onclick: () => choisir(t.value),
+              },
+              el("span.swatch__dot"),
+              el("span.swatch__name", t.label)
+            )
+          )
+        )
+      )
+    )
   );
   syncPicker();
 }
@@ -109,57 +149,45 @@ function syncPicker() {
   const root = document.getElementById("theme-picker");
   if (!root) return;
   const courant = document.documentElement.dataset.theme;
-  for (const bouton of root.children) {
+  for (const bouton of root.querySelectorAll(".swatch")) {
     bouton.setAttribute("aria-pressed", String(bouton.dataset.theme === courant));
   }
 }
 
-/**
- * Les themes proposes.
- *
- * Les huit variantes de region sont baties sur le theme sombre : elles n'en
- * redefinissent que les fonds, les bordures et l'accent, jamais les tons de
- * texte. C'est ce qui garantit que le contraste reste bon sans avoir a le
- * revalider huit fois — et c'est pourquoi ajouter une region ne demande qu'un
- * bloc dans theme.css et une ligne ici.
- *
- * `bandeau` est la couleur du fond de page : elle part dans `theme-color`,
- * donc dans la barre du navigateur et, une fois installe, dans le bandeau
- * systeme de l'application.
- */
-export const THEMES = [
-  { value: "dark", label: "Sombre", bandeau: "#0a0d17", pastille: "#ffcb05" },
-  { value: "light", label: "Clair", bandeau: "#f2f4f9", pastille: "#c98f00" },
-  { value: "kanto", label: "Kanto", bandeau: "#120b0c", pastille: "#ff6b4a" },
-  { value: "johto", label: "Johto", bandeau: "#130f07", pastille: "#f2b134" },
-  { value: "hoenn", label: "Hoenn", bandeau: "#04141a", pastille: "#2ec5c0" },
-  { value: "sinnoh", label: "Sinnoh", bandeau: "#090f1c", pastille: "#5aa9ff" },
-  { value: "unys", label: "Unys", bandeau: "#08090d", pastille: "#7fd1ff" },
-  { value: "kalos", label: "Kalos", bandeau: "#0f0a18", pastille: "#e07be0" },
-  { value: "alola", label: "Alola", bandeau: "#05171a", pastille: "#ffb02e" },
-  { value: "galar", label: "Galar", bandeau: "#100c15", pastille: "#e05a7d" },
-  { value: "paldea", label: "Paldéa", bandeau: "#0d0916", pastille: "#a06bff" },
-];
+const PAR_VALEUR = new Map(THEMES.map((t) => [t.value, t]));
 
-const BANDEAU = Object.fromEntries(THEMES.map((t) => [t.value, t.bandeau]));
+/**
+ * Un fond est-il clair ?
+ *
+ * Deduit de la luminance du bandeau plutot que d'un drapeau a tenir a jour :
+ * deux thèmes de famille sont clairs (Reshiram, les starters d'Alola), et il y
+ * en aura d'autres. Un drapeau oublie donnait un soleil sur un fond noir.
+ */
+function estClair(hex) {
+  const n = parseInt(String(hex).slice(1), 16);
+  if (!Number.isFinite(n)) return false;
+  const r = (n >> 16) & 255;
+  const v = (n >> 8) & 255;
+  const b = n & 255;
+  return (r * 299 + v * 587 + b * 114) / 1000 > 140;
+}
 
 function apply(theme) {
   document.documentElement.dataset.theme = theme;
+  const courant = PAR_VALEUR.get(theme) || PAR_VALEUR.get("dark");
 
   // Le bandeau du navigateur — et, une fois l'application installee, la barre
   // systeme — prend cette couleur. Sans cette mise a jour, un site passe en
   // clair gardait un bandeau noir au-dessus de lui.
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", BANDEAU[theme] || BANDEAU.dark);
+  if (meta) meta.setAttribute("content", courant.bandeau);
 
-  // Le bouton porte le nom du theme courant et en prend l'accent : il dit
-  // ainsi ou l'on est, sans avoir a ouvrir la palette.
-  const courant = THEMES.find((t) => t.value === theme);
+  // Le bouton porte le nom du theme courant : il dit ainsi ou l'on est, sans
+  // avoir a ouvrir la palette.
   const button = document.getElementById("theme-toggle");
   if (button) {
-    button.textContent = theme === "light" ? "☀" : "☾";
-    const nom = courant ? courant.label : theme;
-    button.title = `Thème : ${nom} — cliquer pour changer`;
+    button.textContent = estClair(courant.bandeau) ? "☀" : "☾";
+    button.title = `Thème : ${courant.label} — cliquer pour changer`;
     button.setAttribute("aria-label", button.title);
   }
 }

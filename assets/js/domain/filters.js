@@ -4,6 +4,8 @@
  * critere, ajouter une clause ici et le controle correspondant dans ui/sidebar.js.
  */
 
+import { completionOf } from "./completion.js";
+
 /**
  * Les pastilles de statut.
  *
@@ -42,6 +44,50 @@ export const FORM_FILTERS = [
   { value: "cosmetic", label: "Formes cosmétiques" },
 ];
 
+/**
+ * Le livingdex Pokemon GO n'a que trois angles, et c'est voulu.
+ *
+ * GO ne connait ni forme regionale, ni Gigamax, ni case ♂ / ♀ : une espece y
+ * vaut deux cases, le normal et le chromatique. Lui recopier les huit filtres
+ * du Pokedex HOME aurait donne sept listes vides.
+ */
+export const GO_FILTERS = [
+  { value: "all", label: "Tous" },
+  { value: "missing", label: "À attraper" },
+  { value: "noshiny", label: "Sans shiny" },
+];
+
+/**
+ * Meme grammaire de recherche que le Pokedex HOME — numero exact ou debut de
+ * numero, sinon `species.search` — mais sur les seules cases GO.
+ */
+export function applyGoFilters(species, state, collection) {
+  const query = (state.goSearch || "").trim().toLowerCase();
+  const number = numberQuery(query);
+
+  const list = species.filter((p) => {
+    if (query && !matches(p, query, number)) return false;
+    if (state.goGen !== "all" && String(p.gen) !== state.goGen) return false;
+    switch (state.goStatus) {
+      case "missing":
+        return !collection.has(p.id, "gn");
+      case "noshiny":
+        return !collection.has(p.id, "gs");
+      default:
+        return true;
+    }
+  });
+
+  // Toujours par numero national : un livingdex se range dans l'ordre des
+  // boites, pas par ordre alphabetique.
+  list.sort((a, b) => a.id - b.id);
+  if (number !== null) {
+    const exact = list.findIndex((p) => p.id === number);
+    if (exact > 0) list.unshift(list.splice(exact, 1)[0]);
+  }
+  return list;
+}
+
 export const SORTS = {
   num: (a, b) => a.id - b.id,
   name: (a, b) => a.name.localeCompare(b.name, "fr"),
@@ -50,6 +96,34 @@ export const SORTS = {
 };
 
 const total = (p) => p.stats.reduce((sum, n) => sum + n, 0);
+
+/**
+ * « Presque complets » — le seul tri qui a besoin de la collection.
+ *
+ * `SORTS` ne compare que deux especes, et c'est ce qui le garde lisible :
+ * celui-ci doit savoir combien de cases sont deja cochees. On le fabrique donc
+ * a la demande, avec la collection en argument.
+ *
+ * Pourquoi ce tri : en fin de session on cherche les Pokemon a qui il ne manque
+ * qu'une case. Les terminer coute un appui chacun et fait monter le compteur
+ * « ★ Complets » — alors qu'un Charmilly en a 126 devant lui. Les especes deja
+ * terminees passent en queue : elles n'ont plus rien a offrir a ce tri.
+ *
+ * Le cache n'est pas une optimisation de confort : un tri appelle son
+ * comparateur des milliers de fois, et `completionOf` reconstruit a chaque
+ * appel la liste complete des cases exigees.
+ */
+function almostSort(collection) {
+  const cache = new Map();
+  const reste = (p) => {
+    if (!cache.has(p.id)) {
+      const { complete, total: t, done } = completionOf(p, collection);
+      cache.set(p.id, complete ? Number.MAX_SAFE_INTEGER : t - done);
+    }
+    return cache.get(p.id);
+  };
+  return (a, b) => reste(a) - reste(b) || a.id - b.id;
+}
 
 export function applyFilters(species, state, collection, isComplete = () => false) {
   const query = state.search.trim().toLowerCase();
@@ -80,7 +154,7 @@ export function applyFilters(species, state, collection, isComplete = () => fals
     }
   });
 
-  list.sort(SORTS[state.sort] || SORTS.num);
+  list.sort(state.sort === "almost" ? almostSort(collection) : SORTS[state.sort] || SORTS.num);
 
   // Un numero tape en entier gagne la premiere place, quel que soit le tri :
   // qui tape « 0025 » cherche Pikachu, pas le premier de la liste par ordre

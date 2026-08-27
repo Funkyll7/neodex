@@ -18,10 +18,36 @@
  */
 
 /**
+ * Les cases exigees par une espece ne dependent QUE du jeu de donnees : ni la
+ * collection, ni les filtres, ni le theme n'y changent quoi que ce soit. Or on
+ * les redemandait 2050 fois par case cochee — 1025 pour les compteurs de cases,
+ * 1025 pour le « tout obtenu » des compteurs d'especes.
+ *
+ * La cle est l'objet espece lui-meme : core/data.js le gele et n'en fabrique
+ * qu'un exemplaire pour toute la vie de la page. Une WeakMap suffit donc, et le
+ * jour ou un jeu de donnees serait recharge, l'ancien s'effacerait avec ses
+ * entrees sans qu'on ait a y penser.
+ *
+ * Le tableau rendu est PARTAGE entre tous les appelants : il ne se modifie pas.
+ * Aucun appelant ne le fait aujourd'hui — `completionOf` en tire un nouveau
+ * tableau par `filter`, progress.js se contente de le parcourir.
+ */
+const cache = new WeakMap();
+
+/**
  * Les cases qui doivent être cochées pour que ce Pokémon soit complet.
- * @returns {{slot: string, label: string}[]}
+ * @returns {{slot: string, label: string}[]}  tableau partagé, à ne pas modifier
  */
 export function requiredSlots(species) {
+  let slots = cache.get(species);
+  if (!slots) {
+    slots = buildSlots(species);
+    cache.set(species, slots);
+  }
+  return slots;
+}
+
+function buildSlots(species) {
   const slots = [];
   const shiny = !species.noShiny;
   const cos = species.cosmetic;
@@ -75,8 +101,19 @@ export function completionOf(species, collection) {
   };
 }
 
+/**
+ * « Tout obtenu ? », sans rien fabriquer.
+ *
+ * Passer par `completionOf()` construisait deux tableaux — les cases manquantes,
+ * puis leurs libelles — pour n'en tirer qu'un booleen. Ce test est appele 1025
+ * fois par rendu des compteurs et 1025 fois de plus des qu'un filtre de statut
+ * est actif : autant ne pas allouer du tout.
+ */
 export function isComplete(species, collection) {
-  return completionOf(species, collection).complete;
+  for (const entry of requiredSlots(species)) {
+    if (!collection.has(species.id, entry.slot)) return false;
+  }
+  return true;
 }
 
 /** Nombre de Pokémon entièrement obtenus, pour les compteurs. */

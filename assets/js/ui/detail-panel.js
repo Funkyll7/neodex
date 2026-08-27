@@ -445,7 +445,7 @@ function slotButton(species, ctx, { slot, label, gold, female }) {
             ? female
               ? "♀"
               : "♂"
-            : el("span.toggle__ico.toggle__ico--base", { "aria-hidden": "true" })
+            : el("span.toggle__ico.toggle__ico--capture", { "aria-hidden": "true" })
       ),
       el("span.slot__check", "✓")
     ),
@@ -845,6 +845,12 @@ function formTile(form, species, ctx) {
         : null,
       // Le logo de la famille, en pastille : d'un coup d'œil on sait si la
       // tuile est une forme d'Alola, de Galar, de Paldéa ou un Gigamax.
+      // Les familles sans logo officiel — le Salarsen Forme Grave, le Keldeo
+      // Forme Résolue, les Motisma — n'avaient rien du tout dans ce coin, et
+      // leurs tuiles se ressemblaient toutes. Elles reçoivent la Poké Ball de
+      // capture marquée du losange : « à attraper, sous une autre forme ».
+      // Seulement si la forme se coche, sinon l'icône promettrait une case qui
+      // n'existe pas (les Méga et les formes de combat n'en ont aucune).
       KIND_ICONS[form.kind]
         ? el("img.ftile__kind", {
             src: KIND_ICONS[form.kind],
@@ -854,7 +860,12 @@ function formTile(form, species, ctx) {
             height: 18,
             loading: "lazy",
           })
-        : null
+        : form.entry
+          ? el("span.ftile__kind.ftile__kind--capture", {
+              title: KIND_TITLES[form.kind] || "Forme alternative",
+              "aria-hidden": "true",
+            })
+          : null
     ),
     el(
       "div.ftile__id",

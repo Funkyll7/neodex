@@ -1,9 +1,15 @@
 /**
  * collection.js — ce que je possede.
  *
- * Modele : marks[id] = { om, of, sm, sf, f10161, f10161s, x201-b, ... }
+ * Modele : marks[id] = { om, of, sm, sf, gn, gs, f10161, f10161s, x201-b, ... }
  *   om / of      forme normale male / femelle
  *   sm / sf      chromatique male / femelle
+ *   gn / gs      Pokedex Pokemon GO : normal / chromatique. Deux cases par
+ *                espece, pas une de plus — le livingdex GO ignore les formes.
+ *                Elles vivent dans le meme objet que les autres, et c'est
+ *                voulu : un seul fichier, une seule synchronisation, un seul
+ *                export. `completion.js` ne les regarde jamais, donc elles
+ *                n'entrent pas dans la progression HOME.
  *   f<id>        forme alternative n° <id> (PokeAPI), version normale
  *   f<id>s       la meme, chromatique
  *   f<id>f       la meme, femelle (formes a dimorphisme : Farfuret de Hisui)
@@ -29,12 +35,28 @@
 
 import { CONFIG } from "../config.js";
 
-export const SLOT_KEYS = ["om", "of", "sm", "sf", "vo", "vs", "vof", "vsf"];
+export const SLOT_KEYS = ["om", "of", "sm", "sf", "gn", "gs", "vo", "vs", "vof", "vsf"];
 
 /** Cases de forme : "f10161", "f10161s" (chromatique), "…f" (femelle). */
 const FORM_SLOT = /^f\d+s?f?$/;
 /** Cases de forme cosmetique : "x201-b" (normale), "y201-b" (chromatique). */
 const COSMETIC_SLOT = /^[xy]\d+-[a-z0-9-]+$/;
+/**
+ * Une case cosmetique, et une seule, commence par `x` (normale) ou `y`
+ * (chromatique). C'est un raccourci, mais un raccourci garanti : `sanitize()`
+ * ne laisse passer que des cases connues, et aucune des autres ne commence par
+ * ces deux lettres — `om/of/sm/sf/gn/gs` et l'ancien `vo/vs/vof/vsf` commencent
+ * par o, s, g ou v, les formes par `f`.
+ *
+ * Une expression reguliere rejouee sur chaque cle a chaque appel couterait ici :
+ * `isOwned` et `isShiny` sont appelees des milliers de fois par case cochee —
+ * deux fois par espece dans les compteurs, une dans les filtres, deux par
+ * vignette repeinte.
+ */
+const aUneCosmetique = (marks, lettre) => {
+  for (const slot of Object.keys(marks)) if (slot[0] === lettre) return true;
+  return false;
+};
 
 const isSlot = (key) => SLOT_KEYS.includes(key) || FORM_SLOT.test(key) || COSMETIC_SLOT.test(key);
 
@@ -78,14 +100,29 @@ export class Collection {
     return Boolean(this.get(id)[slot]);
   }
 
+  /**
+   * « Est-ce que j'ai ce Pokemon ? »
+   *
+   * Une variante cosmetique compte : un Zarbi B EST un Zarbi, une Prismillon
+   * Motif Continental EST une Prismillon. Sans cette clause, une vignette
+   * s'affichait « manquante » alors que sa grille de variantes etait cochee —
+   * seule la variante de base ecrit `om`, les autres ecrivent `x<id>-<clef>`.
+   *
+   * Une forme REGIONALE ne compte pas, elle : un Miaouss d'Alola ne remplace
+   * pas le Miaouss de Kanto dans une boite de HOME, il s'ajoute a lui. La
+   * vignette le signale autrement — voir `formeDeRepli()` dans domain/display.js,
+   * qui montre le sprite de la forme possedee a la place de celui de l'espece.
+   */
   isOwned(id) {
     const m = this.get(id);
-    return Boolean(m.om || m.of);
+    if (m.om || m.of) return true;
+    return aUneCosmetique(m, "x");
   }
 
   isShiny(id) {
     const m = this.get(id);
-    return Boolean(m.sm || m.sf);
+    if (m.sm || m.sf) return true;
+    return aUneCosmetique(m, "y");
   }
 
   isCompletePair(id) {

@@ -19,7 +19,13 @@
 /** Champs ou l'utilisateur ecrit : aucun raccourci ne doit s'y declencher. */
 const TYPING = new Set(["INPUT", "TEXTAREA", "SELECT"]);
 
-const isTyping = (node) =>
+/**
+ * Exporte pour `ui/undo.js`, qui prend Ctrl+Z et a besoin exactement de la
+ * meme definition de « l'utilisateur est en train d'ecrire ». Deux copies de
+ * cette regle finiraient par diverger, et c'est le genre de divergence qui se
+ * remarque le jour ou une touche est volee en pleine frappe.
+ */
+export const isTyping = (node) =>
   Boolean(node) && (TYPING.has(node.tagName) || node.isContentEditable);
 
 export function createShortcuts(ctx) {

@@ -34,7 +34,7 @@
    v2 : les reponses opaques (sprites) entrent enfin dans le cache.
    v3 : les requetes de la coquille contournent le cache HTTP. Les caches v2
         contiennent du JS perime, il faut les jeter. */
-const VERSION = "funkylldex-v6";
+const VERSION = "funkylldex-v7";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;
@@ -49,8 +49,20 @@ const SHELL_FILES = [
   "./assets/css/components.css",
   "./assets/js/main.js",
   "./assets/img/favicon.svg",
+  // Les pastilles des boutons et les logos de famille : quelques kilo-octets,
+  // mais visibles sur chaque vignette. Sans eux hors ligne, la grille se
+  // couvrait de carres vides.
+  "./assets/img/capture.png",
+  "./assets/img/capture-forme.png",
+  "./assets/img/shiny.png",
+  "./assets/img/forme-alola.png",
+  "./assets/img/forme-galar.png",
+  "./assets/img/forme-hisui.png",
+  "./assets/img/forme-paldea.png",
   "./assets/img/gigamax.png",
   "./assets/img/gigamax-nb.png",
+  "./assets/img/logo-home.png",
+  "./assets/img/logo-go.png",
 ];
 
 self.addEventListener("install", (event) => {

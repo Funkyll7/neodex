@@ -92,20 +92,7 @@ export function createSidebar(ctx) {
   typeSelect.addEventListener("change", () => store.set({ type: typeSelect.value }));
   searchInput.addEventListener("input", ctx.onSearchInput);
 
-  // Menu repliable en mobile.
-  const navToggle = document.getElementById("nav-toggle");
-  const sidebar = document.getElementById("sidebar");
-  const mobile = window.matchMedia("(max-width: 860px)");
-  const syncNav = () => {
-    sidebar.hidden = mobile.matches && navToggle.getAttribute("aria-expanded") !== "true";
-  };
-  navToggle.addEventListener("click", () => {
-    const open = navToggle.getAttribute("aria-expanded") === "true";
-    navToggle.setAttribute("aria-expanded", String(!open));
-    syncNav();
-  });
-  mobile.addEventListener("change", syncNav);
-  syncNav();
+  createTiroir();
 
   /* ------------------------------- rendu ------------------------------ */
 
@@ -196,6 +183,69 @@ export function createSidebar(ctx) {
       typeSelect.value = store.state.type;
     },
   };
+}
+
+/* ------------------------ tiroir de filtres, mobile ---------------------- */
+
+/**
+ * Sur telephone, la barre laterale devient un tiroir POSE PAR-DESSUS la page.
+ *
+ * Avant, elle restait un bloc normal, tout en haut du document : appuyer sur
+ * « Filtres » depuis le milieu du Pokedex ne montrait rien du tout — il fallait
+ * remonter plusieurs milliers de pixels pour tomber dessus. Le bouton avait
+ * l'air cassé alors qu'il faisait exactement ce qu'on lui demandait.
+ *
+ * Elle se ferme donc comme la fiche : par la croix, par le fond assombri, par
+ * Echap. Meme grammaire, meme geste, et pour la meme raison — un panneau qui
+ * couvre l'ecran doit se refermer sans qu'on ait a chercher comment.
+ */
+function createTiroir() {
+  const bouton = document.getElementById("nav-toggle");
+  const croix = document.getElementById("nav-close");
+  const fond = document.getElementById("nav-backdrop");
+  const barre = document.getElementById("sidebar");
+  const mobile = window.matchMedia("(max-width: 860px)");
+
+  /** Ou l'on etait dans la grille avant l'ouverture. */
+  let defilement = 0;
+  const ouvert = () => bouton.getAttribute("aria-expanded") === "true";
+
+  function sync() {
+    const petit = mobile.matches;
+    const ouvre = petit && ouvert();
+    barre.hidden = petit && !ouvre;
+    fond.hidden = !ouvre;
+    croix.hidden = !petit;
+    document.body.classList.toggle("nav-open", ouvre);
+  }
+
+  function poser(etat) {
+    if (etat === ouvert()) return;
+    // Bloquer le defilement du corps peut faire remonter la page : on note ou
+    // l'on etait pour y revenir a la fermeture, comme le fait la fiche.
+    if (etat) defilement = window.scrollY;
+    bouton.setAttribute("aria-expanded", String(etat));
+    sync();
+    if (etat) barre.scrollTop = 0;
+    else window.scrollTo({ top: defilement, behavior: "auto" });
+  }
+
+  bouton.addEventListener("click", () => poser(!ouvert()));
+  croix.addEventListener("click", () => {
+    poser(false);
+    bouton.focus();
+  });
+  fond.addEventListener("click", () => poser(false));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && ouvert() && mobile.matches) {
+      poser(false);
+      bouton.focus();
+    }
+  });
+  // Passage en grand ecran alors que le tiroir etait ouvert : la barre reprend
+  // sa place dans la colonne, il ne doit plus rien rester du panneau.
+  mobile.addEventListener("change", sync);
+  sync();
 }
 
 /* ------------------------------ barres de % ------------------------------ */

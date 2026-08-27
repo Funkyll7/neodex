@@ -12,9 +12,11 @@
  */
 
 import { CONFIG } from "../config.js";
+import { debounce } from "../core/store.js";
 import { el, fill } from "../core/dom.js";
-import { spriteImg } from "../domain/sprites.js";
+import { spriteImg, formImg } from "../domain/sprites.js";
 import { completionOf } from "../domain/completion.js";
+import { formeDeRepli } from "../domain/display.js";
 import { dexNumber, typeChip } from "./common.js";
 
 export function createGrid(ctx) {
@@ -25,7 +27,21 @@ export function createGrid(ctx) {
 
   let list = [];
   let shown = 0;
-  let scheduled = false;
+  /** La reprise n'a lieu qu'au tout premier rendu, pas a chaque filtre. */
+  let premier = true;
+  /** Vignettes que le filtre en cours exclut desormais : voir `setStale()`. */
+  const rangees = new Set();
+
+  /**
+   * « 118 résultats · 2 rangés ». On ne ment pas sur le nombre : ce qui est
+   * barre ne compte plus, mais reste visible.
+   */
+  function peindreCompteur() {
+    const restant = list.length - rangees.size;
+    counter.textContent =
+      `${restant} résultat${restant > 1 ? "s" : ""}` +
+      (rangees.size ? ` · ${rangees.size} rangé${rangees.size > 1 ? "s" : ""}` : "");
+  }
 
   function appendPage() {
     const next = list.slice(shown, shown + CONFIG.pageSize);
@@ -34,31 +50,40 @@ export function createGrid(ctx) {
   }
 
   /**
-   * Charge les paliers suivants tant que la sentinelle est a moins d'un ecran
-   * du bas de la fenetre. La boucle couvre aussi le cas ou un palier ne suffit
-   * pas a remplir l'ecran (filtre tres large sur un grand ecran).
+   * Le palier suivant se charge quand la sentinelle approche du bas de l'ecran.
+   *
+   * Avant, une boucle lisait `sentinel.getBoundingClientRect()` entre deux
+   * `appendPage()`. Lire une position juste apres avoir ajoute 120 vignettes
+   * oblige le navigateur a remettre en page toute la grille immediatement, et
+   * la boucle recommencait : mesure sur un remplissage complet, 714 ms avec ces
+   * lectures contre 455 ms sans. 259 ms de mise en page rejouee pour rien, et
+   * une lecture forcee a chaque image tant qu'il reste des paliers.
+   *
+   * L'observateur ne lit jamais de position : c'est le navigateur qui previent,
+   * une fois la mise en page faite, quand il l'a deja faite pour lui.
+   *
+   * `rootMargin` reprend exactement la marge de 600 px de l'ancienne boucle :
+   * le palier suivant arrive avant qu'on ait atteint le bas.
    */
-  function fillViewport() {
-    let guard = 0;
-    while (shown < list.length && guard < 40) {
-      const distance = sentinel.getBoundingClientRect().top - window.innerHeight;
-      if (distance > 600) break;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (shown >= list.length) return;
+      if (!entries.some((entry) => entry.isIntersecting)) return;
       appendPage();
-      guard += 1;
-    }
-  }
+      // Un palier ne remplit pas toujours l'ecran (filtre tres large, grand
+      // ecran) : la sentinelle reste alors visible, et un observateur ne
+      // repond qu'aux CHANGEMENTS. On le re-arme donc pour obtenir une
+      // nouvelle notification initiale — c'est ce qui remplace la boucle,
+      // sans jamais lire de position nous-memes.
+      rearmer();
+    },
+    { rootMargin: "600px 0px" }
+  );
 
-  function schedule() {
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(() => {
-      scheduled = false;
-      fillViewport();
-    });
+  function rearmer() {
+    observer.unobserve(sentinel);
+    if (shown < list.length) observer.observe(sentinel);
   }
-
-  window.addEventListener("scroll", schedule, { passive: true });
-  window.addEventListener("resize", schedule, { passive: true });
 
   grid.addEventListener("click", (event) => {
     const toggle = event.target.closest("[data-slot]");
@@ -70,16 +95,131 @@ export function createGrid(ctx) {
     if (select) ctx.onSelect(Number(select.closest(".card").dataset.id));
   });
 
+  /* ----------------------- reprendre ou l'on en etait --------------------- */
+
+  /**
+   * La vignette au centre de l'ecran.
+   *
+   * `elementFromPoint` plutot qu'un parcours des mille enfants de la grille :
+   * on releve cette position a chaque arret du defilement, un parcours y
+   * couterait plus cher que le rendu lui-meme.
+   *
+   * Rien quand la feuille mobile est ouverte : au centre de l'ecran il y a
+   * alors la fiche, pas la grille.
+   */
+  function repere() {
+    if (document.body.classList.contains("sheet-open")) return null;
+    const cible = document.elementFromPoint(
+      Math.round(window.innerWidth / 2),
+      Math.round(window.innerHeight / 2)
+    );
+    const carte = cible && cible.closest ? cible.closest(".card") : null;
+    return carte ? Number(carte.dataset.id) : null;
+  }
+
+  function ecrireRepere() {
+    const id = repere();
+    if (!id) return;
+    try {
+      localStorage.setItem(CONFIG.storage.spot, String(id));
+    } catch {
+      /* stockage bloque : on repartira simplement du haut */
+    }
+  }
+
+  function lireRepere() {
+    try {
+      const brut = Number(localStorage.getItem(CONFIG.storage.spot));
+      return Number.isInteger(brut) && brut > 0 ? brut : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Premier rendu de la session : on remonte a la vignette quittee.
+   *
+   * Les filtres et le dernier Pokemon consulte survivaient deja au
+   * rechargement, mais pas la POSITION dans la liste. Or sur telephone la page
+   * est rechargee sans arret — on bascule vers HOME, le systeme reprend la
+   * memoire — et au retour on se retrouvait en haut de 1025 vignettes.
+   *
+   * On memorise le NUMERO de la vignette, jamais une hauteur en pixels : la
+   * hauteur d'une carte change avec la largeur de l'ecran et le nombre de
+   * colonnes.
+   *
+   * On ne peut pas defiler vers une vignette qui n'existe pas encore — la
+   * grille se rend par paliers de 120. On deroule donc les paliers jusqu'a
+   * elle, d'un coup : c'est exactement ce que le defilement ferait, en
+   * plusieurs secondes de pouce.
+   *
+   * `block: "center"` et non `"start"` : la barre d'outils est collante et
+   * recouvrirait une vignette calee en haut.
+   */
+  function reprendre() {
+    const cible = lireRepere();
+    if (!cible) return;
+    const index = list.findIndex((p) => p.id === cible);
+    if (index < 0) return;
+    while (shown <= index && shown < list.length) appendPage();
+    const node = grid.querySelector(`[data-id="${cible}"]`);
+    if (node) node.scrollIntoView({ block: "center", behavior: "auto" });
+  }
+
+  // Ecrit au repos, pas a chaque pixel : le localStorage est synchrone, et un
+  // defilement au pouce genere des dizaines d'evenements par seconde.
+  window.addEventListener("scroll", debounce(ecrireRepere, 400), { passive: true });
+  // Sur telephone on quitte l'onglet plus souvent qu'on ne le ferme, et la page
+  // peut etre tuee juste apres : c'est le moment sur pour ecrire.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") ecrireRepere();
+  });
+
   return {
     /** Rendu complet : nouvelle liste filtree. */
     render(filtered) {
       list = filtered;
       shown = 0;
+      // C'est ici, et seulement ici, que les vignettes rangees s'en vont : un
+      // changement de filtre est le moment ou l'on accepte que la liste bouge.
+      rangees.clear();
       grid.replaceChildren();
       empty.hidden = list.length > 0;
-      counter.textContent = `${list.length} résultat${list.length > 1 ? "s" : ""}`;
+      peindreCompteur();
       appendPage();
-      schedule();
+      // Les filtres sont deja restaures a ce stade : la liste est bien celle
+      // qu'on avait quittee, la vignette memorisee y a donc encore sa place.
+      if (premier) {
+        premier = false;
+        reprendre();
+      }
+      // Re-armement : la liste a change, la sentinelle est peut-etre deja
+      // visible sans avoir bouge d'un pixel.
+      rearmer();
+    },
+
+    /**
+     * La vignette ne correspond plus au filtre en cours — on vient de terminer
+     * un Pokemon alors que « À terminer » est actif.
+     *
+     * Elle est BARREE, pas retiree. Reconstruire la liste a ce moment-la
+     * decalait toutes les vignettes d'un cran et remettait le defilement au
+     * premier palier : un Pokemon termine coutait une remontee de liste,
+     * exactement au moment ou l'on enchaine le mieux. Elle s'en va au prochain
+     * changement de filtre, quand la liste a de toute facon le droit de bouger.
+     *
+     * Elle reste aussi dans `visible` cote main.js, donc les fleches ‹ › et les
+     * touches ← → continuent de passer dessus — c'est ce qu'on veut : on vient
+     * peut-etre de terminer le voisin par erreur.
+     */
+    setStale(id, stale) {
+      const node = grid.querySelector(`[data-id="${id}"]`);
+      if (!node) return;
+      if (node.classList.contains("card--stale") === stale) return;
+      node.classList.toggle("card--stale", stale);
+      if (stale) rangees.add(id);
+      else rangees.delete(id);
+      peindreCompteur();
     },
 
     /** Repeint une seule vignette apres un clic sur une case. */
@@ -150,10 +290,13 @@ function paint(node, species, ctx) {
   const view = store.state.view;
   const showShiny = view === "shiny" || (shiny && view !== "normal");
   const showFemale = Boolean(species.gd) && (showShiny ? marks.sf && !marks.sm : marks.of && !marks.om);
+  // On n'a pas l'espèce, mais on a une de ses formes : c'est son sprite qu'il
+  // faut montrer. Voir domain/display.js pour la règle et le pourquoi.
+  const repli = owned || shiny ? null : formeDeRepli(species, collection);
 
   node.className = [
     "card",
-    owned ? "card--owned" : "card--missing",
+    owned ? "card--owned" : repli ? "card--partial" : "card--missing",
     shiny ? "card--shiny" : "",
     showShiny && owned ? "card--shiny-art" : "",
     progress.complete ? "card--complete" : "",
@@ -164,7 +307,8 @@ function paint(node, species, ctx) {
 
   node.title = progress.complete
     ? `Tout obtenu — ${progress.total} case${progress.total > 1 ? "s" : ""}`
-    : `${progress.done} / ${progress.total} — reste : ${progress.missing.join(", ")}`;
+    : (repli ? `${repli.form.name} obtenu, pas la forme de base. ` : "") +
+      `${progress.done} / ${progress.total} — reste : ${progress.missing.join(", ")}`;
 
   fill(
     node.querySelector(".card__flags"),
@@ -188,12 +332,14 @@ function paint(node, species, ctx) {
 
   const gmax = gmaxState(species, collection);
   const art = node.querySelector(".card__art");
-  const key = `${showShiny}-${showFemale}-${gmax}`;
+  const key = `${showShiny}-${showFemale}-${gmax}-${repli ? repli.form.id + (repli.shiny ? "s" : "") : ""}`;
   if (art.dataset.key !== key) {
     art.dataset.key = key;
     fill(
       art,
-      spriteImg(species.id, { shiny: showShiny, female: showFemale, alt: species.name, className: "card__img" }),
+      repli
+        ? formImg(repli.form, { shiny: repli.shiny, alt: repli.form.name, className: "card__img" })
+        : spriteImg(species.id, { shiny: showShiny, female: showFemale, alt: species.name, className: "card__img" }),
       showShiny
         ? el("span.card__spark", { title: "Version chromatique affichée", "aria-hidden": "true" })
         : null,
@@ -247,18 +393,21 @@ function formTitle(species) {
  * l'`aria-label`.
  */
 /**
- * Les pastilles des boutons.
+ * Les pastilles des boutons — trois masques CSS, jamais du texte.
  *
- * `base` et `shiny` sont des images posees en fond, pas du texte : les glyphes
- * Unicode qu'elles remplacent (● et ✦) dependaient de la police installee et
- * n'avaient rien a voir avec le vocabulaire visuel du jeu.
+ * Les glyphes Unicode qu'elles remplacent (●, ✦, ◈) dependaient de la police
+ * installee et n'avaient rien a voir avec le vocabulaire visuel du jeu. En
+ * masque plutot qu'en image de fond, chacune prend la couleur du bouton : elle
+ * suit donc l'etat coche et le theme sans qu'on ait a fabriquer une variante.
  *
- *   base   anneau gris et blanc — deux tons, donc une IMAGE : un masque en
- *          ferait un disque plein et l'anneau disparaitrait ;
- *   shiny  logo chromatique — une seule couleur, donc un MASQUE : il prend
- *          la teinte du bouton, doree ici, et suit les deux themes.
+ *   capture       la Poke Ball pleine — « je l'ai attrape » ;
+ *   capture-forme la meme, plus le losange ◈ en pastille — « je l'ai attrape,
+ *                 sous une autre forme ». Elle sert aux formes dont la famille
+ *                 n'a pas de logo officiel : Salarsen Forme Grave, Keldeo
+ *                 Forme Resolue, Motisma Chaleur… qui n'avaient qu'un ◈ nu ;
+ *   shiny         le logo chromatique.
  */
-const icoBase = () => el("span.toggle__ico.toggle__ico--base", { "aria-hidden": "true" });
+const icoBase = () => el("span.toggle__ico.toggle__ico--capture", { "aria-hidden": "true" });
 const icoShiny = () => el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" });
 /**
  * ♂ en bleu, ♀ en rose — les deux couleurs deja employees par la fiche
@@ -285,7 +434,7 @@ const ICONES_FAMILLE = {
 const icoFamille = (kind) =>
   ICONES_FAMILLE[kind]
     ? el("img.toggle__fam", { src: ICONES_FAMILLE[kind], alt: "", width: 13, height: 13, loading: "lazy" })
-    : "◈";
+    : el("span.toggle__ico.toggle__ico--capture-forme", { "aria-hidden": "true" });
 
 function quickToggles(species, ctx, color) {
   const base = species.cosmetic && species.cosmetic.baseVariant;

@@ -25,7 +25,50 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Les 1025 sprites viennent de jsDelivr. Sans cette ligne, le DNS, le TLS et
+     la poignée de main n'ont lieu qu'au moment de la première image, donc après
+     le premier rendu : 100 à 300 ms d'attente sur mobile, pendant lesquelles la
+     grille est déjà à l'écran mais vide. `crossorigin` est obligatoire — les
+     images sont demandées en `no-cors`, une préconnexion sans lui ouvrirait la
+     mauvaise connexion. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Les modules se découvrent en cascade : le navigateur doit analyser main.js
+     pour savoir qu'il lui faut core/data.js, puis data.js pour la suite. Ces
+     lignes les demandent toutes d'un coup, dès la lecture de l'en-tête. Rien
+     n'est exécuté avant l'heure : `modulepreload` ne fait que remplir le cache
+     des modules.
+     À tenir à jour avec assets/js/ — une ligne de trop ne coûte qu'une requête
+     inutile, une ligne manquante ne coûte rien du tout. -->
+<link rel="modulepreload" href="assets/js/main.js">
+<link rel="modulepreload" href="assets/js/config.js">
+<link rel="modulepreload" href="assets/js/core/data.js">
+<link rel="modulepreload" href="assets/js/core/dom.js">
+<link rel="modulepreload" href="assets/js/core/store.js">
+<link rel="modulepreload" href="assets/js/domain/collection.js">
+<link rel="modulepreload" href="assets/js/domain/completion.js">
+<link rel="modulepreload" href="assets/js/domain/progress.js">
+<link rel="modulepreload" href="assets/js/domain/filters.js">
+<link rel="modulepreload" href="assets/js/domain/sprites.js">
+<link rel="modulepreload" href="assets/js/domain/display.js">
+<link rel="modulepreload" href="assets/js/domain/availability.js">
+<link rel="modulepreload" href="assets/js/domain/hunt.js">
+<link rel="modulepreload" href="assets/js/domain/sync.js">
+<link rel="modulepreload" href="assets/js/ui/sidebar.js">
+<link rel="modulepreload" href="assets/js/ui/dex-grid.js">
+<link rel="modulepreload" href="assets/js/ui/go-dex.js">
+<link rel="modulepreload" href="assets/js/ui/detail-panel.js">
+<link rel="modulepreload" href="assets/js/ui/quest.js">
+<link rel="modulepreload" href="assets/js/ui/save.js">
+<link rel="modulepreload" href="assets/js/ui/shortcuts.js">
+<link rel="modulepreload" href="assets/js/ui/theme.js">
+<link rel="modulepreload" href="assets/js/ui/themes-list.js">
+<link rel="modulepreload" href="assets/js/ui/to-top.js">
+<link rel="modulepreload" href="assets/js/ui/active-filters.js">
+<link rel="modulepreload" href="assets/js/ui/undo.js">
+<link rel="modulepreload" href="assets/js/ui/haptics.js">
+<link rel="modulepreload" href="assets/js/ui/common.js">
 
 <link rel="stylesheet" href="assets/css/theme.css">
 <link rel="stylesheet" href="assets/css/base.css">
@@ -47,6 +90,10 @@
     <span aria-hidden="true">☰</span> Filtres
   </button>
 
+  <!-- Sur téléphone, la barre latérale devient un tiroir posé par-dessus la
+       page : il lui faut son fond assombri. Voir ui/sidebar.js. -->
+  <div id="nav-backdrop" class="nav-backdrop" hidden></div>
+
   <!-- ============================= BARRE LATERALE ============================= -->
   <aside id="sidebar" class="sidebar" aria-label="Filtres et progression">
     <div class="brand">
@@ -58,11 +105,13 @@
       <button type="button" id="theme-toggle" class="icon-btn"
               aria-expanded="false" aria-controls="theme-picker"
               title="Changer de thème" aria-label="Changer de thème">◐</button>
+      <button type="button" id="nav-close" class="icon-btn nav-close"
+              title="Fermer les filtres" aria-label="Fermer les filtres" hidden>✕</button>
     </div>
 
     <!-- Le bouton de la marque est la seule entrée vers les thèmes : un repli
          « Thème » séparé faisait doublon avec lui. -->
-    <div id="theme-picker" class="themes__grid" role="group" aria-label="Choix du thème" hidden></div>
+    <div id="theme-picker" class="themes" role="group" aria-label="Choix du thème" hidden></div>
 
     <!-- Un seul panneau pour toute la progression : le pourcentage global, puis
          le détail par famille de formes et les trois angles généraux. Les
@@ -122,6 +171,10 @@
             <option value="name">Nom (A → Z)</option>
             <option value="type">Type</option>
             <option value="stats">Total des stats</option>
+            <!-- Met devant ce qui se termine tout de suite. « À terminer »
+                 mélangeait Charmilly et ses 126 cases avec un Pokémon à qui il
+                 n'en manque qu'une, dans l'ordre du Pokédex. -->
+            <option value="almost">Presque complets</option>
           </select>
         </p>
       </div>
@@ -138,8 +191,18 @@
       </ul>
     </section>
 
+    <!-- Sauvegarde et synchronisation, repliées ensemble.
+         La question s'est posée de retirer « Exporter / Importer » : la
+         synchronisation GitHub écrit data/collection.json toute seule, ces
+         boutons ne servent donc plus au quotidien. Ils restent, parce qu'ils
+         sont le seul filet quand elle ne marche pas — un navigateur sans
+         jeton, un téléphone neuf, une sauvegarde à récupérer. Ce qu'ils
+         coûtaient vraiment, c'était deux écrans de défilement dans le tiroir
+         mobile : c'est ce coût-là qu'on supprime, pas la fonction. -->
+    <details id="save-fold" class="panel save-fold">
+      <summary class="panel__label save-fold__summary">Sauvegarde et synchronisation</summary>
+
     <section class="field" aria-label="Synchronisation GitHub">
-      <h2 class="panel__label">Synchronisation</h2>
       <p id="sync-state" class="sync__state">Hors ligne</p>
 
       <div id="sync-setup" class="sync__setup">
@@ -162,8 +225,7 @@
     </section>
 
     <section class="field" aria-label="Sauvegarde de la collection">
-      <h2 class="panel__label">Ma sauvegarde</h2>
-      <p id="dirty-note" class="dirty-note" hidden></p>
+      <h3 class="field__label">Fichier</h3>
       <div class="btn-row">
         <button type="button" id="export-btn" class="btn btn--ghost">Exporter</button>
         <button type="button" id="import-btn" class="btn btn--ghost">Importer</button>
@@ -171,6 +233,12 @@
       </div>
       <input type="file" id="import-file" accept="application/json" hidden>
     </section>
+    </details>
+
+    <!-- Le rappel « n espèces en attente » reste HORS du repli : c'est
+         justement quand quelque chose n'est pas parti qu'il faut le voir sans
+         avoir à déplier quoi que ce soit. -->
+    <p id="dirty-note" class="dirty-note" hidden></p>
 
     <p class="footnote">Emplacements et méthodes sourcés sur Poképédia (FR) et Bulbapedia (EN). Sprites : PokeAPI.</p>
   </aside>
@@ -222,6 +290,53 @@
         <div id="detail" class="detail panel" aria-label="Fiche détaillée"></div>
         <p id="detail-live" class="visually-hidden" role="status" aria-live="polite"></p>
       </div>
+    </section>
+
+    <!-- --------------------------- POKEDEX GO ------------------------------- -->
+    <!-- Un livingdex à part, et volontairement plus simple : Pokémon GO ne
+         connaît ni forme régionale, ni Gigamax, ni case ♂ / ♀. Deux cases par
+         espèce, attrapé et chromatique, et rien de plus. Voir ui/go-dex.js. -->
+    <section id="tab-go" class="tabpanel" aria-label="Pokédex Pokémon GO" hidden>
+      <section class="panel go-head" aria-label="Progression Pokémon GO">
+        <div class="go-head__top">
+          <img class="go-head__logo" src="assets/img/logo-go.png" alt="Pokémon GO" width="114" height="72">
+          <p class="go-head__pct"><span id="go-pct">0</span><span class="progress-card__unit">%</span></p>
+        </div>
+        <div class="go-head__stats">
+          <p class="go-stat">
+            <span class="go-stat__ico toggle__ico toggle__ico--capture" aria-hidden="true"></span>
+            <span class="go-stat__value"><span id="go-owned">0</span> / 1025</span>
+            <span class="go-stat__label">attrapés</span>
+          </p>
+          <p class="go-stat go-stat--shiny">
+            <span class="go-stat__ico toggle__ico toggle__ico--shiny" aria-hidden="true"></span>
+            <span class="go-stat__value"><span id="go-shiny">0</span> / 1025</span>
+            <span class="go-stat__label">chromatiques</span>
+          </p>
+        </div>
+        <div class="bar" role="progressbar" aria-label="Progression Pokémon GO"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="go-bar">
+          <div class="bar__fill" id="go-fill"></div>
+        </div>
+      </section>
+
+      <div class="toolbar">
+        <div class="search">
+          <span class="search__icon" aria-hidden="true">⌕</span>
+          <input type="search" id="go-search" class="search__input" placeholder="Rechercher un Pokémon…" autocomplete="off" aria-label="Rechercher un Pokémon dans le Pokédex GO">
+        </div>
+        <select id="go-gen" class="select select--inline" aria-label="Filtrer par génération"></select>
+        <div class="segmented" id="go-view" role="group" aria-label="Filtrer la liste"></div>
+        <p class="toolbar__count" id="go-count" aria-live="polite"></p>
+      </div>
+
+      <div id="go-grid" class="grid grid--go" role="list"></div>
+      <div id="go-empty" class="empty" hidden>
+        <span class="empty__ball" aria-hidden="true"></span>
+        <p class="empty__title">Aucun Pokémon ne correspond</p>
+        <p class="empty__hint">Un filtre est sans doute encore actif.</p>
+      </div>
+      <div id="go-sentinel" class="sentinel" aria-hidden="true"></div>
     </section>
 
     <!-- ------------------------------- QUETES ------------------------------- -->

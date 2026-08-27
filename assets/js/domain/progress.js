@@ -22,6 +22,34 @@ import { requiredSlots } from "./completion.js";
 /** Familles de formes affichées, dans l'ordre de la barre latérale. */
 export const FORM_KINDS = ["alola", "galar", "hisui", "paldea", "other", "cosmetic", "gmax"];
 
+/**
+ * Le livingdex Pokémon GO, compté à part.
+ *
+ * Deux cases par espèce et rien d'autre — GO n'a ni forme régionale, ni case
+ * ♂ / ♀. Il ne partage donc AUCUN compteur avec le Pokédex HOME : mélanger les
+ * deux ferait un pourcentage qui ne veut rien dire, puisque ce ne sont pas les
+ * mêmes Pokémon qu'on range.
+ */
+export function goProgressOf(speciesList, collection) {
+  let owned = 0;
+  let shiny = 0;
+  for (const species of speciesList) {
+    if (collection.has(species.id, "gn")) owned += 1;
+    if (collection.has(species.id, "gs")) shiny += 1;
+  }
+  const total = speciesList.length;
+  const cases = total * 2;
+  return {
+    owned,
+    shiny,
+    total,
+    done: owned + shiny,
+    cases,
+    pct: cases ? Math.round(((owned + shiny) / cases) * 100) : 0,
+    pctOwned: total ? Math.round((owned / total) * 100) : 0,
+  };
+}
+
 const empty = () => ({ done: 0, total: 0, pct: 0 });
 
 function bump(bucket, owned) {

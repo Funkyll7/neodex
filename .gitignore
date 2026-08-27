@@ -29,5 +29,12 @@ venv/
 
 # Source d'origine de la pastille Gigamax : 966 Ko, aucun script ne s'en sert
 # (gigamax.png et gigamax-nb.png sont deja versionnes, prets a l'emploi).
-# Les quatre autres sources, elles, alimentent tools/crop_logos.ps1.
+# Les autres sources, elles, alimentent tools/crop_logos.ps1 et make_logos.ps1.
 assets/img/sources/gigamax.png
+
+# Memes raisons : les deux logotypes officiels pesent 730 Ko a eux deux, alors
+# que les versions reduites servies par le site (logo-home.png, logo-go.png)
+# font 15 Ko chacune et sont versionnees. Les retelecharger prend dix secondes ;
+# les garder ici alourdirait chaque clone pour toujours.
+assets/img/sources/pokemon-home.png
+assets/img/sources/pokemon-go.png
