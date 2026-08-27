@@ -46,6 +46,8 @@ const FORM_SLOT = /^f\d+s?f?$/;
  * avoir le Miaouss d'Alola dans GO ne le met pas dans une boite de HOME.
  */
 const GO_FORM_SLOT = /^gf\d+s?$/;
+/** Case d'une variante cosmetique dans Pokemon GO : "gc666-savanna", "…s". */
+const GO_COSMETIC_SLOT = /^gc\d+-[a-z0-9-]+$/;
 /** Cases de forme cosmetique : "x201-b" (normale), "y201-b" (chromatique). */
 const COSMETIC_SLOT = /^[xy]\d+-[a-z0-9-]+$/;
 /**
@@ -66,7 +68,11 @@ const aUneCosmetique = (marks, lettre) => {
 };
 
 const isSlot = (key) =>
-  SLOT_KEYS.includes(key) || FORM_SLOT.test(key) || GO_FORM_SLOT.test(key) || COSMETIC_SLOT.test(key);
+  SLOT_KEYS.includes(key) ||
+  FORM_SLOT.test(key) ||
+  GO_FORM_SLOT.test(key) ||
+  GO_COSMETIC_SLOT.test(key) ||
+  COSMETIC_SLOT.test(key);
 
 /** Ancienne case -> champ de la forme principale qui la remplace. */
 const LEGACY_SLOTS = { vo: "slot", vs: "shinySlot", vof: "slotF", vsf: "shinySlotF" };

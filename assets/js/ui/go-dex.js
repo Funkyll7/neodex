@@ -2,16 +2,21 @@
  * go-dex.js — le livingdex Pokémon GO.
  *
  * Un Pokédex volontairement plus simple que l'autre. On y range des BOÎTES :
- * les 1025 espèces, plus les 55 formes régionales que le jeu propose — dans GO,
- * un Miaouss d'Alola occupe une boîte à lui, exactement comme celui de Kanto.
- * Deux cases par boîte, attrapé et chromatique, et rien de plus : ni Méga, ni
- * Gigamax, ni cosmétique, ni case ♂ / ♀. Recopier la vignette du Pokédex HOME
- * aurait affiché six cases dont quatre n'existent pas dans le jeu.
+ * les 1025 espèces, plus les 161 formes que le jeu propose — dans GO, un
+ * Miaouss d'Alola occupe une boîte à lui, exactement comme celui de Kanto, et
+ * une Prismillon Motif Savane aussi. Deux cases par boîte, attrapé et
+ * chromatique, et rien de plus : pas de case ♂ / ♀, pas de Méga, pas de
+ * Gigamax. Recopier la vignette du Pokédex HOME aurait affiché six cases dont
+ * quatre n'existent pas dans le jeu.
+ *
+ * Ce que GO range et ce que HOME range ne se recouvrent pas : les
+ * transformations de combat et les costumes événementiels ne sont des boîtes ni
+ * ici ni là, et c'est data/reference/go.json qui tranche, forme par forme.
  *
  * Les deux collections ne se mélangent jamais : les cases GO s'appellent `gn`
- * et `gs` pour une espèce, `gf<id>` et `gf<id>s` pour une forme. `completion.js`
- * ne les regarde pas, et le pourcentage HOME ne bouge pas d'un point quand on
- * coche ici.
+ * et `gs` pour une espèce, `gf<id>` pour une forme, `gc<id>-<clef>` pour une
+ * variante cosmétique. `completion.js` ne les regarde pas, et le pourcentage
+ * HOME ne bouge pas d'un point quand on coche ici.
  *
  * Mêmes deux principes que dex-grid.js, et pour les mêmes raisons :
  *   - un seul écouteur, délégué sur la grille, jamais détruit ;
@@ -22,7 +27,7 @@
 
 import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
-import { spriteImg, formImg } from "../domain/sprites.js";
+import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { applyGoFilters } from "../domain/filters.js";
 import { goProgressOf } from "../domain/progress.js";
 import { dexNumber } from "./common.js";
@@ -231,7 +236,19 @@ function carte(entry, ctx) {
 }
 
 /** Libellé court de la famille, posé à côté du numéro. */
-const KIND_COURT = { alola: "Alola", galar: "Galar", hisui: "Hisui", paldea: "Paldéa" };
+const KIND_COURT = {
+  alola: "Alola",
+  galar: "Galar",
+  hisui: "Hisui",
+  paldea: "Paldéa",
+  other: "Forme",
+  cosmetic: "Motif",
+  cap: "Casquette",
+  battle: "Forme",
+  mega: "Méga",
+  primal: "Primo",
+  gmax: "Gigamax",
+};
 
 /**
  * Remet la vignette à l'état de la collection. Les boutons ne sont jamais
@@ -275,7 +292,9 @@ function peindre(node, entry, ctx) {
       art,
       entry.form
         ? formImg(entry.form, { shiny, alt: entry.name, className: "gcard__img" })
-        : spriteImg(entry.id, { shiny, alt: entry.name, className: "gcard__img" })
+        : entry.variant
+          ? cosmeticImg(entry.variant, entry.id, { shiny, alt: entry.name, className: "gcard__img" })
+          : spriteImg(entry.id, { shiny, alt: entry.name, className: "gcard__img" })
     );
   }
 

@@ -1663,7 +1663,15 @@
   /* Trois onglets sur 375 px : « Pokédex Pokémon HOME » et « Pokédex Pokémon
      GO » ne tiennent pas, et les tronquer donnerait deux fois « Pokédex
      Poké… ». Le logo porte alors l'identité, le mot final la précise. */
-  .tab { font-size: 12.5px; gap: 5px; padding: 9px 2px 10px; }
+  /* Douze pixels entre les onglets, et non six : le badge d'un onglet touchait
+     presque le logo du suivant, et les trois se lisaient comme un seul bloc.
+     Le rembourrage intérieur, lui, reste minimal — c'est l'espace ENTRE les
+     onglets qui les sépare, pas celui qui les gonfle.
+     `overflow-x` est un filet : les trois libellés tiennent aujourd'hui sur
+     375 px, mais un badge à cinq chiffres suffirait à les faire déborder. */
+  .tabs { gap: 12px; overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { font-size: 12.5px; gap: 5px; padding: 9px 2px 10px; flex: none; }
   .tab__long { display: none; }
   .tab__court { display: inline; }
   .tab__logo { height: 19px; }

@@ -103,6 +103,18 @@ export async function loadDataset() {
      * ne se reconnait a rien d'automatique.
      */
     goFormesExclues: new Set(goRef.formesExclues || []),
+    /**
+     * Les autres formes que GO range dans une boite a part : Motisma, Deoxys,
+     * Origine, Totemique, Mordudor Ambulant… plus les familles cosmetiques.
+     *
+     * Referencees par une CLE FIGEE — « f:<cle PokeAPI> » pour une forme de
+     * data/forms, « c:<numero>-<clef> » pour une variante cosmetique. Serebii
+     * ne donne qu'un libelle anglais ; l'appariement a ete fait une fois, a la
+     * main pour les vingt cas que le nom seul ne tranche pas, et le resultat
+     * est fige ici. Rien n'est devine a l'execution.
+     */
+    goAutres: new Set(goRef.formesAutres || []),
+    goAutresShiny: new Set(goRef.formesAutresShiny || []),
   };
 
   const species = baseChunks
@@ -136,20 +148,21 @@ export async function loadDataset() {
 }
 
 /**
- * Ce que le Pokedex GO range dans des boites : les 1025 especes, plus les 55
- * formes regionales que le jeu propose.
+ * Ce que le Pokedex GO range dans des boites : les 1025 especes, plus les 161
+ * formes que le jeu propose.
  *
  * Une liste PLATE d'entrees, et non les especes avec leurs formes en dessous :
  * dans GO, une forme d'Alola n'est pas un detail de son espece, c'est une boite
  * de plus a remplir. La grille les traite donc a egalite, exactement comme le
  * jeu — et chaque entree porte ses deux cases, son sprite et son nom.
  *
- * Seules les quatre familles regionales entrent ici. GO n'a ni Mega, ni
- * Gigamax, ni forme cosmetique : les proposer aurait donne des boites qu'aucun
- * joueur ne peut remplir.
+ * Trois provenances, un seul type d'entree :
+ *   - l'espece elle-meme ;
+ *   - une forme de data/forms — regionale, Motisma, Deoxys, Origine… ;
+ *   - une variante cosmetique — motif de Prismillon, coupe de Couafarel.
+ * Les transformations de combat et les costumes evenementiels n'y sont pas :
+ * ce ne sont pas des boites, et data/reference/go.json dit lesquelles retenir.
  */
-const REGIONS_GO = new Set(["alola", "galar", "hisui", "paldea"]);
-
 function goEntries(species) {
   const entries = [];
   for (const p of species) {
@@ -159,6 +172,7 @@ function goEntries(species) {
         id: p.id,
         species: p,
         form: null,
+        variant: null,
         name: p.name,
         kind: null,
         slot: "gn",
@@ -167,20 +181,42 @@ function goEntries(species) {
         shiny: p.goShiny,
       })
     );
+
     for (const form of p.forms) {
-      if (!REGIONS_GO.has(form.kind) || !form.goReleased) continue;
+      if (!form.goReleased) continue;
       entries.push(
         Object.freeze({
           key: form.slot,
           id: p.id,
           species: p,
           form,
+          variant: null,
           name: form.name,
           kind: form.kind,
           slot: form.goSlot,
           shinySlot: form.goShinySlot,
           released: true,
           shiny: form.goShiny,
+        })
+      );
+    }
+
+    if (!p.cosmetic) continue;
+    for (const variant of p.cosmetic.variants) {
+      if (!variant.goReleased) continue;
+      entries.push(
+        Object.freeze({
+          key: variant.slot,
+          id: p.id,
+          species: p,
+          form: null,
+          variant,
+          name: `${p.name} ${variant.short}`,
+          kind: "cosmetic",
+          slot: variant.goSlot,
+          shinySlot: variant.goShinySlot,
+          released: true,
+          shiny: variant.goShiny,
         })
       );
     }
@@ -300,7 +336,12 @@ function merge(entry, detail = {}, avail = {}, rawForms = [], context) {
    * confondre avec `shinyEntry`, qui repond a une tout autre question.
    */
   species.primaryForm = primary >= 0 ? forms[primary] : null;
-  species.cosmetic = cosmeticGroup(context.cosmeticGroups[String(entry.id)], species);
+  species.cosmetic = cosmeticGroup(
+    context.cosmeticGroups[String(entry.id)],
+    species,
+    context.goAutres,
+    context.goAutresShiny
+  );
   /** Tout ce qui se compte comme « une forme » dans la vignette. */
   species.formCount =
     forms.length + (species.cosmetic ? species.cosmetic.variants.filter((v) => !v.isBase).length : 0);
@@ -398,9 +439,12 @@ function mergeForm(form, species, context) {
      * Les deux cases GO de la forme, sans rapport avec les quatre de HOME.
      */
     goReleased:
-      context.goFormes.has(`${species.id}-${form.kind}`) && !context.goFormesExclues.has(form.key),
+      !context.goFormesExclues.has(form.key) &&
+      (context.goFormes.has(`${species.id}-${form.kind}`) || context.goAutres.has(`f:${form.key}`)),
     goShiny:
-      context.goFormesShiny.has(`${species.id}-${form.kind}`) && !context.goFormesExclues.has(form.key),
+      !context.goFormesExclues.has(form.key) &&
+      (context.goFormesShiny.has(`${species.id}-${form.kind}`) ||
+        context.goAutresShiny.has(`f:${form.key}`)),
     goSlot: `gf${form.id}`,
     goShinySlot: `gf${form.id}s`,
   });
@@ -418,7 +462,7 @@ function mergeForm(form, species, context) {
  * reutilise les cases `om` / `sm` au lieu d'en creer de nouvelles, sans quoi on
  * cocherait deux fois la meme chose.
  */
-function cosmeticGroup(group, species) {
+function cosmeticGroup(group, species, goSet, goShinySet) {
   if (!group || !Array.isArray(group.forms)) return null;
 
   const variants = group.forms.map((raw) => {
@@ -445,6 +489,16 @@ function cosmeticGroup(group, species) {
       shinySlot: isBase ? "sm" : `y${species.id}-${raw.key}`,
       shinyEntry: !group.info && !noShiny,
       entry: !group.info && !noEntry,
+      /**
+       * Pokemon GO range certaines de ces variantes dans une boite a part —
+       * les motifs de Prismillon, les coupes de Couafarel, les couleurs de
+       * Flabebe. Cases distinctes de celles de HOME : avoir la Prismillon
+       * Motif Savane dans GO ne la met pas dans une boite de HOME.
+       */
+      goReleased: goSet.has(`c:${species.id}-${raw.key}`),
+      goShiny: goShinySet.has(`c:${species.id}-${raw.key}`),
+      goSlot: `gc${species.id}-${raw.key}`,
+      goShinySlot: `gc${species.id}-${raw.key}s`,
     });
   });
 
