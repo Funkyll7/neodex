@@ -36,6 +36,22 @@ passent au Pokémon suivant **de la liste filtrée** : filtrer sur « À termine
 puis avancer de fiche en fiche remonte une boîte de HOME sans jamais revenir à
 la grille. `/` va à la recherche.
 
+**Trois onglets.** *Pokédex Pokémon HOME* est celui décrit ci-dessus, avec ses
+formes et ses 2 802 cases. *Pokédex Pokémon GO* est un livingdex à part,
+volontairement plus simple : GO ne connaît ni forme régionale, ni Gigamax, ni
+case ♂ / ♀, donc deux cases par espèce — attrapé, chromatique — et 2 050 en
+tout. Les deux collections vivent dans le même `data/collection.json` mais ne
+partagent aucun compteur : cocher dans l'un ne fait pas bouger le pourcentage
+de l'autre. *Quêtes* propose une cible de shiny hunt à la fois.
+
+**Vingt-six thèmes**, en quatre familles : Base (sombre, clair), Couleurs (une
+palette par teinte), Légendaires (un par région) et Starters (un trio par
+région). Ils ne redéfinissent que les fonds, les bordures et l'accent — jamais
+les tons de texte, jamais le bleu et le rose des cases ♂ / ♀.
+
+Une case cochée par erreur se **défait d'un appui** : un bandeau la nomme et
+l'annule, sur vingt-cinq pas en arrière (`Ctrl+Z` au clavier).
+
 Le site fonctionne **hors ligne** une fois chargé : c'est fait pour cocher en
 jouant, là où le réseau manque.
 

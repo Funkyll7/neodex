@@ -59,17 +59,22 @@ Projet Poke/
 │       │   ├── sync.js         écrit data/collection.json dans le dépôt via l'API GitHub
 │       │   ├── completion.js   « tout obtenu ? » — cases exigées, l'impossible exclu
 │       │   ├── progress.js     compteurs par case : par région, Gigamax, paires, chromatiques
-│       │   └── filters.js      filtrage, recherche et tri de la liste
+│       │   ├── filters.js      filtrage, recherche et tri de la liste
+│       │   └── display.js      quel sprite montrer quand seule une forme est possédée
 │       └── ui/                 rendu, un module par zone d'écran
-│           ├── theme.js        bascule clair / sombre
+│           ├── theme.js        palette de thèmes (le bouton de la marque l'ouvre)
+│           ├── themes-list.js  les 26 palettes, en quatre familles
 │           ├── sidebar.js      progression, filtres, tri
 │           ├── dex-grid.js     grille de vignettes (chargement par paliers)
+│           ├── go-dex.js       onglet Pokédex Pokémon GO (deux cases par espèce)
 │           ├── detail-panel.js fiche détaillée de droite
 │           ├── quest.js        onglet Quêtes et journal de chasse
 │           ├── save.js         exporter / importer / réinitialiser
 │           ├── shortcuts.js    raccourcis clavier (/ · ← → · 1 2 · Échap)
 │           ├── to-top.js       bouton « revenir en haut » (apparaît au défilement)
 │           ├── active-filters.js pastilles des filtres actifs + compteur du menu
+│           ├── undo.js         bandeau « Annuler » et pile des cases cochées
+│           ├── haptics.js      retour vibrant sur les cases (suit « mouvement réduit »)
 │           └── common.js       fragments partagés (pastilles de type, liens)
 │
 ├── data/
@@ -200,6 +205,27 @@ Chez les espèces à formes cosmétiques, **la variante de base réutilise `om` 
 `sm`** : le Zarbi A, la Prismillon Motif Floral, la Flabébé Fleur Rouge *sont*
 la forme par défaut de l'espèce. Sans cela on cocherait deux fois la même
 chose, et `isOwned()` ne saurait plus quoi regarder.
+
+### « Est-ce que j'ai ce Pokémon ? » — deux réponses, pas une
+
+`isOwned()` regarde `om` / `of`, **et aussi les cases cosmétiques `x…`** : un
+Zarbi B est un Zarbi, une Prismillon Motif Continental est une Prismillon. Sans
+cette clause, une vignette s'affichait « manquante » alors que sa grille de
+variantes était cochée — seule la variante de base écrit `om`.
+
+Une forme **régionale**, elle, ne compte pas : un Miaouss d'Alola ne remplace
+pas le Miaouss de Kanto dans une boîte de HOME, il s'ajoute à lui. C'est
+`domain/display.js` (`formeDeRepli`) qui traite ce cas — la vignette montre le
+sprite de la forme possédée, en couleur, au lieu de laisser croire qu'on n'a
+rien. Elle porte alors `.card--partial`, ni possédée ni absente.
+
+### Les deux cases du Pokédex Pokémon GO
+
+`gn` et `gs` vivent dans le même `marks[id]` que tout le reste : un seul
+fichier, une seule synchronisation, un seul export. Elles n'apparaissent jamais
+dans `requiredSlots()`, donc ni `completion.js` ni `progress.js` ne les voient —
+cocher un GO ne fait pas bouger d'un point la progression HOME. `goProgressOf()`
+les compte à part.
 
 ---
 
@@ -354,7 +380,11 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | retoucher la grille à cocher des cosmétiques | `ui/detail-panel.js` (`cosmeticPicker`) + bloc `.picker` de `components.css` |
 | changer la règle du « tout obtenu » | `assets/js/domain/completion.js` |
 | changer une barre de progression | `assets/js/domain/progress.js` + `BAR_GROUPS` de `ui/sidebar.js` |
-| recadrer un logo | `tools/crop_logos.ps1`, sources dans `assets/img/sources/` |
+| recadrer un logo de forme | `tools/crop_logos.ps1`, sources dans `assets/img/sources/` |
+| refaire une pastille de bouton ou un logo d'onglet | `tools/make_logos.ps1` |
+| ajouter un thème | un bloc dans `theme.css` + une ligne dans `ui/themes-list.js` |
+| toucher au Pokédex Pokémon GO | `ui/go-dex.js` + `applyGoFilters` et `goProgressOf` |
+| changer ce qui compte comme « possédé » | `domain/collection.js` (`isOwned`) + `domain/display.js` |
 | retoucher la feuille mobile | `ui/detail-panel.js` (`createSheet`) + bloc « Feuille mobile » de `components.css` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |
 | remonter la version des sprites | `assets/js/config.js` (`SPRITES_REF`) |
