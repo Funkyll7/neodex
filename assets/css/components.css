@@ -1030,23 +1030,36 @@
 .form__btn-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ftile .form__btn { padding: 10px 6px; gap: 4px; }
 
-/* ♂ / ♀ en bleu — la couleur des paires, la même que celle de la barre
-   « Paires ♂ / ♀ » de la barre latérale. Le bouton coché se remplit de la
-   couleur du type : on éclaircit alors le bleu pour qu'il tienne le contraste
-   dessus, plutôt que de le remplacer par du blanc et de perdre le repère. */
-/* Le bleu est le code des paires, ici comme dans la barre latérale.
-   Un bouton coché se remplit normalement de la couleur du TYPE — qui va du
-   jaune Électrik au presque noir des Ténèbres. Aucune teinte de glyphe ne
-   contraste avec les deux extrêmes, et un halo n'aurait été qu'un pansement.
-   On inverse donc : c'est le BOUTON ♂ / ♀ qui devient bleu, et le symbole
-   passe en bleu nuit. Le contraste ne dépend plus du type, et la case cochée
-   se lit d'un coup d'œil. */
-.toggle__sex { color: var(--pair); font-weight: 800; font-size: 13px; line-height: 1; }
-.toggle--sex:not(.toggle--gold)[aria-pressed="true"] { background: var(--pair); color: #06253f; }
-.toggle--sex:not(.toggle--gold)[aria-pressed="true"] .toggle__sex { color: #06253f; }
-/* Les cases chromatiques restent dorées : l'or prime, le symbole s'y détache
-   en bleu nuit. */
-.toggle--gold[aria-pressed="true"] .toggle__sex { color: #0b2b47; }
+/* Les cases ♂ / ♀, deux règles et rien d'autre.
+
+   1. LA CASE porte la couleur du sexe. Une case cochée prendrait normalement
+      la couleur du TYPE (`.toggle[aria-pressed="true"]`) — du jaune Électrik
+      au presque noir des Ténèbres : impossible d'y lire un sexe. On force donc
+      le bleu pour ♂ et le rose pour ♀, les deux mêmes teintes que la fiche
+      emploie déjà pour ses étiquettes (`.slot__tag`). Les cases chromatiques
+      gardent l'or : l'or dit « shiny », il prime.
+
+   2. LE SYMBOLE est noir et épais dès que la case est remplie. Noir sur bleu,
+      sur rose ou sur or : le contraste ne dépend plus de la teinte du fond.
+      Sur une case vide — fond sombre — le noir disparaîtrait ; le symbole y
+      reprend donc sa propre couleur, qui reste le seul repère de sexe.
+      `-webkit-text-stroke` plutôt qu'un poids de police : à 14 px le glyphe
+      Unicode n'a pas de graisse, seul un contour l'épaissit vraiment. */
+.toggle__sex { color: var(--pair); font-weight: 900; font-size: 14px; line-height: 1; }
+.toggle__sex--f { color: var(--female); }
+
+.toggle--sex:not(.toggle--gold)[aria-pressed="true"] { background: var(--pair); color: #000; }
+.toggle--sex-f:not(.toggle--gold)[aria-pressed="true"] { background: var(--female); color: #000; }
+/* Le bouton d'une forme à dimorphisme, dans la fiche. Sélection par `:has()` —
+   le glyphe dit déjà de quel sexe parle le bouton, inutile de lui inventer une
+   classe de plus. */
+.form__btn:not(.form__btn--gold)[aria-pressed="true"]:has(.toggle__sex--f) { background: var(--female); }
+
+.toggle[aria-pressed="true"] .toggle__sex,
+.form__btn[aria-pressed="true"] .toggle__sex {
+  color: #000;
+  -webkit-text-stroke: 0.6px #000;
+}
 
 /* Le logo de la famille sur le bouton de variante : le bouton dit de quelle
    variante il parle, au lieu du losange générique. */
@@ -1336,8 +1349,15 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--sp-2);
-    margin-bottom: var(--sp-3);
-    padding: var(--sp-2) 0;
+    /* Le fond déborde jusqu'aux bords de l'écran. La pastille « ★ » d'une
+       vignette terminée dépasse de 7 px hors de sa carte
+       (`.card--complete::after`, `right: -7px`), donc dans la gouttière de
+       `.main` : une barre large exactement comme la colonne de contenu
+       laissait ce rond doré passer sur le côté quand la vignette défilait
+       dessous. Marges négatives plus rembourrage compensatoire — la barre
+       couvre toute la largeur, son contenu ne bouge pas d'un pixel. */
+    margin: 0 calc(-1 * var(--sp-3)) var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
     background: var(--bg);
   }
   .toolbar .search { order: 1; flex: 1 1 auto; min-width: 0; }

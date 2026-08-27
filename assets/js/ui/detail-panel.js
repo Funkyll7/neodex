@@ -922,7 +922,8 @@ function formButtons(form, species, ctx) {
   // Le logo chromatique remplace le ✦ : même pastille que sur les vignettes et
   // dans la grille cosmétique, pour que « chromatique » se lise pareil partout.
   const ico = () => el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" });
-  const sexe = (g) => el("span.toggle__sex", { "aria-hidden": "true" }, g);
+  const sexe = (g) =>
+    el(g === "♀" ? "span.toggle__sex.toggle__sex--f" : "span.toggle__sex", { "aria-hidden": "true" }, g);
 
   // Une forme à dimorphisme a QUATRE boutons dans une tuile de 172 px :
   // « Normal ♂ » n'y tient pas et se faisait rogner en « Norma… », ce qui

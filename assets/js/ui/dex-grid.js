@@ -260,8 +260,13 @@ function formTitle(species) {
  */
 const icoBase = () => el("span.toggle__ico.toggle__ico--base", { "aria-hidden": "true" });
 const icoShiny = () => el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" });
-/** ♂ / ♀ en bleu, la couleur des paires — la meme que dans la barre laterale. */
-const icoSexe = (glyphe) => el("span.toggle__sex", { "aria-hidden": "true" }, glyphe);
+/**
+ * ♂ en bleu, ♀ en rose — les deux couleurs deja employees par la fiche
+ * (`.slot__tag`). La couleur porte l'information : sur un bouton de 26 px, le
+ * glyphe seul se distingue mal de son voisin.
+ */
+const icoSexe = (glyphe) =>
+  el(glyphe === "♀" ? "span.toggle__sex.toggle__sex--f" : "span.toggle__sex", { "aria-hidden": "true" }, glyphe);
 
 /**
  * Le logo de la famille de la forme principale, quand il en existe un : le
@@ -327,9 +332,10 @@ function quickToggles(species, ctx, color) {
       [
         "button.toggle",
         gold ? "toggle--gold" : "",
-        // Marque les cases ♂ / ♀ : cochées, elles se remplissent du bleu des
-        // paires au lieu de la couleur du type. Voir components.css.
+        // Marque les cases ♂ / ♀ : cochées, elles se remplissent de la couleur
+        // du symbole — bleu pour ♂, rose pour ♀. Voir components.css.
         label.some((n) => n && n.classList && n.classList.contains("toggle__sex")) ? "toggle--sex" : "",
+        label.some((n) => n && n.classList && n.classList.contains("toggle__sex--f")) ? "toggle--sex-f" : "",
       ]
         .filter(Boolean)
         .join("."),

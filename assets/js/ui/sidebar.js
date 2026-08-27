@@ -177,17 +177,10 @@ export function createSidebar(ctx) {
               dataset: { value: filter.value },
               onclick: () => store.set({ status: filter.value }),
             },
-            el(
-              "span.pill__name",
-              // Même vocabulaire visuel que les vignettes et les tuiles : le
-              // logo chromatique en masque, le ♂ / ♀ en bleu.
-              filter.ico === "shiny"
-                ? el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
-                : filter.ico === "pair"
-                  ? el("span.toggle__sex", { "aria-hidden": "true" }, "♂♀")
-                  : null,
-              filter.label
-            ),
+            // « Statut » ne porte plus ni le filtre chromatique ni celui des
+            // paires : ils sont devenus des barres de progression cliquables.
+            // Ces pastilles n'ont donc plus de logo, seulement un libellé.
+            el("span.pill__name", filter.label),
             el("span.pill__count", counts[filter.key])
           )
         )
