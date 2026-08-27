@@ -1339,7 +1339,6 @@
   .card__img, .ftile__img, .slot__img { animation: none; }
   .card { transition: none; }
 }
-}
 
 /* ============================ État vide ================================= */
 /* Il dit quoi faire, pas seulement qu'il n'y a rien : le plus souvent c'est un

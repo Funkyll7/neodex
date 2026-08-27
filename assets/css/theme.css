@@ -96,8 +96,10 @@
   --accent-border: #e6d091;
 
   --gold: #c98f00;
-  --pair: #2b7fd0;
-  --female: #d0559b;
+  /* --pair et --female ne sont PAS redefinis ici : ils sont figes pour tous
+     les themes, juste apres ce bloc. Le glyphe ♂ / ♀ est peint en noir
+     par-dessus, ces deux fonds doivent donc rester les memes tons moyens
+     partout — c'est la seule paire de couleurs du site qui ne bouge jamais. */
 
   --avail-ok: #2f7a4f;
   --avail-nolock: #c06a24;
