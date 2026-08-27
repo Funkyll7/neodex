@@ -30,7 +30,21 @@
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
-      "files": [{ "name": "captures", "accept": ["image/jpeg", "image/png", "image/webp", "image/*"] }]
+      "files": [
+        {
+          "name": "captures",
+          "accept": [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/*",
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp"
+          ]
+        }
+      ]
     }
   }
 }
