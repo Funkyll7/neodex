@@ -297,21 +297,29 @@ function renderBars(out, progress, counts, store) {
                   ? el("img.bars__icon", { src: icon, alt: "", width: 15, height: 15, loading: "lazy" })
                   : null,
               el("span.bars__label", label),
-              el("span.bars__value", `${value.done} / ${value.total}`),
               el("span.bars__pct", `${value.pct} %`)
             ),
+            // Le decompte descend a cote de la jauge, sur la deuxieme ligne.
+            // En tete il disputait la place au libelle : la colonne fait 268 px,
+            // « 504 / 1377 » en mangeait 53, et « Chromatiques » — un seul mot,
+            // donc insecable — debordait de sa boite pour se peindre par-dessus
+            // le nombre. Deplace ici, il ne coute pas une ligne de plus.
             el(
-              "span.bar",
-              {
-                role: "progressbar",
-                "aria-label": label,
-                "aria-valuemin": "0",
-                "aria-valuemax": "100",
-                "aria-valuenow": String(value.pct),
-              },
-              el(key === "gmax" ? "span.bar__fill.bar__fill--gmax" : "span.bar__fill", {
-                style: { width: `${value.pct}%` },
-              })
+              "span.bars__meter",
+              el(
+                "span.bar",
+                {
+                  role: "progressbar",
+                  "aria-label": label,
+                  "aria-valuemin": "0",
+                  "aria-valuemax": "100",
+                  "aria-valuenow": String(value.pct),
+                },
+                el(key === "gmax" ? "span.bar__fill.bar__fill--gmax" : "span.bar__fill", {
+                  style: { width: `${value.pct}%` },
+                })
+              ),
+              el("span.bars__value", `${value.done} / ${value.total}`)
             )
           );
         })

@@ -1120,6 +1120,19 @@
 .bars__row + .bars__row { margin-top: 3px; }
 .bars__head { display: flex; align-items: center; gap: 6px; width: 100%; }
 
+/* Deuxième ligne : la jauge, puis le décompte, dans une colonne de largeur
+   fixe et alignée à droite. Fixe, sinon « 4 / 8 » et « 1013 / 1025 » donneraient
+   des jauges de longueurs différentes et les comparer d'une ligne à l'autre ne
+   voudrait plus rien dire. */
+.bars__meter { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+.bars__meter .bar { flex: 1; min-width: 0; margin-top: 0; }
+.bars__value { flex: none; min-width: 58px; text-align: right; }
+
+/* Filet de sécurité : la colonne est étroite, un libellé d'un seul mot plus
+   large qu'elle se peindrait par-dessus le pourcentage au lieu de passer à la
+   ligne. Ne se déclenche pour aucun libellé actuel. */
+.bars__label { overflow-wrap: break-word; }
+
 /* Pastilles de statut : l'icône et le libellé restent solidaires à gauche. */
 .pill__name { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
 
