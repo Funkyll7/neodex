@@ -23,5 +23,14 @@
       "url": "./?tab=quest",
       "icons": [{ "src": "assets/img/icon-192.png", "sizes": "192x192" }]
     }
-  ]
+  ],
+
+  "share_target": {
+    "action": "./?partage=1",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [{ "name": "captures", "accept": ["image/jpeg", "image/png", "image/webp", "image/*"] }]
+    }
+  }
 }

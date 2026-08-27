@@ -49,13 +49,22 @@ const SEUIL_FOND = 85; // écart au fond au-delà duquel c'est un sprite
 const MIN_PIXELS = 260; // en dessous, la case est vide
 
 /**
- * Deux niveaux d'exigence, calibrés sur cinquante cases relues à la main :
- * sous STRICT, aucune erreur observée ; au-delà de RELACHE, elles deviennent
- * fréquentes.
+ * Trois niveaux d'exigence.
+ *
+ * Le script Python employait 6 / 13 / 20, calibrés sur cinquante cases relues à
+ * la main — mais avec une empreinte de 28 px de côté. Ici elle fait 20 : chaque
+ * valeur moyenne davantage de pixels, les distances se resserrent, et les mêmes
+ * seuils laissent donc passer plus de choses. Mesuré sur une grille de trente
+ * cases connues, les trois seules erreurs étaient à 12,3, 15,1 et 19,1 — toutes
+ * des confusions entre voisins immédiats du dex, Chenipan et Chrysacier.
+ *
+ * On resserre donc. Le compromis n'est pas symétrique : une case manquée coûte
+ * un appui, une case fausse entre dans une collection synchronisée sans qu'on
+ * la voie. Dans le doute, on refuse.
  */
 const STRICT = 6.0;
-const RELACHE = 13.0;
-const RELACHE_ETROIT = 20.0;
+const RELACHE = 10.0;
+const RELACHE_ETROIT = 14.0;
 const LARGEUR_ETROITE = 8;
 const PASSES = 6;
 
@@ -154,6 +163,35 @@ function empaqueter(rgba, width, height, masque) {
 /* ----------------------------- découpe des cases ------------------------- */
 
 /**
+ * Ce pixel n'est-il qu'un trait du motif de fond ?
+ *
+ * Le fond de HOME est barré d'une toile d'araignée de traits clairs, qui
+ * franchit n'importe quel seuil de différence et qu'il faut donc écarter
+ * autrement. Un trait, c'est du blanc posé par transparence sur le fond :
+ * `resultat = fond + a × (255 − fond)`. Le rapport `delta / (255 − fond)` vaut
+ * donc `a` sur les TROIS canaux — c'est cette égalité qui signe un
+ * éclaircissement, et rien d'autre.
+ *
+ * L'ancien test comparait l'écart brut entre canaux à 30. Il marchait sur un
+ * fond presque gris et se trompait dès que le fond était coloré : sur le vert
+ * de HOME, du blanc à 85 % fait bondir le bleu de 56 et le vert de 5, un écart
+ * de 51 — le trait passait pour un sprite, et la grille ne se détectait plus.
+ * Le rapport, lui, ne dépend pas de la couleur du fond.
+ */
+function estUnTraitDuFond(dr, dv, db, fr, fv, fb) {
+  if (dr <= 0 || dv <= 0 || db <= 0) return false;
+  const mr = 255 - fr;
+  const mv = 255 - fv;
+  const mb = 255 - fb;
+  // Un fond déjà saturé sur un canal ne dit rien de l'alpha : on s'abstient.
+  if (mr < 12 || mv < 12 || mb < 12) return false;
+  const ar = dr / mr;
+  const av = dv / mv;
+  const ab = db / mb;
+  return Math.max(ar, av, ab) - Math.min(ar, av, ab) < 0.12;
+}
+
+/**
  * Couleur de fond, ligne par ligne : la médiane, le fond étant majoritaire.
  * Un fond dégradé — celui de HOME l'est — se soustrait ainsi correctement sur
  * toute la hauteur de l'écran.
@@ -247,9 +285,7 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
       const force = Math.abs(dr) + Math.abs(dv) + Math.abs(db);
       const p = y * w + x;
       plein[p] = force > SEUIL_FOND ? 1 : 0;
-      const plusClair = dr > 0 && dv > 0 && db > 0;
-      const etendue = Math.max(dr, dv, db) - Math.min(dr, dv, db);
-      toile[p] = plusClair && etendue < 30 ? 1 : 0;
+      toile[p] = estUnTraitDuFond(dr, dv, db, fr, fv, fb) ? 1 : 0;
     }
   }
 
@@ -351,9 +387,7 @@ export function detecterGrille(imageData) {
       const dv = data[q + 1] - fv;
       const db = data[q + 2] - fb;
       const force = Math.abs(dr) + Math.abs(dv) + Math.abs(db);
-      const plusClair = dr > 0 && dv > 0 && db > 0;
-      const etendue = Math.max(dr, dv, db) - Math.min(dr, dv, db);
-      avant[y * width + x] = force > SEUIL_FOND && !(plusClair && etendue < 30) ? 1 : 0;
+      avant[y * width + x] = force > SEUIL_FOND && !estUnTraitDuFond(dr, dv, db, fr, fv, fb) ? 1 : 0;
     }
   }
 
@@ -392,11 +426,19 @@ export function detecterGrille(imageData) {
   );
   if (!lignesBrutes.length) return null;
 
-  // Une ligne coupée par le bord de l'écran donnerait un sprite tronqué, donc
-  // une reconnaissance fausse — et, pire, une fausse ancre pour ses voisines.
-  // Les captures se chevauchent, ces cases reviennent dans la suivante.
+  // Une ligne coupée par un bord donnerait un sprite tronqué, donc une
+  // reconnaissance fausse — et, pire, une fausse ancre pour ses voisines. Les
+  // captures se chevauchent, ces cases reviennent dans la suivante.
+  //
+  // On les reconnaît à leur HAUTEUR, et non à leur proximité du bord : une
+  // ligne complète mesure à peu près comme les autres, une ligne coupée est
+  // franchement plus courte. Le test par le bord se laissait piéger dès qu'un
+  // trait du motif touchait le haut de la première ligne — il en perdait une
+  // entière à chaque capture.
+  const hauteurs = lignesBrutes.map(([a, b]) => b - a).sort((x, y) => x - y);
+  const mediane = hauteurs[hauteurs.length >> 1];
   const lignes = lignesBrutes
-    .filter(([a, b]) => a > yDebut + 2 && b < height - 3)
+    .filter(([a, b]) => b - a >= mediane * 0.6 && a > 0 && b < height - 2)
     .map(([a, b]) => Math.round((a + b) / 2));
   if (!lignes.length) return null;
 

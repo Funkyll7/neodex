@@ -27,7 +27,7 @@ const BANQUE_BIN = "data/reference/sprites-sig.bin";
 const BANQUE_JSON = "data/reference/sprites-sig.json";
 
 export function createImportPhotos(ctx) {
-  const { dataset, collection } = ctx;
+  const { dataset, collection, store } = ctx;
   let banque = null;
   let resultats = null;
   let cible = "dex";
@@ -291,7 +291,23 @@ export function createImportPhotos(ctx) {
       return;
     }
 
+    // Cochées d'avance : les nouvelles seulement. Ce qui est déjà dans la
+    // collection n'est pas re-proposé — ce serait du bruit, et un lot qui
+    // « ajoute » cent cases dont quatre-vingt-dix existent déjà ne dit plus
+    // rien de ce qu'on est en train de faire.
     const choisis = new Set(nouvelles.map((l) => `${l.id}|${l.slot}`));
+
+    const majTout = () => {
+      compteur.textContent = libelleAppliquer(choisis.size);
+      for (const b of grille.querySelectorAll(".imp__vignette:not(:disabled)")) {
+        b.setAttribute("aria-pressed", String(choisis.has(b.dataset.cle)));
+      }
+    };
+    const toutCocher = (etat) => {
+      choisis.clear();
+      if (etat) for (const l of nouvelles) choisis.add(`${l.id}|${l.slot}`);
+      majTout();
+    };
 
     const grille = el(
       "div.imp__grille",
@@ -336,24 +352,48 @@ export function createImportPhotos(ctx) {
 
     const compteur = el("span.imp__compte", libelleAppliquer(choisis.size));
 
+    const dejaLa = lignes.length - nouvelles.length;
+
     fill(
       racine,
       titre(),
       el(
         "div.imp__corps",
+
+        // Le compte rendu, avant les vignettes : ce qui a été trouvé, ce qui
+        // est nouveau, ce qui existait déjà, ce qui n'a pas pu être lu.
         el(
-          "p.imp__texte",
-          `${lignes.length} Pokémon reconnus, dont ${nouvelles.length} qui ne sont pas encore cochés. ` +
-            (douteuses
-              ? `${douteuses} cases n'ont pas pu être lues avec certitude : elles ne sont pas proposées.`
-              : "")
+          "div.imp__bilan",
+          el("span.imp__bilan-lot", el("strong", String(nouvelles.length)), " à ajouter"),
+          dejaLa
+            ? el("span.imp__bilan-lot.imp__bilan-lot--gris", el("strong", String(dejaLa)), " déjà cochés")
+            : null,
+          douteuses
+            ? el(
+                "span.imp__bilan-lot.imp__bilan-lot--gris",
+                { title: "Cases dont la reconnaissance n'était pas assez sûre. Elles ne sont pas proposées." },
+                el("strong", String(douteuses)),
+                " non lues"
+              )
+            : null
         ),
+
         el(
           "p.imp__texte.imp__texte--gris",
-          "Le nombre en bas de chaque vignette est la distance au sprite officiel : " +
-            "sous 6 la reconnaissance ne se trompe pas, au-delà relis-la. " +
-            "Appuie sur une vignette pour la retirer ou la remettre."
+          "Appuie sur une vignette pour la retirer du lot, ou la remettre. Le nombre en " +
+            "bas est la distance au sprite officiel : sous 6 la reconnaissance ne se " +
+            "trompe pas, au-delà relis-la. Les grisées sont déjà dans ta collection — " +
+            "elles ne seront pas réécrites."
         ),
+
+        nouvelles.length > 1
+          ? el(
+              "div.imp__tout",
+              el("button.btn.btn--ghost.btn--mini", { type: "button", onclick: () => toutCocher(true) }, "Tout cocher"),
+              el("button.btn.btn--ghost.btn--mini", { type: "button", onclick: () => toutCocher(false) }, "Tout décocher")
+            )
+          : null,
+
         grille
       ),
       el(
@@ -386,19 +426,73 @@ export function createImportPhotos(ctx) {
     return { id: espece.id, slot: r.shiny ? "sm" : "om" };
   }
 
+  /**
+   * Écrit le lot. Trois garde-fous, et ils comptent tous les trois :
+   *   - on relit `collection.has` au dernier moment, pas au moment de
+   *     l'affichage : entre les deux, l'utilisateur a pu cocher la case
+   *     lui-même dans un autre onglet ;
+   *   - on dédoublonne par (espèce, case), deux vignettes ne pouvant pas
+   *     pointer la même case sans que le lot compte deux fois ;
+   *   - `applyBatch` enregistre le tout comme UN pas d'annulation.
+   */
   function appliquer(lignes, choisis) {
-    const lot = lignes
-      .filter((l) => choisis.has(`${l.id}|${l.slot}`) && !collection.has(l.id, l.slot))
-      .map((l) => ({ id: l.id, slot: l.slot, before: false }));
-    if (!lot.length) {
-      fermer();
-      return;
+    const vues = new Set();
+    const lot = [];
+    for (const l of lignes) {
+      const cle = `${l.id}|${l.slot}`;
+      if (!choisis.has(cle) || vues.has(cle)) continue;
+      if (collection.has(l.id, l.slot)) continue;
+      vues.add(cle);
+      lot.push({ id: l.id, slot: l.slot });
     }
-    ctx.applyBatch(lot, `Lecture de captures — ${lot.length} cases`);
+    if (lot.length) ctx.applyBatch(lot, `Lecture de captures — ${lot.length} cases`);
     fermer();
   }
 
-  return { ouvrir };
+  /**
+   * Les captures arrivées par le menu « Partager » d'Android.
+   *
+   * Le service worker les a rangées dans un cache avant de rediriger ici : au
+   * moment du partage il n'y avait aucune page ouverte à qui les remettre.
+   * On les reprend, on vide le cache — un rechargement ne doit pas relancer la
+   * même lecture —, et on part directement sur la reconnaissance.
+   *
+   * Le Pokédex visé est celui qu'on regarde. C'est le bon choix : on ouvre GO,
+   * on filtre HOME sur le jeu d'origine, on partage, ça tombe dans GO.
+   */
+  async function reprendrePartage() {
+    if (!("caches" in window)) return false;
+    let cache;
+    try {
+      // Le nom du cache porte le numéro de version du worker : on le cherche
+      // par son suffixe plutôt que de le recopier ici, sinon une montée de
+      // version laisserait les captures dans un cache que personne ne relit.
+      const nom = (await caches.keys()).find((n) => n.endsWith("-partage"));
+      if (!nom) return false;
+      cache = await caches.open(nom);
+    } catch {
+      return false;
+    }
+
+    const cles = (await cache.keys()).sort((a, b) => a.url.localeCompare(b.url));
+    if (!cles.length) return false;
+
+    const fichiers = [];
+    for (let i = 0; i < cles.length; i++) {
+      const reponse = await cache.match(cles[i]);
+      if (!reponse) continue;
+      const blob = await reponse.blob();
+      fichiers.push(new File([blob], `capture-${i}.jpg`, { type: blob.type || "image/jpeg" }));
+    }
+    for (const cle of cles) await cache.delete(cle);
+    if (!fichiers.length) return false;
+
+    ouvrir(store.state.tab === "go" ? "go" : "dex");
+    await lancer(fichiers);
+    return true;
+  }
+
+  return { ouvrir, reprendrePartage };
 }
 
 /* ------------------------------- utilitaires ----------------------------- */

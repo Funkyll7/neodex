@@ -448,6 +448,19 @@ function start(dataset) {
   document.getElementById("app").hidden = false;
 
   registerWorker();
+
+  // Le site vient d'etre ouvert par le menu « Partager » d'Android : les
+  // captures attendent dans un cache, le lecteur les reprend tout de suite.
+  // Apres le premier rendu, pour ne pas retarder l'affichage — et sans faire
+  // de bruit si ce n'etait pas un partage.
+  if (new URLSearchParams(location.search).has("partage")) {
+    photos.reprendrePartage().catch((error) => {
+      console.warn("Funkylldex : captures partagees illisibles.", error);
+    });
+    // L'adresse est nettoyee : recharger la page ne doit pas relancer une
+    // lecture dont les fichiers ont deja ete consommes.
+    history.replaceState(null, "", location.pathname);
+  }
 }
 
 /**

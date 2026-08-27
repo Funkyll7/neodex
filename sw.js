@@ -34,10 +34,12 @@
    v2 : les reponses opaques (sprites) entrent enfin dans le cache.
    v3 : les requetes de la coquille contournent le cache HTTP. Les caches v2
         contiennent du JS perime, il faut les jeter. */
-const VERSION = "funkylldex-v14";
+const VERSION = "funkylldex-v15";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;
+/** Captures recues par le menu « Partager » d Android, en attente de lecture. */
+const PARTAGE = `${VERSION}-partage`;
 
 /** Ce qu'il faut avoir sous la main pour que le site demarre hors ligne. */
 const SHELL_FILES = [
@@ -86,7 +88,7 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  const garder = new Set([SHELL, DATA, SPRITES]);
+  const garder = new Set([SHELL, DATA, SPRITES, PARTAGE]);
   event.waitUntil(
     caches
       .keys()
@@ -95,8 +97,27 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+/**
+ * Partage Android : les captures arrivent ici, pas dans la page.
+ *
+ * Quand on choisit Funkylldex dans le menu « Partager » du telephone, le
+ * systeme envoie un POST multipart vers `share_target.action`. Cette requete
+ * n'atteint jamais le serveur — GitHub Pages ne sait pas la traiter, et de
+ * toute facon les images n'ont aucune raison de quitter le telephone. C'est le
+ * worker qui l'intercepte.
+ *
+ * On range les fichiers dans un cache dedie, puis on redirige vers la page.
+ * Un `postMessage` ne conviendrait pas : au moment du partage il n'y a pas
+ * encore de page ouverte a qui parler.
+ */
 self.addEventListener("fetch", (event) => {
   const { request } = event;
+
+  if (request.method === "POST" && new URL(request.url).searchParams.has("partage")) {
+    event.respondWith(recevoirPartage(request));
+    return;
+  }
+
   // Une ecriture ne se met pas en cache, et ne se rejoue pas.
   if (request.method !== "GET") return;
 
@@ -124,6 +145,44 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(reseauDAbord(request, SHELL));
 });
+
+/**
+ * Range les captures partagees et renvoie la page.
+ *
+ * Le cache plutot qu'IndexedDB : les fichiers sont deja des `Blob`, une
+ * `Response` les stocke telle quelle, et la page les relit avec le meme
+ * `caches.match` qu'elle connait deja. Trois lignes contre une base.
+ *
+ * On vide le cache avant : deux partages de suite ne doivent pas melanger
+ * leurs captures, et l'ordre compte — c'est de lui que vient la contrainte du
+ * dex croissant.
+ *
+ * La redirection est une 303 : sans elle, un rechargement de la page
+ * renverrait le POST une seconde fois.
+ */
+async function recevoirPartage(request) {
+  try {
+    const form = await request.formData();
+    const fichiers = form.getAll("captures").filter((f) => f && f.size);
+    const cache = await caches.open(PARTAGE);
+    for (const cle of await cache.keys()) await cache.delete(cle);
+    // Numerotees sur trois chiffres : la page les relit dans l'ordre, et c'est
+    // l'ordre des captures qui rend la reconnaissance fiable.
+    await Promise.all(
+      fichiers.map((f, i) =>
+        cache.put(
+          `/partage/${String(i).padStart(3, "0")}`,
+          new Response(f, { headers: { "content-type": f.type || "image/jpeg" } })
+        )
+      )
+    );
+  } catch (error) {
+    // Un partage rate ne doit pas laisser l'utilisateur devant une page
+    // d'erreur : on ouvre le site normalement, il choisira ses fichiers.
+    console.warn("Funkylldex : partage illisible.", error);
+  }
+  return Response.redirect("./?partage=1", 303);
+}
 
 /**
  * Une reponse est-elle bonne a mettre en cache ?
