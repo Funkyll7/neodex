@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Trois permissions, et pas une de plus.
+
+      Aucune permission reseau : cette application ne parle a personne. Elle
+      prend des images et les remet a Funkylldex par la feuille de partage.
+      C'est volontaire — c'est ce qui la garde du bon cote de la ligne rouge
+      des editeurs, celle qui separe lire un ecran de piloter un jeu.
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Funkylldex">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          `foregroundServiceType` est obligatoire depuis Android 10 et
+          strictement verifie depuis Android 14 : sans lui, `startForeground`
+          leve une exception au lieu de demarrer.
+        -->
+        <service
+            android:name=".ServiceCapture"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
+
+        <!--
+          Une capture vit dans le cache prive de l'application. Sans
+          FileProvider, la partager leverait une FileUriExposedException.
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fichiers"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/chemins_partage" />
+        </provider>
+
+    </application>
+</manifest>

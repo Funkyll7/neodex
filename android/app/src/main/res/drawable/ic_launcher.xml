@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Une Poke Ball schematique, en vectoriel : pas de PNG a fabriquer. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#E03A3A"
+        android:pathData="M24,4a20,20 0 0,1 20,20h-14a6,6 0 0,0 -12,0h-14a20,20 0 0,1 20,-20z" />
+    <path
+        android:fillColor="#F2F2F2"
+        android:pathData="M4,24h14a6,6 0 0,0 12,0h14a20,20 0 0,1 -40,0z" />
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M24,18a6,6 0 1,1 0,12a6,6 0 0,1 0,-12zM24,21a3,3 0 1,0 0,6a3,3 0 0,0 0,-6z" />
+</vector>

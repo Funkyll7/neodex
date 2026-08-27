@@ -38,3 +38,10 @@ assets/img/sources/gigamax.png
 # les garder ici alourdirait chaque clone pour toujours.
 assets/img/sources/pokemon-home.png
 assets/img/sources/pokemon-go.png
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/gradle/
+android/gradlew
+android/gradlew.bat
