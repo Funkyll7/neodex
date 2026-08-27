@@ -68,6 +68,8 @@
 <link rel="modulepreload" href="assets/js/ui/active-filters.js">
 <link rel="modulepreload" href="assets/js/ui/undo.js">
 <link rel="modulepreload" href="assets/js/ui/haptics.js">
+<link rel="modulepreload" href="assets/js/ui/import-photos.js">
+<link rel="modulepreload" href="assets/js/domain/reco.js">
 <link rel="modulepreload" href="assets/js/ui/common.js">
 
 <link rel="stylesheet" href="assets/css/theme.css">
@@ -262,6 +264,12 @@
         </div>
         <select id="filter-type" class="select select--inline" aria-label="Filtrer par type"></select>
         <div class="segmented" id="view-toggle" role="group" aria-label="Image affichée"></div>
+        <!-- La lecture de captures ne part qu'au bouton, jamais toute seule :
+             préparer son filtre dans HOME fait partie du geste. -->
+        <button type="button" class="btn btn--ghost toolbar__lire" data-import="dex"
+                title="Cocher des cases à partir de captures d'écran de Pokémon HOME">
+          <span class="toolbar__lire-ico" aria-hidden="true"></span> Lire des captures
+        </button>
         <p class="toolbar__count" id="result-count" aria-live="polite"></p>
       </div>
 
@@ -340,6 +348,10 @@
              contrôles pour le même état, à dix centimètres l'un de l'autre,
              n'aideraient personne. -->
         <select id="go-type" class="select select--inline" aria-label="Filtrer par type"></select>
+        <button type="button" class="btn btn--ghost toolbar__lire" data-import="go"
+                title="Cocher des cases à partir de captures d'écran de Pokémon HOME filtrées sur GO">
+          <span class="toolbar__lire-ico" aria-hidden="true"></span> Lire des captures
+        </button>
         <p class="toolbar__count" id="go-count" aria-live="polite"></p>
       </div>
 

@@ -34,7 +34,7 @@
    v2 : les reponses opaques (sprites) entrent enfin dans le cache.
    v3 : les requetes de la coquille contournent le cache HTTP. Les caches v2
         contiennent du JS perime, il faut les jeter. */
-const VERSION = "funkylldex-v13";
+const VERSION = "funkylldex-v14";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;

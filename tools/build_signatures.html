@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Funkylldex — fabrique des signatures de sprites</title>
+<style>
+  body { font: 15px/1.6 system-ui, sans-serif; max-width: 60ch; margin: 40px auto; padding: 0 16px; }
+  button { font: inherit; padding: 10px 18px; cursor: pointer; }
+  pre { background: #f4f4f7; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+  progress { width: 100%; height: 14px; }
+</style>
+</head>
+<body>
+
+<h1>Signatures de sprites</h1>
+
+<p>
+  Le lecteur de captures compare chaque case de l'écran aux 2 663 sprites HOME.
+  Les télécharger dans le navigateur, ce serait 100 Mo : hors de question sur
+  téléphone. Cette page les lit <strong>une fois</strong> depuis le cache local
+  (<code>tools/.cache/sprites/</code>) et n'en garde qu'une empreinte de
+  <span id="taille-sig"></span> octets chacune.
+</p>
+
+<p>
+  Elle ne tourne qu'en local, avec le serveur statique du projet. Elle n'écrit
+  rien : elle propose un fichier à télécharger, qu'on dépose ensuite dans
+  <code>data/reference/</code>.
+</p>
+
+<p><button id="go" type="button">Fabriquer les signatures</button></p>
+<progress id="avancement" value="0" max="1" hidden></progress>
+<pre id="journal">Prêt.</pre>
+
+<script type="module">
+import { SIG, signatureDepuisImageData } from "../assets/js/domain/reco.js";
+
+const journal = document.getElementById("journal");
+const barre = document.getElementById("avancement");
+document.getElementById("taille-sig").textContent = SIG * SIG * 4;
+
+const dire = (t) => { journal.textContent = t + "\n" + journal.textContent; };
+
+/**
+ * Les sprites du cache sont nommes « <id>.png » et « <id>_s.png ». On balaie
+ * l'espace des identifiants plutot que de lire le dossier : une page web ne
+ * peut pas lister un repertoire, et un 404 ne coute rien.
+ *
+ * Les formes alternatives de PokeAPI vivent au-dela de 10000. On monte donc
+ * jusqu'a 10300, ce qui couvre tout ce que build_forms.py connait.
+ */
+const IDS = [];
+for (let i = 1; i <= 1025; i++) IDS.push(i);
+for (let i = 10001; i <= 10300; i++) IDS.push(i);
+
+const toile = document.createElement("canvas");
+toile.width = toile.height = 128;
+const ctx = toile.getContext("2d", { willReadFrequently: true });
+
+async function signature(url) {
+  const reponse = await fetch(url, { cache: "force-cache" });
+  if (!reponse.ok) return null;
+  const bitmap = await createImageBitmap(await reponse.blob());
+  ctx.clearRect(0, 0, 128, 128);
+  ctx.drawImage(bitmap, 0, 0, 128, 128);
+  bitmap.close();
+  return signatureDepuisImageData(ctx.getImageData(0, 0, 128, 128), 140);
+}
+
+document.getElementById("go").addEventListener("click", async () => {
+  barre.hidden = false;
+  barre.max = IDS.length * 2;
+  barre.value = 0;
+
+  const vecteurs = [];
+  const etiquettes = [];
+  let manquants = 0;
+
+  for (const id of IDS) {
+    for (const shiny of [false, true]) {
+      barre.value += 1;
+      const url = `.cache/sprites/${id}${shiny ? "_s" : ""}.png`;
+      let v = null;
+      try {
+        v = await signature(url);
+      } catch {
+        v = null;
+      }
+      if (!v) { manquants += 1; continue; }
+      vecteurs.push(v);
+      etiquettes.push([id, shiny ? 1 : 0]);
+    }
+    if (id % 100 === 0) dire(`  ${id}… ${vecteurs.length} signatures`);
+  }
+
+  // Un seul bloc d'octets : une signature tient sur SIG*SIG*4 valeurs deja
+  // ramenees dans 0..255, il n'y a rien a encoder de plus.
+  const large = SIG * SIG * 4;
+  const blob = new Uint8Array(vecteurs.length * large);
+  vecteurs.forEach((v, i) => blob.set(v, i * large));
+
+  const meta = {
+    _comment:
+      "Empreintes des sprites HOME, pour le lecteur de captures. Genere par " +
+      "tools/build_signatures.html depuis tools/.cache/sprites/ — ne pas editer.",
+    sig: SIG,
+    taille: large,
+    nombre: vecteurs.length,
+    etiquettes,
+  };
+
+  // Le serveur statique de développement accepte une écriture sur cette seule
+  // route. Un téléchargement classique marcherait aussi, mais il faudrait
+  // ensuite déplacer les deux fichiers à la main dans data/reference/.
+  await deposer("data/reference/sprites-sig.bin", new Blob([blob]));
+  await deposer("data/reference/sprites-sig.json", new Blob([JSON.stringify(meta)]));
+
+  dire(
+    `Fini : ${vecteurs.length} signatures, ${(blob.length / 1048576).toFixed(2)} Mo ` +
+      `(${manquants} sprites absents du cache, c'est normal : tous les ids n'existent pas).`
+  );
+});
+
+async function deposer(chemin, blob) {
+  const r = await fetch(`/_ecrire?f=${encodeURIComponent(chemin)}`, { method: "POST", body: blob });
+  dire(`  ${chemin} : ${r.ok ? await r.text() : "ÉCHEC " + r.status}`);
+}
+</script>
+</body>
+</html>

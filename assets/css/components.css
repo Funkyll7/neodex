@@ -1473,6 +1473,109 @@
 .gcard--stale { opacity: .45; }
 .gcard--stale .gcard__name { text-decoration: line-through; }
 
+/* ==================== Lecture de captures d'écran ======================== */
+/* Un panneau plein écran, et non une section de la page : on y lit un mode
+   d'emploi puis on relit une centaine de vignettes. C'est un moment à part,
+   qui ne doit pas se faire du coin de l'œil au-dessus de la grille. */
+.toolbar__lire { flex: 0 0 auto; white-space: nowrap; }
+.toolbar__lire-ico {
+  display: inline-block; width: 13px; height: 13px; vertical-align: -1px;
+  background-color: currentColor;
+  -webkit-mask: url("../img/capture.png") center / contain no-repeat;
+  mask: url("../img/capture.png") center / contain no-repeat;
+}
+
+.imp__fond {
+  position: fixed; inset: 0; z-index: 70;
+  background: rgba(0, 0, 0, .6);
+}
+.imp__fond[hidden] { display: none; }
+
+.imp {
+  position: fixed; z-index: 71;
+  top: 4vh; bottom: 4vh; left: 50%;
+  transform: translateX(-50%);
+  width: min(760px, 94vw);
+  display: flex; flex-direction: column;
+  border: 1px solid var(--border-strong); border-radius: var(--r-lg);
+  background: var(--bg-raised);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+  overflow: hidden;
+}
+.imp[hidden] { display: none; }
+
+.imp__tete {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+.imp__titre { margin: 0; font-size: 16px; font-weight: 800; flex: 1; min-width: 0; }
+.imp__corps { flex: 1; min-height: 0; overflow-y: auto; padding: var(--sp-4); }
+.imp__pied {
+  display: flex; gap: var(--sp-3); justify-content: flex-end;
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  background: var(--bg-sunken);
+  padding-bottom: calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+}
+.imp__texte { margin: 0 0 var(--sp-3); color: var(--text-soft); font-size: 13.5px; }
+.imp__texte--fort { color: var(--text); font-weight: 700; }
+.imp__texte--gris, .imp__gris { color: var(--text-faint); font-size: 12.5px; }
+.imp__texte--erreur { color: var(--danger); font-weight: 700; }
+.imp__soustitre { margin: var(--sp-4) 0 var(--sp-2); font-size: 13px; font-weight: 800; }
+.imp__actions { margin-top: var(--sp-4); display: flex; gap: var(--sp-3); }
+.imp__barre { width: 100%; height: 12px; }
+
+/* L'avertissement est en tête et se voit : c'est la partie du panneau qu'on ne
+   doit pas pouvoir sauter. */
+.imp__avert {
+  border: 1px solid var(--accent-border); border-radius: var(--r-md);
+  background: var(--accent-wash);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: 13px; line-height: 1.55; color: var(--text-soft);
+}
+.imp__avert p { margin: 0 0 var(--sp-2); }
+.imp__avert p:last-child { margin-bottom: 0; }
+.imp__avert-titre { font-weight: 800; color: var(--accent); }
+.imp__avert strong { color: var(--text); }
+
+.imp__etapes { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-2); }
+.imp__etape { font-size: 13px; line-height: 1.55; color: var(--text-soft); }
+.imp__etape-titre { color: var(--text); }
+
+.imp__replis { margin-top: var(--sp-4); font-size: 13px; line-height: 1.55; color: var(--text-soft); }
+.imp__replis > summary {
+  cursor: pointer; font-weight: 800; color: var(--text);
+  padding: var(--sp-2) 0;
+}
+.imp__replis p { margin: 0 0 var(--sp-2); }
+
+/* La relecture : une vignette par case reconnue, qu'on retire d'un appui. */
+.imp__grille {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: var(--sp-2); margin-top: var(--sp-3);
+}
+.imp__vignette {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  cursor: pointer; text-align: center;
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--bg-sunken); color: inherit; font: inherit;
+  padding: 7px 5px;
+}
+.imp__vignette[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-wash); }
+/* Non retenue : elle reste lisible, mais on voit qu'elle ne sera pas écrite. */
+.imp__vignette[aria-pressed="false"] { opacity: .45; }
+.imp__vignette:disabled { opacity: .35; cursor: default; }
+.imp__img { width: 52px; height: 52px; object-fit: contain; }
+.imp__num { font-family: var(--font-display); font-size: 10px; font-weight: 800; color: var(--text-faint); }
+.imp__nom {
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 11.5px; font-weight: 800; color: var(--text-soft);
+}
+.imp__etat { font-size: 10px; color: var(--text-faint); }
+.imp__score { font-size: 10px; font-weight: 800; color: var(--avail-ok); }
+.imp__score--faible { color: var(--avail-nolock); }
+
 /* ====================== Bandeau « Annuler » ============================== */
 /* Il dit ce qui vient d'être coché et le défait d'un appui. En bas, sous le
    pouce : c'est là que se trouve la main, et c'est là que l'erreur se répare.
@@ -1676,6 +1779,27 @@
   .tab__court { display: inline; }
   .tab__logo { height: 19px; }
   .tab__badge { padding: 2px 6px; font-size: 10px; }
+
+  /* Lecture de captures : le panneau prend tout l'écran. Sur 375 px, une marge
+     de 4 % ne servirait qu'à rogner le mode d'emploi. */
+  .imp {
+    top: 0; bottom: 0; left: 0;
+    transform: none;
+    width: 100%;
+    border: none; border-radius: 0;
+  }
+  body.imp-open { overflow: hidden; }
+  .imp__tete { padding: calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-3) var(--sp-3); }
+  .imp__corps { padding: var(--sp-3); }
+  .imp__pied { padding-left: var(--sp-3); padding-right: var(--sp-3); }
+  /* Les deux boutons du pied côte à côte, à parts égales : au pouce, on ne
+     vise pas un bouton de 90 px collé au bord droit. */
+  .imp__pied .btn { flex: 1; }
+  .imp__grille { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); }
+  .imp__img { width: 46px; height: 46px; }
+  /* Le bouton de lecture passe à la ligne du bas de la barre d'outils, avec le
+     type et le sélecteur d'image : la recherche garde sa ligne. */
+  .toolbar__lire { order: 6; flex: 1 1 auto; justify-content: center; }
 
   /* Vignettes GO : au pouce, un bouton de 7 px de haut se rate. On élargit la
      cible sans agrandir la vignette — c'est la case qu'on vise, pas l'image. */

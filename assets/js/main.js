@@ -27,6 +27,7 @@ import { createShortcuts } from "./ui/shortcuts.js";
 import { createToTop } from "./ui/to-top.js";
 import { createActiveFilters } from "./ui/active-filters.js";
 import { createUndo } from "./ui/undo.js";
+import { createImportPhotos } from "./ui/import-photos.js";
 import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
@@ -156,6 +157,29 @@ function start(dataset) {
         go.render();
       }
     },
+    /**
+     * Coche un LOT de cases d'un coup — la lecture de captures, aujourd'hui.
+     *
+     * Un seul pas d'annulation pour tout le lot : défaire une lecture de
+     * trente cases ne doit pas demander trente appuis. Et comme partout, on
+     * relève l'état d'avant plutôt que de supposer qu'il était vide.
+     */
+    applyBatch: (lot, titre) => {
+      const entrees = [];
+      for (const { id, slot } of lot) {
+        const avant = collection.has(id, slot);
+        if (avant) continue;
+        collection.toggle(id, slot);
+        entrees.push({ id, slot, before: avant });
+      }
+      if (!entrees.length) return 0;
+      sync.schedule(titre);
+      undo.record(titre, entrees);
+      tapComplet();
+      onCollectionChange();
+      go.render();
+      return entrees.length;
+    },
     onCollectionChange: (id) => onCollectionChange(id),
     /**
      * Choisir une vignette. Retaper celle qui est deja selectionnee ne change
@@ -219,6 +243,10 @@ function start(dataset) {
   const toTop = createToTop();
   const activeFilters = createActiveFilters(ctx);
   const undo = createUndo(ctx);
+  const photos = createImportPhotos(ctx);
+  for (const bouton of document.querySelectorAll("[data-import]")) {
+    bouton.addEventListener("click", () => photos.ouvrir(bouton.dataset.import));
+  }
   createFolds();
 
   // Sur telephone, on quitte l'onglet plus souvent qu'on ne le ferme : c'est
