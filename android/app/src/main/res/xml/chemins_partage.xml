@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  Une seule voie exposee : le sous-dossier `captures` du cache prive.
-  Rien d'autre de l'application n'est joignable par un URI partage.
--->
-<paths>
-    <cache-path name="captures" path="captures/" />
-</paths>
