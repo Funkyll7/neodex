@@ -82,6 +82,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .icon-btn {
   cursor: pointer;
   margin-left: auto;
+  /* Le glyphe est centré ici, et pas laissé au centrage par défaut du bouton :
+     dès qu'une règle ailleurs redonne un `display` à ce bouton — la croix du
+     tiroir mobile passe en `inline-flex` — le centrage du texte disparaît et le
+     symbole se cale en haut à gauche de son rond. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 32px;
   height: 32px;
   flex: 0 0 auto;

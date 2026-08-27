@@ -1,6 +1,6 @@
 # make_logos.ps1 — fabrique les logos qui ne passent pas par crop_logos.ps1.
 #
-# Trois besoins que l'autre script ne couvre pas :
+# Quatre besoins que l'autre script ne couvre pas :
 #
 #   1. capture.png / capture-forme.png
 #      Ce sont des MASQUES CSS : seule la couche alpha compte, la couleur est
@@ -17,7 +17,14 @@
 #      les formes sans logo de famille (Salarsen Forme Grave, Keldeo Resolu)
 #      n'affichaient qu'un ◈ nu.
 #
-#   2. logo-home.png / logo-go.png
+#   2. quete.png
+#      Meme principe, mais a l'envers : l'icone de quete est un symbole BLANC
+#      sur une pastille bleue et verte. Elle rejoint le vocabulaire du site en
+#      masque plutot qu'en image — elle prend alors la couleur de l'onglet,
+#      grise au repos et doree une fois choisi, exactement comme le ✦ qu'elle
+#      remplace, et elle suit les vingt-six themes sans variante a fabriquer.
+#
+#   3. logo-home.png / logo-go.png
 #      Logos couleur des deux onglets. Ils arrivent deja detoures : il suffit de
 #      les recadrer sur leur boite englobante et de les reduire. On garde leur
 #      proportion — ce sont des logotypes, les deformer serait pire que de ne
@@ -83,6 +90,61 @@ public static class Logos
                     int alpha = 255 - lum;
                     if (alpha < 12) alpha = 0;
                     px[i] = 0; px[i + 1] = 0; px[i + 2] = 0;  // la couleur ne sert pas : c'est un masque
+                    px[i + 3] = (byte)alpha;
+                }
+            System.Runtime.InteropServices.Marshal.Copy(px, 0, bd.Scan0, px.Length);
+            a.UnlockBits(bd);
+
+            Rectangle box = Boite(a);
+            int cote = Math.Max(box.Width, box.Height);
+            Bitmap outBmp = new Bitmap(size, size, PixelFormat.Format32bppArgb);
+            using (Graphics g = Graphics.FromImage(outBmp))
+            {
+                g.Clear(Color.Transparent);
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                float ech = (float)size / cote;
+                float dw = box.Width * ech, dh = box.Height * ech;
+                g.DrawImage(a, new RectangleF((size - dw) / 2f, (size - dh) / 2f, dw, dh),
+                    new RectangleF(box.X, box.Y, box.Width, box.Height), GraphicsUnit.Pixel);
+            }
+            outBmp.Save(dst, ImageFormat.Png);
+            outBmp.Dispose();
+            a.Dispose();
+            return string.Format("{0}x{1} -> contenu {2}x{3} -> {4}x{4}", W, H, box.Width, box.Height, size);
+        }
+    }
+
+    // L'inverse du precedent : ici c'est le dessin BLANC qui doit devenir
+    // opaque, et le fond colore transparent. L'icone de quete est un symbole
+    // blanc pose sur une pastille bleue et verte.
+    //
+    // On ne peut pas se servir de la luminance : le bleu de la pastille tourne
+    // autour de 120, il ressortirait a moitie opaque et le masque peindrait un
+    // disque plein. On mesure donc la BLANCHEUR — le plus petit des trois
+    // canaux. Il vaut 255 sur du blanc, et s'effondre des qu'une couleur est
+    // saturee, quelle que soit sa clarte.
+    public static string MasqueBlanc(string src, string dst, int size)
+    {
+        using (Bitmap orig = new Bitmap(src))
+        {
+            int W = orig.Width, H = orig.Height;
+            Bitmap a = new Bitmap(W, H, PixelFormat.Format32bppArgb);
+            using (Graphics g0 = Graphics.FromImage(a)) { g0.DrawImage(orig, 0, 0, W, H); }
+
+            BitmapData bd = a.LockBits(new Rectangle(0, 0, W, H), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+            byte[] px = new byte[bd.Stride * H];
+            System.Runtime.InteropServices.Marshal.Copy(bd.Scan0, px, 0, px.Length);
+            const int SEUIL = 170;
+            for (int y = 0; y < H; y++)
+                for (int x = 0; x < W; x++)
+                {
+                    int i = y * bd.Stride + x * 4;            // BGRA
+                    int mini = Math.Min(px[i], Math.Min(px[i + 1], px[i + 2]));
+                    int alpha = mini <= SEUIL ? 0 : (mini - SEUIL) * 255 / (255 - SEUIL);
+                    // Un pixel deja transparent dans la source le reste.
+                    if (px[i + 3] < 8) alpha = 0;
+                    px[i] = 0; px[i + 1] = 0; px[i + 2] = 0;
                     px[i + 3] = (byte)alpha;
                 }
             System.Runtime.InteropServices.Marshal.Copy(px, 0, bd.Scan0, px.Length);
@@ -203,8 +265,9 @@ $b = Join-Path $src "capture.jpg"
 "capture-forme.png    " + [Logos]::MasqueForme($b, (Join-Path $img "capture-forme.png"), 64)
 "logo-home.png        " + [Logos]::Couleur((Join-Path $src "pokemon-home.png"), (Join-Path $img "logo-home.png"), 72)
 "logo-go.png          " + [Logos]::Couleur((Join-Path $src "pokemon-go.png"), (Join-Path $img "logo-go.png"), 72)
+"quete.png            " + [Logos]::MasqueBlanc((Join-Path $src "quete.png"), (Join-Path $img "quete.png"), 64)
 
-foreach ($f in @("capture.png", "capture-forme.png", "logo-home.png", "logo-go.png")) {
+foreach ($f in @("capture.png", "capture-forme.png", "logo-home.png", "logo-go.png", "quete.png")) {
   $p = Join-Path $img $f
   "  $($f.PadRight(20)) $([math]::Round((Get-Item $p).Length / 1KB, 1)) Ko"
 }

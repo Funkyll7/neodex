@@ -5,10 +5,13 @@
  */
 
 import { el, fill, setOptions } from "../core/dom.js";
-import { STATUS_FILTERS, FORM_FILTERS } from "../domain/filters.js";
+import { STATUS_FILTERS, FORM_FILTERS, GO_FILTERS } from "../domain/filters.js";
 
 export function createSidebar(ctx) {
   const { dataset, store } = ctx;
+
+  /** L'onglet ouvert : la colonne entiere en depend. */
+  const surGo = () => store.state.tab === "go";
 
   const pills = document.getElementById("status-pills");
   const genSelect = document.getElementById("filter-gen");
@@ -85,7 +88,13 @@ export function createSidebar(ctx) {
 
   /* ----------------------------- ecouteurs ---------------------------- */
 
-  genSelect.addEventListener("change", () => store.set({ gen: genSelect.value }));
+  // Un seul select de generation pour deux Pokedex, et c'est voulu : deux
+  // controles identiques a la meme place, dont un seul compte selon l'onglet,
+  // seraient plus deroutants que ce partage. Il ecrit dans la cle de l'onglet
+  // ouvert, et `render()` le remet a la bonne valeur quand on bascule.
+  genSelect.addEventListener("change", () =>
+    store.set(surGo() ? { goGen: genSelect.value } : { gen: genSelect.value })
+  );
   formSelect.addEventListener("change", () => store.set({ form: formSelect.value }));
   gameSelect.addEventListener("change", () => store.set({ game: gameSelect.value }));
   sortSelect.addEventListener("change", () => store.set({ sort: sortSelect.value }));
@@ -103,7 +112,35 @@ export function createSidebar(ctx) {
     bar: document.getElementById("progress-bar"),
     fill: document.getElementById("progress-fill"),
     bars: document.getElementById("progress-bars"),
+    titre: document.getElementById("progress-title"),
+    resume: document.getElementById("bars-summary"),
+    legende: document.getElementById("legend-panel"),
+    champs: {
+      gen: document.getElementById("field-gen"),
+      form: document.getElementById("field-form"),
+      game: document.getElementById("field-game"),
+      sort: document.getElementById("field-sort"),
+    },
   };
+
+  /**
+   * La colonne bascule avec l'onglet.
+   *
+   * Trois des quatre listes deroulantes n'ont aucun sens dans le Pokedex GO :
+   * il n'y a ni forme, ni jeu d'origine, et un livingdex se range toujours par
+   * numero. La legende, elle, decrit le tableau de disponibilite de la fiche
+   * HOME. Les laisser en place, mortes, aurait fait croire a des filtres qui
+   * ne repondent pas.
+   */
+  function poserContexte() {
+    const go = surGo();
+    out.champs.form.hidden = go;
+    out.champs.game.hidden = go;
+    out.champs.sort.hidden = go;
+    out.legende.hidden = go;
+    out.titre.textContent = go ? "Progression Pokémon GO" : "Progression totale";
+    out.resume.textContent = go ? "Détail" : "Détail par forme";
+  }
 
   /**
    * Remet les controles en accord avec l'etat, sans rien recalculer.
@@ -115,14 +152,15 @@ export function createSidebar(ctx) {
    */
   function syncActive() {
     searchInput.value = store.state.search;
-    genSelect.value = store.state.gen;
+    genSelect.value = surGo() ? store.state.goGen : store.state.gen;
     formSelect.value = store.state.form;
     gameSelect.value = store.state.game;
     sortSelect.value = store.state.sort;
     typeSelect.value = store.state.type;
 
+    const cleStatut = surGo() ? "goStatus" : "status";
     for (const pill of pills.children) {
-      pill.setAttribute("aria-pressed", String(pill.dataset.value === store.state.status));
+      pill.setAttribute("aria-pressed", String(pill.dataset.value === store.state[cleStatut]));
     }
     for (const row of out.bars.querySelectorAll(".bars__row")) {
       const actif = row.dataset.cible !== "all" && store.state[row.dataset.filtre] === row.dataset.cible;
@@ -140,35 +178,47 @@ export function createSidebar(ctx) {
      * @param {object} counts    decompte par espece (combien en ai-je ?)
      * @param {object} progress  decompte par case (combien de cases ai-je ?)
      */
-    render(counts, progress) {
+    render(counts, progress, go) {
+      poserContexte();
+
       // Le grand chiffre compte les CASES, pas les especes : c'est la vraie
       // progression du site. Le decompte d'especes descend dans « Ma
-      // collection », sous son propre nom.
-      const total = (progress && progress.all) || { done: 0, total: 0, pct: 0 };
+      // collection », sous son propre nom. Sur l'onglet GO, ce sont les 2050
+      // cases de GO — les deux ne se melangent jamais.
+      const total = surGo()
+        ? { done: go.done, total: go.cases, pct: go.pct }
+        : (progress && progress.all) || { done: 0, total: 0, pct: 0 };
       out.pct.textContent = total.pct;
       out.owned.textContent = total.done;
       out.total.textContent = total.total;
       out.fill.style.width = `${total.pct}%`;
       out.bar.setAttribute("aria-valuenow", total.pct);
 
-      if (progress) renderBars(out, progress, counts, store);
+      if (surGo()) renderGoBars(out, go, store);
+      else if (progress) renderBars(out, progress, counts, store);
+
+      const filtres = surGo() ? GO_FILTERS : STATUS_FILTERS;
+      const cleStatut = surGo() ? "goStatus" : "status";
+      const decompte = surGo()
+        ? { all: go.total, missing: go.total - go.owned, noshiny: go.total - go.shiny }
+        : counts;
 
       fill(
         pills,
-        STATUS_FILTERS.map((filter) =>
+        filtres.map((filter) =>
           el(
             "button.pill",
             {
               type: "button",
-              "aria-pressed": String(store.state.status === filter.value),
+              "aria-pressed": String(store.state[cleStatut] === filter.value),
               dataset: { value: filter.value },
-              onclick: () => store.set({ status: filter.value }),
+              onclick: () => store.set({ [cleStatut]: filter.value }),
             },
             // « Statut » ne porte plus ni le filtre chromatique ni celui des
             // paires : ils sont devenus des barres de progression cliquables.
             // Ces pastilles n'ont donc plus de logo, seulement un libellé.
             el("span.pill__name", filter.label),
-            el("span.pill__count", counts[filter.key])
+            el("span.pill__count", decompte[filter.key || filter.value])
           )
         )
       );
@@ -176,7 +226,7 @@ export function createSidebar(ctx) {
       for (const button of viewToggle.children) {
         button.setAttribute("aria-pressed", String(button.dataset.view === store.state.view));
       }
-      genSelect.value = store.state.gen;
+      genSelect.value = surGo() ? store.state.goGen : store.state.gen;
       formSelect.value = store.state.form;
       gameSelect.value = store.state.game;
       sortSelect.value = store.state.sort;
@@ -302,6 +352,66 @@ const BAR_GROUPS = [
  * un filtre du tout, c'est le retour a l'etat neutre.
  */
 const CLE_FILTRE = { dex: "owned", pairs: "pair", shiny: "shiny" };
+
+/**
+ * Les deux barres du Pokedex GO.
+ *
+ * Deux, et pas dix : GO n'a ni region, ni Gigamax, ni paire ♂ / ♀. Chacune
+ * pointe vers ce qu'il RESTE a faire — cliquer « Attrapés » n'affiche pas les
+ * attrapés, il affiche ceux qui manquent. C'est la question qu'on se pose en
+ * lisant la barre, et c'est celle a laquelle le clic doit repondre.
+ */
+function renderGoBars(out, go, store) {
+  const lignes = [
+    ["missing", "Attrapés", null, go.owned, go.total, "Ceux qu'il reste à attraper."],
+    ["noshiny", "Chromatiques", "shiny", go.shiny, go.total, "Ceux dont le chromatique manque."],
+  ];
+
+  fill(
+    out.bars,
+    el(
+      "section.bars__group",
+      el("h2.panel__label", "Ma collection GO"),
+      lignes.map(([cible, label, icon, done, total, title]) => {
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        const actif = store.state.goStatus === cible;
+        return el(
+          "button.bars__row",
+          {
+            type: "button",
+            title: `${title}\nCliquer pour ${actif ? "retirer le filtre" : "n'afficher que ceux-là"}.`,
+            "aria-pressed": String(actif),
+            dataset: { filtre: "goStatus", cible },
+            onclick: () => store.set({ goStatus: store.state.goStatus === cible ? "all" : cible }),
+          },
+          el(
+            "span.bars__head",
+            icon === "shiny"
+              ? el("span.toggle__ico.toggle__ico--shiny.bars__icon", { "aria-hidden": "true" })
+              : el("span.toggle__ico.toggle__ico--capture.bars__icon", { "aria-hidden": "true" }),
+            el("span.bars__label", label),
+            el("span.bars__pct", `${pct} %`)
+          ),
+          el(
+            "span.bars__meter",
+            el(
+              "span.bar",
+              {
+                role: "progressbar",
+                "aria-label": label,
+                "aria-valuemin": "0",
+                "aria-valuemax": "100",
+                "aria-valuenow": String(pct),
+              },
+              el("span.bar__fill", { style: { width: `${pct}%` } })
+            ),
+            el("span.bars__value", `${done} / ${total}`)
+          )
+        );
+      })
+    )
+  );
+}
 
 function renderBars(out, progress, counts, store) {
   // « Progression Pokédex » ne vient pas de `progress` : c'est le seul

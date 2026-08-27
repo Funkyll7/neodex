@@ -121,7 +121,7 @@
            site, formes et cosmétiques comprises. Le décompte d'espèces, lui,
            est descendu dans « Ma collection » — il ne mesure pas la même chose
            et ne pouvait pas porter le même nom. -->
-      <h2 class="panel__label">Progression totale</h2>
+      <h2 class="panel__label" id="progress-title">Progression totale</h2>
       <p class="progress-card__pct"><span id="stat-pct">0</span><span class="progress-card__unit">%</span></p>
       <p class="progress-card__count"><span id="stat-owned">0</span> / <span id="stat-total">0</span> cases cochées</p>
       <div class="bar" role="progressbar" aria-labelledby="stat-pct" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
@@ -131,7 +131,7 @@
            « Statut » à 666 px du haut, soit hors de portée immédiate. L'état
            est retenu d'une visite à l'autre. -->
       <details id="bars-fold" class="bars-fold">
-        <summary class="bars-fold__summary">Détail par forme</summary>
+        <summary class="bars-fold__summary" id="bars-summary">Détail par forme</summary>
         <div id="progress-bars" class="bars"></div>
       </details>
     </section>
@@ -151,20 +151,24 @@
          pesait autant qu'un vrai bloc de la barre latérale. -->
     <section class="panel filters" aria-label="Filtres et tri">
       <h2 class="panel__label">Filtres</h2>
+      <!-- Trois de ces quatre champs n'ont aucun sens dans le Pokédex Pokémon
+           GO — il n'y a ni forme, ni jeu d'origine, et un livingdex se range
+           toujours par numéro. ui/sidebar.js les masque sur cet onglet, et
+           « Génération » y pilote alors `goGen` au lieu de `gen`. -->
       <div class="filters__grid">
-        <p class="field">
+        <p class="field" id="field-gen">
           <label class="field__label" for="filter-gen">Génération</label>
           <select id="filter-gen" class="select"></select>
         </p>
-        <p class="field">
+        <p class="field" id="field-form">
           <label class="field__label" for="filter-form">Forme</label>
           <select id="filter-form" class="select"></select>
         </p>
-        <p class="field">
+        <p class="field" id="field-game">
           <label class="field__label" for="filter-game">Disponible dans</label>
           <select id="filter-game" class="select"></select>
         </p>
-        <p class="field">
+        <p class="field" id="field-sort">
           <label class="field__label" for="filter-sort">Trier par</label>
           <select id="filter-sort" class="select">
             <option value="num">Numéro national</option>
@@ -180,7 +184,9 @@
       </div>
     </section>
 
-    <section class="panel legend" aria-label="Légende du tableau de disponibilité">
+    <!-- La légende décrit le tableau « disponible dans quel jeu » de la fiche
+         HOME : sans objet dans le Pokédex GO, où ui/sidebar.js la masque. -->
+    <section id="legend-panel" class="panel legend" aria-label="Légende du tableau de disponibilité">
       <h2 class="panel__label">Légende du tableau</h2>
       <ul class="legend__list">
         <li><span class="legend__swatch" style="--c:#3f8f60"></span>Présent + shiny huntable</li>
@@ -325,8 +331,12 @@
           <span class="search__icon" aria-hidden="true">⌕</span>
           <input type="search" id="go-search" class="search__input" placeholder="Rechercher un Pokémon…" autocomplete="off" aria-label="Rechercher un Pokémon dans le Pokédex GO">
         </div>
-        <select id="go-gen" class="select select--inline" aria-label="Filtrer par génération"></select>
-        <div class="segmented" id="go-view" role="group" aria-label="Filtrer la liste"></div>
+        <!-- Même silhouette que la barre du Pokédex HOME : recherche, type,
+             compteur. La génération et le statut vivent dans la barre latérale,
+             qui bascule sur les filtres GO quand l'onglet s'ouvre — deux
+             contrôles pour le même état, à dix centimètres l'un de l'autre,
+             n'aideraient personne. -->
+        <select id="go-type" class="select select--inline" aria-label="Filtrer par type"></select>
         <p class="toolbar__count" id="go-count" aria-live="polite"></p>
       </div>
 

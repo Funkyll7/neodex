@@ -21,7 +21,7 @@
 import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
 import { spriteImg } from "../domain/sprites.js";
-import { applyGoFilters, GO_FILTERS } from "../domain/filters.js";
+import { applyGoFilters } from "../domain/filters.js";
 import { goProgressOf } from "../domain/progress.js";
 import { dexNumber } from "./common.js";
 
@@ -32,8 +32,7 @@ export function createGoDex(ctx) {
   const sentinel = document.getElementById("go-sentinel");
   const counter = document.getElementById("go-count");
   const search = document.getElementById("go-search");
-  const genSelect = document.getElementById("go-gen");
-  const viewToggle = document.getElementById("go-view");
+  const typeSelect = document.getElementById("go-type");
 
   const out = {
     owned: document.getElementById("go-owned"),
@@ -48,33 +47,13 @@ export function createGoDex(ctx) {
 
   /* ------------------------------ commandes ---------------------------- */
 
-  // Même libellé que la barre latérale : la région parle plus que le chiffre
-  // romain, on retient « Hoenn » bien avant « Génération III ».
   fill(
-    genSelect,
-    el("option", { value: "all" }, "Toutes générations"),
-    Object.entries(dataset.generations).map(([value, gen]) =>
-      el("option", { value }, gen.region ? `${gen.label} — ${gen.region}` : gen.label)
-    )
+    typeSelect,
+    el("option", { value: "all" }, "Tous les types"),
+    Object.keys(dataset.types).map((t) => el("option", { value: t }, t))
   );
-  genSelect.value = store.state.goGen;
-  genSelect.addEventListener("change", () => store.set({ goGen: genSelect.value }));
-
-  fill(
-    viewToggle,
-    GO_FILTERS.map((filtre) =>
-      el(
-        "button",
-        {
-          type: "button",
-          dataset: { value: filtre.value },
-          "aria-pressed": String(store.state.goStatus === filtre.value),
-          onclick: () => store.set({ goStatus: filtre.value }),
-        },
-        filtre.label
-      )
-    )
-  );
+  typeSelect.value = store.state.goType;
+  typeSelect.addEventListener("change", () => store.set({ goType: typeSelect.value }));
 
   search.addEventListener("input", ctx.onGoSearchInput);
 
@@ -137,10 +116,7 @@ export function createGoDex(ctx) {
       grid.replaceChildren();
       empty.hidden = list.length > 0;
       counter.textContent = `${list.length} résultat${list.length > 1 ? "s" : ""}`;
-      for (const bouton of viewToggle.children) {
-        bouton.setAttribute("aria-pressed", String(bouton.dataset.value === store.state.goStatus));
-      }
-      if (genSelect.value !== store.state.goGen) genSelect.value = store.state.goGen;
+      if (typeSelect.value !== store.state.goType) typeSelect.value = store.state.goType;
       renderStats();
       appendPage();
       rearmer();

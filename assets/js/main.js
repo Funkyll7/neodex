@@ -31,7 +31,7 @@ import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
 /** Les filtres du Pokedex GO, qui ne pilotent que sa grille a lui. */
-const GO_KEYS = ["goSearch", "goGen", "goStatus"];
+const GO_KEYS = ["goSearch", "goGen", "goStatus", "goType"];
 
 migrateStorage();
 initTheme();
@@ -93,6 +93,7 @@ function start(dataset) {
     selectedId: 25,
     goSearch: "",
     goGen: "all",
+    goType: "all",
     goStatus: "all",
     ...loadFilters(),
     ...loadQuestState(),
@@ -185,8 +186,9 @@ function start(dataset) {
       ]);
       tapCase();
       go.refresh(id);
-      save.render();
-      renderTabs();
+      // La colonne de gauche affiche la progression GO tant qu'on est sur cet
+      // onglet : elle doit suivre chaque case, comme elle suit celles de HOME.
+      renderCounts();
     },
     onGoSearchInput: debounce((event) => store.set({ goSearch: event.target.value }), 160),
     /**
@@ -274,7 +276,10 @@ function start(dataset) {
       [
         ["dex", "assets/img/logo-home.png", "Pokédex Pokémon HOME", "HOME", `${counts.owned}/${counts.total}`],
         ["go", "assets/img/logo-go.png", "Pokédex Pokémon GO", "GO", `${goCounts.owned}/${goCounts.total}`],
-        ["quest", null, "✦ Quêtes", "✦ Quêtes", String(store.state.questDone)],
+        // « quete » n'est pas un chemin d'image : l'onglet Quêtes n'a pas de
+        // logotype officiel, son icone est posee en masque pour prendre la
+        // couleur de l'onglet. Voir `.tab__quete` dans components.css.
+        ["quest", "quete", "Quêtes", "Quêtes", String(store.state.questDone)],
       ].map(([value, logo, long, court, badge]) =>
         el(
           "button.tab",
@@ -286,7 +291,11 @@ function start(dataset) {
             "aria-selected": String(store.state.tab === value),
             onclick: () => store.set({ tab: value }),
           },
-          logo ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" }) : null,
+          logo === "quete"
+            ? el("span.tab__quete", { "aria-hidden": "true" })
+            : logo
+              ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" })
+              : null,
           el("span.tab__long", long),
           el("span.tab__court", court),
           el("span.tab__badge", badge)
@@ -307,7 +316,11 @@ function start(dataset) {
   }
 
   function renderCounts() {
-    sidebar.render(collection.counts(dataset.species, complete), progressOf(dataset.species, collection));
+    sidebar.render(
+      collection.counts(dataset.species, complete),
+      progressOf(dataset.species, collection),
+      goProgressOf(dataset.species, collection)
+    );
     save.render();
     renderTabs();
   }
@@ -370,6 +383,11 @@ function start(dataset) {
 
     if (changed.has("tab")) {
       renderTabs();
+      // La colonne de gauche appartient a l'onglet ouvert : progression,
+      // statut et filtres basculent avec lui. C'est `render()` qu'il faut,
+      // pas `syncActive()` — ce ne sont pas les memes pastilles ni les memes
+      // barres, il faut les reconstruire.
+      renderCounts();
       // La grille GO ne peut pas se mesurer tant que son panneau est `hidden` :
       // elle n'aurait charge qu'un seul palier, et le defilement infini
       // n'aurait jamais demarre.
@@ -486,7 +504,7 @@ function createFolds() {
  * n'est PAS gardee : c'est une intention du moment, la retrouver au retour
  * ferait croire a une liste vide.
  */
-const FILTRES_GARDES = ["type", "gen", "game", "form", "sort", "status", "view", "goGen", "goStatus", "tab"];
+const FILTRES_GARDES = ["type", "gen", "game", "form", "sort", "status", "view", "goGen", "goType", "goStatus", "tab"];
 /** Le dernier Pokemon consulte : rouvrir le site le retrouve ouvert. */
 const DERNIER = "selectedId";
 

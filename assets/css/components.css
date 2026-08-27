@@ -166,6 +166,19 @@
   transition: filter .18s;
 }
 .tab[aria-selected="true"] .tab__logo { filter: none; }
+
+/* L'onglet Quêtes n'a pas de logotype officiel : son icône est un MASQUE, donc
+   elle prend la couleur de l'onglet — grise au repos, dorée une fois choisi,
+   exactement comme le ✦ qu'elle remplace. Pas de filtre de désaturation ici :
+   `currentColor` fait déjà tout le travail, et il suit les vingt-six thèmes
+   sans qu'on ait à fabriquer une variante. */
+.tab__quete {
+  width: 21px; height: 21px; flex: none;
+  background-color: currentColor;
+  -webkit-mask: url("../img/quete.png") center / contain no-repeat;
+  mask: url("../img/quete.png") center / contain no-repeat;
+}
+
 /* Un seul des deux libellés s'affiche à la fois — voir la requête mobile. */
 .tab__court { display: none; }
 
@@ -213,11 +226,12 @@
 }
 .card:hover { background: var(--bg-hover); }
 .card--missing { opacity: .5; }
-/* Ni possédé ni absent : on a une FORME de ce Pokémon, pas sa forme de base.
-   La vignette montre alors le sprite de la forme possédée (domain/display.js),
-   en couleur et presque à pleine opacité — dire « je n'ai rien » d'un Miaouss
-   d'Alola bien rangé en boîte était faux. Le liseré reste celui d'une vignette
-   incomplète : il reste bien quelque chose à attraper. */
+/* Ni possédé ni absent : on a quelque chose de ce Pokémon, mais pas sa forme
+   normale de base. Deux cas — une FORME alternative (la vignette montre alors
+   son sprite, voir domain/display.js), ou le seul chromatique de base. Dans les
+   deux, dire « je n'ai rien » en passant l'image en gris était faux : le
+   Miaouss d'Alola et le Keldeo chromatique sont bien en boîte. Le liseré reste
+   celui d'une vignette incomplète — il reste quelque chose à attraper. */
 .card--partial { opacity: .82; }
 .card--partial .card__img { filter: none; }
 .card--owned { border-color: color-mix(in srgb, var(--type) 45%, transparent); }
@@ -1195,6 +1209,9 @@
    logos de région à côté, et l'or du chromatique plutôt que la couleur du
    texte. */
 .bars__icon.toggle__ico--shiny { width: 15px; height: 15px; background-color: var(--accent); }
+/* La Poké Ball de la barre « Attrapés » du Pokédex GO : même gabarit, mais le
+   ton du texte plutôt que l'or — l'or est réservé au chromatique. */
+.bars__icon.toggle__ico--capture { width: 15px; height: 15px; background-color: var(--text-muted); }
 
 /* Les quatre listes déroulantes dans un seul panneau. Le libellé de chaque
    champ est volontairement plus discret que le titre du panneau : c'est une
@@ -1383,6 +1400,12 @@
   display: flex; flex-direction: column; gap: var(--sp-3);
   margin-top: calc(-1 * var(--sp-2));
   padding: var(--sp-2);
+  /* `flex: none` n'est pas décoratif. La barre latérale est une colonne flex
+     dont le contenu déborde : ses enfants se laissent donc écraser. Les autres
+     panneaux résistent par leur contenu, mais celui-ci défile — sa hauteur
+     minimale est zéro. Il s'ouvrait donc sur une bande de quelques pixels sous
+     le titre, avec une rangée de pastilles coupée en deux. */
+  flex: none;
   max-height: min(60vh, 460px);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -1614,6 +1637,7 @@
   .tab__long { display: none; }
   .tab__court { display: inline; }
   .tab__logo { height: 19px; }
+  .tab__quete { width: 18px; height: 18px; }
   .tab__badge { padding: 2px 6px; font-size: 10px; }
 
   /* Vignettes GO : au pouce, un bouton de 7 px de haut se rate. On élargit la

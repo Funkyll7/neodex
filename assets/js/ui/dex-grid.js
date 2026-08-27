@@ -290,13 +290,17 @@ function paint(node, species, ctx) {
   const view = store.state.view;
   const showShiny = view === "shiny" || (shiny && view !== "normal");
   const showFemale = Boolean(species.gd) && (showShiny ? marks.sf && !marks.sm : marks.of && !marks.om);
-  // On n'a pas l'espèce, mais on a une de ses formes : c'est son sprite qu'il
-  // faut montrer. Voir domain/display.js pour la règle et le pourquoi.
-  const repli = owned || shiny ? null : formeDeRepli(species, collection);
+  // On n'a pas la forme de base, mais on a une de ses formes alternatives :
+  // c'est son sprite qu'il faut montrer. Voir domain/display.js.
+  const repli = owned ? null : formeDeRepli(species, collection);
+  // « Ni possédé ni absent ». Vrai aussi quand seul le chromatique de base est
+  // coché : on l'a bien en boîte, dire « je n'ai rien » en le passant en gris
+  // était faux — c'est seulement la forme normale qui manque.
+  const partiel = !owned && (Boolean(repli) || shiny);
 
   node.className = [
     "card",
-    owned ? "card--owned" : repli ? "card--partial" : "card--missing",
+    owned ? "card--owned" : partiel ? "card--partial" : "card--missing",
     shiny ? "card--shiny" : "",
     showShiny && owned ? "card--shiny-art" : "",
     progress.complete ? "card--complete" : "",

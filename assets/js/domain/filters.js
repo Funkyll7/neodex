@@ -67,6 +67,7 @@ export function applyGoFilters(species, state, collection) {
 
   const list = species.filter((p) => {
     if (query && !matches(p, query, number)) return false;
+    if (state.goType !== "all" && !p.types.includes(state.goType)) return false;
     if (state.goGen !== "all" && String(p.gen) !== state.goGen) return false;
     switch (state.goStatus) {
       case "missing":

@@ -26,14 +26,20 @@
 /**
  * La forme à afficher à la place de l'espèce, ou null.
  *
- * Renvoie quelque chose uniquement quand l'espèce elle-même n'est possédée
- * sous aucune de ses quatre cases de base : dès qu'on a le Pokémon d'origine,
- * c'est lui qu'on veut voir, quoi qu'on possède par ailleurs.
+ * Le déclencheur est la seule question qui compte : **ai-je la forme de
+ * base ?** Tant qu'elle manque, c'est le sprite de la forme possédée qui doit
+ * s'afficher, en couleur.
+ *
+ * On ne regarde donc PAS le chromatique de l'espèce. C'était le cas de Keldeo :
+ * son chromatique de base coché suffisait à faire taire cette fonction, la
+ * vignette retombait sur le sprite de l'espèce, et comme la forme normale de
+ * base manquait toujours elle restait grise. On avait la Forme Décidée en boîte
+ * et le Pokédex affichait un Keldeo éteint.
  *
  * @returns {{form: object, shiny: boolean}|null}
  */
 export function formeDeRepli(species, collection) {
-  if (collection.isOwned(species.id) || collection.isShiny(species.id)) return null;
+  if (collection.isOwned(species.id)) return null;
 
   for (const form of species.forms) {
     if (!form.entry) continue;
