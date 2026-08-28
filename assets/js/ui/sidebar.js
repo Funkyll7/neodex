@@ -291,6 +291,27 @@ function createTiroir() {
     bouton.focus();
   });
   fond.addEventListener("click", () => poser(false));
+
+  /*
+   * Choisir un statut referme le tiroir.
+   *
+   * Sur telephone il couvre toute la grille : le laisser ouvert cache
+   * exactement ce qu'on vient de demander a voir. On appuyait sur « Manquants »,
+   * le filtre s'appliquait pour de bon — mais derriere le panneau, si bien que
+   * rien ne semblait se passer.
+   *
+   * Seulement sur les PASTILLES de statut, et pas sur les listes deroulantes :
+   * la pastille est le geste « j'ai choisi, montre-moi », tandis qu'on combine
+   * volontiers une generation et une forme avant de regarder. Le panneau des
+   * themes et la synchronisation logent dans le meme tiroir et n'ont aucune
+   * raison de le faire disparaitre sous les doigts.
+   *
+   * Les pastilles sont reconstruites a chaque rendu : c'est leur conteneur qui
+   * ecoute, pas elles.
+   */
+  document.getElementById("status-pills")?.addEventListener("click", (event) => {
+    if (event.target.closest(".pill") && mobile.matches && ouvert()) poser(false);
+  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && ouvert() && mobile.matches) {
       poser(false);
