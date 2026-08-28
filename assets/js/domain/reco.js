@@ -47,7 +47,23 @@ export const SIG = 20;
 
 const SEUIL_FOND = 85; // écart au fond au-delà duquel c'est un sprite
 const SEUIL_SPRITE = 150; // le même, mesuré par `ecartAuFond`, pour le découpage
-const MIN_PIXELS = 260; // en dessous, la case est vide
+/**
+ * En dessous de tant de pixels retenus, la case est declaree vide.
+ *
+ * Le seuil est une FRACTION de la case, pas un nombre fixe. Un nombre fixe
+ * change de sens avec la taille de l'image : 260 pixels valent 0,9 % d'une case
+ * sur une capture 1080, mais 1,5 % sur une video reduite a 858 — le meme sprite
+ * y devenait « non lu ». Il change de sens aussi d'une VUE a l'autre : dans la
+ * liste « Tous les Pokemon », les sprites occupent un tiers de leur case la ou
+ * ils la remplissent en vue boites.
+ *
+ * Le plancher garde un garde-fou absolu : une poignee de pixels ne fait pas un
+ * sprite, quelle que soit la resolution.
+ */
+const PART_MIN = 0.009; // 0,9 % de la case, la valeur calibree en 1080
+const PLANCHER_PIXELS = 90;
+
+const minPixels = (aire) => Math.max(PLANCHER_PIXELS, Math.round(aire * PART_MIN));
 
 /**
  * De combien ce pixel s'écarte-t-il du fond ?
@@ -372,9 +388,12 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
     sansToile[p] = plein[p] && (!toile[p] || toileEpaisse[p]) ? 1 : 0;
   }
 
+  // Le seuil de vide se mesure sur CETTE case, pas dans l'absolu.
+  const seuilVide = minPixels(w * h);
+
   let solide = morpho(morpho(sansToile, w, h, 3, false), w, h, 3, true);
-  if (somme(solide) < MIN_PIXELS) solide = morpho(morpho(plein, w, h, 3, false), w, h, 3, true);
-  if (somme(solide) < MIN_PIXELS) return null;
+  if (somme(solide) < seuilVide) solide = morpho(morpho(plein, w, h, 3, false), w, h, 3, true);
+  if (somme(solide) < seuilVide) return null;
 
   // La toile ne fait pas que salir le fond : la ou elle passe sur le sprite,
   // elle le coupe en deux. Prendre bêtement la plus grosse tache donnait alors
@@ -383,7 +402,7 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
   const ponte = composantePrincipale(morpho(solide, w, h, 5, true), w, h);
   if (!ponte) return null;
   for (let p = 0; p < w * h; p++) if (!ponte[p]) solide[p] = 0;
-  if (somme(solide) < MIN_PIXELS) return null;
+  if (somme(solide) < seuilVide) return null;
 
   // Reste le cas inverse : les parties blanches du sprite, que la passe 1 a
   // jetees en les prenant pour de la toile. Les ailes de Papilusion en sont
@@ -434,7 +453,7 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
       }
     }
   }
-  if (n < MIN_PIXELS) return null;
+  if (n < seuilVide) return null;
   boucherTrous(masque, w, h);
   return empaqueter(patch, w, h, masque);
 }
@@ -986,16 +1005,59 @@ export function reconnaitre(parCapture, banque) {
     c.retenue = m.score <= STRICT && m.marge >= MARGE_MIN;
     if (!c.retenue) c.motif = m.score <= STRICT ? "ambigu" : "score";
   }
-  imposerOrdre(cases, banque);
+
+  /*
+   * Cette capture est-elle rangee par numero croissant ?
+   *
+   * Toute la suite en depend : c'est de cet ordre que viennent les intervalles
+   * qui ramenent 1025 candidats a une poignee. Mais il ne tient que dans la vue
+   * en BOITES. La liste « Tous les Pokemon » se trie autrement — decroissant,
+   * ou par date de capture — et la contrainte se retourne alors contre nous :
+   * elle jette les bonnes reponses au lieu de les sauver.
+   *
+   * Mesure sur une capture de cette liste : 18 cases sur 33 tombaient sous 6 en
+   * appariement libre, et il en restait 3 apres l'ordre impose. Vingt-cinq
+   * inversions sur trente-trois : la suite descendait.
+   *
+   * On demande donc leur avis aux ancres, qui sont sures par construction. Si
+   * la moitie d'entre elles doit sauter pour rendre la suite croissante, c'est
+   * que la suite ne l'est pas.
+   */
+  const sens = sensDeLecture(cases, banque);
+  if (sens === 0) {
+    // Aucun ordre lisible — une boite rangee a la main, par exemple. La
+    // contrainte du dex ne peut plus rien : c'est la MARGE qui prend le relais.
+    //
+    // On accepte donc un score plus lache, mais on exige en echange une avance
+    // deux fois plus nette sur le premier rival. Le raisonnement est le meme
+    // que pour les intervalles : quand on ne peut plus reduire le champ des
+    // possibles, il faut que la reponse se distingue d'elle-meme.
+    for (const c of cases) {
+      if (!c.vecteur || c.retenue) continue;
+      if (c.score <= RELACHE && c.marge >= MARGE_MIN * 2) {
+        c.retenue = true;
+        c.motif = undefined;
+      }
+    }
+    return rendre(cases, banque);
+  }
+
+  // Une liste decroissante se lit a l'endroit une fois retournee : les passes
+  // qui suivent n'ont pas a savoir dans quel sens on est. Le tableau retourne
+  // porte les MEMES objets, donc les modifier revient au meme — et `rendre()`
+  // rendra les resultats dans l'ordre de la capture, pas dans celui du calcul.
+  const ordre = sens > 0 ? cases : [...cases].reverse();
+
+  imposerOrdre(ordre, banque);
 
   // Passes suivantes : entre deux ancres, une case ne peut être qu'une espèce
   // de l'intervalle. Chaque tour ajoute des appuis, donc resserre le suivant.
   for (let tour = 0; tour < PASSES; tour++) {
-    const bas = encadrer(cases, banque, true);
-    const haut = encadrer(cases, banque, false);
+    const bas = encadrer(ordre, banque, true);
+    const haut = encadrer(ordre, banque, false);
     let recuperees = 0;
-    for (let i = 0; i < cases.length; i++) {
-      const c = cases[i];
+    for (let i = 0; i < ordre.length; i++) {
+      const c = ordre[i];
       if (!c.vecteur || c.retenue) continue;
       const lo = bas[i];
       const hi = haut[i];
@@ -1022,10 +1084,51 @@ export function reconnaitre(parCapture, banque) {
       c.fenetre = [lo, hi];
       recuperees += 1;
     }
-    imposerOrdre(cases, banque);
+    imposerOrdre(ordre, banque);
     if (!recuperees) break;
   }
 
+  return rendre(cases, banque);
+}
+
+/**
+ * Dans quel sens cette capture est-elle rangee ?
+ *
+ * +1 croissant, -1 decroissant, 0 aucun ordre lisible.
+ *
+ * La vue en BOITES de HOME range par numero croissant, et c'est de la que vient
+ * toute la force de la methode. Mais la liste « Tous les Pokemon » se trie
+ * autrement selon le reglage — decroissant, notamment. Imposer le croissant a
+ * une liste decroissante ne fait pas que perdre la contrainte : elle se
+ * retourne, et jette les bonnes reponses en croyant ecarter les mauvaises.
+ * Mesure sur une capture de cette liste : 18 cases sur 33 tombaient sous 6 en
+ * appariement libre, il n'en restait 3 apres l'ordre impose.
+ *
+ * On demande donc leur avis aux ancres, sures par construction — score franc ET
+ * marge nette. Celle des deux lectures qui en garde le plus l'emporte ; si
+ * aucune n'en garde une majorite franche, c'est qu'il n'y a pas d'ordre du
+ * tout, et mieux vaut s'en passer que de l'inventer.
+ *
+ * En dessous de quatre ancres on ne tranche pas : deux ou trois points ne
+ * disent rien d'un tri, et le croissant reste le cas de loin le plus courant.
+ */
+function sensDeLecture(cases, banque) {
+  const numeros = [];
+  cases.forEach((c) => {
+    if (c.retenue && c.index >= 0) numeros.push(banque.especes[c.index]);
+  });
+  if (numeros.length < 4) return 1;
+
+  const suite = (liste) => plusLongueCroissante(liste.map((v, i) => [i, v])).size;
+  const enAvant = suite(numeros);
+  const enArriere = suite([...numeros].reverse());
+  const meilleur = Math.max(enAvant, enArriere);
+  if (meilleur < numeros.length * 0.6) return 0;
+  return enAvant >= enArriere ? 1 : -1;
+}
+
+/** Met en forme le resultat, quel que soit le chemin emprunte. */
+function rendre(cases, banque) {
   return cases.map((c) => ({
     capture: c.capture,
     ligne: c.ligne,
