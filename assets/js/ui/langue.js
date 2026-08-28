@@ -19,10 +19,16 @@ const LIBELLES = {
  * ici : ces zones passent deja par `t()` a la source, et les reecrire depuis
  * le DOM ferait le travail deux fois — et le referait a l'envers au premier
  * rendu suivant.
+ *
+ * Les `select` n'y sont PAS, et ce n'est pas un oubli : le releve a lieu au tout
+ * debut du demarrage, avant que la barre laterale existe. Les listes qu'elle
+ * remplit sont donc encore vides a cet instant, et seules les options ecrites
+ * en dur dans index.html — celles du tri — se font relever. Les exclure privait
+ * « Trier par » de traduction.
  */
 const ZONES_DYNAMIQUES =
   "#grid,#go-grid,#detail,#quest-card,#quest-log,#theme-picker,#status-pills," +
-  "#progress-bars,#active-filters,#result-count,#go-count,#dirty-note,#boot-error,select";
+  "#progress-bars,#active-filters,#result-count,#go-count,#dirty-note,#boot-error";
 
 /**
  * Ce qui a ete releve dans index.html, avec son texte francais d'origine.

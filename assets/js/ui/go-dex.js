@@ -31,7 +31,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { applyGoFilters } from "../domain/filters.js";
 import { goProgressOf } from "../domain/progress.js";
 import { dexNumber, typeInk } from "./common.js";
-import { nomEntreeGo } from "../core/i18n.js";
+import { nomEntreeGo, t } from "../core/i18n.js";
 
 export function createGoDex(ctx) {
   const { store, collection, dataset } = ctx;
@@ -275,14 +275,14 @@ function peindre(node, entry, ctx) {
     .join(" ");
 
   node.title = !entry.released
-    ? "Pas encore obtenable dans Pokémon GO"
+    ? t("Pas encore obtenable dans Pokémon GO")
     : attrape && shiny
-      ? "Attrapé et chromatique"
+      ? t("Attrapé et chromatique")
       : attrape
-        ? "Attrapé"
+        ? t("Attrapé")
         : shiny
-          ? "Chromatique obtenu, pas la version normale"
-          : "À attraper";
+          ? t("Chromatique obtenu, pas la version normale")
+          : t("À attraper");
 
   // Le chromatique obtenu prend la place du sprite normal : c'est celui dont on
   // est fier, et c'est celui qu'on cherche des yeux en parcourant la grille.

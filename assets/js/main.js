@@ -29,6 +29,7 @@ import { createActiveFilters } from "./ui/active-filters.js";
 import { createUndo } from "./ui/undo.js";
 import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
 import { initLangue, initBoutonLangue } from "./ui/langue.js";
+import { t } from "./core/i18n.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
 /** Les filtres du Pokedex GO, qui ne pilotent que sa grille a lui. */
@@ -399,12 +400,12 @@ function start(dataset) {
     fill(
       tabsRoot,
       [
-        ["dex", "assets/img/logo-home.png", "Pokédex Pokémon HOME", "HOME", `${counts.owned}/${counts.total}`],
-        ["go", "assets/img/logo-go.png", "Pokédex Pokémon GO", "GO", `${goCounts.owned}/${goCounts.total}`],
+        ["dex", "assets/img/logo-home.png", t("Pokédex Pokémon HOME"), t("HOME"), `${counts.owned}/${counts.total}`],
+        ["go", "assets/img/logo-go.png", t("Pokédex Pokémon GO"), t("GO"), `${goCounts.owned}/${goCounts.total}`],
         // Une pastille en couleur comme ses deux voisines, et non un symbole
         // monochrome : le ✦ qu'elle remplace faisait tache a cote de deux
         // logotypes en couleur.
-        ["quest", "assets/img/logo-quete.png", "Quêtes", "Quêtes", String(store.state.questDone)],
+        ["quest", "assets/img/logo-quete.png", t("Quêtes"), t("Quêtes"), String(store.state.questDone)],
       ].map(([value, logo, long, court, badge]) =>
         el(
           "button.tab",

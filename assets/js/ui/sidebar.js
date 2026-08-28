@@ -6,6 +6,10 @@
 
 import { el, fill, setOptions } from "../core/dom.js";
 import { STATUS_FILTERS, FORM_FILTERS, GO_FILTERS } from "../domain/filters.js";
+// Les libelles vivent dans des tableaux de module, evalues UNE fois a
+// l'import : les traduire la aurait fige la langue du premier chargement. On
+// les traduit donc a l'affichage, ou la langue courante est connue.
+import { t, nomType } from "../core/i18n.js";
 
 export function createSidebar(ctx) {
   const { dataset, store } = ctx;
@@ -21,18 +25,31 @@ export function createSidebar(ctx) {
   const typeSelect = document.getElementById("filter-type");
   const searchInput = document.getElementById("search");
   const viewToggle = document.getElementById("view-toggle");
-
   /* --------------------------- remplissage --------------------------- */
+
+  /**
+   * Remplit les listes deroulantes.
+   *
+   * Appelee a chaque rendu et non une seule fois a la creation : leurs libelles
+   * changent avec la langue, et remplies une fois pour toutes elles restaient
+   * dans celle du premier chargement. `setOptions` restaure la valeur
+   * selectionnee, ce chemin est donc sans effet de bord.
+   */
+  function remplirLesListes() {
 
   // La region parle plus que le chiffre romain : on retient « Hoenn » bien
   // avant « Génération III ».
+  //
+  // Le libelle et la region passent par `t()` separement, et non la phrase
+  // assemblee : « Génération V — Unys » n'existe nulle part comme chaine, ses
+  // deux morceaux si.
   setOptions(
     genSelect,
     [
-      { value: "all", label: "Toutes générations" },
+      { value: "all", label: t("Toutes générations") },
       ...Object.entries(dataset.generations).map(([value, g]) => ({
         value,
-        label: g.region ? `${g.label} — ${g.region}` : g.label,
+        label: g.region ? `${t(g.label)} — ${t(g.region)}` : t(g.label),
       })),
     ],
     store.state.gen
@@ -43,27 +60,39 @@ export function createSidebar(ctx) {
   const parGeneration = new Map();
   for (const jeu of dataset.games) {
     const gen = dataset.generations[jeu.gen] || {};
-    const titre = gen.region ? `${gen.label} — ${gen.region}` : `Génération ${jeu.gen}`;
+    const titre = gen.region
+      ? `${t(gen.label)} — ${t(gen.region)}`
+      : `${t("Génération")} ${jeu.gen}`;
     if (!parGeneration.has(titre)) parGeneration.set(titre, []);
-    parGeneration.get(titre).push({ value: jeu.code, label: jeu.name });
+    parGeneration.get(titre).push({ value: jeu.code, label: t(jeu.name) });
   }
   setOptions(
     gameSelect,
-    [{ value: "all", label: "N'importe quel jeu" }],
+    [{ value: "all", label: t("N'importe quel jeu") }],
     store.state.game,
     [...parGeneration].map(([label, options]) => ({ label, options }))
   );
 
-  setOptions(formSelect, FORM_FILTERS, store.state.form);
+  setOptions(
+    formSelect,
+    FORM_FILTERS.map((f) => ({ value: f.value, label: t(f.label) })),
+    store.state.form
+  );
 
   setOptions(
     typeSelect,
     [
-      { value: "all", label: "Tous les types" },
-      ...Object.keys(dataset.types).map((t) => ({ value: t, label: t })),
+      { value: "all", label: t("Tous les types") },
+      // `type` et non `t` : le nom du parametre aurait masque la fonction de
+      // traduction dans toute la lambda.
+      ...Object.keys(dataset.types).map((type) => ({ value: type, label: nomType(type) })),
     ],
     store.state.type
   );
+
+  }
+
+  remplirLesListes();
 
   sortSelect.value = store.state.sort;
   searchInput.value = store.state.search;
@@ -77,11 +106,11 @@ export function createSidebar(ctx) {
     ].map(([value, label, title]) =>
       el("button", {
         type: "button",
-        title,
+        title: t(title),
         "aria-pressed": String(store.state.view === value),
         dataset: { view: value },
         onclick: () => store.set({ view: value }),
-        textContent: label,
+        textContent: t(label),
       })
     )
   );
@@ -133,6 +162,9 @@ export function createSidebar(ctx) {
    * ne repondent pas.
    */
   function poserContexte() {
+    // Les listes d'abord : leurs libelles suivent la langue.
+    remplirLesListes();
+
     const go = surGo();
     out.champs.form.hidden = go;
     out.champs.game.hidden = go;
@@ -222,7 +254,7 @@ export function createSidebar(ctx) {
             // « Statut » ne porte plus ni le filtre chromatique ni celui des
             // paires : ils sont devenus des barres de progression cliquables.
             // Ces pastilles n'ont donc plus de logo, seulement un libellé.
-            el("span.pill__name", filter.label),
+            el("span.pill__name", t(filter.label)),
             el("span.pill__count", decompte[filter.key || filter.value])
           )
         )
@@ -397,7 +429,7 @@ function renderGoBars(out, go, store) {
     out.bars,
     el(
       "section.bars__group",
-      el("h2.panel__label", "Ma collection GO"),
+      el("h2.panel__label", t("Ma collection GO")),
       lignes.map(([cible, label, icon, done, total, title]) => {
         const pct = total ? Math.round((done / total) * 100) : 0;
         const actif = store.state.goStatus === cible;
@@ -405,7 +437,7 @@ function renderGoBars(out, go, store) {
           "button.bars__row",
           {
             type: "button",
-            title: `${title}\nCliquer pour ${actif ? "retirer le filtre" : "n'afficher que ceux-là"}.`,
+            title: `${t(title)}\n${actif ? t("Cliquer pour retirer le filtre.") : t("Cliquer pour n'afficher que ceux-là.")}`,
             "aria-pressed": String(actif),
             dataset: { filtre: "goStatus", cible },
             onclick: () => store.set({ goStatus: store.state.goStatus === cible ? "all" : cible }),
@@ -415,7 +447,7 @@ function renderGoBars(out, go, store) {
             icon === "shiny"
               ? el("span.toggle__ico.toggle__ico--shiny.bars__icon", { "aria-hidden": "true" })
               : el("span.toggle__ico.toggle__ico--capture.bars__icon", { "aria-hidden": "true" }),
-            el("span.bars__label", label),
+            el("span.bars__label", t(label)),
             el("span.bars__pct", `${pct} %`)
           ),
           el(
@@ -424,7 +456,7 @@ function renderGoBars(out, go, store) {
               "span.bar",
               {
                 role: "progressbar",
-                "aria-label": label,
+                "aria-label": t(label),
                 "aria-valuemin": "0",
                 "aria-valuemax": "100",
                 "aria-valuenow": String(pct),
@@ -449,7 +481,7 @@ function renderBars(out, progress, counts, store) {
     BAR_GROUPS.map((group) =>
       el(
         "section.bars__group",
-        el("h2.panel__label", group.title),
+        el("h2.panel__label", t(group.title)),
         group.rows.map(([key, label, icon, title]) => {
           const value = key === "dex" ? especes : progress.kinds[key] || progress[key];
           if (!value) return null;
@@ -468,7 +500,7 @@ function renderBars(out, progress, counts, store) {
             "button.bars__row",
             {
               type: "button",
-              title: `${title}\nCliquer pour ${actif ? "retirer le filtre" : "n'afficher que ceux-là"}.`,
+              title: `${t(title)}\n${actif ? t("Cliquer pour retirer le filtre.") : t("Cliquer pour n'afficher que ceux-là.")}`,
               "aria-pressed": String(actif),
               // Lus par `syncActive()` : la barre doit s'allumer sans qu'on
               // reconstruise tout le bloc.
@@ -482,7 +514,7 @@ function renderBars(out, progress, counts, store) {
                 : icon
                   ? el("img.bars__icon", { src: icon, alt: "", width: 15, height: 15, loading: "lazy" })
                   : null,
-              el("span.bars__label", label),
+              el("span.bars__label", t(label)),
               el("span.bars__pct", `${value.pct} %`)
             ),
             // Le decompte descend a cote de la jauge, sur la deuxieme ligne.
@@ -496,7 +528,7 @@ function renderBars(out, progress, counts, store) {
                 "span.bar",
                 {
                   role: "progressbar",
-                  "aria-label": label,
+                  "aria-label": t(label),
                   "aria-valuemin": "0",
                   "aria-valuemax": "100",
                   "aria-valuenow": String(value.pct),

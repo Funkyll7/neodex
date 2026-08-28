@@ -118,7 +118,10 @@ export function t(fr, contexte) {
   // Pas de repli silencieux vers une chaine vide : ce qui manque reste en
   // francais, visible, et donc corrigeable. Une interface a trous se remarque ;
   // une interface muette, non.
-  return ui[fr] || fr;
+  // Puis les noms venus des donnees de reference — jeux, generations, regions.
+  // Ils sont clees par le francais eux aussi, et les separer obligeait chaque
+  // appelant a savoir dans quelle table chercher. Ici, `t()` suffit partout.
+  return ui[fr] || (table.games || {})[fr] || fr;
 }
 
 /**

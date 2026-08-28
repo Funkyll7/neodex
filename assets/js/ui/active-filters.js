@@ -11,6 +11,7 @@
 
 import { el, fill } from "../core/dom.js";
 import { STATUS_FILTERS, FORM_FILTERS, LIBELLES_STATUT } from "../domain/filters.js";
+import { t, nomType } from "../core/i18n.js";
 
 /** Valeur consideree comme « aucun filtre » pour chaque cle. */
 const NEUTRE = { search: "", type: "all", gen: "all", game: "all", form: "all", status: "all" };
@@ -27,19 +28,19 @@ export function createActiveFilters(ctx) {
 
   const libelle = (cle, valeur) => {
     if (cle === "search") return `« ${valeur} »`;
-    if (cle === "type") return valeur;
-    if (cle === "gen") return (dataset.generations[valeur] || {}).label || `Gén. ${valeur}`;
+    if (cle === "type") return nomType(valeur);
+    if (cle === "gen") return t((dataset.generations[valeur] || {}).label) || `${t("Gén.")} ${valeur}`;
     if (cle === "game") {
       const jeu = dataset.games.find((g) => g.code === valeur);
-      return jeu ? jeu.name : valeur;
+      return jeu ? t(jeu.name) : valeur;
     }
-    if (cle === "form") return (FORM_FILTERS.find((f) => f.value === valeur) || {}).label || valeur;
+    if (cle === "form") return t((FORM_FILTERS.find((f) => f.value === valeur) || {}).label || valeur);
     if (cle === "status") {
       // `LIBELLES_STATUT` couvre les deux valeurs posees par les barres de la
       // colonne, qui n'ont pas de pastille et n'etaient donc nulle part dans
       // `STATUS_FILTERS` : sans lui, cliquer « Chromatiques » affichait « shiny ».
       const trouve = STATUS_FILTERS.find((f) => f.value === valeur);
-      return (trouve && trouve.label) || LIBELLES_STATUT[valeur] || valeur;
+      return t((trouve && trouve.label) || LIBELLES_STATUT[valeur] || valeur);
     }
     return valeur;
   };

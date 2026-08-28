@@ -11,6 +11,7 @@
  */
 
 import { defilementDoux } from "./common.js";
+import { t } from "../core/i18n.js";
 
 const SEUIL = 900;
 
@@ -19,8 +20,8 @@ export function createToTop() {
   bouton.type = "button";
   bouton.className = "to-top";
   bouton.hidden = true;
-  bouton.title = "Revenir en haut";
-  bouton.setAttribute("aria-label", "Revenir en haut de la liste");
+  bouton.title = t("Revenir en haut");
+  bouton.setAttribute("aria-label", t("Revenir en haut de la liste"));
   bouton.textContent = "↑";
 
   bouton.addEventListener("click", () => {
