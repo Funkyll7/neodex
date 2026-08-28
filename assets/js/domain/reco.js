@@ -251,13 +251,27 @@ function estUnTraitDuFond(dr, dv, db, fr, fv, fb) {
  */
 function profilDuFond(rgba, width, height) {
   const profil = new Float32Array(height * 3);
-  const echantillon = [];
+  // Médiane par comptage plutôt que par tri. Un canal ne prend que 256 valeurs :
+  // les compter puis avancer jusqu'au rang du milieu donne EXACTEMENT la même
+  // médiane, en un passage au lieu d'un tri. Il y avait 7 236 tris à faire sur
+  // une capture 1080 × 2412 — trois par ligne de pixels.
+  const compte = new Int32Array(256);
   for (let y = 0; y < height; y++) {
     for (let c = 0; c < 3; c++) {
-      echantillon.length = 0;
-      for (let x = 0; x < width; x += 6) echantillon.push(rgba[(y * width + x) * 4 + c]);
-      echantillon.sort((a, b) => a - b);
-      profil[y * 3 + c] = echantillon[echantillon.length >> 1];
+      compte.fill(0);
+      let n = 0;
+      for (let x = 0; x < width; x += 6) {
+        compte[rgba[(y * width + x) * 4 + c]] += 1;
+        n += 1;
+      }
+      const rang = n >> 1;
+      let vus = 0;
+      let v = 0;
+      for (; v < 256; v++) {
+        vus += compte[v];
+        if (vus > rang) break;
+      }
+      profil[y * 3 + c] = v;
     }
   }
   return profil;
@@ -796,9 +810,25 @@ function sousUnBouton(data, width, cx, cy, g) {
 /* -------------------------------- appariement ---------------------------- */
 
 /** Distance moyenne entre deux empreintes, ramenée sur 100 comme en Python. */
-function distance(refs, offset, taille, vecteur) {
+/**
+ * Distance moyenne entre deux empreintes, ramenée sur 100 comme en Python.
+ *
+ * `plafond` permet d'abandonner en route. On compare une case à 2 611
+ * références, et la plupart n'ont aucune chance : dès que la somme partielle
+ * dépasse ce qu'il faudrait pour entrer dans les huit meilleurs, la suite du
+ * calcul ne changera pas le classement. Le résultat rendu est alors faux, mais
+ * il est trop grand — ce qui est exactement l'information utile.
+ *
+ * On ne teste pas à chaque octet : le test coûterait plus que l'addition qu'il
+ * évite. Un contrôle tous les 128 octets suffit à couper l'essentiel.
+ */
+function distance(refs, offset, taille, vecteur, plafond) {
+  const limite = plafond === undefined ? Infinity : (plafond * taille * 255) / 100;
   let total = 0;
-  for (let i = 0; i < taille; i++) total += Math.abs(refs[offset + i] - vecteur[i]);
+  for (let i = 0; i < taille; i++) {
+    total += Math.abs(refs[offset + i] - vecteur[i]);
+    if ((i & 127) === 127 && total > limite) return Infinity;
+  }
   return (total / taille / 255) * 100;
 }
 
@@ -828,7 +858,7 @@ function plusProche(banque, vecteur, garder) {
 
   for (let i = 0; i < especes.length; i++) {
     if (garder && !garder(i)) continue;
-    const d = distance(octets, i * taille, taille, vecteur);
+    const d = distance(octets, i * taille, taille, vecteur, sc[TETE - 1]);
     if (d >= sc[TETE - 1]) continue;
     let p = TETE - 1;
     while (p > 0 && sc[p - 1] > d) {
