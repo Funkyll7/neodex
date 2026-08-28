@@ -68,6 +68,24 @@ const RELACHE_ETROIT = 13.0;
 const LARGEUR_ETROITE = 8;
 const PASSES = 6;
 
+/**
+ * Écart minimal au premier rival portant une autre réponse.
+ *
+ * Un score absolu dit mal la confiance : 10 est bon sur une capture nette,
+ * mauvais sur une capture compressée. Ce qui la dit, c'est de combien le
+ * gagnant devance son premier vrai concurrent.
+ *
+ * Mesuré sur la capture 1, relue case par case : les 24 réponses justes ont une
+ * marge de 1,0 à 7,2, médiane 3,4 ; les 9 fausses vont de 0 à 1,6, médiane 0,2.
+ * Les quatre erreurs qui passaient les seuils de score avaient des marges de
+ * 0 / 0,1 / 0,1 / 0,2 — trois d'entre elles étaient des confusions entre le
+ * Florizarre normal et son chromatique, que le score seul ne pouvait pas
+ * départager.
+ *
+ * À 1,0 la coupure retire ces quatre erreurs sans perdre une bonne réponse.
+ */
+const MARGE_MIN = 1.0;
+
 /* ------------------------------- empreintes ------------------------------ */
 
 /**
@@ -736,19 +754,59 @@ function distance(refs, offset, taille, vecteur) {
   return (total / taille / 255) * 100;
 }
 
+/**
+ * Le plus proche voisin, et de combien il devance son premier vrai rival.
+ *
+ * Un score absolu dit mal la confiance : 8 est bon sur une capture nette, mediocre
+ * sur une capture compressee. Ce qui la dit, c'est l'ECART au meilleur candidat
+ * portant une autre reponse. Premier a 8 et suivant a 9, on hesite entre deux
+ * Pokemon ; premier a 8 et suivant a 20, il n'y a pas de debat.
+ *
+ * « Une autre reponse » et non « une autre reference » : le chromatique d'une
+ * espece est une reference distincte mais une reponse distincte aussi, et s'y
+ * tromper coute une case fausse. Il compte donc comme rival.
+ *
+ * On retient les huit meilleurs plutot que les deux : les huit premiers sont
+ * souvent des variantes de la meme espece, et le rival cherche se trouve plus
+ * loin. Huit suffit largement, et l'insertion ne coute rien une fois le tableau
+ * rempli — la plupart des references n'y entrent jamais.
+ */
+const TETE = 8;
+
 function plusProche(banque, vecteur, garder) {
-  const { octets, taille, especes } = banque;
-  let meilleur = -1;
-  let score = Infinity;
+  const { octets, taille, especes, shiny } = banque;
+  const idx = new Int32Array(TETE).fill(-1);
+  const sc = new Float64Array(TETE).fill(Infinity);
+
   for (let i = 0; i < especes.length; i++) {
     if (garder && !garder(i)) continue;
     const d = distance(octets, i * taille, taille, vecteur);
-    if (d < score) {
-      score = d;
-      meilleur = i;
+    if (d >= sc[TETE - 1]) continue;
+    let p = TETE - 1;
+    while (p > 0 && sc[p - 1] > d) {
+      sc[p] = sc[p - 1];
+      idx[p] = idx[p - 1];
+      p -= 1;
+    }
+    sc[p] = d;
+    idx[p] = i;
+  }
+
+  if (idx[0] < 0) return null;
+
+  const espece = especes[idx[0]];
+  const chromatique = shiny ? shiny[idx[0]] : 0;
+  let rival = Infinity;
+  for (let k = 1; k < TETE; k++) {
+    if (idx[k] < 0) continue;
+    const autre = especes[idx[k]] !== espece || (shiny ? shiny[idx[k]] : 0) !== chromatique;
+    if (autre) {
+      rival = sc[k];
+      break;
     }
   }
-  return meilleur < 0 ? null : { index: meilleur, score };
+
+  return { index: idx[0], score: sc[0], marge: rival === Infinity ? Infinity : rival - sc[0] };
 }
 
 /**
@@ -846,8 +904,9 @@ export function reconnaitre(parCapture, banque) {
     if (!m) continue;
     c.index = m.index;
     c.score = m.score;
-    c.retenue = m.score <= STRICT;
-    if (!c.retenue) c.motif = "score";
+    c.marge = m.marge;
+    c.retenue = m.score <= STRICT && m.marge >= MARGE_MIN;
+    if (!c.retenue) c.motif = m.score <= STRICT ? "ambigu" : "score";
   }
   imposerOrdre(cases, banque);
 
@@ -866,12 +925,19 @@ export function reconnaitre(parCapture, banque) {
       if (!m) continue;
       c.index = m.index;
       c.score = m.score;
+      c.marge = m.marge;
       // Plus l'intervalle est étroit, plus on peut être indulgent : avec cinq
       // candidats possibles, un score moyen reste concluant.
       const largeur = hi - lo + 1;
       const limite = largeur > LARGEUR_ETROITE ? RELACHE : RELACHE_ETROIT;
       if (m.score > limite) {
         c.motif = "score";
+        continue;
+      }
+      // Deux candidats au coude a coude ne se departagent pas par le score.
+      // C'est ainsi que le Florizarre normal passait pour son chromatique.
+      if (m.marge < MARGE_MIN) {
+        c.motif = "ambigu";
         continue;
       }
       c.retenue = true;
@@ -890,6 +956,7 @@ export function reconnaitre(parCapture, banque) {
     retenue: c.retenue,
     motif: c.motif || null,
     score: c.score === Infinity ? null : Math.round(c.score * 10) / 10,
+    marge: c.marge == null || c.marge === Infinity ? null : Math.round(c.marge * 10) / 10,
     espece: c.index >= 0 ? banque.especes[c.index] : null,
     shiny: c.index >= 0 ? Boolean(banque.shiny[c.index]) : false,
     sprite: c.index >= 0 ? banque.sprites[c.index] : null,
