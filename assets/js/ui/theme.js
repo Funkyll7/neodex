@@ -6,6 +6,7 @@
 import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
 import { THEMES } from "./themes-list.js";
+import { setSpritesEnPixels } from "../domain/sprites.js";
 
 const KEY = CONFIG.storage.prefs;
 
@@ -92,9 +93,18 @@ function initBouton() {
 
 /** Applique un theme, le retient, et remet le selecteur d'accord. */
 function choisir(theme) {
+  const avant = document.documentElement.hasAttribute("data-sprites-pixel");
   apply(theme);
   writePrefs({ ...readPrefs(), theme });
   syncPicker();
+
+  // Passer aux sprites en pixels change les ADRESSES des images, pas seulement
+  // les couleurs : les <img> deja dans la page pointent encore vers les rendus
+  // HOME. Il faut donc les refaire. On previent plutot que d'appeler main.js
+  // directement — `ui/theme.js` n'a pas a connaitre la grille.
+  if (document.documentElement.hasAttribute("data-sprites-pixel") !== avant) {
+    document.dispatchEvent(new CustomEvent("funkylldex:sprites"));
+  }
 }
 
 /**
@@ -175,6 +185,13 @@ function estClair(hex) {
 function apply(theme) {
   document.documentElement.dataset.theme = theme;
   const courant = PAR_VALEUR.get(theme) || PAR_VALEUR.get("dark");
+
+  // Le theme « Pixels » remplace les images, pas seulement les couleurs. Le
+  // drapeau part vers `domain/sprites.js`, qui fabrique toutes les adresses, et
+  // l'attribut sur <html> laisse le CSS couper le lissage.
+  const pixels = courant.sprites === "pixel";
+  setSpritesEnPixels(pixels);
+  document.documentElement.toggleAttribute("data-sprites-pixel", pixels);
 
   // Le bandeau du navigateur — et, une fois l'application installee, la barre
   // systeme — prend cette couleur. Sans cette mise a jour, un site passe en

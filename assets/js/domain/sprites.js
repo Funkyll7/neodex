@@ -11,7 +11,32 @@
 
 import { CONFIG } from "../config.js";
 
+/**
+ * Le theme « Pixels » ne change pas que des couleurs : il change les images.
+ *
+ * Un theme ordinaire ne touche qu'a des variables CSS, et les sprites sont des
+ * images distantes — aucune regle de style ne peut les remplacer. On passe donc
+ * par ici, seul endroit du site ou une adresse de sprite se fabrique.
+ *
+ * Un simple drapeau de module, et non un argument de plus sur chaque appel : la
+ * trentaine de points d'appel de `spriteImg` n'a rien a savoir du theme choisi,
+ * et `ui/theme.js` reste le seul a decider.
+ */
+let enPixels = false;
+
+export function setSpritesEnPixels(actif) {
+  enPixels = Boolean(actif);
+}
+
+export function spritesEnPixels() {
+  return enPixels;
+}
+
 export function spriteUrl(id, { shiny = false, female = false } = {}) {
+  // Le dossier en pixels n'a pas de variante femelle : les differences de sexe
+  // n'etaient pas dessinees a cette epoque. On sert le sprite commun plutot que
+  // d'attendre un 404 et de degrader.
+  if (enPixels) return `${CONFIG.spritePixelBase}${shiny ? "shiny/" : ""}${id}.png`;
   return `${CONFIG.spriteBase}${shiny ? "shiny/" : ""}${female ? "female/" : ""}${id}.png`;
 }
 

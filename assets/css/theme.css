@@ -485,3 +485,36 @@
   --accent: #ff6b3d; --accent-ink: #2b0a00;
   --accent-glow: rgba(255, 107, 61, .45); --accent-wash: rgba(255, 107, 61, .13); --accent-border: #4e2716;
 }
+
+/* =============================================================================
+   FAMILLE « PIXELS »
+   Le seul thème qui ne se contente pas de recolorer.
+   ========================================================================== */
+
+/* Pixels — l'écran d'une console à cristaux liquides : un violet de nuit, un
+   vert d'affichage, et des sprites dessinés à la main plutôt que des rendus
+   3D. Voir `spritePixelBase` dans config.js pour la source des images. */
+:root[data-theme="pixels"] {
+  color-scheme: dark;
+  --bg: #141024; --bg-raised: #1e1836; --bg-sunken: #181228; --bg-inset: #241d3e; --bg-hover: #2c2449;
+  --border: #342a56; --border-strong: #473a72;
+  --gold: #8be04e; --gold-soft: #d2f08a;
+  --accent: #8be04e; --accent-ink: #10240a;
+  --accent-glow: rgba(139, 224, 78, .45); --accent-wash: rgba(139, 224, 78, .13);
+  --accent-border: #2f4a1c;
+}
+
+/* Un pixel agrandi doit rester un carré.
+   Les sprites font 96 px de côté et s'affichent à 70 : sans cette règle, le
+   navigateur les lisse et rend une bouillie tiède au lieu d'un dessin net.
+   `crisp-edges` d'abord pour Firefox, `pixelated` ensuite pour les autres —
+   l'ordre compte, chacun ignore le mot-clé qu'il ne connaît pas. */
+:root[data-sprites-pixel] .card__img,
+:root[data-sprites-pixel] .gcard__img,
+:root[data-sprites-pixel] .detail__art,
+:root[data-sprites-pixel] .slot__img,
+:root[data-sprites-pixel] .imp__img,
+:root[data-sprites-pixel] .form__img {
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}

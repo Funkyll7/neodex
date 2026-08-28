@@ -32,6 +32,23 @@ export const CONFIG = {
   artworkBase: `${SPRITES_ROOT}other/official-artwork/`,
 
   /**
+   * Sprites en pixels, pour le theme du meme nom.
+   *
+   * Le dossier s'appelle `generation-v/black-white` parce qu'il a commence par
+   * les sprites de Noir et Blanc, mais il ne s'y limite plus : la communaute
+   * PokeAPI y a dessine, dans le meme style, tous les Pokemon posterieurs. Les
+   * jeux sont en 3D depuis X et Y, ces sprites-la n'existent donc nulle part
+   * officiellement.
+   *
+   * Couverture verifiee sur un echantillon de cinquante numeros repartis de 1 a
+   * 1025, chromatiques compris, Ogerpon et Terapagos inclus : rien ne manque.
+   *
+   * Meme depot et meme SHA que les sprites HOME. Aucune dependance nouvelle,
+   * aucun CDN de plus a faire confiance.
+   */
+  spritePixelBase: `${SPRITES_ROOT}versions/generation-v/black-white/`,
+
+  /**
    * Sprites « classiques » du depot PokeAPI, nommes par forme ("172-spiky-eared").
    * Les formes cosmetiques y sont toutes presentes, y compris celles qui n'ont
    * pas de rendu HOME — c'est le cas du seul Pichu Troizepi.

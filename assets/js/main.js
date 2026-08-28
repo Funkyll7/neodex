@@ -288,6 +288,13 @@ function start(dataset) {
    * `reprendre()` relit d'abord, puis envoie : pendant la coupure, un autre
    * appareil a pu enregistrer.
    */
+  // Le theme « Pixels » change les adresses des images : les <img> deja posees
+  // pointent encore vers les rendus HOME, il faut refaire la grille et la fiche.
+  document.addEventListener("funkylldex:sprites", () => {
+    renderList();
+    renderDetail();
+  });
+
   window.addEventListener("online", () => {
     sync
       .reprendre()

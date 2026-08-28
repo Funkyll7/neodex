@@ -58,4 +58,18 @@ export const THEMES = [
   { value: "starters-alola", label: "Alola", groupe: "Starters", bandeau: "#eef5f4", pastille: "#1c7049" },
   { value: "starters-galar", label: "Galar", groupe: "Starters", bandeau: "#101410", pastille: "#5090e0" },
   { value: "starters-paldea", label: "Paldéa", groupe: "Starters", bandeau: "#12110a", pastille: "#ff6b3d" },
+
+  // --- Pixels ---------------------------------------------------------------
+  // Le seul theme qui ne se contente pas de recolorer : `sprites: "pixel"` fait
+  // servir les sprites dessines plutot que les rendus 3D de HOME. C'est
+  // `ui/theme.js` qui le transmet a `domain/sprites.js`, et `assets/css` qui
+  // coupe le lissage — un pixel agrandi doit rester un carre.
+  {
+    value: "pixels",
+    label: "Pixels",
+    groupe: "Pixels",
+    bandeau: "#141024",
+    pastille: "#8be04e",
+    sprites: "pixel",
+  },
 ];
