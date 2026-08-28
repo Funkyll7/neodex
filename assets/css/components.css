@@ -1419,11 +1419,36 @@
 /* L'illustration reposait sur un gris uniforme : la grille était juste. Une
    teinte très diluée du type premier lui donne son air, sans nuire au sprite
    ni au contraste du texte, qui vit ailleurs sur la carte. */
+/* L'aura déborde de sa zone, et c'est tout l'objet de ce pseudo-élément.
+ *
+ * Elle était le FOND de `.card__art`. Or un fond se peint dans la boîte : la
+ * zone fait 164 px de large sur 78 de haut, le cercle y était donc coupé net en
+ * haut et en bas avant d'avoir fini de s'éteindre. Deux arêtes droites en
+ * travers d'un halo qui se voulait rond.
+ *
+ * En pseudo-élément débordant verticalement, le dégradé a la place de finir. Il
+ * reste borné par `.card__select`, qui porte `content-visibility` — mais cette
+ * boîte-là commence 23 px plus haut et finit 69 px plus bas, ce qui laisse au
+ * halo largement de quoi s'éteindre tout seul.
+ *
+ * Horizontalement rien ne change : la largeur suffisait déjà. */
 .card__art {
-  background: radial-gradient(circle at 50% 42%,
+  border-radius: var(--r-md);
+}
+.card__art::before {
+  content: "";
+  position: absolute;
+  inset: -20px 0;
+  border-radius: inherit;
+  /* `ellipse closest-side` plutôt qu'un cercle : le rayon se cale sur le bord le
+     plus PROCHE, dans chaque axe séparément. Le dégradé s'éteint donc toujours
+     avant d'atteindre une arête, quelle que soit la forme de la boîte — un
+     cercle, lui, mordait sur le haut et le bas d'une zone deux fois plus large
+     que haute, et c'est de là que venaient les deux lignes droites. */
+  background: radial-gradient(ellipse closest-side at 50% 50%,
     color-mix(in srgb, var(--type) 22%, transparent),
     transparent 70%);
-  border-radius: var(--r-md);
+  pointer-events: none;
 }
 
 /* ============================== Thèmes ================================== */
