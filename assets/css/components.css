@@ -1840,7 +1840,8 @@
      Verticalement seulement, et c'est délibéré : les boutons ne sont séparés
      que de trois pixels, déborder latéralement ferait se chevaucher deux cibles
      voisines. Un appui qui touche le mauvais bouton est bien pire qu'un appui
-     qui rate. */
+     qui rate.
+
      `.toggle` porte `overflow: hidden` pour rogner un libellé trop long. Sur
      une vignette il n'y a que des pastilles, aucun texte — et ce rognage
      coupait justement le débordement qu'on cherche. On le lève ici, et ici
