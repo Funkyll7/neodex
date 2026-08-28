@@ -433,9 +433,14 @@ function garnir(node, species, ctx) {
 
 function card(species, ctx) {
   const color = ctx.dataset.types[species.types[0]] || "#8b8b8b";
+  // Le second type, ou le premier quand il n'y en a qu'un. L'aura de la
+  // vignette balaie de l'un a l'autre ; pour un mono-type elle balaie donc
+  // d'une couleur vers elle-meme, ce qui rend exactement le halo d'avant.
+  const color2 = ctx.dataset.types[species.types[1]] || color;
 
   const node = el("div.card", {
     "--type": color,
+    "--type-2": color2,
     "--type-ink": typeInk(color),
     dataset: { id: species.id },
     role: "listitem",

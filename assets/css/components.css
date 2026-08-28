@@ -1470,14 +1470,26 @@
   position: absolute;
   inset: -20px 0;
   border-radius: inherit;
-  /* `ellipse closest-side` plutôt qu'un cercle : le rayon se cale sur le bord le
-     plus PROCHE, dans chaque axe séparément. Le dégradé s'éteint donc toujours
-     avant d'atteindre une arête, quelle que soit la forme de la boîte — un
-     cercle, lui, mordait sur le haut et le bas d'une zone deux fois plus large
-     que haute, et c'est de là que venaient les deux lignes droites. */
-  background: radial-gradient(ellipse closest-side at 50% 50%,
-    color-mix(in srgb, var(--type) 22%, transparent),
-    transparent 70%);
+  /* La couleur balaie du premier type au second. Le dégradé LINÉAIRE porte les
+     deux teintes ; le radial, lui, ne peint plus rien — il est devenu le masque
+     qui éteint le halo sur les bords. C'est le seul montage qui donne deux
+     couleurs à une forme ronde : `background` ne prend qu'un dégradé, et un
+     radial ne sait pas balayer une teinte vers une autre le long d'un axe.
+
+     `ellipse closest-side` plutôt qu'un cercle, comme avant : le rayon se cale
+     sur le bord le plus PROCHE, dans chaque axe séparément. Le halo s'éteint
+     donc toujours avant d'atteindre une arête, quelle que soit la forme de la
+     boîte — un cercle, lui, mordait sur le haut et le bas d'une zone deux fois
+     plus large que haute, et c'est de là que venaient les deux lignes droites.
+
+     `--type-2` vaut `--type` pour les cinq cents mono-types : leur dégradé
+     linéaire est alors une couleur plate, et leur vignette est au pixel près
+     celle d'avant. L'opacité .22 remplace le `color-mix(… 22%, transparent)`
+     d'origine et donne exactement la même rampe — 22 % au centre, zéro à 70 %. */
+  background: linear-gradient(115deg, var(--type), var(--type-2, var(--type)));
+  opacity: .22;
+  -webkit-mask: radial-gradient(ellipse closest-side at 50% 50%, #000, transparent 70%);
+          mask: radial-gradient(ellipse closest-side at 50% 50%, #000, transparent 70%);
   pointer-events: none;
 }
 /* ============================== Thèmes ================================== */
