@@ -49,11 +49,30 @@ export const CONFIG = {
   spritePixelBase: `${SPRITES_ROOT}versions/generation-v/black-white/`,
 
   /**
-   * Les sprites de Pokemon Jaune, pour un seul cas : le Pikachu Partenaire.
+   * Le projet de sprites Smogon, heberge par Pokemon Showdown.
    *
-   * Il n'a de sprite dessine dans aucun dossier — ni en pixels, ni meme en
-   * rendu HOME. Mais c'est litteralement le Pikachu de Jaune : lui donner ce
-   * sprite-la n'est pas un pis-aller, c'est la bonne image.
+   * Des sprites DESSINES A LA MAIN par la communaute, dans le style de Noir et
+   * Blanc, pour les Pokemon et les formes que les jeux n'ont jamais rendus en
+   * 2D. C'est la meme demarche que le dossier `black-white` de PokeAPI, mais
+   * un catalogue different : la ou PokeAPI s'arrete, Showdown continue.
+   *
+   * Mesure sur les 304 formes du jeu de donnees : 48 n'ont aucun sprite en
+   * pixels chez PokeAPI, et Showdown en couvre 22 — dont le Pikachu et l'Evoli
+   * Partenaire, et la moitie des Mega-Evolutions de Legendes Z-A.
+   *
+   * Les sprites du projet sont libres d'usage a condition de le crediter ; le
+   * credit figure dans le panneau d'informations du site.
+   *
+   * Un troisieme hote, donc, et c'est assume : il n'est interroge que pour les
+   * formes qu'aucune autre source ne couvre, et jamais pour une espece.
+   */
+  spriteShowdownBase: "https://play.pokemonshowdown.com/sprites/gen5/",
+
+  /**
+   * Les sprites de Pokemon Jaune, dernier recours pour le Pikachu Partenaire.
+   *
+   * Showdown le couvre desormais, et mieux. On garde ce repli parce qu'il ne
+   * coute rien et qu'il reste juste : le Pikachu Partenaire EST celui de Jaune.
    */
   spriteJauneBase: `${SPRITES_ROOT}versions/generation-i/yellow/`,
 

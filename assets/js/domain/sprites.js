@@ -53,23 +53,17 @@ function urlsEnPixels(nom, { shiny = false } = {}) {
   const base = CONFIG.spritePixelBase;
   // Le chromatique d'abord quand il est demande, puis le normal : mieux vaut un
   // sprite en pixels de la mauvaise teinte qu'un rendu 3D au milieu des autres.
-  const chaine = shiny ? [`${base}shiny/${nom}.png`, `${base}${nom}.png`] : [`${base}${nom}.png`];
-  const choisi = PIXELS_CHOISIS[nom];
-  if (choisi) chaine.push(choisi());
-  return chaine;
+  return shiny ? [`${base}shiny/${nom}.png`, `${base}${nom}.png`] : [`${base}${nom}.png`];
 }
 
 /**
- * Les rares sprites choisis a la main.
+ * Les rares sprites choisis a la main, en tout dernier recours.
  *
- * Onze des douze formes sans sprite dessine sont des Mega-Evolutions —
- * transformations de combat, que ce site classe deja comme non
- * collectionnables et qui ne se cochent nulle part. La douzieme, elle, meritait
- * qu'on s'en occupe.
- *
- * Le Pikachu Partenaire n'a de sprite dans AUCUN dossier, pas meme en rendu
- * HOME. Mais c'est litteralement le Pikachu de Pokemon Jaune : lui donner ce
- * sprite-la n'est pas un pis-aller, c'est la bonne image.
+ * Apres PokeAPI et apres le projet Smogon : ce n'est utile que pour ce
+ * qu'aucune communaute n'a dessine. Le Pikachu Partenaire n'y figure plus —
+ * Showdown en a un vrai, dessine pour LUI, la ou celui de Jaune n'etait qu'un
+ * Pikachu ordinaire. On le garde tout de meme en bout de chaine : il ne coute
+ * rien et il reste juste, le Pikachu Partenaire etant celui de Jaune.
  *
  * Une fonction et non une chaine : `CONFIG` est lu au moment de l'appel, pas au
  * chargement du module, ce qui laisse la table lisible en tete de fichier.
@@ -105,6 +99,17 @@ export function formImg(form, { shiny = false, alt = "", className = "" } = {}) 
   // En tete, jamais a la place : une forme absente du dossier en pixels
   // retombe ainsi sur son rendu HOME au lieu de laisser un carre vide.
   const chain = urlsEnPixels(form.id, { shiny });
+
+  // Puis le projet Smogon, la ou PokeAPI s'arrete. Sa cle est celle de la
+  // forme, telle quelle — `clefable-mega`, `pikachu-starter` — et c'est ce qui
+  // rend ce repli sur, en plus d'etre court : une cle inconnue rend 404 et la
+  // chaine continue, la ou une cle « rapprochee » aurait affiche un AUTRE
+  // Pokemon. Essaye et rejete : `absol-mega-z` tombait ainsi sur `absol-mega`,
+  // qui est une toute autre creature.
+  if (enPixels && form.key) chain.push(`${CONFIG.spriteShowdownBase}${form.key}.png`);
+  // Puis, s'il en existe un, le sprite choisi a la main pour cette forme.
+  const choisi = PIXELS_CHOISIS[form.id];
+  if (enPixels && choisi) chain.push(choisi());
   if (shiny) {
     if (has.homeShiny) chain.push(spriteUrl(form.id, { shiny: true }));
     if (has.artShiny) chain.push(artworkUrl(form.id, { shiny: true }));

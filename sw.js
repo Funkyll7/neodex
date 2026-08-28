@@ -129,7 +129,13 @@ self.addEventListener("fetch", (event) => {
   // L'API GitHub passe en direct, toujours.
   if (url.hostname === "api.github.com") return;
 
-  if (url.hostname === "cdn.jsdelivr.net" || url.hostname === "fonts.gstatic.com") {
+  // `play.pokemonshowdown.com` sert les sprites du projet Smogon, employes par
+  // le theme « Pixels » pour les formes qu'aucune autre source ne couvre.
+  if (
+    url.hostname === "cdn.jsdelivr.net" ||
+    url.hostname === "fonts.gstatic.com" ||
+    url.hostname === "play.pokemonshowdown.com"
+  ) {
     event.respondWith(cacheDAbord(request, SPRITES));
     return;
   }
