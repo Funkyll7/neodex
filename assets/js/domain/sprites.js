@@ -209,27 +209,6 @@ function urlsLocales(key, { shiny = false, replier = true } = {}) {
   return liste;
 }
 
-/**
- * Les rares especes qu'on prefere montrer sous une de leurs FORMES.
- *
- * Meteno arrive par defaut dans sa coque de meteore : un caillou gris, le meme
- * pour les sept couleurs de noyau. C'est fidele au jeu, mais dans une grille de
- * mille vignettes cela donne une case ou Meteno n'est pas reconnaissable, et
- * qui ne dit rien de lui. On montre donc sa Forme Noyau Rouge, celle que tout
- * le monde a en tete.
- *
- * La substitution vaut pour le normal ET le chromatique : ne changer que l'un
- * des deux aurait mis un noyau rouge a cote d'une coque grise sur la meme
- * vignette, ce qui est pire que la coque seule.
- *
- * Une table nommee et non une regle : c'est une decision d'affichage, prise
- * espece par espece, et elle doit se lire comme telle.
- */
-const ESPECE_MONTREE_COMME = {
-  // Meteno -> Forme Noyau Rouge
-  774: 10136,
-};
-
 export function artworkUrl(id, { shiny = false } = {}) {
   return `${CONFIG.artworkBase}${shiny ? "shiny/" : ""}${id}.png`;
 }
@@ -239,20 +218,11 @@ export function artworkUrl(id, { shiny = false } = {}) {
  * On garde `loading="lazy"` : la grille peut afficher un millier d'images.
  */
 export function spriteImg(id, { shiny = false, female = false, alt = "", className = "" } = {}) {
-  // Une espece peut etre montree sous une de ses formes — voir la table.
-  const vu = ESPECE_MONTREE_COMME[id] || id;
-
-  const chain = urlsEnPixels(vu, { shiny });
-  if (female) chain.push(spriteUrl(vu, { shiny, female: true }));
-  chain.push(spriteUrl(vu, { shiny }));
-  chain.push(artworkUrl(vu, { shiny }));
-  if (shiny) chain.push(artworkUrl(vu));
-
-  // Et l'espece elle-meme en dernier recours : si la forme substituee venait a
-  // manquer d'un depot, mieux vaut la coque grise qu'un carre vide.
-  if (vu !== id) {
-    chain.push(spriteUrl(id, { shiny }), artworkUrl(id, { shiny }), artworkUrl(id));
-  }
+  const chain = urlsEnPixels(id, { shiny });
+  if (female) chain.push(spriteUrl(id, { shiny, female: true }));
+  chain.push(spriteUrl(id, { shiny }));
+  chain.push(artworkUrl(id, { shiny }));
+  if (shiny) chain.push(artworkUrl(id));
   return imageFrom(chain, alt, className);
 }
 
