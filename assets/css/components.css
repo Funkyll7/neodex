@@ -1910,7 +1910,26 @@
   font-size: 9px; font-weight: 800; letter-spacing: .02em;
 }
 .gcard--owned { border-color: color-mix(in srgb, var(--type) 45%, transparent); }
-.gcard--complete { border-color: var(--accent-border); background: var(--accent-wash); }
+/* Boîte terminée : capturée ET chromatique. Elle reprend mot pour mot le
+   langage de `.card--complete` du Pokédex HOME — liseré doré, voile en
+   diagonale — parce que c'est la même idée dans les deux onglets.
+
+   Les trois couches comptent, et l'ordre aussi. La règle ne posait qu'une
+   couleur, `background: var(--accent-wash)` ; le raccourci remettait donc
+   background-image à `none` et la boîte perdait D'UN COUP son `--bg-raised`
+   et, depuis qu'il existe, son `--tuile-voile`. Le voile translucide se
+   composait alors sur le fond de la PAGE : sous Boussole, une boîte terminée
+   tombait à 0,016 de luminance contre 0,060 pour ses voisines — la réussite
+   se lisait comme un trou. Ailleurs le défaut ne se voyait pas, l'accent y
+   étant plus clair que la surface, mais la boîte y perdait sa surface tout
+   de même. */
+.gcard--complete {
+  border-color: var(--gold-border);
+  background:
+    linear-gradient(160deg, var(--gold-wash), transparent 62%),
+    var(--tuile-voile),
+    var(--bg-raised);
+}
 .gcard__num { font-family: var(--font-display); font-weight: 800; font-size: 10px; color: var(--text-faint); }
 .gcard__art { display: block; height: 56px; }
 .gcard__img { width: 56px; height: 56px; object-fit: contain; }
