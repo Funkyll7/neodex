@@ -1023,29 +1023,73 @@ export function reconnaitre(parCapture, banque) {
    * la moitie d'entre elles doit sauter pour rendre la suite croissante, c'est
    * que la suite ne l'est pas.
    */
-  const sens = sensDeLecture(cases, banque);
-  if (sens === 0) {
-    // Aucun ordre lisible — une boite rangee a la main, par exemple. La
-    // contrainte du dex ne peut plus rien : c'est la MARGE qui prend le relais.
-    //
-    // On accepte donc un score plus lache, mais on exige en echange une avance
-    // deux fois plus nette sur le premier rival. Le raisonnement est le meme
-    // que pour les intervalles : quand on ne peut plus reduire le champ des
-    // possibles, il faut que la reponse se distingue d'elle-meme.
-    for (const c of cases) {
-      if (!c.vecteur || c.retenue) continue;
-      if (c.score <= RELACHE && c.marge >= MARGE_MIN * 2) {
-        c.retenue = true;
-        c.motif = undefined;
-      }
+  /*
+   * Deux chemins possibles, et on ne devine pas lequel vaut mieux : on les
+   * essaie tous les deux.
+   *
+   * Le chemin ORDONNE exploite le rangement par numero : entre deux ancres, une
+   * case ne peut etre qu'une espece de l'intervalle, ce qui ramene 1025
+   * candidats a une poignee et permet d'accepter un score moyen. Quand l'ordre
+   * tient, il est imbattable — sur une capture de boites il fait passer 17
+   * ancres a 24 cases lues.
+   *
+   * Le chemin SANS ORDRE n'a que la marge pour lui : score plus lache accepte,
+   * mais avance deux fois plus nette exigee sur le premier rival. Quand on ne
+   * peut plus reduire le champ des possibles, il faut que la reponse se
+   * distingue d'elle-meme.
+   *
+   * Aucune regle simple ne dit lequel choisir. Une liste peut etre a moitie
+   * triee : l'ordre y semble tenir, mais l'imposer coute plus qu'il ne rapporte
+   * — mesure sur une capture de la liste « Tous les Pokemon », 12 ancres
+   * devenaient 10 cases lues. Alors on compte. Les deux chemins ne retiennent
+   * que ce qu'ils jugent sur, chacun selon son critere ; celui qui en retient
+   * le plus a simplement mieux exploite la meme capture.
+   */
+  const apres = essayerOrdonne(cases, banque, sensDeLecture(cases, banque));
+  const avant = essayerSansOrdre(cases, banque);
+  appliquer(cases, apres.retenues >= avant.retenues ? apres.etat : avant.etat);
+  return rendre(cases, banque);
+}
+
+/** Photographie l'etat decidable de chaque case, pour pouvoir y revenir. */
+function copier(cases) {
+  return cases.map((c) => ({
+    index: c.index,
+    score: c.score,
+    marge: c.marge,
+    retenue: c.retenue,
+    motif: c.motif,
+    fenetre: c.fenetre,
+  }));
+}
+
+function appliquer(cases, etat) {
+  cases.forEach((c, i) => Object.assign(c, etat[i]));
+}
+
+/** Le chemin sans contrainte : la marge seule, mais exigee au double. */
+function essayerSansOrdre(cases, banque) {
+  const depart = copier(cases);
+  for (const c of cases) {
+    if (!c.vecteur || c.retenue) continue;
+    if (c.score <= RELACHE && c.marge >= MARGE_MIN * 2) {
+      c.retenue = true;
+      c.motif = undefined;
     }
-    return rendre(cases, banque);
   }
+  const etat = copier(cases);
+  appliquer(cases, depart);
+  return { etat, retenues: etat.filter((e) => e.retenue).length };
+}
+
+/** Le chemin ordonne : ancrage, encadrement, et plusieurs tours. */
+function essayerOrdonne(cases, banque, sens) {
+  const depart = copier(cases);
+  if (sens === 0) return { etat: depart, retenues: depart.filter((e) => e.retenue).length };
 
   // Une liste decroissante se lit a l'endroit une fois retournee : les passes
   // qui suivent n'ont pas a savoir dans quel sens on est. Le tableau retourne
-  // porte les MEMES objets, donc les modifier revient au meme — et `rendre()`
-  // rendra les resultats dans l'ordre de la capture, pas dans celui du calcul.
+  // porte les MEMES objets, donc les modifier revient au meme.
   const ordre = sens > 0 ? cases : [...cases].reverse();
 
   imposerOrdre(ordre, banque);
@@ -1088,7 +1132,9 @@ export function reconnaitre(parCapture, banque) {
     if (!recuperees) break;
   }
 
-  return rendre(cases, banque);
+  const etat = copier(cases);
+  appliquer(cases, depart);
+  return { etat, retenues: etat.filter((e) => e.retenue).length };
 }
 
 /**
