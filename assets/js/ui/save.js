@@ -64,11 +64,18 @@ export function createSaveControls(ctx) {
 
 /* --------------------------- synchronisation ----------------------------- */
 
+/*
+ * `off` disait « Hors ligne », ce qui n'a jamais ete son sens : il signifie
+ * « aucun jeton enregistre », donc aucune synchronisation configuree. Le vrai
+ * hors-ligne, lui, s'appelle desormais `attente` — et confondre les deux
+ * aurait laisse croire a une coupure reseau alors qu'il manque un reglage.
+ */
 const SYNC_LABELS = {
-  off: "Hors ligne — les cases restent dans ce navigateur.",
+  off: "Pas de synchronisation — les cases restent dans ce navigateur.",
   idle: "Connecté au dépôt.",
   pending: "Modification en attente…",
   busy: "Envoi en cours…",
+  attente: "Hors ligne — envoi dès le retour du réseau.",
   ok: "Dépôt à jour.",
   error: "Échec de l'envoi.",
 };

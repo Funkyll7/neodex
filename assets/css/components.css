@@ -119,6 +119,9 @@
 .sync__state--ok { color: var(--avail-ok); border-left-color: var(--avail-ok); }
 .sync__state--busy,
 .sync__state--pending { color: var(--accent); border-left-color: var(--accent); }
+/* Hors ligne n'est pas un echec : c'est le cas normal du site, on coche des
+   cases dans le train. Le ton reste celui de l'attente, pas celui du danger. */
+.sync__state--attente { color: var(--avail-nolock); border-left-color: var(--avail-nolock); }
 .sync__state--error { color: var(--danger); border-left-color: var(--danger); }
 
 .sync__setup { display: flex; flex-direction: column; gap: var(--sp-2); }

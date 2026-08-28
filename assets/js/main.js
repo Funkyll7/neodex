@@ -276,6 +276,29 @@ function start(dataset) {
     }
   });
 
+  /*
+   * Le reseau revient : on rattrape tout seul.
+   *
+   * C'est le cas courant de ce site. On coche des cases en jouant, dans le
+   * train ou au fond d'un magasin, et l'envoi echoue. Les cases restaient bien
+   * dans le navigateur — rien n'etait perdu — mais elles y restaient jusqu'a ce
+   * qu'on pense a rouvrir le site et a cocher une case de plus pour declencher
+   * un nouvel envoi.
+   *
+   * `reprendre()` relit d'abord, puis envoie : pendant la coupure, un autre
+   * appareil a pu enregistrer.
+   */
+  window.addEventListener("online", () => {
+    sync
+      .reprendre()
+      .then((change) => {
+        if (!change) return;
+        renderCounts();
+        renderList();
+      })
+      .catch(() => {});
+  });
+
   const tabsRoot = document.getElementById("tabs");
   const panels = {
     dex: document.getElementById("tab-dex"),

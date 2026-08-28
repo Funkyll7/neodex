@@ -40,6 +40,8 @@ export class GitHubSync {
     /** Date de la premiere modification en attente, pour plafonner le delai. */
     this.pendingSince = null;
     this.inFlight = null;
+    /** Un envoi a echoue faute de reseau : `reprendre()` s'en chargera. */
+    this.enAttenteDeReseau = false;
   }
 
   /* ------------------------------ abonnement ---------------------------- */
@@ -74,6 +76,18 @@ export class GitHubSync {
     }
     writeToken(this.token);
     this.emit("ok", "Connecté au dépôt.");
+
+    // Ce qui a ete coche AVANT le jeton part maintenant.
+    //
+    // On peut se servir du site sans jeton : les cases s'empilent dans le
+    // navigateur, c'est meme le mode par defaut. Le jour ou l'on colle enfin
+    // un jeton, ces cases-la n'avaient aucune raison d'attendre une
+    // modification de plus pour etre envoyees — elles restaient pourtant en
+    // rade jusqu'a ce qu'on en coche une nouvelle.
+    //
+    // `reprendre()` relit d'abord, puis envoie : le depot peut contenir des
+    // cases venues d'un autre appareil, la fusion les preserve toutes.
+    if (this.collection.dirtyCount) await this.reprendre();
   }
 
   forget() {
@@ -170,9 +184,46 @@ export class GitHubSync {
         const fusionne = this.collection.fusionnerAvec(distant.marks);
         return this.write(reason, false, false, fusionne);
       }
+      // Hors ligne, ce n'est pas une erreur : c'est le cas normal du site. On
+      // coche des cases dans le train, en salle d'attente, au fond d'un magasin.
+      // Les modifications restent dans le navigateur, et `attendreLeReseau()`
+      // les enverra des que la connexion revient. Le dire calmement evite
+      // d'alarmer pour quelque chose qui va se resoudre tout seul.
+      if (horsLigne(error)) {
+        this.enAttenteDeReseau = true;
+        this.emit("attente", "Hors ligne — envoi dès le retour du réseau.");
+        return null;
+      }
+
       this.emit("error", error.message);
       throw error;
     }
+  }
+
+  /**
+   * Renvoie ce qui attend, des que le reseau revient.
+   *
+   * On relit AVANT d'ecrire : pendant la coupure, un autre appareil a pu
+   * enregistrer. Relire d'abord fusionne sans passer par un conflit, et evite
+   * un aller-retour.
+   *
+   * @returns {Promise<boolean>} vrai si quelque chose a ete envoye ou relu.
+   */
+  async reprendre() {
+    if (!this.configured) return false;
+    this.enAttenteDeReseau = false;
+    let change = false;
+    try {
+      change = await this.relire();
+    } catch {
+      // Le reseau vient a peine de revenir : s'il retombe, on retentera au
+      // prochain retour. Rien de perdu, tout est encore dans le navigateur.
+    }
+    if (this.collection.dirtyCount) {
+      await this.flush("retour du réseau").catch(() => {});
+      return true;
+    }
+    return change;
   }
 
   /**
@@ -273,6 +324,20 @@ function withinKeepalive(text) {
       "explicitement avant de fermer."
   );
   return false;
+}
+
+/**
+ * L'echec vient-il d'une coupure reseau, et non du depot ?
+ *
+ * `fetch` rejette avec un `TypeError` quand la requete ne part pas — pas de
+ * reseau, DNS injoignable, requete avortee. Les reponses de GitHub, elles,
+ * passent par `describe()` et portent un message francais. On distingue donc
+ * sur les deux : ce que le navigateur n'a pas pu envoyer, et ce que le serveur
+ * a refuse. Seul le premier vaut la peine d'etre retente tout seul.
+ */
+function horsLigne(error) {
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return true;
+  return error instanceof TypeError;
 }
 
 /** Messages d'erreur en francais, orientes « quoi faire ». */
