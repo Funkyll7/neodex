@@ -13,7 +13,7 @@
 import { el, fill } from "../core/dom.js";
 import { spriteImg } from "../domain/sprites.js";
 import { dexNumber, typeChip } from "./common.js";
-import { nomEspece } from "../core/i18n.js";
+import { nomEspece, t, tn } from "../core/i18n.js";
 
 export function createQuest(ctx) {
   const card = document.getElementById("quest-card");
@@ -83,18 +83,24 @@ function questBody(species, game, ctx, complete) {
   const head = el(
     "div.quest__head",
     { "--c1": c1, "--c2": c2 },
-    el("span.quest__kicker", "Quête en cours · méthode la plus simple"),
+    el("span.quest__kicker", t("Quête en cours · méthode la plus simple")),
     el(
       "div.quest__hero",
-      spriteImg(species.id, { shiny: true, alt: `${nomEspece(species)} chromatique`, className: "quest__img" }),
+      spriteImg(species.id, {
+        shiny: true,
+        alt: `${nomEspece(species)} ${t("chromatique")}`,
+        className: "quest__img",
+      }),
       el(
         "div.quest__id",
         el("div.quest__num", dexNumber(species.id)),
         el("h2.quest__name", `✦ ${nomEspece(species)}`),
-        el("p.quest__where", ["dans ", el("strong", game.name)]),
+        el("p.quest__where", [`${t("dans")} `, el("strong", t(game.name))]),
         el(
           "div.detail__chips",
-          species.types.map((t) => typeChip(t, dataset.types[t] || "#8b8b8b", "lg"))
+          // `type` et non `t` : une variable nommee `t` masquerait la fonction
+          // de traduction dans cette portee.
+          species.types.map((type) => typeChip(type, dataset.types[type] || "#8b8b8b", "lg"))
         )
       )
     )
@@ -106,22 +112,22 @@ function questBody(species, game, ctx, complete) {
       "div.quest__facts",
       el(
         "div.quest__fact",
-        el("div.quest__fact-key", "Méthode"),
+        el("div.quest__fact-key", t("Méthode")),
         el("div.quest__fact-val", method.name)
       ),
       el(
         "div.quest__fact.quest__fact--odds",
-        el("div.quest__fact-key", "Taux"),
+        el("div.quest__fact-key", t("Taux")),
         el("div.quest__fact-val.quest__fact-val--odds", method.odds),
         el(
           "div.quest__fact-note",
-          `Meilleur taux disponible parmi les ${poolSize} jeu${poolSize > 1 ? "x" : ""} où ce shiny est huntable.`
+          `${t("Meilleur taux disponible parmi les")} ${poolSize} ${tn(poolSize, "jeu", "jeux")} ${t("où ce shiny est huntable.")}`
         )
       )
     ),
     el(
       "div",
-      el("h3.panel__label", "Comment procéder"),
+      el("h3.panel__label", t("Comment procéder")),
       el(
         "div.quest__steps",
         method.steps.map((text, index) =>
@@ -135,8 +141,8 @@ function questBody(species, game, ctx, complete) {
         el(
           "div.quest__fact-key",
           game.gen === species.gen
-            ? "Où le trouver dans ce jeu"
-            : `Repère général — vérifie la zone équivalente dans ${game.name}`
+            ? t("Où le trouver dans ce jeu")
+            : `${t("Repère général — vérifie la zone équivalente dans")} ${t(game.name)}`
         ),
         el("div.info__text", species.where)
       )
@@ -146,16 +152,16 @@ function questBody(species, game, ctx, complete) {
       el(
         "button.btn.btn--wide.quest__done",
         { type: "button", onclick: () => complete(true) },
-        "✦ Shiny obtenu — quête terminée"
+        t("✦ Shiny obtenu — quête terminée")
       ),
-      el("button.btn.btn--ghost", { type: "button", onclick: () => complete(false) }, "Passer"),
+      el("button.btn.btn--ghost", { type: "button", onclick: () => complete(false) }, t("Passer")),
       el(
         "button.btn.btn--ghost",
         {
           type: "button",
           onclick: () => store.set({ tab: "dex", selectedId: species.id }),
         },
-        "Voir la fiche"
+        t("Voir la fiche")
       )
     )
   );
@@ -171,22 +177,22 @@ function emptyQuest(ctx, complete) {
     el(
       "div.quest__head",
       { "--c1": "#ffcb05", "--c2": "#ff9c3d" },
-      el("span.quest__kicker", "Aucune quête disponible"),
-      el("h2.quest__name", { style: { marginTop: "8px" } }, "Rien à chasser pour l'instant")
+      el("span.quest__kicker", t("Aucune quête disponible")),
+      el("h2.quest__name", { style: { marginTop: "8px" } }, t("Rien à chasser pour l'instant"))
     ),
     el(
       "div.quest__body",
       el(
         "p.info__text",
-        `Les quêtes se tirent parmi les ${documented} espèces dont la disponibilité par jeu est renseignée dans data/details/. Soit tous leurs shinies sont cochés, soit il faut enrichir ces fichiers pour élargir le vivier.`
+        `${t("Les quêtes se tirent parmi les")} ${documented} ${t("espèces dont la disponibilité par jeu est renseignée dans data/details/. Soit tous leurs shinies sont cochés, soit il faut enrichir ces fichiers pour élargir le vivier.")}`
       ),
       el(
         "div.quest__actions",
-        el("button.btn", { type: "button", onclick: () => complete(false) }, "Retirer une quête"),
+        el("button.btn", { type: "button", onclick: () => complete(false) }, t("Retirer une quête")),
         el(
           "button.btn.btn--ghost",
           { type: "button", onclick: () => ctx.store.set({ tab: "dex" }) },
-          "Retour au Pokédex"
+          t("Retour au Pokédex")
         )
       )
     )
@@ -216,7 +222,9 @@ function renderLog(root, entries, ctx) {
       root,
       el(
         "p.log__empty",
-        "Aucune quête terminée pour l'instant. Attrape le shiny demandé, puis valide — une nouvelle cible est tirée aussitôt."
+        t(
+          "Aucune quête terminée pour l'instant. Attrape le shiny demandé, puis valide — une nouvelle cible est tirée aussitôt."
+        )
       )
     );
     return;
@@ -228,11 +236,11 @@ function renderLog(root, entries, ctx) {
       entries.map((entry) =>
         el(
           "div.log__item",
-          spriteImg(entry.id, { shiny: true, alt: entry.name, className: "log__img" }),
+          spriteImg(entry.id, { shiny: true, alt: nomJournal(entry, ctx), className: "log__img" }),
           el(
             "div",
             el("div.log__name", `✦ ${nomJournal(entry, ctx)}`),
-            el("div.log__meta", `${entry.game} · ${entry.method}`)
+            el("div.log__meta", `${t(entry.game)} · ${entry.method}`)
           )
         )
       )

@@ -18,6 +18,7 @@
  */
 
 import { el, fill } from "../core/dom.js";
+import { nomEspece, t } from "../core/i18n.js";
 import { spriteImg } from "../domain/sprites.js";
 import { dexNumber } from "./common.js";
 import { detecterGrille, lireCases, reconnaitre } from "../domain/reco.js";
@@ -74,8 +75,11 @@ export function createImportPhotos(ctx) {
   const titre = () =>
     el(
       "div.imp__tete",
-      el("h2.imp__titre", cible === "go" ? "Lire des captures → Pokédex GO" : "Lire des captures → Pokédex HOME"),
-      el("button.icon-btn", { type: "button", onclick: fermer, "aria-label": "Fermer" }, "✕")
+      el(
+        "h2.imp__titre",
+        cible === "go" ? t("Lire des captures → Pokédex GO") : t("Lire des captures → Pokédex HOME")
+      ),
+      el("button.icon-btn", { type: "button", onclick: fermer, "aria-label": t("Fermer") }, "✕")
     );
 
   function accueil() {
@@ -90,92 +94,119 @@ export function createImportPhotos(ctx) {
 
         el(
           "div.imp__avert",
-          el("p.imp__avert-titre", "À lire avant de s'en servir"),
+          el("p.imp__avert-titre", t("À lire avant de s'en servir")),
           el(
             "p",
-            "Cette lecture se trompe. Elle reconnaît un dessin de 20 pixels de côté " +
-              "parmi 2 663 sprites qui se ressemblent — un Roucool et un Roucoups, un " +
-              "Nidoran mâle et un Nidoran femelle. Elle est bonne, pas infaillible."
+            t(
+              "Cette lecture se trompe. Elle reconnaît un dessin de 20 pixels de côté " +
+                "parmi 2 663 sprites qui se ressemblent — un Roucool et un Roucoups, un " +
+                "Nidoran mâle et un Nidoran femelle. Elle est bonne, pas infaillible."
+            )
           ),
           el(
             "p",
-            el("strong", "Elle ne coche donc jamais rien toute seule."),
-            " Elle te montre ce qu'elle a cru voir, tu retires ce qui est faux, et " +
-              "c'est ton appui qui l'écrit. Une case posée à tort partirait dans " +
-              "data/collection.json sur GitHub sans que tu la voies passer."
+            el("strong", t("Elle ne coche donc jamais rien toute seule.")),
+            " ",
+            t(
+              "Elle te montre ce qu'elle a cru voir, tu retires ce qui est faux, et " +
+                "c'est ton appui qui l'écrit. Une case posée à tort partirait dans " +
+                "data/collection.json sur GitHub sans que tu la voies passer."
+            )
           ),
           el(
             "p",
-            "Et si tu t'aperçois trop tard qu'un lot était mauvais : le bandeau " +
-              "« Annuler » défait toute la lecture d'un seul appui."
+            t(
+              "Et si tu t'aperçois trop tard qu'un lot était mauvais : le bandeau " +
+                "« Annuler » défait toute la lecture d'un seul appui."
+            )
           )
         ),
 
-        el("h3.imp__soustitre", "Comment faire"),
+        el("h3.imp__soustitre", t("Comment faire")),
         el(
           "ol.imp__etapes",
           etapeTexte(
             1,
-            "Prépare l'écran dans HOME.",
-            " Onglet « Pokémon », vue « Tous les Pokémon », tri par numéro — le bouton « N° » " +
-              "en bas à droite. " +
+            t("Prépare l'écran dans HOME."),
+            " " +
+              t(
+                "Onglet « Pokémon », vue « Tous les Pokémon », tri par numéro — le bouton « N° » " +
+                  "en bas à droite."
+              ) +
+              " " +
               (cible === "go"
-                ? "Et pose ton filtre sur le jeu d'origine « Pokémon GO » : seuls tes Pokémon de GO seront listés, donc lus."
-                : "Pose un filtre si tu ne veux lire qu'une partie de ta collection.")
+                ? t(
+                    "Et pose ton filtre sur le jeu d'origine « Pokémon GO » : seuls tes Pokémon de GO seront listés, donc lus."
+                  )
+                : t("Pose un filtre si tu ne veux lire qu'une partie de ta collection."))
           ),
           etapeTexte(
             2,
-            "Photographie en faisant défiler.",
-            " Laisse une ligne de recouvrement entre deux captures. Ce n'est pas une " +
-              "précaution de confort : c'est ce recouvrement qui rattrape les cases " +
-              "cachées par les deux boutons flottants de HOME."
+            t("Photographie en faisant défiler."),
+            " " +
+              t(
+                "Laisse une ligne de recouvrement entre deux captures. Ce n'est pas une " +
+                  "précaution de confort : c'est ce recouvrement qui rattrape les cases " +
+                  "cachées par les deux boutons flottants de HOME."
+              )
           ),
           etapeTexte(
             3,
-            "Dépose-les ici, dans l'ordre.",
-            " L'ordre compte beaucoup — voir plus bas."
+            t("Dépose-les ici, dans l'ordre."),
+            " " + t("L'ordre compte beaucoup — voir plus bas.")
           ),
-          etapeTexte(4, "Relis, puis applique.", " Rien n'entre dans ta collection avant.")
+          etapeTexte(4, t("Relis, puis applique."), " " + t("Rien n'entre dans ta collection avant."))
         ),
 
         el(
           "details.imp__replis",
-          el("summary", "Comment ça marche, au juste"),
+          el("summary", t("Comment ça marche, au juste")),
           el(
             "p",
-            "Le site repère la grille dans ta capture : il cherche les colonnes et les " +
-              "lignes de sprites en comptant, colonne par colonne, les pixels qui ne sont " +
-              "pas du fond. Rien n'est codé en dur — ça marche donc sur n'importe quel " +
-              "téléphone, quelle que soit la hauteur de ta barre d'état."
+            t(
+              "Le site repère la grille dans ta capture : il cherche les colonnes et les " +
+                "lignes de sprites en comptant, colonne par colonne, les pixels qui ne sont " +
+                "pas du fond. Rien n'est codé en dur — ça marche donc sur n'importe quel " +
+                "téléphone, quelle que soit la hauteur de ta barre d'état."
+            )
           ),
           el(
             "p",
-            "Chaque case est ensuite détourée de son fond, réduite à une empreinte de " +
-              "20 × 20 — trois canaux de couleur plus la silhouette — et comparée aux " +
-              "empreintes des 2 663 sprites officiels. La plus proche gagne."
+            t(
+              "Chaque case est ensuite détourée de son fond, réduite à une empreinte de " +
+                "20 × 20 — trois canaux de couleur plus la silhouette — et comparée aux " +
+                "empreintes des 2 663 sprites officiels. La plus proche gagne."
+            )
           ),
           el(
             "p",
-            el("strong", "C'est l'ordre qui fait la fiabilité."),
-            " HOME range par numéro national : la suite de tes captures est croissante. " +
-              "Le site ne retient d'abord que les reconnaissances franches, qui deviennent " +
-              "des points d'appui ; puis, entre deux appuis, une case ne peut plus être " +
-              "qu'une espèce de l'intervalle. Mille candidats retombent à une poignée, et " +
-              "une reconnaissance moyenne devient concluante. Six tours, chacun resserrant " +
-              "le suivant. Toute reconnaissance qui casserait l'ordre est jetée, quel que " +
-              "soit son score — c'est pour ça que déposer les captures dans le désordre " +
-              "dégrade beaucoup le résultat."
+            el("strong", t("C'est l'ordre qui fait la fiabilité.")),
+            " ",
+            t(
+              "HOME range par numéro national : la suite de tes captures est croissante. " +
+                "Le site ne retient d'abord que les reconnaissances franches, qui deviennent " +
+                "des points d'appui ; puis, entre deux appuis, une case ne peut plus être " +
+                "qu'une espèce de l'intervalle. Mille candidats retombent à une poignée, et " +
+                "une reconnaissance moyenne devient concluante. Six tours, chacun resserrant " +
+                "le suivant. Toute reconnaissance qui casserait l'ordre est jetée, quel que " +
+                "soit son score — c'est pour ça que déposer les captures dans le désordre " +
+                "dégrade beaucoup le résultat."
+            )
           ),
           el(
             "p",
-            "Le chromatique n'est pas deviné : les sprites normaux et chromatiques sont " +
-              "tous les deux dans la comparaison, c'est la couleur du dessin qui tranche."
+            t(
+              "Le chromatique n'est pas deviné : les sprites normaux et chromatiques sont " +
+                "tous les deux dans la comparaison, c'est la couleur du dessin qui tranche."
+            )
           ),
           el(
             "p.imp__gris",
-            "Rien ne quitte ton téléphone. Les captures sont lues dans la page, jamais " +
-              "envoyées nulle part. Les empreintes de sprites (4 Mo) se chargent une fois, " +
-              "à la première lecture."
+            t(
+              "Rien ne quitte ton téléphone. Les captures sont lues dans la page, jamais " +
+                "envoyées nulle part. Les empreintes de sprites (4 Mo) se chargent une fois, " +
+                "à la première lecture."
+            )
           )
         ),
 
@@ -184,7 +215,7 @@ export function createImportPhotos(ctx) {
           el(
             "button.btn.btn--primary",
             { type: "button", onclick: () => fichiers.click() },
-            "Choisir mes captures"
+            t("Choisir mes captures")
           )
         )
       )
@@ -207,7 +238,7 @@ export function createImportPhotos(ctx) {
 
   async function chargerBanque() {
     if (banque) return banque;
-    etape("Chargement des empreintes de sprites (une seule fois)…", 0, 1);
+    etape(t("Chargement des empreintes de sprites (une seule fois)…"), 0, 1);
     const [meta, bin] = await Promise.all([
       fetch(BANQUE_JSON).then((r) => r.json()),
       fetch(BANQUE_BIN).then((r) => r.arrayBuffer()),
@@ -232,7 +263,13 @@ export function createImportPhotos(ctx) {
       const b = await chargerBanque();
       const parCapture = [];
       for (let i = 0; i < liste.length; i++) {
-        etape(`Lecture de la capture ${i + 1} sur ${liste.length}…`, i, liste.length);
+        etape(
+          // « sur » est trop court pour être une clé sans ambiguïté : le contexte
+          // le distingue de la préposition de lieu, qui se traduit autrement.
+          `${t("Lecture de la capture")} ${i + 1} ${t("sur", "capture X sur Y")} ${liste.length}…`,
+          i,
+          liste.length
+        );
         const imageData = await enPixels(liste[i]);
         const grille = detecterGrille(imageData);
         if (!grille) {
@@ -241,7 +278,7 @@ export function createImportPhotos(ctx) {
         }
         parCapture.push(lireCases(imageData, grille));
       }
-      etape("Comparaison aux sprites officiels…", liste.length, liste.length);
+      etape(t("Comparaison aux sprites officiels…"), liste.length, liste.length);
       // Un tour de boucle pour que la barre s'affiche avant le gros calcul.
       await new Promise((r) => setTimeout(r, 30));
       resultats = reconnaitre(parCapture, b);
@@ -252,8 +289,11 @@ export function createImportPhotos(ctx) {
         titre(),
         el(
           "div.imp__corps",
-          el("p.imp__texte.imp__texte--erreur", `La lecture a échoué : ${erreur.message}`),
-          el("div.imp__actions", el("button.btn.btn--ghost", { type: "button", onclick: accueil }, "Recommencer"))
+          el("p.imp__texte.imp__texte--erreur", `${t("La lecture a échoué :")} ${erreur.message}`),
+          el(
+            "div.imp__actions",
+            el("button.btn.btn--ghost", { type: "button", onclick: accueil }, t("Recommencer"))
+          )
         )
       );
     } finally {
@@ -288,13 +328,18 @@ export function createImportPhotos(ctx) {
         titre(),
         el(
           "div.imp__corps",
-          el("p.imp__texte", "Aucun Pokémon reconnu sur ces captures."),
+          el("p.imp__texte", t("Aucun Pokémon reconnu sur ces captures.")),
           el(
             "p.imp__texte",
-            "Vérifie que ce sont bien des captures de la liste « Tous les Pokémon » de HOME, " +
-              "prises en entier — une capture rognée ou zoomée ne se lit pas."
+            t(
+              "Vérifie que ce sont bien des captures de la liste « Tous les Pokémon » de HOME, " +
+                "prises en entier — une capture rognée ou zoomée ne se lit pas."
+            )
           ),
-          el("div.imp__actions", el("button.btn.btn--ghost", { type: "button", onclick: accueil }, "Réessayer"))
+          el(
+            "div.imp__actions",
+            el("button.btn.btn--ghost", { type: "button", onclick: accueil }, t("Réessayer"))
+          )
         )
       );
       return;
@@ -332,9 +377,11 @@ export function createImportPhotos(ctx) {
             dataset: { cle },
             disabled: deja,
             title: deja
-              ? "Déjà cochée dans ta collection"
-              : `Distance au sprite officiel : ${l.score}` +
-                (l.marge == null ? "" : ` — avance de ${l.marge} sur le candidat suivant`),
+              ? t("Déjà cochée dans ta collection")
+              : `${t("Distance au sprite officiel :")} ${l.score}` +
+                (l.marge == null
+                  ? ""
+                  : ` — ${t("avance de")} ${l.marge} ${t("sur le candidat suivant")}`),
             onclick: (e) => {
               const b = e.currentTarget;
               const actif = b.getAttribute("aria-pressed") === "true";
@@ -350,10 +397,10 @@ export function createImportPhotos(ctx) {
             className: "imp__img",
           }),
           el("span.imp__num", dexNumber(l.espece)),
-          el("span.imp__nom", espece ? espece.name : `n° ${l.espece}`),
+          el("span.imp__nom", espece ? nomEspece(espece) : `${t("n°")} ${l.espece}`),
           el(
             "span.imp__etat",
-            deja ? "déjà cochée" : l.shiny ? "chromatique" : "normal"
+            deja ? t("déjà cochée") : l.shiny ? t("chromatique") : t("normal")
           ),
           (() => {
             const c = confiance(l);
@@ -377,34 +424,52 @@ export function createImportPhotos(ctx) {
         // est nouveau, ce qui existait déjà, ce qui n'a pas pu être lu.
         el(
           "div.imp__bilan",
-          el("span.imp__bilan-lot", el("strong", String(nouvelles.length)), " à ajouter"),
+          el("span.imp__bilan-lot", el("strong", String(nouvelles.length)), ` ${t("à ajouter")}`),
           dejaLa
-            ? el("span.imp__bilan-lot.imp__bilan-lot--gris", el("strong", String(dejaLa)), " déjà cochés")
+            ? el(
+                "span.imp__bilan-lot.imp__bilan-lot--gris",
+                el("strong", String(dejaLa)),
+                ` ${t("déjà cochés")}`
+              )
             : null,
           douteuses
             ? el(
                 "span.imp__bilan-lot.imp__bilan-lot--gris",
-                { title: "Cases dont la reconnaissance n'était pas assez sûre. Elles ne sont pas proposées." },
+                {
+                  title: t(
+                    "Cases dont la reconnaissance n'était pas assez sûre. Elles ne sont pas proposées."
+                  ),
+                },
                 el("strong", String(douteuses)),
-                " non lues"
+                ` ${t("non lues")}`
               )
             : null
         ),
 
         el(
           "p.imp__texte.imp__texte--gris",
-          "Appuie sur une vignette pour la retirer du lot, ou la remettre. Le mot en bas " +
-            "dit la confiance : « sûr » quand le sprite officiel correspond et qu'aucun " +
-            "autre ne s'en approche, « à relire » quand deux candidats se valent. Les " +
-            "chiffres sont dans l'infobulle. Les grisées sont déjà dans ta collection — " +
-            "elles ne seront pas réécrites."
+          t(
+            "Appuie sur une vignette pour la retirer du lot, ou la remettre. Le mot en bas " +
+              "dit la confiance : « sûr » quand le sprite officiel correspond et qu'aucun " +
+              "autre ne s'en approche, « à relire » quand deux candidats se valent. Les " +
+              "chiffres sont dans l'infobulle. Les grisées sont déjà dans ta collection — " +
+              "elles ne seront pas réécrites."
+          )
         ),
 
         nouvelles.length > 1
           ? el(
               "div.imp__tout",
-              el("button.btn.btn--ghost.btn--mini", { type: "button", onclick: () => toutCocher(true) }, "Tout cocher"),
-              el("button.btn.btn--ghost.btn--mini", { type: "button", onclick: () => toutCocher(false) }, "Tout décocher")
+              el(
+                "button.btn.btn--ghost.btn--mini",
+                { type: "button", onclick: () => toutCocher(true) },
+                t("Tout cocher")
+              ),
+              el(
+                "button.btn.btn--ghost.btn--mini",
+                { type: "button", onclick: () => toutCocher(false) },
+                t("Tout décocher")
+              )
             )
           : null,
 
@@ -412,7 +477,7 @@ export function createImportPhotos(ctx) {
       ),
       el(
         "div.imp__pied",
-        el("button.btn.btn--ghost", { type: "button", onclick: accueil }, "Recommencer"),
+        el("button.btn.btn--ghost", { type: "button", onclick: accueil }, t("Recommencer")),
         el(
           "button.btn.btn--primary",
           { type: "button", onclick: () => appliquer(lignes, choisis) },
@@ -422,7 +487,8 @@ export function createImportPhotos(ctx) {
     );
   }
 
-  const libelleAppliquer = (n) => (n ? `Cocher ces ${n} cases` : "Ne rien cocher");
+  const libelleAppliquer = (n) =>
+    n ? `${t("Cocher ces")} ${n} ${t("cases")}` : t("Ne rien cocher");
 
   /**
    * La case à cocher pour une espèce reconnue, selon le Pokédex visé.
@@ -459,7 +525,7 @@ export function createImportPhotos(ctx) {
       vues.add(cle);
       lot.push({ id: l.id, slot: l.slot });
     }
-    if (lot.length) ctx.applyBatch(lot, `Lecture de captures — ${lot.length} cases`);
+    if (lot.length) ctx.applyBatch(lot, `${t("Lecture de captures")} — ${lot.length} ${t("cases")}`);
     fermer();
   }
 
@@ -528,9 +594,9 @@ export function createImportPhotos(ctx) {
  */
 function confiance(l) {
   const marge = l.marge == null ? Infinity : l.marge;
-  if (l.score <= 6 && marge >= 3) return { mot: "sûr", classe: "" };
-  if (l.score <= 10 && marge >= 2) return { mot: "probable", classe: " imp__score--moyen" };
-  return { mot: "à relire", classe: " imp__score--faible" };
+  if (l.score <= 6 && marge >= 3) return { mot: t("sûr"), classe: "" };
+  if (l.score <= 10 && marge >= 2) return { mot: t("probable"), classe: " imp__score--moyen" };
+  return { mot: t("à relire"), classe: " imp__score--faible" };
 }
 
 /**

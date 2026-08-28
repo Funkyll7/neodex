@@ -18,7 +18,7 @@ import { spriteImg, formImg } from "../domain/sprites.js";
 import { completionOf } from "../domain/completion.js";
 import { formeDeRepli } from "../domain/display.js";
 import { dexNumber, typeChip, typeInk } from "./common.js";
-import { nomEspece } from "../core/i18n.js";
+import { nomEspece, t, tn } from "../core/i18n.js";
 
 export function createGrid(ctx) {
   const grid = document.getElementById("grid");
@@ -40,8 +40,8 @@ export function createGrid(ctx) {
   function peindreCompteur() {
     const restant = list.length - rangees.size;
     counter.textContent =
-      `${restant} résultat${restant > 1 ? "s" : ""}` +
-      (rangees.size ? ` · ${rangees.size} rangé${rangees.size > 1 ? "s" : ""}` : "");
+      `${restant} ${tn(restant, "résultat", "résultats")}` +
+      (rangees.size ? ` · ${rangees.size} ${tn(rangees.size, "rangé", "rangés")}` : "");
   }
 
   function appendPage() {
@@ -258,13 +258,13 @@ function card(species, ctx) {
     { "--type": color, "--type-ink": typeInk(color), dataset: { id: species.id }, role: "listitem" },
     el(
       "button.card__select",
-      { type: "button", "aria-label": `Ouvrir la fiche de ${nomEspece(species)}` },
+      { type: "button", "aria-label": `${t("Ouvrir la fiche de")} ${nomEspece(species)}` },
       el("span.card__top", el("span.card__num", dexNumber(species.id)), el("span.card__flags")),
       el("span.card__art"),
       el("span.card__name", nomEspece(species)),
       el(
         "span.card__types",
-        species.types.map((t) => typeChip(t, ctx.dataset.types[t] || "#8b8b8b"))
+        species.types.map((type) => typeChip(type, ctx.dataset.types[type] || "#8b8b8b"))
       ),
       el("span.card__foot")
     ),
@@ -311,9 +311,9 @@ function paint(node, species, ctx) {
     .join(" ");
 
   node.title = progress.complete
-    ? `Tout obtenu — ${progress.total} case${progress.total > 1 ? "s" : ""}`
-    : (repli ? `${repli.form.name} obtenu, pas la forme de base. ` : "") +
-      `${progress.done} / ${progress.total} — reste : ${progress.missing.join(", ")}`;
+    ? `${t("Tout obtenu")} — ${progress.total} ${tn(progress.total, "case", "cases")}`
+    : (repli ? `${repli.form.name} ${t("obtenu, pas la forme de base.")} ` : "") +
+      `${progress.done} / ${progress.total} — ${t("reste :")} ${progress.missing.join(", ")}`;
 
   fill(
     node.querySelector(".card__flags"),
@@ -326,13 +326,13 @@ function paint(node, species, ctx) {
     // sans avoir a ouvrir la fiche : Miaouss en veut huit, pas quatre.
     el(
       "span.card__flag.card__flag--count",
-      { title: `${progress.done} case${progress.done > 1 ? "s" : ""} cochée${progress.done > 1 ? "s" : ""} sur ${progress.total}` },
+      { title: `${progress.done} ${tn(progress.done, "case cochée sur", "cases cochées sur")} ${progress.total}` },
       `${progress.done}/${progress.total}`
     ),
     species.formCount
       ? el("span.card__flag", { title: formTitle(species) }, `◈${species.formCount}`)
       : null,
-    species.gd ? el("span.card__flag.card__flag--pair", { title: "Formes ♂ et ♀ distinctes" }, "♂♀") : null
+    species.gd ? el("span.card__flag.card__flag--pair", { title: t("Formes ♂ et ♀ distinctes") }, "♂♀") : null
   );
 
   const gmax = gmaxState(species, collection);
@@ -346,14 +346,14 @@ function paint(node, species, ctx) {
         ? formImg(repli.form, { shiny: repli.shiny, alt: repli.form.name, className: "card__img" })
         : spriteImg(species.id, { shiny: showShiny, female: showFemale, alt: nomEspece(species), className: "card__img" }),
       showShiny
-        ? el("span.card__spark", { title: "Version chromatique affichée", "aria-hidden": "true" })
+        ? el("span.card__spark", { title: t("Version chromatique affichée"), "aria-hidden": "true" })
         : null,
       // Sous l'étoile chromatique : l'emblème Gigamax, gris tant que la forme
       // n'est pas obtenue. Rien du tout chez les espèces qui n'en ont pas.
       gmax === "none"
         ? null
         : el(gmax === "owned" ? "span.card__gmax.card__gmax--on" : "span.card__gmax", {
-            title: gmax === "owned" ? "Forme Gigamax obtenue" : "Forme Gigamax manquante",
+            title: gmax === "owned" ? t("Forme Gigamax obtenue") : t("Forme Gigamax manquante"),
           })
     );
   }
@@ -361,8 +361,8 @@ function paint(node, species, ctx) {
   fill(
     node.querySelector(".card__foot"),
     progress.complete
-      ? el("span.card__complete", "★ Complet")
-      : el("span.card__gen", dataset.generations[species.gen].game.replace("Pokémon ", ""))
+      ? el("span.card__complete", `★ ${t("Complet")}`)
+      : el("span.card__gen", t(dataset.generations[species.gen].game).replace("Pokémon ", ""))
   );
 
   for (const button of node.querySelectorAll("[data-slot]")) {
@@ -445,22 +445,22 @@ function quickToggles(species, ctx, color) {
   const base = species.cosmetic && species.cosmetic.baseVariant;
   const definitions = species.gd
     ? [
-        ["om", [icoSexe("♂")], "Mâle normal", false],
-        ["of", [icoSexe("♀")], "Femelle normale", false],
+        ["om", [icoSexe("♂")], t("Mâle normal"), false],
+        ["of", [icoSexe("♀")], t("Femelle normale"), false],
       ]
-    : [["om", [icoBase()], base ? `${base.name} — normal` : "Marquer comme capturé", false]];
+    : [["om", [icoBase()], base ? `${base.name} — ${t("normal")}` : t("Marquer comme capturé"), false]];
 
   if (!species.noShiny) {
     if (species.gd) {
       definitions.push(
-        ["sm", [icoShiny(), icoSexe("♂")], "Shiny mâle", true],
-        ["sf", [icoShiny(), icoSexe("♀")], "Shiny femelle", true]
+        ["sm", [icoShiny(), icoSexe("♂")], t("Shiny mâle"), true],
+        ["sf", [icoShiny(), icoSexe("♀")], t("Shiny femelle"), true]
       );
     } else {
       definitions.push([
         "sm",
         [icoShiny()],
-        base ? `${base.name} — shiny` : "Marquer le shiny obtenu",
+        base ? `${base.name} — ${t("shiny")}` : t("Marquer le shiny obtenu"),
         true,
       ]);
     }
@@ -470,12 +470,12 @@ function quickToggles(species, ctx, color) {
   // dans la fiche, ou elles sont accompagnees de leur sprite et de leur texte.
   const primary = species.primaryForm;
   if (primary) {
-    definitions.push([primary.slot, [icoFamille(primary.kind)], `${primary.name} — forme normale`, false]);
+    definitions.push([primary.slot, [icoFamille(primary.kind)], `${primary.name} — ${t("forme normale")}`, false]);
     if (primary.shinyEntry) {
       definitions.push([
         primary.shinySlot,
         [icoShiny(), icoFamille(primary.kind)],
-        `${primary.name} — shiny`,
+        `${primary.name} — ${t("shiny")}`,
         true,
       ]);
     }

@@ -31,7 +31,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { applyGoFilters } from "../domain/filters.js";
 import { goProgressOf } from "../domain/progress.js";
 import { dexNumber, typeInk } from "./common.js";
-import { nomEntreeGo, t } from "../core/i18n.js";
+import { nomEntreeGo, nomType, t, tn } from "../core/i18n.js";
 
 export function createGoDex(ctx) {
   const { store, collection, dataset } = ctx;
@@ -59,8 +59,11 @@ export function createGoDex(ctx) {
 
   fill(
     typeSelect,
-    el("option", { value: "all" }, "Tous les types"),
-    Object.keys(dataset.types).map((t) => el("option", { value: t }, t))
+    el("option", { value: "all" }, t("Tous les types")),
+    // `type` et non `t` : le nom du parametre aurait masque la fonction de
+    // traduction dans toute la lambda. La VALEUR reste le type francais — c'est
+    // la clef qui voyage jusqu'a `store.state.goType` —, seul le libelle change.
+    Object.keys(dataset.types).map((type) => el("option", { value: type }, nomType(type)))
   );
   typeSelect.value = store.state.goType;
   typeSelect.addEventListener("change", () => store.set({ goType: typeSelect.value }));
@@ -127,7 +130,7 @@ export function createGoDex(ctx) {
       shown = 0;
       grid.replaceChildren();
       empty.hidden = list.length > 0;
-      counter.textContent = `${list.length} résultat${list.length > 1 ? "s" : ""}`;
+      counter.textContent = `${list.length} ${tn(list.length, "résultat", "résultats")}`;
       if (typeSelect.value !== store.state.goType) typeSelect.value = store.state.goType;
       renderStats();
       appendPage();
@@ -188,7 +191,9 @@ function carte(entry, ctx) {
       // La famille de la forme, en toutes lettres. Deux boîtes portent le même
       // numéro : sans elle, le Miaouss d'Alola et celui de Kanto ne se
       // distinguaient que par leur sprite, à 56 px.
-      entry.kind ? el("span.gcard__kind", KIND_COURT[entry.kind] || entry.kind) : null
+      entry.kind
+        ? el("span.gcard__kind", KIND_COURT[entry.kind] ? t(KIND_COURT[entry.kind]) : entry.kind)
+        : null
     ),
     el("span.gcard__art"),
     el("span.gcard__name", { title: nomEntreeGo(entry) }, nomEntreeGo(entry)),
@@ -199,14 +204,18 @@ function carte(entry, ctx) {
       // vient chercher ici — mais ses deux cases deviennent muettes, et elle
       // ne compte dans aucun total.
       !entry.released
-        ? el("span.gcard__absent", { title: "Pas encore obtenable dans Pokémon GO" }, "Pas dans GO")
+        ? el(
+            "span.gcard__absent",
+            { title: t("Pas encore obtenable dans Pokémon GO") },
+            t("Pas dans GO")
+          )
         : el(
             "button.gcard__btn",
             {
               type: "button",
               dataset: { goSlot: entry.slot, species: entry.id },
-              title: `${nomEntreeGo(entry)} — attrapé dans Pokémon GO`,
-              "aria-label": `${nomEntreeGo(entry)} — attrapé dans Pokémon GO`,
+              title: `${nomEntreeGo(entry)} — ${t("attrapé dans Pokémon GO")}`,
+              "aria-label": `${nomEntreeGo(entry)} — ${t("attrapé dans Pokémon GO")}`,
             },
             el("span.toggle__ico.toggle__ico--capture", { "aria-hidden": "true" })
           ),
@@ -221,14 +230,14 @@ function carte(entry, ctx) {
               {
                 type: "button",
                 dataset: { goSlot: entry.shinySlot, species: entry.id },
-                title: `${nomEntreeGo(entry)} — chromatique dans Pokémon GO`,
-                "aria-label": `${nomEntreeGo(entry)} — chromatique dans Pokémon GO`,
+                title: `${nomEntreeGo(entry)} — ${t("chromatique dans Pokémon GO")}`,
+                "aria-label": `${nomEntreeGo(entry)} — ${t("chromatique dans Pokémon GO")}`,
               },
               el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
             )
           : el(
               "span.gcard__btn.gcard__btn--vide",
-              { title: "Aucun chromatique dans Pokémon GO à ce jour", "aria-hidden": "true" },
+              { title: t("Aucun chromatique dans Pokémon GO à ce jour"), "aria-hidden": "true" },
               "—"
             )
     )

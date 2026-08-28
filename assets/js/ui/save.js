@@ -8,6 +8,7 @@
  *     a passer d'un navigateur a l'autre ou a repartir d'une sauvegarde.
  */
 
+import { t, tn } from "../core/i18n.js";
 import { downloadJson } from "./common.js";
 
 export function createSaveControls(ctx) {
@@ -28,20 +29,20 @@ export function createSaveControls(ctx) {
     try {
       const parsed = JSON.parse(await file.text());
       const marks = parsed && parsed.marks ? parsed.marks : parsed;
-      if (!marks || typeof marks !== "object") throw new Error("format inattendu");
+      if (!marks || typeof marks !== "object") throw new Error(t("format inattendu"));
       ctx.collection.replaceLocal(marks);
       ctx.onCollectionChange();
       ctx.sync.schedule("import d'une sauvegarde");
     } catch (error) {
-      window.alert(`Import impossible : ${error.message}`);
+      window.alert(`${t("Import impossible")} : ${error.message}`);
     }
   });
 
   document.getElementById("reset-btn").addEventListener("click", () => {
     const count = ctx.collection.dirtyCount;
     const message = count
-      ? `Effacer les ${count} espèce(s) modifiées dans ce navigateur et revenir à data/collection.json ?`
-      : "Revenir à data/collection.json ?";
+      ? `${t("Effacer les")} ${count} ${t("espèce(s) modifiées dans ce navigateur et revenir à data/collection.json ?")}`
+      : t("Revenir à data/collection.json ?");
     if (!window.confirm(message)) return;
     ctx.collection.resetLocal();
     ctx.onCollectionChange();
@@ -52,10 +53,22 @@ export function createSaveControls(ctx) {
       const count = ctx.collection.dirtyCount;
       note.hidden = count === 0;
       if (count) {
+        // Le pluriel ne se decoupe pas en « espèce » + « s » : « s » seul n'est
+        // pas une chaine traduisible. Chaque forme est donc une phrase entiere,
+        // et c'est `tn()` qui choisit entre les deux — un `count > 1` ecrit ici
+        // coderait en dur la regle francaise, celle-la meme que `tn()` existe
+        // pour ne pas figer.
         note.textContent = ctx.sync.configured
-          ? `${count} espèce${count > 1 ? "s" : ""} en attente d'envoi vers le dépôt.`
-          : `${count} espèce${count > 1 ? "s" : ""} modifiée${count > 1 ? "s" : ""} dans ce navigateur. ` +
-            "Exporte et remplace data/collection.json pour figer ces changements dans le dépôt.";
+          ? `${count} ${tn(
+              count,
+              "espèce en attente d'envoi vers le dépôt.",
+              "espèces en attente d'envoi vers le dépôt.",
+            )}`
+          : `${count} ${tn(
+              count,
+              "espèce modifiée dans ce navigateur.",
+              "espèces modifiées dans ce navigateur.",
+            )} ` + t("Exporte et remplace data/collection.json pour figer ces changements dans le dépôt.");
       }
       sync.render();
     },
@@ -111,14 +124,14 @@ function createSyncControls(ctx) {
       const remote = await sync.fetchRemote();
       ctx.collection.commitLocal((remote && remote.marks) || {});
       ctx.onCollectionChange();
-      sync.emit("ok", "Collection rechargée depuis le dépôt.");
+      sync.emit("ok", t("Collection rechargée depuis le dépôt."));
     } catch {
       /* idem */
     }
   });
 
   document.getElementById("sync-forget").addEventListener("click", () => {
-    if (!window.confirm("Oublier le jeton GitHub dans ce navigateur ?")) return;
+    if (!window.confirm(t("Oublier le jeton GitHub dans ce navigateur ?"))) return;
     sync.forget();
     render();
   });
@@ -130,7 +143,12 @@ function createSyncControls(ctx) {
     const connected = sync.configured;
     setup.hidden = connected;
     live.hidden = !connected;
-    state.textContent = message || SYNC_LABELS[status] || "";
+    // SYNC_LABELS est evalue une seule fois a l'import : le tableau reste en
+    // francais et la traduction se fait ici, a chaque affichage. `message`, lui,
+    // arrive deja traduit de son point d'emission — le re-traduire n'aurait
+    // rien trouve.
+    const libelle = SYNC_LABELS[status];
+    state.textContent = message || (libelle ? t(libelle) : "");
     state.className = `sync__state sync__state--${status}`;
   }
 

@@ -261,7 +261,7 @@ export class GitHubSync {
   schedule(reason) {
     if (!this.configured) return;
     clearTimeout(this.timer);
-    this.emit("pending", "Modification en attente…");
+    this.emit("pending", t("Modification en attente…"));
     if (this.pendingSince === null) this.pendingSince = Date.now();
     // Plafond : sans lui, cocher une case toutes les trois secondes repousse
     // le minuteur indefiniment et rien ne part jamais. Passe `maxDelayMs`

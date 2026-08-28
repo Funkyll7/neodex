@@ -21,7 +21,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
-import { nomEspece, nomCategorie, nomForme, enAnglais } from "../core/i18n.js";
+import { nomEspece, nomCategorie, nomForme, enAnglais, t, tn } from "../core/i18n.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
@@ -132,10 +132,10 @@ function announce(species, ctx) {
   if (!node) return;
   const progress = completionOf(species, ctx.collection);
   node.textContent =
-    `${nomEspece(species)}, n° ${species.id}. ` +
+    `${nomEspece(species)}, ${t("n°")} ${species.id}. ` +
     (progress.complete
-      ? `Tout obtenu, ${progress.total} case${progress.total > 1 ? "s" : ""}.`
-      : `${progress.done} sur ${progress.total} cases cochées.`);
+      ? `${t("Tout obtenu")}, ${progress.total} ${tn(progress.total, "case", "cases")}.`
+      : `${progress.done} ${t("sur")} ${progress.total} ${t("cases cochées")}.`);
 }
 
 /* ------------------------- feuille plein ecran --------------------------- */
@@ -321,7 +321,7 @@ function head(species, ctx) {
     ),
     el(
       "div.detail__chips",
-      species.types.map((t) => typeChip(t, ctx.dataset.types[t] || "#8b8b8b", "lg"))
+      species.types.map((type) => typeChip(type, ctx.dataset.types[type] || "#8b8b8b", "lg"))
     ),
     el("p.detail__progress", { dataset: { role: "progress" } }, "")
   );
@@ -341,8 +341,16 @@ function head(species, ctx) {
  */
 function stepper(species, ctx) {
   const { prev, next } = ctx.neighbours(species.id);
-  const button = (target, delta, glyph, sens) => {
-    const label = target ? `${sens} : ${target.name}` : `Aucun Pokémon ${sens.toLowerCase()}`;
+  // Le libelle « aucun voisin » est passe entier plutot que recompose : une
+  // fois traduit, « Aucun Pokémon précédent » ne s'obtient plus en minusculant
+  // « Précédent », l'anglais placant le mot ailleurs dans la phrase.
+  //
+  // Le nom du voisin passe par `nomEspece()` et non par `t()` : c'est un nom
+  // venu des donnees, qui dort deja dans le champ `en` de l'espece. En
+  // francais la fonction rend `target.name` sans rien faire — l'infobulle est
+  // donc inchangee.
+  const button = (target, delta, glyph, sens, aucun) => {
+    const label = target ? `${t(sens)} : ${nomEspece(target)}` : t(aucun);
     return el(
       "button.detail__step",
       {
@@ -357,8 +365,8 @@ function stepper(species, ctx) {
   };
   return el(
     "div.detail__steps",
-    button(prev, -1, "‹", "Précédent"),
-    button(next, 1, "›", "Suivant")
+    button(prev, -1, "‹", "Précédent", "Aucun Pokémon précédent"),
+    button(next, 1, "›", "Suivant", "Aucun Pokémon suivant")
   );
 }
 
@@ -374,13 +382,13 @@ function fillHead(node, species, ctx) {
   const progress = completionOf(species, ctx.collection);
 
   const tag = node.querySelector('[data-role="tag"]');
-  tag.textContent = shiny ? "✦ Shiny obtenu" : owned ? "✓ Capturé" : "Manquant";
+  tag.textContent = shiny ? t("✦ Shiny obtenu") : owned ? t("✓ Capturé") : t("Manquant");
   tag.className = owned ? "detail__tag detail__tag--owned" : "detail__tag";
 
   const bar = node.querySelector('[data-role="progress"]');
   bar.textContent = progress.complete
-    ? `★ Tout obtenu — ${progress.total} case${progress.total > 1 ? "s" : ""}`
-    : `${progress.done} / ${progress.total} cases cochées`;
+    ? `${t("★ Tout obtenu")} — ${progress.total} ${tn(progress.total, "case", "cases")}`
+    : `${progress.done} / ${progress.total} ${t("cases cochées")}`;
   bar.className = progress.complete ? "detail__progress detail__progress--done" : "detail__progress";
 }
 
@@ -400,25 +408,28 @@ function collectionSection(species, ctx) {
   // Note : quand le groupe ne couvre pas la base — les casquettes de Pikachu,
   // qui s'ajoutent a la forme classique au lieu de la remplacer — la grille
   // est rendue juste apres, par cosmeticSection().
-  const slots = [["om", species.gd ? "Normal ♂" : "Normal", false, false]];
-  if (species.gd) slots.push(["of", "Normal ♀", false, true]);
+  const slots = [["om", species.gd ? t("Normal ♂") : t("Normal"), false, false]];
+  if (species.gd) slots.push(["of", t("Normal ♀"), false, true]);
   if (shiny) {
-    slots.push(["sm", species.gd ? "Shiny ♂" : "Shiny", true, false]);
-    if (species.gd) slots.push(["sf", "Shiny ♀", true, true]);
+    slots.push(["sm", species.gd ? t("Shiny ♂") : t("Shiny"), true, false]);
+    if (species.gd) slots.push(["sf", t("Shiny ♀"), true, true]);
   }
 
   return el(
     "section.detail__section",
     el(
       "div.detail__row",
-      el("h3.panel__label", "Ma collection"),
-      el("span.detail__note", species.gd ? "Formes ♂ / ♀ distinctes" : "Aucune différence ♂ / ♀")
+      el("h3.panel__label", t("Ma collection")),
+      el(
+        "span.detail__note",
+        species.gd ? t("Formes ♂ / ♀ distinctes") : t("Aucune différence ♂ / ♀")
+      )
     ),
     el(
       "p.detail__help",
       species.gd
-        ? "Cette espèce a des apparences mâle et femelle différentes : coche chaque case que tu possèdes. Dès qu'un shiny est coché, la vignette bascule sur sa version chromatique."
-        : "Coche ce que tu possèdes. Dès que « Shiny » est coché, la vignette bascule sur l'image chromatique."
+        ? t("Cette espèce a des apparences mâle et femelle différentes : coche chaque case que tu possèdes. Dès qu'un shiny est coché, la vignette bascule sur sa version chromatique.")
+        : t("Coche ce que tu possèdes. Dès que « Shiny » est coché, la vignette bascule sur l'image chromatique.")
     ),
     species.noShiny
       ? el("p.form__shiny.form__shiny--none", `✦ ${noShinyReason(ctx)}`)
@@ -432,7 +443,7 @@ function collectionSection(species, ctx) {
 
 function noShinyReason(ctx) {
   const rule = ctx.dataset.locks.noShiny || {};
-  return rule.why || "Aucun chromatique de cette espèce n'existe, dans aucun jeu ni aucune distribution.";
+  return rule.why || t("Aucun chromatique de cette espèce n'existe, dans aucun jeu ni aucune distribution.");
 }
 
 function slotButton(species, ctx, { slot, label, gold, female }) {
@@ -484,14 +495,17 @@ function cosmeticPicker(species, cosmetic, ctx) {
     "section.detail__section",
     el(
       "div.detail__row",
-      el("h3.panel__label", cosmetic.coversBase ? `Ma collection · ${cosmetic.title}` : cosmetic.title),
+      el(
+        "h3.panel__label",
+        cosmetic.coversBase ? `${t("Ma collection")} · ${cosmetic.title}` : cosmetic.title
+      ),
       el("span.detail__note", { dataset: { role: "cosmetic-count" } }, cosmeticCount(species, cosmetic, ctx))
     ),
     el(
       "p.detail__help",
       cosmetic.coversBase
-        ? "Chaque variante est une entrée distincte dans HOME : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique. La première tuile est la forme de base de l'espèce."
-        : "Chaque variante est une entrée distincte dans HOME, en plus de la forme classique ci-dessus : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique."
+        ? t("Chaque variante est une entrée distincte dans HOME : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique. La première tuile est la forme de base de l'espèce.")
+        : t("Chaque variante est une entrée distincte dans HOME, en plus de la forme classique ci-dessus : coche le carré du haut pour la version normale, l'étoile du bas pour le chromatique.")
     ),
     // TOUS les groupes cosmétiques se replient, pas seulement les plus longs :
     // les quatorze casquettes de Pikachu poussaient le reste de la fiche hors
@@ -503,7 +517,7 @@ function cosmeticPicker(species, cosmetic, ctx) {
       { open: !cosmetic.fold, dataset: { key: `picker-${species.id}` } },
       el(
         "summary.forms__title.forms__title--fold",
-        `${cosmetic.variants.length} variantes`
+        `${cosmetic.variants.length} ${t("variantes")}`
       ),
       grid
     ),
@@ -528,7 +542,7 @@ function cosmeticCount(species, cosmetic, ctx) {
   // ferait un compteur qui n'atteint jamais son total.
   const countable = cosmetic.variants.filter((v) => v.entry);
   const done = countable.filter((v) => ctx.collection.has(species.id, v.slot)).length;
-  return `${done} / ${countable.length} variantes`;
+  return `${done} / ${countable.length} ${t("variantes")}`;
 }
 
 function updateCosmeticCount(root, species, ctx) {
@@ -546,8 +560,8 @@ function pickerCell(species, variant, ctx) {
       el("span.picker__name", variant.short),
       el(
         "div.picker__btns",
-        el("span.picker__btn.picker__btn--off", { title: "Ne peut pas entrer dans HOME" }, "✕"),
-        el("span.picker__btn.picker__btn--off", { title: "Ne peut pas entrer dans HOME" }, "✕")
+        el("span.picker__btn.picker__btn--off", { title: t("Ne peut pas entrer dans HOME") }, "✕"),
+        el("span.picker__btn.picker__btn--off", { title: t("Ne peut pas entrer dans HOME") }, "✕")
       )
     );
   }
@@ -557,8 +571,8 @@ function pickerCell(species, variant, ctx) {
       "button.picker__btn",
       {
         type: "button",
-        title: `${variant.name} — normal`,
-        "aria-label": `${variant.name} — normal`,
+        title: `${variant.name} — ${t("normal")}`,
+        "aria-label": `${variant.name} — ${t("normal")}`,
         "aria-pressed": String(ctx.collection.has(species.id, variant.slot)),
         dataset: { slot: variant.slot, species: species.id },
       },
@@ -571,8 +585,8 @@ function pickerCell(species, variant, ctx) {
         "button.picker__btn.picker__btn--gold",
         {
           type: "button",
-          title: `${variant.name} — chromatique`,
-          "aria-label": `${variant.name} — chromatique`,
+          title: `${variant.name} — ${t("chromatique")}`,
+          "aria-label": `${variant.name} — ${t("chromatique")}`,
           "aria-pressed": String(ctx.collection.has(species.id, variant.shinySlot)),
           dataset: { slot: variant.shinySlot, species: species.id },
         },
@@ -580,7 +594,9 @@ function pickerCell(species, variant, ctx) {
       )
     );
   } else {
-    buttons.push(el("span.picker__btn.picker__btn--off", { title: "Aucun chromatique n'existe" }, "✕"));
+    buttons.push(
+      el("span.picker__btn.picker__btn--off", { title: t("Aucun chromatique n'existe") }, "✕")
+    );
   }
 
   return el(
@@ -613,7 +629,7 @@ function cosmeticNotes(species, ctx) {
             ),
             cosmetic.where ? el("p.form__text", cosmetic.where) : null,
             cosmetic.note ? el("p.form__note", cosmetic.note) : null,
-            el("p.form__warn", "Aucune case à cocher : cette forme ne peut pas entrer dans HOME.")
+            el("p.form__warn", t("Aucune case à cocher : cette forme ne peut pas entrer dans HOME."))
           )
         )
       )
@@ -625,11 +641,14 @@ function cosmeticNotes(species, ctx) {
 
   return el(
     "section.detail__section",
-    el("h3.panel__label", `${cosmetic.title} — le détail`),
+    el("h3.panel__label", `${cosmetic.title} — ${t("le détail")}`),
     el(
       "details.forms__group.forms__group--fold",
       { dataset: { key: `notes-${species.id}` } },
-      el("summary.forms__title.forms__title--fold", `Où trouver chaque variante · ${detailed.length}`),
+      el(
+        "summary.forms__title.forms__title--fold",
+        `${t("Où trouver chaque variante")} · ${detailed.length}`
+      ),
       el(
         "ul.variants",
         detailed.map((variant) =>
@@ -642,7 +661,7 @@ function cosmeticNotes(species, ctx) {
               el("div.variants__where", variant.where),
               variant.shinyEntry
                 ? null
-                : el("div.variants__lock", "✦ Aucun chromatique n'existe pour cette variante.")
+                : el("div.variants__lock", t("✦ Aucun chromatique n'existe pour cette variante."))
             )
           )
         )
@@ -745,12 +764,15 @@ function formsSection(species, ctx) {
     "section.detail__section",
     el(
       "div.detail__row",
-      el("h3.panel__label", `Formes · ${species.forms.length}`),
-      el("span.detail__note", `${species.forms.filter((f) => f.entry).length} à collectionner`)
+      el("h3.panel__label", `${t("Formes")} · ${species.forms.length}`),
+      el(
+        "span.detail__note",
+        `${species.forms.filter((f) => f.entry).length} ${t("à collectionner")}`
+      )
     ),
     el(
       "p.detail__help",
-      "Chaque forme a son propre sprite normal et chromatique. Ce qui se coche est en haut."
+      t("Chaque forme a son propre sprite normal et chromatique. Ce qui se coche est en haut.")
     ),
     // UNE seule grille pour tout ce qui se coche, et non une grille par
     // famille : chez Miaouss, trois familles d'une forme chacune donnaient
@@ -767,7 +789,7 @@ function formsSection(species, ctx) {
           "div.forms__lore",
           el(
             "p.forms__lore-note",
-            "Pour l'information seulement — ces formes n'ont pas d'entrée à elles dans HOME, il n'y a rien à y cocher."
+            t("Pour l'information seulement — ces formes n'ont pas d'entrée à elles dans HOME, il n'y a rien à y cocher.")
           ),
           lore.map((kind) => formGroup(kind, groups.get(kind), species, ctx))
         )
@@ -792,7 +814,10 @@ function formGroup(kind, forms, species, ctx) {
   const icon = KIND_ICONS[kind];
   const titre = [
     icon ? el("img.forms__icon", { src: icon, alt: "", width: 17, height: 17, loading: "lazy" }) : null,
-    `${KIND_TITLES[kind]} · ${forms.length}`,
+    // KIND_TITLES est une constante de module, evaluee une seule fois a
+    // l'import : elle reste en francais, et c'est ici, a l'affichage, qu'on la
+    // traduit.
+    `${t(KIND_TITLES[kind])} · ${forms.length}`,
   ];
 
   if (!collapsible) {
@@ -847,8 +872,12 @@ function formTile(form, species, ctx) {
       form.hasShinySprite
         ? el(
             "span.ftile__shiny",
-            formImg(form, { shiny: true, alt: `${nomForme(form)} chromatique`, className: "ftile__img" }),
-            el("span.ftile__spark", { title: "Version chromatique", "aria-hidden": "true" })
+            formImg(form, {
+              shiny: true,
+              alt: `${nomForme(form)} ${t("chromatique")}`,
+              className: "ftile__img",
+            }),
+            el("span.ftile__spark", { title: t("Version chromatique"), "aria-hidden": "true" })
           )
         : null,
       // Le logo de la famille, en pastille : d'un coup d'œil on sait si la
@@ -863,14 +892,14 @@ function formTile(form, species, ctx) {
         ? el("img.ftile__kind", {
             src: KIND_ICONS[form.kind],
             alt: "",
-            title: KIND_TITLES[form.kind],
+            title: t(KIND_TITLES[form.kind]),
             width: 18,
             height: 18,
             loading: "lazy",
           })
         : form.entry
           ? el("span.ftile__kind.ftile__kind--capture", {
-              title: KIND_TITLES[form.kind] || "Forme alternative",
+              title: t(KIND_TITLES[form.kind] || "Forme alternative"),
               "aria-hidden": "true",
             })
           : null
@@ -879,31 +908,31 @@ function formTile(form, species, ctx) {
       "div.ftile__id",
       // Remplace le titre de groupe supprimé : la famille reste écrite, mais
       // sur la tuile, ce qui laisse toutes les formes dans une même grille.
-      el("span.ftile__fam", KIND_SHORT[form.kind] || KIND_TITLES[form.kind] || ""),
+      el("span.ftile__fam", t(KIND_SHORT[form.kind] || KIND_TITLES[form.kind] || "")),
       el("div.ftile__name", nomForme(form)),
       el(
         "div.ftile__chips",
-        form.types.map((t) => typeChip(t, dataset.types[t] || "#8b8b8b"))
+        form.types.map((type) => typeChip(type, dataset.types[type] || "#8b8b8b"))
       )
     ),
     formButtons(form, species, ctx),
     el(
       "details.ftile__more",
       { dataset: { key: `${species.id}-${form.key}` } },
-      el("summary.ftile__summary", "Détails"),
+      el("summary.ftile__summary", t("Détails")),
       form.where ? el("p.form__text", form.where) : null,
       el(
         "p.form__games",
         games.length
-          ? ["Présente dans : ", el("strong", games.map((g) => g.name).join(" · "))]
-          : "Aucun jeu de la série principale ne la propose — transfert HOME uniquement."
+          ? [`${t("Présente dans")} : `, el("strong", games.map((g) => t(g.name)).join(" · "))]
+          : t("Aucun jeu de la série principale ne la propose — transfert HOME uniquement.")
       ),
       shinyLine(form, huntable, games, species, ctx),
       form.note ? el("p.form__note", form.note) : null,
       el(
         "a.info__link",
         { href: pokepediaUrl(form.name), target: "_blank", rel: "noopener" },
-        "Fiche de la forme ↗"
+        t("Fiche de la forme ↗")
       )
     )
   );
@@ -934,7 +963,7 @@ function formButtons(form, species, ctx) {
   if (!form.entry) {
     return el(
       "p.form__warn",
-      "Rien à cocher : cette forme n'a pas d'entrée à elle dans HOME. La fiche est là pour l'information."
+      t("Rien à cocher : cette forme n'a pas d'entrée à elle dans HOME. La fiche est là pour l'information.")
     );
   }
 
@@ -956,19 +985,19 @@ function formButtons(form, species, ctx) {
   // boutons de 48 px au lieu de 36, au contenu sur deux étages.
   const defs = form.gendered
     ? [
-        [form.slot, null, sexe("♂"), false, "Normal mâle"],
-        [form.slotF, null, sexe("♀"), false, "Normal femelle"],
+        [form.slot, null, sexe("♂"), false, t("Normal mâle")],
+        [form.slotF, null, sexe("♀"), false, t("Normal femelle")],
       ]
-    : [[form.slot, null, "Normal", false, "Normal"]];
+    : [[form.slot, null, t("Normal"), false, t("Normal")]];
 
   if (form.shinyEntry) {
     if (form.gendered) {
       defs.push(
-        [form.shinySlot, ico(), sexe("♂"), true, "Chromatique mâle"],
-        [form.shinySlotF, ico(), sexe("♀"), true, "Chromatique femelle"]
+        [form.shinySlot, ico(), sexe("♂"), true, t("Chromatique mâle")],
+        [form.shinySlotF, ico(), sexe("♀"), true, t("Chromatique femelle")]
       );
     } else {
-      defs.push([form.shinySlot, ico(), "Shiny", true, "Chromatique"]);
+      defs.push([form.shinySlot, ico(), t("Shiny"), true, t("Chromatique")]);
     }
   }
 
@@ -1002,42 +1031,55 @@ function formButtons(form, species, ctx) {
 /** La ligne qui repond a « et le shiny, alors ? » pour une forme. */
 function shinyLine(form, huntable, games, species, ctx) {
   if (form.shiny === "base") {
-    return el("p.form__shiny.form__shiny--base", "✦ Pas de chasse dédiée : c'est le chromatique du Pokémon de base qui s'affiche sous cette forme.");
+    return el(
+      "p.form__shiny.form__shiny--base",
+      t("✦ Pas de chasse dédiée : c'est le chromatique du Pokémon de base qui s'affiche sous cette forme.")
+    );
   }
   if (species.noShiny) {
     return el("p.form__shiny.form__shiny--none", `✦ ${noShinyReason(ctx)}`);
   }
   if (form.shiny === "none" || !form.hasShinySprite) {
-    return el("p.form__shiny.form__shiny--none", "✦ Aucun chromatique n'existe pour cette forme, dans aucun jeu.");
+    return el(
+      "p.form__shiny.form__shiny--none",
+      t("✦ Aucun chromatique n'existe pour cette forme, dans aucun jeu.")
+    );
   }
   if (!huntable.length) {
     return el(
       "p.form__shiny.form__shiny--event",
       games.length
-        ? `✦ Chromatique verrouillé partout où elle apparaît (${games.map((g) => g.name).join(" · ")}) : il n'existe que par distribution ou par HOME — donc à cocher quand tu l'as.`
-        : "✦ Chromatique hors série principale : distribution ou HOME uniquement."
+        ? `${t("✦ Chromatique verrouillé partout où elle apparaît")} (${games
+            .map((g) => t(g.name))
+            .join(" · ")}) : ${t("il n'existe que par distribution ou par HOME — donc à cocher quand tu l'as.")}`
+        : t("✦ Chromatique hors série principale : distribution ou HOME uniquement.")
     );
   }
   return el(
     "p.form__shiny.form__shiny--ok",
-    `✦ Chromatique chassable dans ${huntable.length} jeu${huntable.length > 1 ? "x" : ""} : ${huntable
-      .map((g) => g.name)
-      .join(" · ")}.`
+    `${t("✦ Chromatique chassable dans")} ${huntable.length} ${tn(
+      huntable.length,
+      "jeu",
+      "jeux"
+    )} : ${huntable.map((g) => t(g.name)).join(" · ")}.`
   );
 }
 
 /* --------------------- disponibilite par jeu ----------------------------- */
 
 function availabilitySection(species, { dataset }) {
-  const section = el("section.detail__section", el("h3.panel__label", "Où le trouver — tous les jeux"));
+  const section = el(
+    "section.detail__section",
+    el("h3.panel__label", t("Où le trouver — tous les jeux"))
+  );
 
   if (!species.curated) {
     section.append(
       el(
         "p.detail__help",
-        "Disponibilité pas encore renseignée pour cette espèce. Elle s'ajoute dans ",
+        t("Disponibilité pas encore renseignée pour cette espèce. Elle s'ajoute dans "),
         el("code", `data/details/gen-${species.gen}.json`),
-        " (champs gm / ev / nsh) — voir PROJET.md."
+        t(" (champs gm / ev / nsh) — voir PROJET.md.")
       )
     );
     return section;
@@ -1046,15 +1088,15 @@ function availabilitySection(species, { dataset }) {
   section.append(
     el(
       "p.detail__help",
-      "Vert = capturable en jeu et shiny huntable · orange = capturable mais shiny impossible · violet = uniquement par événement, shiny possible · bleu = événement et shiny impossible."
+      t("Vert = capturable en jeu et shiny huntable · orange = capturable mais shiny impossible · violet = uniquement par événement, shiny possible · bleu = événement et shiny impossible.")
     ),
     el(
       "div.games",
       el(
         "div.games__row.games__head",
-        el("span", "Jeu"),
-        el("span", "Présence"),
-        el("span.games__cell--shiny", "Shiny")
+        el("span", t("Jeu")),
+        el("span", t("Présence")),
+        el("span.games__cell--shiny", t("Shiny"))
       ),
       availabilityRows(species, dataset.games).map((row) =>
         el(
@@ -1065,17 +1107,20 @@ function availabilitySection(species, { dataset }) {
           },
           el(
             "div",
-            el("div.games__name", row.game.name),
-            el("div.games__gen", `Gén. ${row.game.gen}`)
+            el("div.games__name", t(row.game.name)),
+            el("div.games__gen", `${t("Gén.")} ${row.game.gen}`)
           ),
-          el("span.games__cell", row.presenceLabel),
-          el("span.games__cell.games__cell--shiny", row.shinyLabel)
+          // `presenceLabel` / `shinyLabel` viennent d'une table de module de
+          // `availability.js`, figee a l'import : on les traduit ici, au point
+          // d'affichage.
+          el("span.games__cell", t(row.presenceLabel)),
+          el("span.games__cell.games__cell--shiny", t(row.shinyLabel))
         )
       )
     ),
     el(
       "p.footnote",
-      "Séries principales uniquement. Un Pokémon absent reste obtenable par échange ou transfert (Banque / HOME) depuis un jeu où il apparaît."
+      t("Séries principales uniquement. Un Pokémon absent reste obtenable par échange ou transfert (Banque / HOME) depuis un jeu où il apparaît.")
     )
   );
   return section;
@@ -1093,10 +1138,10 @@ function huntSection(species, ctx) {
   const badge = el(
     huntable.length ? "span.hunt__badge" : "span.hunt__badge--none.hunt__badge",
     huntable.length
-      ? `✦ Shiny hunt possible dans ${huntable.length} jeu${huntable.length > 1 ? "x" : ""}`
+      ? `${t("✦ Shiny hunt possible dans")} ${huntable.length} ${tn(huntable.length, "jeu", "jeux")}`
       : species.noShiny
-        ? "Aucun chromatique n'existe"
-        : "Shiny impossible dans la série principale"
+        ? t("Aucun chromatique n'existe")
+        : t("Shiny impossible dans la série principale")
   );
 
   const why = huntable.length
@@ -1105,12 +1150,12 @@ function huntSection(species, ctx) {
       ? noShinyReason(ctx)
       : species.note ||
         (species.curated
-          ? "Ce Pokémon est verrouillé chromatique dans tous les jeux où il apparaît, ou n'existe que dans la Gén. I, qui ne connaît pas les chromatiques. Son chromatique reste obtenable par distribution ou par HOME : la case compte donc dans le « tout obtenu »."
-          : "Disponibilité pas encore renseignée : impossible de dire où le shiny est chassable.");
+          ? t("Ce Pokémon est verrouillé chromatique dans tous les jeux où il apparaît, ou n'existe que dans la Gén. I, qui ne connaît pas les chromatiques. Son chromatique reste obtenable par distribution ou par HOME : la case compte donc dans le « tout obtenu ».")
+          : t("Disponibilité pas encore renseignée : impossible de dire où le shiny est chassable."));
 
   return el(
     "section.detail__section",
-    el("h3.panel__label", "✦ Shiny hunt — jeu par jeu"),
+    el("h3.panel__label", t("✦ Shiny hunt — jeu par jeu")),
     el(
       "div.hunt",
       badge,
@@ -1120,12 +1165,12 @@ function huntSection(species, ctx) {
       locked.length
         ? el(
             "p.hunt__locked",
-            `Verrouillé chromatique dans : ${locked.map((g) => g.name).join(" · ")}. `,
+            `${t("Verrouillé chromatique dans")} : ${locked.map((g) => t(g.name)).join(" · ")}. `,
             lockReason(species, locked, dataset)
           )
         : null,
       el("div.hunt__sep"),
-      el("h4.panel__label", "Rappel des méthodes générales"),
+      el("h4.panel__label", t("Rappel des méthodes générales")),
       el(
         "div.hunt__list",
         dataset.hunt.generalMethods.map((m) =>
@@ -1139,7 +1184,7 @@ function huntSection(species, ctx) {
       el(
         "a.info__link",
         { href: CONFIG.links.shinyGuide, target: "_blank", rel: "noopener", style: { marginTop: "10px", display: "inline-block" } },
-        "Guide complet des Pokémon chromatiques ↗"
+        t("Guide complet des Pokémon chromatiques ↗")
       )
     )
   );
@@ -1153,7 +1198,7 @@ function gameMethod(species, game, planner) {
     { dataset: { key: `hunt-${game.code}` } },
     el(
       "summary.method__head",
-      el("span.method__game", game.name),
+      el("span.method__game", t(game.name)),
       el("span.method__odds", method.odds || "—"),
       el("span.method__name", method.name)
     ),
@@ -1166,8 +1211,8 @@ function whyText(species, huntable, planner) {
     .map((game) => ({ game, method: planner.methodFor(game.code, species) }))
     .sort((a, b) => oddsOf(a.method.odds) - oddsOf(b.method.odds))[0];
   return (
-    `Le meilleur taux se trouve dans ${best.game.name} : ${best.method.name}, ${best.method.odds}. ` +
-    "Déplie un jeu ci-dessous pour la marche à suivre exacte ; les taux tiennent compte du Charme Chroma quand le jeu le propose."
+    `${t("Le meilleur taux se trouve dans")} ${t(best.game.name)} : ${best.method.name}, ${best.method.odds}. ` +
+    t("Déplie un jeu ci-dessous pour la marche à suivre exacte ; les taux tiennent compte du Charme Chroma quand le jeu le propose.")
   );
 }
 
@@ -1175,7 +1220,7 @@ function lockReason(species, locked, dataset) {
   const always = ((dataset.locks.always && dataset.locks.always.species) || []).includes(species.id);
   if (always) return dataset.locks.always.why || "";
   const first = dataset.locks.byGame && dataset.locks.byGame[locked[0].code];
-  return (first && first.why) || "Le jeu ne génère jamais cette espèce en chromatique.";
+  return (first && first.why) || t("Le jeu ne génère jamais cette espèce en chromatique.");
 }
 
 function oddsOf(odds) {
@@ -1189,25 +1234,25 @@ function infoSection(species, { dataset }) {
   const gen = dataset.generations[species.gen];
   return el(
     "section.detail__section",
-    el("h3.panel__label", "Fiche"),
+    el("h3.panel__label", t("Fiche")),
     el(
       "div.info",
       el(
         "div",
-        el("div.info__key", "Apparition d'origine"),
-        el("div.info__val", gen.game),
-        el("div.info__sub", `${gen.label} · sortie ${gen.year}`)
+        el("div.info__key", t("Apparition d'origine")),
+        el("div.info__val", t(gen.game)),
+        el("div.info__sub", `${t(gen.label)} · ${t("sortie")} ${gen.year}`)
       ),
       el("div.info__sep"),
       el(
         "div",
-        el("div.info__key", "Emplacement d'origine"),
-        el("div.info__text", species.where || "Non renseigné pour l'instant.")
+        el("div.info__key", t("Emplacement d'origine")),
+        el("div.info__text", species.where || t("Non renseigné pour l'instant."))
       ),
       el(
         "div.info__links",
-        el("a.info__link", { href: pokepediaUrl(species.name), target: "_blank", rel: "noopener" }, "Poképédia (FR) ↗"),
-        el("a.info__link", { href: bulbapediaUrl(species.en), target: "_blank", rel: "noopener" }, "Bulbapedia (EN) ↗")
+        el("a.info__link", { href: pokepediaUrl(species.name), target: "_blank", rel: "noopener" }, t("Poképédia (FR) ↗")),
+        el("a.info__link", { href: bulbapediaUrl(species.en), target: "_blank", rel: "noopener" }, t("Bulbapedia (EN) ↗"))
       )
     )
   );
@@ -1219,18 +1264,18 @@ function statsSection(species, { dataset }) {
   const total = species.stats.reduce((sum, n) => sum + n, 0);
   return el(
     "section.detail__section",
-    el("h3.panel__label", "Statistiques de base"),
+    el("h3.panel__label", t("Statistiques de base")),
     species.stats.map((value, index) =>
       el(
         "div.stat",
-        el("span.stat__label", dataset.statLabels[index]),
+        el("span.stat__label", t(dataset.statLabels[index])),
         el("span.stat__value", value),
         el("div.stat__track", el("div.stat__bar", { style: { width: `${Math.min(100, (value / 255) * 100)}%` } }))
       )
     ),
     el(
       "div.stat.stat--total",
-      el("span.stat__label", "Total"),
+      el("span.stat__label", t("Total")),
       el("span.stat__value", total),
       el("div.stat__track", el("div.stat__bar", { style: { width: `${Math.min(100, (total / 720) * 100)}%` } }))
     )
