@@ -324,7 +324,8 @@ export function createImportPhotos(ctx) {
             disabled: deja,
             title: deja
               ? "Déjà cochée dans ta collection"
-              : `Confiance : ${l.score} — plus le nombre est bas, plus c'est sûr`,
+              : `Distance au sprite officiel : ${l.score}` +
+                (l.marge == null ? "" : ` — avance de ${l.marge} sur le candidat suivant`),
             onclick: (e) => {
               const b = e.currentTarget;
               const actif = b.getAttribute("aria-pressed") === "true";
@@ -345,7 +346,10 @@ export function createImportPhotos(ctx) {
             "span.imp__etat",
             deja ? "déjà cochée" : l.shiny ? "chromatique" : "normal"
           ),
-          el("span.imp__score", { class: l.score > 6 ? "imp__score imp__score--faible" : "imp__score" }, l.score)
+          (() => {
+            const c = confiance(l);
+            return el("span.imp__score", { class: `imp__score${c.classe}` }, c.mot);
+          })()
         );
       })
     );
@@ -380,9 +384,10 @@ export function createImportPhotos(ctx) {
 
         el(
           "p.imp__texte.imp__texte--gris",
-          "Appuie sur une vignette pour la retirer du lot, ou la remettre. Le nombre en " +
-            "bas est la distance au sprite officiel : sous 6 la reconnaissance ne se " +
-            "trompe pas, au-delà relis-la. Les grisées sont déjà dans ta collection — " +
+          "Appuie sur une vignette pour la retirer du lot, ou la remettre. Le mot en bas " +
+            "dit la confiance : « sûr » quand le sprite officiel correspond et qu'aucun " +
+            "autre ne s'en approche, « à relire » quand deux candidats se valent. Les " +
+            "chiffres sont dans l'infobulle. Les grisées sont déjà dans ta collection — " +
             "elles ne seront pas réécrites."
         ),
 
@@ -497,12 +502,46 @@ export function createImportPhotos(ctx) {
 
 /* ------------------------------- utilitaires ----------------------------- */
 
-/** Espèce à laquelle appartient une forme, d'après son identifiant PokeAPI. */
+/**
+ * Un mot plutôt qu'un nombre.
+ *
+ * L'écran affichait la distance brute au sprite officiel. Ce nombre ne dit rien
+ * à qui relit : il faut savoir que 6 est bon et 12 douteux, et cela dépend en
+ * plus de la netteté de la capture.
+ *
+ * Deux mesures valent mieux qu'une. Le score dit la ressemblance ; la marge dit
+ * si un rival la conteste — et c'est elle qui prédit le mieux. Relue case par
+ * case sur une capture, les réponses justes avaient une marge de 1,0 à 7,2, les
+ * fausses de 0 à 1,6. Un score franc dont la marge est nulle veut dire « deux
+ * candidats se valent », ce que le seul nombre ne pouvait pas dire.
+ *
+ * Les chiffres restent, dans l'infobulle, pour qui veut regarder.
+ */
+function confiance(l) {
+  const marge = l.marge == null ? Infinity : l.marge;
+  if (l.score <= 6 && marge >= 3) return { mot: "sûr", classe: "" };
+  if (l.score <= 10 && marge >= 2) return { mot: "probable", classe: " imp__score--moyen" };
+  return { mot: "à relire", classe: " imp__score--faible" };
+}
+
+/**
+ * Espèce à laquelle appartient une forme, d'après son identifiant PokeAPI.
+ *
+ * La table est construite une fois puis gardée. La version qui parcourait les
+ * 1025 espèces à chaque appel était appelée une fois par forme de la banque —
+ * un demi-million d'itérations au premier chargement du lecteur, pour une
+ * réponse qui ne change jamais.
+ */
+let tableDesFormes = null;
+
 function especeDeLaForme(dataset, formeId) {
-  for (const p of dataset.species) {
-    for (const f of p.forms) if (f.id === formeId) return p.id;
+  if (!tableDesFormes) {
+    tableDesFormes = new Map();
+    for (const p of dataset.species) {
+      for (const f of p.forms) tableDesFormes.set(f.id, p.id);
+    }
   }
-  return formeId;
+  return tableDesFormes.get(formeId) ?? formeId;
 }
 
 /**

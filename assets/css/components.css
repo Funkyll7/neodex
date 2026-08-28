@@ -1630,7 +1630,15 @@
   font-size: 11.5px; font-weight: 800; color: var(--text-soft);
 }
 .imp__etat { font-size: 10px; color: var(--text-faint); }
-.imp__score { font-size: 10px; font-weight: 800; color: var(--avail-ok); }
+/* Un mot, pas un nombre — voir `confiance()` dans ui/import-photos.js. Les trois
+   niveaux se lisent aussi à la couleur, pour que la relecture aille vite. */
+.imp__score {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: var(--avail-ok);
+}
+.imp__score--moyen { color: var(--text-muted); }
 .imp__score--faible { color: var(--avail-nolock); }
 
 /* ====================== Bandeau « Annuler » ============================== */
