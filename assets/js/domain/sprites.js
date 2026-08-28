@@ -72,6 +72,78 @@ const PIXELS_CHOISIS = {
   10158: () => `${CONFIG.spriteJauneBase}25.png`,
 };
 
+/**
+ * Les formes dont le sprite en pixels vit dans le depot.
+ *
+ * Vingt-six formes du DLC Mega-Dimension n'ont de pixel art nulle part —
+ * mesure faite source par source sur les 304 formes du jeu de donnees. Deux
+ * artistes les ont dessinees a la main, et leurs images sont maintenant ici.
+ *
+ * Une liste explicite, et non un simple essai suivi d'un repli : sans elle,
+ * les 278 AUTRES formes demanderaient chacune un fichier absent avant de
+ * continuer leur chaine. Un 404 par forme affichee, pour rien.
+ *
+ * Y ajouter une forme, c'est deposer `<cle>.png` dans assets/img/pixels/ et
+ * ecrire sa cle ici. Rien d'autre.
+ */
+const PIXELS_LOCAUX = new Set([
+  "absol-mega-z",
+  "barbaracle-mega",
+  "baxcalibur-mega",
+  "darkrai-mega",
+  "dragalge-mega",
+  "eelektross-mega",
+  "falinks-mega",
+  "garchomp-mega-z",
+  "golisopod-mega",
+  "heatran-mega",
+  "lucario-mega-z",
+  "magearna-mega",
+  "magearna-original-mega",
+  "malamar-mega",
+  "meowstic-male-mega",
+  "pyroar-mega",
+  "raichu-mega-x",
+  "raichu-mega-y",
+  "scolipede-mega",
+  "scrafty-mega",
+  "staraptor-mega",
+  // Les trois Nigirigon partagent un seul dessin, et c'est fidele au jeu : la
+  // Mega-Evolution fond les trois formes en une.
+  "tatsugiri-curly-mega",
+  "tatsugiri-droopy-mega",
+  "tatsugiri-stretchy-mega",
+  "zeraora-mega",
+  "zygarde-mega",
+]);
+
+/**
+ * Celles dont on a AUSSI le chromatique — six sur vingt-six.
+ *
+ * Les vingt autres retombent sur leur sprite normal, ce que le site fait deja
+ * pour toute forme sans chromatique connu. Une seconde liste plutot qu'un essai
+ * a l'aveugle, pour la meme raison que la premiere : ne jamais demander un
+ * fichier qu'on sait absent.
+ */
+const PIXELS_LOCAUX_SHINY = new Set([
+  "darkrai-mega",
+  "dragalge-mega",
+  "magearna-original-mega",
+  "scolipede-mega",
+  "scrafty-mega",
+  "zygarde-mega",
+]);
+
+/** L'adresse locale d'une forme, quand elle existe — sinon rien. */
+function urlsLocales(key, { shiny = false } = {}) {
+  if (!enPixels || !key || !PIXELS_LOCAUX.has(key)) return [];
+  const base = CONFIG.spritePixelLocalBase;
+  const liste = [];
+  if (shiny && PIXELS_LOCAUX_SHINY.has(key)) liste.push(`${base}${key}.shiny.png`);
+  liste.push(`${base}${key}.png`);
+  return liste;
+}
+
 export function artworkUrl(id, { shiny = false } = {}) {
   return `${CONFIG.artworkBase}${shiny ? "shiny/" : ""}${id}.png`;
 }
@@ -96,9 +168,16 @@ export function spriteImg(id, { shiny = false, female = false, alt = "", classNa
  */
 export function formImg(form, { shiny = false, alt = "", className = "" } = {}) {
   const has = form.sprites || {};
-  // En tete, jamais a la place : une forme absente du dossier en pixels
-  // retombe ainsi sur son rendu HOME au lieu de laisser un carre vide.
-  const chain = urlsEnPixels(form.id, { shiny });
+  // En tete de tout : les seuls sprites dont on SAIT qu'ils sont la, parce
+  // qu'ils sont dans le depot. Ils ne couvrent que les vingt-six formes
+  // qu'aucune source distante ne sert ; pour les 278 autres, cette liste est
+  // vide et la chaine reprend normalement.
+  const chain = urlsLocales(form.key, { shiny });
+
+  // Puis PokeAPI. En tete de ce qui suit, jamais a la place : une forme absente
+  // du dossier en pixels retombe ainsi sur son rendu HOME au lieu de laisser un
+  // carre vide.
+  chain.push(...urlsEnPixels(form.id, { shiny }));
 
   // Puis le projet Smogon, la ou PokeAPI s'arrete. Sa cle est celle de la
   // forme, telle quelle — `clefable-mega`, `pikachu-starter` — et c'est ce qui

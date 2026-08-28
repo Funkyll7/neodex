@@ -172,27 +172,27 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Le bouton des thèmes portait un croissant de lune, ou un soleil sur les deux
    palettes claires. Or ce symbole-là dit « mode sombre / mode clair » : il
    annonçait un interrupteur à deux positions, alors qu'il ouvre trente-deux
-   palettes en cinq familles. Une roue chromatique dit « couleurs », ce qui est
-   exactement ce qu'il y a derrière.
+   palettes en cinq familles.
 
-   Le premier quartier prend `--accent`, et suit donc le thème courant : le
-   bouton continue de dire où l'on est, comme le faisait la lune, sans avoir à
-   ouvrir le panneau. Les trois autres sont fixes — ce sont eux qui font lire un
-   nuancier plutôt qu'une pastille de couleur unie.
+   Une roue chromatique complète à la place — le disque des teintes, celui des
+   sélecteurs de couleur. C'est le pictogramme que tout le monde reconnaît, et
+   il ne promet plus deux positions.
 
-   `from -45deg` place la césure entre deux quartiers en haut, et non un trait
-   vertical au milieu du disque, qui l'aurait fait lire comme coupé en deux. */
+   Le trou au centre n'est pas décoratif : à 18 px, un disque plein tourne au
+   pâté brunâtre parce que les teintes se rejoignent au milieu. L'anneau garde
+   chaque couleur lisible. Il est peint en `--bg-sunken`, le fond du bouton
+   lui-même, et se fond donc dedans quel que soit le thème.
+
+   `from 90deg` met le rouge en haut, comme sur un disque chromatique classique,
+   et la teinte de départ est répétée en fin de liste pour que la boucle se
+   referme sans couture visible. */
 .theme-wheel {
-  width: 17px; height: 17px; border-radius: 50%;
-  background: conic-gradient(
-    from -45deg,
-    var(--accent) 0deg 90deg,
-    #ff6b4d 90deg 180deg,
-    #4ec97a 180deg 270deg,
-    #5b8dff 270deg 360deg
-  );
-  /* Un liseré intérieur plutôt qu'une bordure : sur un fond sombre comme sur un
-     fond clair, il détache la roue du rond du bouton sans en changer la taille. */
-  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--bg-sunken) 70%, transparent);
+  width: 18px; height: 18px; border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--bg-sunken) 0 27%, transparent 28%),
+    conic-gradient(
+      from 90deg,
+      #ff3b30, #ff9500, #ffcc00, #7ed321, #34c759,
+      #00c7be, #22a7f0, #4a5cff, #8e5cf0, #d44bd8, #ff2d70, #ff3b30
+    );
 }
-.icon-btn:hover .theme-wheel { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--bg-sunken) 40%, transparent); }

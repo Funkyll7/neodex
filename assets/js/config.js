@@ -81,6 +81,22 @@ export const CONFIG = {
    * Les formes cosmetiques y sont toutes presentes, y compris celles qui n'ont
    * pas de rendu HOME — c'est le cas du seul Pichu Troizepi.
    */
+  /**
+   * Les sprites deposes dans le depot, pour ce que personne d'autre ne sert.
+   *
+   * Vingt-six formes du DLC Mega-Dimension n'ont de pixel art NULLE PART : ni
+   * chez PokeAPI, ni chez Showdown. Mesure faite source par source sur les 304
+   * formes du jeu de donnees. Deux artistes les ont dessinees a la main —
+   * RetroNC et KingOfThe-X-Roads — et leurs images vivent ici, ramenees a 96 px
+   * comme tout le reste du theme.
+   *
+   * Chez nous et non en lien direct, et ce n'est pas un detail : DeviantArt
+   * signe ses adresses avec un jeton qui EXPIRE, et les images de X refusent
+   * souvent d'etre affichees depuis un autre site. Un lien direct aurait donc
+   * lache tout seul, un jour, sans que rien n'ait bouge ici. 136 Ko au total.
+   */
+  spritePixelLocalBase: "assets/img/pixels/",
+
   spriteClassicBase: SPRITES_ROOT,
 
   /** Nombre de vignettes ajoutees a chaque palier de defilement. */

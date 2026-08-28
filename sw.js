@@ -37,7 +37,7 @@
    v16 : `no-cache` remplace `no-store` — meme garantie de fraicheur, mais la
         revalidation redevient possible et la coquille n'est plus
         retelechargee en entier a chaque ouverture. */
-const VERSION = "funkylldex-v16";
+const VERSION = "funkylldex-v17";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;
@@ -149,6 +149,15 @@ self.addEventListener("fetch", (event) => {
 
   if (url.pathname.includes("/data/")) {
     event.respondWith(cacheDAbord(request, DATA));
+    return;
+  }
+
+  // Les sprites deposes dans le depot ne changent jamais : leur contenu est fige
+  // par le nom du fichier. Cache d'abord, comme les sprites distants — le reste
+  // du site reste en reseau d'abord, pour qu'une mise en ligne se voie tout de
+  // suite.
+  if (url.pathname.includes("/assets/img/pixels/")) {
+    event.respondWith(cacheDAbord(request, SPRITES));
     return;
   }
 
