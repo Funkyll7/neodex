@@ -4,6 +4,7 @@
 
 import { el } from "../core/dom.js";
 import { CONFIG } from "../config.js";
+import { nomType } from "../core/i18n.js";
 
 /** "#0025" */
 export const dexNumber = (id) => `#${String(id).padStart(4, "0")}`;
@@ -41,10 +42,18 @@ export function typeInk(color) {
   return surBlanc >= surEncre ? "#ffffff" : "#111111";
 }
 
-/** Pastille de type. `size` vaut "sm" (grille) ou "lg" (fiche). */
+/**
+ * Pastille de type. `size` vaut "sm" (grille) ou "lg" (fiche).
+ *
+ * La traduction se fait ICI et non chez les appelants : les pastilles sont
+ * peintes depuis cinq endroits differents — grille, fiche, formes, quete,
+ * Pokedex GO —, et l'oubli d'un seul aurait laisse un « Plante » au milieu des
+ * « Grass ». La couleur, elle, reste choisie sur le nom FRANCAIS, qui est la
+ * cle de data/reference/types.json.
+ */
 export function typeChip(name, color, size = "sm") {
   const balise = size === "lg" ? "span.chip.chip--lg" : "span.chip";
-  return el(balise, { "--type": color, "--type-ink": typeInk(color) }, name);
+  return el(balise, { "--type": color, "--type-ink": typeInk(color) }, nomType(name));
 }
 
 /**

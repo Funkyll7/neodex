@@ -13,6 +13,7 @@
 import { el, fill } from "../core/dom.js";
 import { spriteImg } from "../domain/sprites.js";
 import { dexNumber, typeChip } from "./common.js";
+import { nomEspece } from "../core/i18n.js";
 
 export function createQuest(ctx) {
   const card = document.getElementById("quest-card");
@@ -85,11 +86,11 @@ function questBody(species, game, ctx, complete) {
     el("span.quest__kicker", "Quête en cours · méthode la plus simple"),
     el(
       "div.quest__hero",
-      spriteImg(species.id, { shiny: true, alt: `${species.name} chromatique`, className: "quest__img" }),
+      spriteImg(species.id, { shiny: true, alt: `${nomEspece(species)} chromatique`, className: "quest__img" }),
       el(
         "div.quest__id",
         el("div.quest__num", dexNumber(species.id)),
-        el("h2.quest__name", `✦ ${species.name}`),
+        el("h2.quest__name", `✦ ${nomEspece(species)}`),
         el("p.quest__where", ["dans ", el("strong", game.name)]),
         el(
           "div.detail__chips",
@@ -193,6 +194,20 @@ function emptyQuest(ctx, complete) {
   return fragment;
 }
 
+/**
+ * Le nom a montrer dans le journal.
+ *
+ * Le journal garde le nom tel qu'il etait au moment de la capture — c'est une
+ * archive, et on n'y touche pas. Mais l'AFFICHER en francais sous une interface
+ * anglaise n'aurait aucun sens : on retrouve donc l'espece par son numero et on
+ * montre son nom dans la langue courante. Le nom archive reste le repli, pour
+ * une espece qui aurait disparu du jeu de donnees.
+ */
+function nomJournal(entree, ctx) {
+  const espece = ctx.dataset.byId.get(entree.id);
+  return espece ? nomEspece(espece) : entree.name;
+}
+
 /* ------------------------------- journal --------------------------------- */
 
 function renderLog(root, entries, ctx) {
@@ -216,7 +231,7 @@ function renderLog(root, entries, ctx) {
           spriteImg(entry.id, { shiny: true, alt: entry.name, className: "log__img" }),
           el(
             "div",
-            el("div.log__name", `✦ ${entry.name}`),
+            el("div.log__name", `✦ ${nomJournal(entry, ctx)}`),
             el("div.log__meta", `${entry.game} · ${entry.method}`)
           )
         )

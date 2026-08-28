@@ -196,3 +196,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
       #00c7be, #22a7f0, #4a5cff, #8e5cf0, #d44bd8, #ff2d70, #ff3b30
     );
 }
+
+/* Le bouton de langue porte deux lettres, pas un glyphe : à 15 px elles
+   débordaient du rond de 32 px. Plus petit et un peu resserré, « FR » et « EN »
+   tiennent tous les deux sans que le rond change de taille — les trois boutons
+   de l'en-tête doivent rester alignés. */
+.icon-btn--lang {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}

@@ -109,6 +109,14 @@
         <strong class="brand__title">Funkylldex</strong>
         <span class="brand__sub">Collection perso</span>
       </span>
+      <!-- La langue, a cote du theme : ce sont les deux reglages d'apparence,
+           et ce sont les seuls. Le bouton porte la langue COURANTE — « FR »
+           quand on lit du francais — plutot que celle qu'on obtiendrait en
+           cliquant : un bouton qui affiche « EN » alors qu'on lit du francais
+           se lit dans les deux sens, et on ne sait plus lequel est vrai. -->
+      <button type="button" id="lang-toggle" class="icon-btn icon-btn--lang"
+              title="Langue : Français — cliquer pour l'anglais"
+              aria-label="Langue : Français — cliquer pour l'anglais">FR</button>
       <button type="button" id="theme-toggle" class="icon-btn"
               aria-expanded="false" aria-controls="theme-picker"
               title="Changer de thème" aria-label="Changer de thème"><span class="theme-wheel" aria-hidden="true"></span></button>

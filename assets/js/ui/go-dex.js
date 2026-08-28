@@ -31,6 +31,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { applyGoFilters } from "../domain/filters.js";
 import { goProgressOf } from "../domain/progress.js";
 import { dexNumber, typeInk } from "./common.js";
+import { nomEntreeGo } from "../core/i18n.js";
 
 export function createGoDex(ctx) {
   const { store, collection, dataset } = ctx;
@@ -190,7 +191,7 @@ function carte(entry, ctx) {
       entry.kind ? el("span.gcard__kind", KIND_COURT[entry.kind] || entry.kind) : null
     ),
     el("span.gcard__art"),
-    el("span.gcard__name", { title: entry.name }, entry.name),
+    el("span.gcard__name", { title: nomEntreeGo(entry) }, nomEntreeGo(entry)),
     el(
       "div.gcard__toggles",
       // Pas encore dans Pokémon GO : rien ne se coche. La vignette reste dans
@@ -204,8 +205,8 @@ function carte(entry, ctx) {
             {
               type: "button",
               dataset: { goSlot: entry.slot, species: entry.id },
-              title: `${entry.name} — attrapé dans Pokémon GO`,
-              "aria-label": `${entry.name} — attrapé dans Pokémon GO`,
+              title: `${nomEntreeGo(entry)} — attrapé dans Pokémon GO`,
+              "aria-label": `${nomEntreeGo(entry)} — attrapé dans Pokémon GO`,
             },
             el("span.toggle__ico.toggle__ico--capture", { "aria-hidden": "true" })
           ),
@@ -220,8 +221,8 @@ function carte(entry, ctx) {
               {
                 type: "button",
                 dataset: { goSlot: entry.shinySlot, species: entry.id },
-                title: `${entry.name} — chromatique dans Pokémon GO`,
-                "aria-label": `${entry.name} — chromatique dans Pokémon GO`,
+                title: `${nomEntreeGo(entry)} — chromatique dans Pokémon GO`,
+                "aria-label": `${nomEntreeGo(entry)} — chromatique dans Pokémon GO`,
               },
               el("span.toggle__ico.toggle__ico--shiny", { "aria-hidden": "true" })
             )
@@ -292,10 +293,10 @@ function peindre(node, entry, ctx) {
     fill(
       art,
       entry.form
-        ? formImg(entry.form, { shiny, alt: entry.name, className: "gcard__img" })
+        ? formImg(entry.form, { shiny, alt: nomEntreeGo(entry), className: "gcard__img" })
         : entry.variant
-          ? cosmeticImg(entry.variant, entry.id, { shiny, alt: entry.name, className: "gcard__img" })
-          : spriteImg(entry.id, { shiny, alt: entry.name, className: "gcard__img" })
+          ? cosmeticImg(entry.variant, entry.id, { shiny, alt: nomEntreeGo(entry), className: "gcard__img" })
+          : spriteImg(entry.id, { shiny, alt: nomEntreeGo(entry), className: "gcard__img" })
     );
   }
 

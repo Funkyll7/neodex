@@ -28,6 +28,7 @@ import { createToTop } from "./ui/to-top.js";
 import { createActiveFilters } from "./ui/active-filters.js";
 import { createUndo } from "./ui/undo.js";
 import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
+import { initLangue, initBoutonLangue } from "./ui/langue.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
 /** Les filtres du Pokedex GO, qui ne pilotent que sa grille a lui. */
@@ -63,6 +64,10 @@ function migrateStorage() {
 
 async function boot() {
   try {
+    // La langue AVANT les donnees, et surtout avant le premier rendu : passer
+    // a l'anglais demande un fichier, et sans cette attente la grille se
+    // dessinerait en francais puis changerait sous les yeux.
+    await initLangue();
     start(await loadDataset());
   } catch (error) {
     const box = document.getElementById("boot-error");
@@ -323,6 +328,22 @@ function start(dataset) {
     renderDetail();
     go.render();
     quest.render();
+  });
+
+  initBoutonLangue();
+
+  // Changer de langue refait plus que du texte : les noms d'especes changent,
+  // donc le tri par nom, donc l'ORDRE de la grille. On repasse par le meme
+  // chemin qu'un changement de filtre plutot que de retoucher les noeuds en
+  // place — sinon la grille resterait rangee selon l'ancienne langue.
+  document.addEventListener("funkylldex:langue", () => {
+    renderList();
+    renderDetail();
+    go.render();
+    quest.render();
+    // `renderCounts` et non `sidebar.render()` : celui-ci attend les trois jeux
+    // de compteurs, que seul le premier sait calculer.
+    renderCounts();
   });
 
   window.addEventListener("online", () => {

@@ -9,6 +9,9 @@ import { completionOf } from "./completion.js";
 // `core/data.js`, la requête doit l'être exactement de la même manière. Les
 // écrire à deux endroits les aurait laissés diverger un jour.
 import { sansAccents } from "../core/data.js";
+// Le tri par nom et par type depend de la langue affichee — pas seulement de
+// la locale de comparaison, mais des NOMS eux-memes.
+import { nomEspece, nomType, localeDeTri } from "../core/i18n.js";
 
 /**
  * Les pastilles de statut.
@@ -129,10 +132,21 @@ export function applyGoFilters(entries, state, collection) {
   return list;
 }
 
+/**
+ * Les tris.
+ *
+ * `name` et `type` etaient figes sur la locale « fr ». Ce n'etait pas qu'une
+ * question d'accents : les NOMS changent avec la langue — Bulbizarre devient
+ * Bulbasaur, Roucool devient Pidgey. L'ordre alphabetique du Pokedex entier
+ * est donc different d'une langue a l'autre, et un comparateur fige aurait
+ * menti dans les deux.
+ */
 export const SORTS = {
   num: (a, b) => a.id - b.id,
-  name: (a, b) => a.name.localeCompare(b.name, "fr"),
-  type: (a, b) => (a.types[0] || "").localeCompare(b.types[0] || "", "fr") || a.id - b.id,
+  name: (a, b) => nomEspece(a).localeCompare(nomEspece(b), localeDeTri()),
+  type: (a, b) =>
+    nomType(a.types[0] || "").localeCompare(nomType(b.types[0] || ""), localeDeTri()) ||
+    a.id - b.id,
   stats: (a, b) => total(b) - total(a) || a.id - b.id,
 };
 

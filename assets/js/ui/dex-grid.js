@@ -18,6 +18,7 @@ import { spriteImg, formImg } from "../domain/sprites.js";
 import { completionOf } from "../domain/completion.js";
 import { formeDeRepli } from "../domain/display.js";
 import { dexNumber, typeChip, typeInk } from "./common.js";
+import { nomEspece } from "../core/i18n.js";
 
 export function createGrid(ctx) {
   const grid = document.getElementById("grid");
@@ -257,10 +258,10 @@ function card(species, ctx) {
     { "--type": color, "--type-ink": typeInk(color), dataset: { id: species.id }, role: "listitem" },
     el(
       "button.card__select",
-      { type: "button", "aria-label": `Ouvrir la fiche de ${species.name}` },
+      { type: "button", "aria-label": `Ouvrir la fiche de ${nomEspece(species)}` },
       el("span.card__top", el("span.card__num", dexNumber(species.id)), el("span.card__flags")),
       el("span.card__art"),
-      el("span.card__name", species.name),
+      el("span.card__name", nomEspece(species)),
       el(
         "span.card__types",
         species.types.map((t) => typeChip(t, ctx.dataset.types[t] || "#8b8b8b"))
@@ -343,7 +344,7 @@ function paint(node, species, ctx) {
       art,
       repli
         ? formImg(repli.form, { shiny: repli.shiny, alt: repli.form.name, className: "card__img" })
-        : spriteImg(species.id, { shiny: showShiny, female: showFemale, alt: species.name, className: "card__img" }),
+        : spriteImg(species.id, { shiny: showShiny, female: showFemale, alt: nomEspece(species), className: "card__img" }),
       showShiny
         ? el("span.card__spark", { title: "Version chromatique affichée", "aria-hidden": "true" })
         : null,
@@ -495,7 +496,7 @@ function quickToggles(species, ctx, color) {
       {
         type: "button",
         title,
-        "aria-label": `${title} — ${species.name}`,
+        "aria-label": `${title} — ${nomEspece(species)}`,
         "--type": color,
         "--type-ink": typeInk(color),
         dataset: { slot, species: species.id },

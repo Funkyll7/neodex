@@ -21,6 +21,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
+import { nomEspece, nomCategorie, nomForme, enAnglais } from "../core/i18n.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
@@ -131,7 +132,7 @@ function announce(species, ctx) {
   if (!node) return;
   const progress = completionOf(species, ctx.collection);
   node.textContent =
-    `${species.name}, n° ${species.id}. ` +
+    `${nomEspece(species)}, n° ${species.id}. ` +
     (progress.complete
       ? `Tout obtenu, ${progress.total} case${progress.total > 1 ? "s" : ""}.`
       : `${progress.done} sur ${progress.total} cases cochées.`);
@@ -309,8 +310,15 @@ function head(species, ctx) {
       stepper(species, ctx),
       el("span.detail__tag", { dataset: { role: "tag" } }, "")
     ),
-    el("h2.detail__name", species.name),
-    el("p.detail__sub", [species.en, species.cat].filter(Boolean).join(" · ")),
+    el("h2.detail__name", nomEspece(species)),
+    // La ligne du dessous porte le nom dans l'AUTRE langue, plus la categorie.
+    // Symetrique : en francais on lit « Bulbasaur · Pokémon Graine », en anglais
+    // « Bulbizarre · Seed Pokémon ». Repeter « Bulbasaur » sous « Bulbasaur »
+    // n'aurait rien appris.
+    el(
+      "p.detail__sub",
+      [enAnglais() ? species.name : species.en, nomCategorie(species)].filter(Boolean).join(" · ")
+    ),
     el(
       "div.detail__chips",
       species.types.map((t) => typeChip(t, ctx.dataset.types[t] || "#8b8b8b", "lg"))
@@ -452,7 +460,7 @@ function slotButton(species, ctx, { slot, label, gold, female }) {
     spriteImg(species.id, {
       shiny: gold,
       female: female && Boolean(species.gd),
-      alt: `${species.name} ${label}`,
+      alt: `${nomEspece(species)} ${label}`,
       className: "slot__img",
     }),
     el("span.slot__label", label)
@@ -835,11 +843,11 @@ function formTile(form, species, ctx) {
     { dataset: { slots: slots.join(" "), species: species.id } },
     el(
       "div.ftile__art",
-      formImg(form, { alt: form.name, className: "ftile__img" }),
+      formImg(form, { alt: nomForme(form), className: "ftile__img" }),
       form.hasShinySprite
         ? el(
             "span.ftile__shiny",
-            formImg(form, { shiny: true, alt: `${form.name} chromatique`, className: "ftile__img" }),
+            formImg(form, { shiny: true, alt: `${nomForme(form)} chromatique`, className: "ftile__img" }),
             el("span.ftile__spark", { title: "Version chromatique", "aria-hidden": "true" })
           )
         : null,
@@ -872,7 +880,7 @@ function formTile(form, species, ctx) {
       // Remplace le titre de groupe supprimé : la famille reste écrite, mais
       // sur la tuile, ce qui laisse toutes les formes dans une même grille.
       el("span.ftile__fam", KIND_SHORT[form.kind] || KIND_TITLES[form.kind] || ""),
-      el("div.ftile__name", form.name),
+      el("div.ftile__name", nomForme(form)),
       el(
         "div.ftile__chips",
         form.types.map((t) => typeChip(t, dataset.types[t] || "#8b8b8b"))
@@ -978,8 +986,8 @@ function formButtons(form, species, ctx) {
           // Le bouton ne montre qu'un symbole chez une forme à dimorphisme :
           // le libellé complet doit donc rester atteignable, à la souris comme
           // au lecteur d'écran.
-          title: `${form.name} — ${nom}`,
-          "aria-label": `${form.name} — ${nom}`,
+          title: `${nomForme(form)} — ${nom}`,
+          "aria-label": `${nomForme(form)} — ${nom}`,
           "aria-pressed": String(ctx.collection.has(species.id, slot)),
           dataset: { slot, species: species.id },
         },
