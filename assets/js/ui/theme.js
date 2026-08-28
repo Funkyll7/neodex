@@ -290,22 +290,6 @@ function syncPicker() {
 
 const PAR_VALEUR = new Map(THEMES.map((t) => [t.value, t]));
 
-/**
- * Un fond est-il clair ?
- *
- * Deduit de la luminance du bandeau plutot que d'un drapeau a tenir a jour :
- * deux thèmes de famille sont clairs (Reshiram, les starters d'Alola), et il y
- * en aura d'autres. Un drapeau oublie donnait un soleil sur un fond noir.
- */
-function estClair(hex) {
-  const n = parseInt(String(hex).slice(1), 16);
-  if (!Number.isFinite(n)) return false;
-  const r = (n >> 16) & 255;
-  const v = (n >> 8) & 255;
-  const b = n & 255;
-  return (r * 299 + v * 587 + b * 114) / 1000 > 140;
-}
-
 function apply(theme) {
   document.documentElement.dataset.theme = theme;
   const courant = PAR_VALEUR.get(theme) || PAR_VALEUR.get("dark");
@@ -324,10 +308,10 @@ function apply(theme) {
   if (meta) meta.setAttribute("content", courant.bandeau);
 
   // Le bouton porte le nom du theme courant : il dit ainsi ou l'on est, sans
-  // avoir a ouvrir la palette.
+  // avoir a ouvrir la palette. Le dessin, lui, ne change pas — c'est une roue
+  // chromatique, et un quartier en prend l'accent tout seul, par le CSS.
   const button = document.getElementById("theme-toggle");
   if (button) {
-    button.textContent = estClair(courant.bandeau) ? "☀" : "☾";
     button.title = `Thème : ${courant.label} — cliquer pour changer`;
     button.setAttribute("aria-label", button.title);
   }
