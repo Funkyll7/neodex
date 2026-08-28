@@ -37,7 +37,7 @@
    v16 : `no-cache` remplace `no-store` — meme garantie de fraicheur, mais la
         revalidation redevient possible et la coquille n'est plus
         retelechargee en entier a chaque ouverture. */
-const VERSION = "funkylldex-v17";
+const VERSION = "funkylldex-v18";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;

@@ -48,12 +48,22 @@ export function spriteUrl(id, { shiny = false, female = false } = {}) {
  * Le dossier n'a pas non plus de variante femelle — les differences de sexe
  * n'etaient pas dessinees a cette epoque. On demande le sprite commun.
  */
-function urlsEnPixels(nom, { shiny = false } = {}) {
+function urlsEnPixels(nom, { shiny = false, replier = true } = {}) {
   if (!enPixels) return [];
   const base = CONFIG.spritePixelBase;
-  // Le chromatique d'abord quand il est demande, puis le normal : mieux vaut un
+  if (!shiny) return [`${base}${nom}.png`];
+
+  const liste = [`${base}shiny/${nom}.png`];
+  // Le sprite NORMAL comme dernier secours d'un chromatique : mieux vaut un
   // sprite en pixels de la mauvaise teinte qu'un rendu 3D au milieu des autres.
-  return shiny ? [`${base}shiny/${nom}.png`, `${base}${nom}.png`] : [`${base}${nom}.png`];
+  //
+  // Mais `formImg` demande a le placer lui-meme, plus bas. Intercale ici, il
+  // court-circuitait toutes les vraies sources de chromatique qui viennent
+  // apres — le dossier chromatique de Showdown en servait vingt-deux, et les
+  // Formes Meteore de Meteno une de plus. Elles affichaient donc le sprite
+  // normal alors que le bon existait, sans que rien ne le signale.
+  if (replier) liste.push(`${base}${nom}.png`);
+  return liste;
 }
 
 /**
@@ -159,15 +169,66 @@ const PIXELS_LOCAUX_SHINY = new Set([
   "zygarde-mega",
 ]);
 
-/** L'adresse locale d'une forme, quand elle existe — sinon rien. */
-function urlsLocales(key, { shiny = false } = {}) {
+/**
+ * Les rares formes dont le chromatique est celui de l'ESPECE.
+ *
+ * Les six Formes Meteore de Meteno n'ont aucun chromatique dessine, ni chez
+ * PokeAPI ni chez Showdown — et pour une bonne raison : la coque est identique
+ * quelle que soit la couleur du noyau, et c'est justement l'apparence par
+ * defaut de l'espece. Le chromatique de l'espece EST donc le leur.
+ *
+ * Une exception nommee, et non un repli general vers l'espece : retomber sur
+ * l'espece pour n'importe quelle forme afficherait un AUTRE Pokemon — un
+ * Mega-Dracaufeu X deviendrait un Dracaufeu. Ici la substitution est juste
+ * parce que les deux images sont la meme.
+ */
+const CHROMATIQUE_DE_L_ESPECE = {
+  "minior-orange-meteor": 774,
+  "minior-yellow-meteor": 774,
+  "minior-green-meteor": 774,
+  "minior-blue-meteor": 774,
+  "minior-indigo-meteor": 774,
+  "minior-violet-meteor": 774,
+};
+
+/**
+ * L'adresse locale d'une forme, quand elle existe — sinon rien.
+ *
+ * `replier` suit la meme regle que `urlsEnPixels` : le sprite normal ne doit
+ * pas se glisser au milieu d'une chaine de chromatiques, ou il couperait
+ * l'herbe sous le pied des sources qui viennent apres. Les vingt-six formes
+ * locales ont toutes leur chromatique aujourd'hui, mais une forme ajoutee
+ * demain sans le sien tomberait droit dans ce piege.
+ */
+function urlsLocales(key, { shiny = false, replier = true } = {}) {
   if (!enPixels || !key || !PIXELS_LOCAUX.has(key)) return [];
   const base = CONFIG.spritePixelLocalBase;
   const liste = [];
   if (shiny && PIXELS_LOCAUX_SHINY.has(key)) liste.push(`${base}${key}.shiny.png`);
-  liste.push(`${base}${key}.png`);
+  if (replier || !shiny) liste.push(`${base}${key}.png`);
   return liste;
 }
+
+/**
+ * Les rares especes qu'on prefere montrer sous une de leurs FORMES.
+ *
+ * Meteno arrive par defaut dans sa coque de meteore : un caillou gris, le meme
+ * pour les sept couleurs de noyau. C'est fidele au jeu, mais dans une grille de
+ * mille vignettes cela donne une case ou Meteno n'est pas reconnaissable, et
+ * qui ne dit rien de lui. On montre donc sa Forme Noyau Rouge, celle que tout
+ * le monde a en tete.
+ *
+ * La substitution vaut pour le normal ET le chromatique : ne changer que l'un
+ * des deux aurait mis un noyau rouge a cote d'une coque grise sur la meme
+ * vignette, ce qui est pire que la coque seule.
+ *
+ * Une table nommee et non une regle : c'est une decision d'affichage, prise
+ * espece par espece, et elle doit se lire comme telle.
+ */
+const ESPECE_MONTREE_COMME = {
+  // Meteno -> Forme Noyau Rouge
+  774: 10136,
+};
 
 export function artworkUrl(id, { shiny = false } = {}) {
   return `${CONFIG.artworkBase}${shiny ? "shiny/" : ""}${id}.png`;
@@ -178,11 +239,20 @@ export function artworkUrl(id, { shiny = false } = {}) {
  * On garde `loading="lazy"` : la grille peut afficher un millier d'images.
  */
 export function spriteImg(id, { shiny = false, female = false, alt = "", className = "" } = {}) {
-  const chain = urlsEnPixels(id, { shiny });
-  if (female) chain.push(spriteUrl(id, { shiny, female: true }));
-  chain.push(spriteUrl(id, { shiny }));
-  chain.push(artworkUrl(id, { shiny }));
-  if (shiny) chain.push(artworkUrl(id));
+  // Une espece peut etre montree sous une de ses formes — voir la table.
+  const vu = ESPECE_MONTREE_COMME[id] || id;
+
+  const chain = urlsEnPixels(vu, { shiny });
+  if (female) chain.push(spriteUrl(vu, { shiny, female: true }));
+  chain.push(spriteUrl(vu, { shiny }));
+  chain.push(artworkUrl(vu, { shiny }));
+  if (shiny) chain.push(artworkUrl(vu));
+
+  // Et l'espece elle-meme en dernier recours : si la forme substituee venait a
+  // manquer d'un depot, mieux vaut la coque grise qu'un carre vide.
+  if (vu !== id) {
+    chain.push(spriteUrl(id, { shiny }), artworkUrl(id, { shiny }), artworkUrl(id));
+  }
   return imageFrom(chain, alt, className);
 }
 
@@ -197,12 +267,12 @@ export function formImg(form, { shiny = false, alt = "", className = "" } = {}) 
   // qu'ils sont dans le depot. Ils ne couvrent que les vingt-six formes
   // qu'aucune source distante ne sert ; pour les 278 autres, cette liste est
   // vide et la chaine reprend normalement.
-  const chain = urlsLocales(form.key, { shiny });
+  const chain = urlsLocales(form.key, { shiny, replier: false });
 
   // Puis PokeAPI. En tete de ce qui suit, jamais a la place : une forme absente
   // du dossier en pixels retombe ainsi sur son rendu HOME au lieu de laisser un
   // carre vide.
-  chain.push(...urlsEnPixels(form.id, { shiny }));
+  chain.push(...urlsEnPixels(form.id, { shiny, replier: false }));
 
   // Puis le projet Smogon, la ou PokeAPI s'arrete. Sa cle est celle de la
   // forme, telle quelle — `clefable-mega`, `pikachu-starter` — et c'est ce qui
@@ -210,7 +280,29 @@ export function formImg(form, { shiny = false, alt = "", className = "" } = {}) 
   // chaine continue, la ou une cle « rapprochee » aurait affiche un AUTRE
   // Pokemon. Essaye et rejete : `absol-mega-z` tombait ainsi sur `absol-mega`,
   // qui est une toute autre creature.
-  if (enPixels && form.key) chain.push(`${CONFIG.spriteShowdownBase}${form.key}.png`);
+  //
+  // Le dossier chromatique EN PREMIER quand on demande un chromatique : il est
+  // separe chez Showdown, et l'oublier faisait afficher le sprite normal a la
+  // place — mesure sur les 304 formes, vingt-deux etaient dans ce cas, dont le
+  // Pikachu et l'Evoli Partenaire.
+  if (enPixels && form.key) {
+    if (shiny) chain.push(`${CONFIG.spriteShowdownShinyBase}${form.key}.png`);
+    chain.push(`${CONFIG.spriteShowdownBase}${form.key}.png`);
+  }
+
+  // Les six Formes Meteore de Meteno, dont le chromatique est celui de
+  // l'espece : meme image, la coque ne depend pas du noyau.
+  const especeChromatique = CHROMATIQUE_DE_L_ESPECE[form.key];
+  if (enPixels && shiny && especeChromatique) {
+    chain.push(`${CONFIG.spritePixelBase}shiny/${especeChromatique}.png`);
+  }
+  // Le normal en pixels seulement MAINTENANT, une fois tous les chromatiques
+  // essayes : c'est un pis-aller, il ne doit pas passer devant une vraie image.
+  if (enPixels && shiny) {
+    chain.push(...urlsLocales(form.key, { shiny: false }));
+    chain.push(`${CONFIG.spritePixelBase}${form.id}.png`);
+  }
+
   // Puis, s'il en existe un, le sprite choisi a la main pour cette forme.
   const choisi = PIXELS_CHOISIS[form.id];
   if (enPixels && choisi) chain.push(choisi());
@@ -242,8 +334,13 @@ export function cosmeticImg(variant, speciesId, { shiny = false, alt = "", class
   // tete de chaine et non a la place — une variante qui y manquerait retombe
   // ainsi sur son sprite habituel.
   const base = variant.spriteSet === "classic" ? CONFIG.spriteClassicBase : CONFIG.spriteBase;
-  const chain = urlsEnPixels(variant.sprite, { shiny });
+  // `replier: false` pour la meme raison que dans `formImg` : le sprite normal
+  // en pixels ne doit pas se glisser devant le chromatique du dossier classique,
+  // qui vient juste apres. Il aurait affiche la mauvaise teinte alors que la
+  // bonne existait.
+  const chain = urlsEnPixels(variant.sprite, { shiny, replier: false });
   if (shiny) chain.push(`${base}shiny/${variant.sprite}.png`);
+  if (enPixels && shiny) chain.push(`${CONFIG.spritePixelBase}${variant.sprite}.png`);
   chain.push(`${base}${variant.sprite}.png`);
   // Repli si le depot de sprites change de nommage : l'espece, jamais rien.
   chain.push(spriteUrl(speciesId, { shiny }), artworkUrl(speciesId));

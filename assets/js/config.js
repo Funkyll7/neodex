@@ -69,6 +69,18 @@ export const CONFIG = {
   spriteShowdownBase: "https://play.pokemonshowdown.com/sprites/gen5/",
 
   /**
+   * Le meme projet Smogon, mais son dossier CHROMATIQUE.
+   *
+   * Il ne s'agit pas d'un raffinement : mesure sur les 304 formes du jeu de
+   * donnees, VINGT-DEUX ont un chromatique en pixels ici et nulle part
+   * ailleurs — le Pikachu et l'Evoli Partenaire, et la moitie des
+   * Mega-Evolutions de Legendes Z-A. Sans cette adresse, elles affichaient
+   * leur sprite normal a la place du chromatique, sans que rien ne le signale.
+   */
+  spriteShowdownShinyBase: "https://play.pokemonshowdown.com/sprites/gen5-shiny/",
+
+
+  /**
    * Les sprites de Pokemon Jaune, dernier recours pour le Pikachu Partenaire.
    *
    * Showdown le couvre desormais, et mieux. On garde ce repli parce qu'il ne
