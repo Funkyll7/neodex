@@ -30,6 +30,24 @@ export const STATUS_FILTERS = [
 ];
 
 /**
+ * Les deux statuts qui n'ont pas de pastille, mais qui ont un nom.
+ *
+ * `shiny` et `pair` sont poses par les barres de la colonne, et par elles
+ * seules — d'ou leur absence de `STATUS_FILTERS`. Mais la pastille de filtre
+ * actif cherchait leur libelle dans cette liste, ne le trouvait pas, et
+ * affichait la cle telle quelle : cliquer « Chromatiques » donnait une pastille
+ * intitulee « shiny ».
+ *
+ * Ici et non dans `ui/` : c'est le meme fichier qui explique, dix lignes plus
+ * haut, pourquoi ces deux valeurs existent sans pastille. Les separer aurait
+ * garanti qu'un jour l'une bouge sans l'autre.
+ */
+export const LIBELLES_STATUT = {
+  shiny: "Chromatiques",
+  pair: "Paires ♂ / ♀",
+};
+
+/**
  * Filtre « Forme » : les familles de formes qu'on cherche vraiment a lister.
  *
  * Volontairement pas toutes les categories de `KIND_TITLES` : les Mega, les

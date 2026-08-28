@@ -10,7 +10,7 @@
  */
 
 import { el, fill } from "../core/dom.js";
-import { STATUS_FILTERS, FORM_FILTERS } from "../domain/filters.js";
+import { STATUS_FILTERS, FORM_FILTERS, LIBELLES_STATUT } from "../domain/filters.js";
 
 /** Valeur consideree comme « aucun filtre » pour chaque cle. */
 const NEUTRE = { search: "", type: "all", gen: "all", game: "all", form: "all", status: "all" };
@@ -34,7 +34,13 @@ export function createActiveFilters(ctx) {
       return jeu ? jeu.name : valeur;
     }
     if (cle === "form") return (FORM_FILTERS.find((f) => f.value === valeur) || {}).label || valeur;
-    if (cle === "status") return (STATUS_FILTERS.find((f) => f.value === valeur) || {}).label || valeur;
+    if (cle === "status") {
+      // `LIBELLES_STATUT` couvre les deux valeurs posees par les barres de la
+      // colonne, qui n'ont pas de pastille et n'etaient donc nulle part dans
+      // `STATUS_FILTERS` : sans lui, cliquer « Chromatiques » affichait « shiny ».
+      const trouve = STATUS_FILTERS.find((f) => f.value === valeur);
+      return (trouve && trouve.label) || LIBELLES_STATUT[valeur] || valeur;
+    }
     return valeur;
   };
 
