@@ -546,6 +546,10 @@ function start(dataset) {
   document.getElementById("boot").remove();
   document.getElementById("app").hidden = false;
 
+  // La grille a une boite depuis cette ligne seulement : c'est maintenant, et
+  // pas avant, qu'on peut defiler vers la vignette quittee.
+  grid.reveal();
+
   registerWorker();
 
   // Le prechargement du lecteur de captures, maintenant seulement : place plus

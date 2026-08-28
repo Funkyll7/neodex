@@ -44,9 +44,71 @@ export function createGrid(ctx) {
       (rangees.size ? ` · ${rangees.size} ${tn(rangees.size, "rangé", "rangés")}` : "");
   }
 
+  /**
+   * Les vignettes loin de l'ecran gardent leur PLACE mais perdent leur contenu.
+   *
+   * Mesure sur la grille complete, du clic sur une case a l'image rendue :
+   * 50,5 ms avec les 1025 vignettes garnies, 34 ms en n'en garnissant que 140.
+   * Seize millisecondes et demie par case cochee — plus d'une image entiere, et
+   * deux a trois fois cela sur un telephone.
+   *
+   * Ce qui coute n'est PAS le nombre d'emplacements de la grille : mesure aussi,
+   * vider les vignettes sans les retirer rend exactement le meme gain (16,6 ms
+   * contre 16,5). C'est le nombre de NOEUDS. D'ou ce choix, qui est le seul sans
+   * danger : on garde la coquille, avec sa hauteur figee, et on ne retire que
+   * ses enfants.
+   *
+   * Aucun calcul de hauteur, aucun espaceur, aucun saut de defilement possible —
+   * la coquille tient sa place toute seule. C'est ce qui distingue cette
+   * approche d'une virtualisation classique, ou une hauteur mal estimee fait
+   * bondir la page sous le pouce.
+   *
+   * `content-visibility` ne remplace pas ceci : il est deja pose sur
+   * `.card__select`, et mesure, l'etendre aux boutons ne change rien.
+   *
+   * 1200 px de marge : le contenu revient bien avant d'etre visible, on ne voit
+   * donc jamais une vignette se remplir.
+   */
+  const veilleur = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) remplir(entry.target);
+        else vider(entry.target);
+      }
+    },
+    { rootMargin: "1200px 0px" }
+  );
+
+  function vider(node) {
+    if (node.dataset.vide || !node.firstChild) return;
+    const hauteur = node.getBoundingClientRect().height;
+    // Hauteur nulle : la vignette n'a pas encore ete mise en page. La vider
+    // maintenant lui ferait perdre sa place au lieu de la tenir.
+    if (!hauteur) return;
+    node.style.height = `${hauteur}px`;
+    node.replaceChildren();
+    node.dataset.vide = "1";
+  }
+
+  function remplir(node) {
+    if (!node.dataset.vide) return;
+    const espece = ctx.dataset.byId.get(Number(node.dataset.id));
+    if (!espece) return;
+    delete node.dataset.vide;
+    node.style.height = "";
+    garnir(node, espece, ctx);
+    // `paint()` reecrit la liste de classes en entier : le barre, qui vit
+    // ailleurs (voir `setStale`), doit etre repose ensuite.
+    if (rangees.has(espece.id)) node.classList.add("card--stale");
+  }
+
   function appendPage() {
     const next = list.slice(shown, shown + CONFIG.pageSize);
-    grid.append(...next.map((species) => card(species, ctx)));
+    const noeuds = next.map((species) => card(species, ctx));
+    grid.append(...noeuds);
+    // Chaque vignette est surveillee des son arrivee : c'est ce qui la videra
+    // quand elle s'eloignera, et la regarnira quand elle reviendra.
+    for (const noeud of noeuds) veilleur.observe(noeud);
     shown += next.length;
   }
 
@@ -157,14 +219,28 @@ export function createGrid(ctx) {
    * `block: "center"` et non `"start"` : la barre d'outils est collante et
    * recouvrirait une vignette calee en haut.
    */
+  /**
+   * La vignette ou revenir, retenue jusqu'a ce que la grille soit VISIBLE.
+   *
+   * Le premier rendu a lieu pendant que `#app` porte encore `hidden` : un
+   * element cache n'a pas de boite, et `scrollIntoView` n'y peut donc rien. La
+   * reprise deroulait bien ses paliers mais ne defilait jamais — on retrouvait
+   * le haut de la liste avec six cents vignettes construites pour rien. Le
+   * defaut est ancien ; il ne se voyait pas, la grille etant de toute facon
+   * entierement garnie.
+   *
+   * C'est `reveal()` qui defile desormais, appele par main.js une fois la
+   * grille demasquee — exactement ce que fait deja le Pokedex GO.
+   */
+  let aRejoindre = null;
+
   function reprendre() {
     const cible = lireRepere();
     if (!cible) return;
     const index = list.findIndex((p) => p.id === cible);
     if (index < 0) return;
     while (shown <= index && shown < list.length) appendPage();
-    const node = grid.querySelector(`[data-id="${cible}"]`);
-    if (node) node.scrollIntoView({ block: "center", behavior: "auto" });
+    aRejoindre = cible;
   }
 
   // Ecrit au repos, pas a chaque pixel : le localStorage est synchrone, et un
@@ -177,6 +253,17 @@ export function createGrid(ctx) {
   });
 
   return {
+    /**
+     * La grille vient d'etre demasquee : c'est le premier instant ou elle a une
+     * boite, donc le premier ou l'on peut defiler vers quelque chose.
+     */
+    reveal() {
+      if (!aRejoindre) return;
+      const node = grid.querySelector(`[data-id="${aRejoindre}"]`);
+      aRejoindre = null;
+      if (node) node.scrollIntoView({ block: "center", behavior: "auto" });
+    },
+
     /** Rendu complet : nouvelle liste filtree. */
     render(filtered) {
       list = filtered;
@@ -184,6 +271,8 @@ export function createGrid(ctx) {
       // C'est ici, et seulement ici, que les vignettes rangees s'en vont : un
       // changement de filtre est le moment ou l'on accepte que la liste bouge.
       rangees.clear();
+      // Les anciennes vignettes disparaissent : plus rien a surveiller sur elles.
+      veilleur.disconnect();
       grid.replaceChildren();
       empty.hidden = list.length > 0;
       peindreCompteur();
@@ -225,8 +314,11 @@ export function createGrid(ctx) {
 
     /** Repeint une seule vignette apres un clic sur une case. */
     refresh(id) {
-      const node = grid.querySelector(`[data-id="${id}"]`);
+      const node = grid.querySelector(`[data-id=""]`);
       if (!node) return;
+      // Une vignette videe n'a rien a repeindre : elle se regarnira a jour
+      // quand elle reviendra pres de l'ecran.
+      if (node.dataset.vide) return;
       const wasComplete = node.classList.contains("card--complete");
       paint(node, ctx.dataset.byId.get(id), ctx);
       // La vignette vient de basculer sur « complet » : c'est le seul moment ou
@@ -250,12 +342,17 @@ export function createGrid(ctx) {
 /* ------------------------------- vignette -------------------------------- */
 
 /** Squelette : tout ce qui ne bouge jamais. Le reste est pose par paint(). */
-function card(species, ctx) {
+/**
+ * Le CONTENU d'une vignette, separe de sa coquille.
+ *
+ * Separe parce qu'il se pose et se retire : les vignettes loin de l'ecran
+ * gardent leur place dans la grille mais perdent leur contenu. Voir
+ * `vider()` / `remplir()` dans `createGrid`.
+ */
+function garnir(node, species, ctx) {
   const color = ctx.dataset.types[species.types[0]] || "#8b8b8b";
 
-  const node = el(
-    "div.card",
-    { "--type": color, "--type-ink": typeInk(color), dataset: { id: species.id }, role: "listitem" },
+  node.replaceChildren(
     el(
       "button.card__select",
       { type: "button", "aria-label": `${t("Ouvrir la fiche de")} ${nomEspece(species)}` },
@@ -272,6 +369,19 @@ function card(species, ctx) {
   );
 
   paint(node, species, ctx);
+}
+
+function card(species, ctx) {
+  const color = ctx.dataset.types[species.types[0]] || "#8b8b8b";
+
+  const node = el("div.card", {
+    "--type": color,
+    "--type-ink": typeInk(color),
+    dataset: { id: species.id },
+    role: "listitem",
+  });
+
+  garnir(node, species, ctx);
   return node;
 }
 
