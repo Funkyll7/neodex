@@ -102,13 +102,53 @@ export function createGrid(ctx) {
     if (rangees.has(espece.id)) node.classList.add("card--stale");
   }
 
+  /**
+   * La hauteur de la barre d'outils, publiee en variable CSS.
+   *
+   * Le bandeau de generation colle juste sous elle. Or elle passe a la ligne
+   * selon la largeur de l'ecran — 124 px sur un telephone etroit, moins sur un
+   * large. Une valeur ecrite en dur dans la feuille de style glissait le
+   * bandeau DERRIERE elle, ou il devenait invisible.
+   */
+  const barreOutils = grid.closest(".tabpanel")?.querySelector(".toolbar");
+  if (barreOutils && typeof ResizeObserver === "function") {
+    const publier = () => {
+      const h = Math.round(barreOutils.getBoundingClientRect().height);
+      if (h) document.documentElement.style.setProperty("--barre-outils-h", `${h}px`);
+    };
+    new ResizeObserver(publier).observe(barreOutils);
+    publier();
+  }
+
+  /**
+   * La generation du dernier Pokemon ajoute, pour savoir quand poser un bandeau.
+   * `null` au depart de chaque rendu : le premier ajout en pose toujours un.
+   */
+  let derniereGen = null;
+
   function appendPage() {
     const next = list.slice(shown, shown + CONFIG.pageSize);
-    const noeuds = next.map((species) => card(species, ctx));
+    const noeuds = [];
+    // Les bandeaux de generation n'ont de sens que sur la liste rangee par
+    // numero. Par nom ou par statistiques, les generations sont melangees et un
+    // « Génération III » au milieu ne dirait rien.
+    const parNumero = ctx.store.state.sort === "num";
+
+    for (const species of next) {
+      if (parNumero && species.gen !== derniereGen) {
+        noeuds.push(separateurGeneration(species.gen, ctx));
+        derniereGen = species.gen;
+      }
+      noeuds.push(card(species, ctx));
+    }
+
     grid.append(...noeuds);
     // Chaque vignette est surveillee des son arrivee : c'est ce qui la videra
-    // quand elle s'eloignera, et la regarnira quand elle reviendra.
-    for (const noeud of noeuds) veilleur.observe(noeud);
+    // quand elle s'eloignera, et la regarnira quand elle reviendra. Les
+    // bandeaux, eux, ne se vident pas — ils ne pesent qu'un noeud.
+    for (const noeud of noeuds) {
+      if (noeud.classList.contains("card")) veilleur.observe(noeud);
+    }
     shown += next.length;
   }
 
@@ -271,6 +311,7 @@ export function createGrid(ctx) {
       // C'est ici, et seulement ici, que les vignettes rangees s'en vont : un
       // changement de filtre est le moment ou l'on accepte que la liste bouge.
       rangees.clear();
+      derniereGen = null;
       // Les anciennes vignettes disparaissent : plus rien a surveiller sur elles.
       veilleur.disconnect();
       grid.replaceChildren();
@@ -342,6 +383,25 @@ export function createGrid(ctx) {
 /* ------------------------------- vignette -------------------------------- */
 
 /** Squelette : tout ce qui ne bouge jamais. Le reste est pose par paint(). */
+/**
+ * Le bandeau qui dit dans quelle generation on se trouve.
+ *
+ * Colle en haut de la grille et se laisse pousser par le suivant : c'est le
+ * comportement natif de `position: sticky` dans une grille, sans le moindre
+ * ecouteur de defilement. Mille vingt-cinq vignettes se parcourent au pouce
+ * pendant plusieurs secondes sans le moindre repere ; celui-ci dit ou l'on est
+ * sans qu'on ait a lire un numero.
+ *
+ * Pose UNIQUEMENT quand la liste est triee par numero — voir `appendPage`.
+ * Trie par nom ou par statistiques, un bandeau « Génération III » au milieu de
+ * la liste ne voudrait rien dire.
+ */
+function separateurGeneration(gen, ctx) {
+  const info = ctx.dataset.generations[gen] || {};
+  const titre = info.region ? `${t(info.label)} — ${t(info.region)}` : t(info.label || `${t("Génération")} ${gen}`);
+  return el("div.gen-sep", { dataset: { gen: String(gen) }, "aria-hidden": "true" }, titre);
+}
+
 /**
  * Le CONTENU d'une vignette, separe de sa coquille.
  *

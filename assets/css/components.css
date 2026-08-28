@@ -2095,3 +2095,49 @@
   body.sheet-open .sheet__close { top: calc(6vh + 10px + env(safe-area-inset-top, 0px)); }
   .main { padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* ------------------------- Bandeau de génération -------------------------- */
+/* Mille vingt-cinq vignettes se parcourent au pouce pendant plusieurs secondes
+   sans le moindre repère. Ce bandeau dit où l'on est sans qu'on ait à lire un
+   numéro, et il se laisse pousser par le suivant — c'est le comportement natif
+   de `position: sticky` dans une grille, sans un seul écouteur de défilement.
+
+   `grid-column: 1 / -1` : il occupe la rangée entière quel que soit le nombre
+   de colonnes, que la grille décide toute seule en `auto-fit`.
+
+   `top: 0` ici, et non la hauteur de la barre d'outils : sur grand écran cette
+   barre n'est pas collante, elle défile avec la page. La valeur mobile est
+   posée plus bas, dans la requête média qui rend justement la barre collante —
+   les deux doivent bouger ensemble, sinon le bandeau se glisse dessous. */
+.gen-sep {
+  grid-column: 1 / -1;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin: var(--sp-2) 0 calc(-1 * var(--sp-1));
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  /* Opaque, et non translucide : une vignette qui passe dessous doit
+     disparaître, pas transparaître. */
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  /* Il ne prend pas le pointeur : on doit pouvoir toucher la vignette qui
+     glisse derrière lui. */
+  pointer-events: none;
+  width: fit-content;
+}
+
+/* La règle mobile vient APRÈS la règle de base, et ce n'est pas indifférent :
+   à spécificité égale, c'est la dernière écrite qui gagne. Placée plus haut
+   dans le fichier — dans la requête média qui rend la barre d'outils collante —
+   elle était écrasée par le `top: 0` ci-dessus, et le bandeau se glissait
+   derrière la barre.
+
+   La hauteur n'est pas écrite en dur non plus : la barre passe à la ligne selon
+   la largeur, elle mesure 124 px sur un écran étroit et moins sur un large. Un
+   `ResizeObserver` tient `--barre-outils-h` à jour, dans ui/dex-grid.js. */
+@media (max-width: 860px) {
+  .gen-sep { top: calc(45px + var(--barre-outils-h, 124px)); }
+}
