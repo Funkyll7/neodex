@@ -118,22 +118,44 @@ const PIXELS_LOCAUX = new Set([
 ]);
 
 /**
- * Celles dont on a AUSSI le chromatique — neuf sur vingt-six.
+ * Celles dont on a AUSSI le chromatique — les vingt-six, desormais.
  *
- * Les dix-sept autres retombent sur leur sprite normal, ce que le site fait deja
- * pour toute forme sans chromatique connu. Une seconde liste plutot qu'un essai
- * a l'aveugle, pour la meme raison que la premiere : ne jamais demander un
- * fichier qu'on sait absent.
+ * Elles n'etaient que six a l'origine : PokeAPI et Showdown ne servent pas de
+ * chromatique pour ces formes, et les rares planches trouvees en ligne n'en
+ * couvraient qu'une poignee. Les vingt autres ont ete dessinees a la main par
+ * le proprietaire de ce Pokedex.
+ *
+ * La liste reste explicite plutot qu'un essai a l'aveugle, pour la meme raison
+ * que la premiere : ne jamais demander un fichier qu'on sait absent. Elle est
+ * pleine aujourd'hui, mais une forme ajoutee demain arriverait sans son
+ * chromatique, et c'est cette liste qui evitera alors un 404 par affichage.
  */
 const PIXELS_LOCAUX_SHINY = new Set([
   "absol-mega-z",
+  "barbaracle-mega",
+  "baxcalibur-mega",
   "darkrai-mega",
   "dragalge-mega",
+  "eelektross-mega",
+  "falinks-mega",
   "garchomp-mega-z",
+  "golisopod-mega",
+  "heatran-mega",
+  "lucario-mega-z",
   "magearna-mega",
   "magearna-original-mega",
+  "malamar-mega",
+  "meowstic-male-mega",
+  "pyroar-mega",
+  "raichu-mega-x",
+  "raichu-mega-y",
   "scolipede-mega",
   "scrafty-mega",
+  "staraptor-mega",
+  "tatsugiri-curly-mega",
+  "tatsugiri-droopy-mega",
+  "tatsugiri-stretchy-mega",
+  "zeraora-mega",
   "zygarde-mega",
 ]);
 
