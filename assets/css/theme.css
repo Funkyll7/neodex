@@ -57,8 +57,15 @@
   --text: #eef1f8;
   --text-soft: #aeb8cf;
   --text-muted: #7f8aa3;
-  --text-faint: #5b6480;
-  --text-ghost: #3f4763;
+  /* Les deux derniers échelons portaient du VRAI texte — numéro national, nom
+     de jeu, libellés de formes, notes de bas de panneau — à 2,95 et 1,89 de
+     contraste sur le fond d'un panneau. Le seuil AA est à 4,5, et 1,89 sur du
+     12 px ne se lit tout simplement pas sur un téléphone.
+     Ils remontent à 4,5 et 3,5, mesurés sur `--bg-raised`. Pas au même niveau :
+     ces deux jetons existent pour dire deux poids différents, les confondre
+     aurait aplati la hiérarchie qu'ils servent à écrire. */
+  --text-faint: #7a8298;
+  --text-ghost: #697085;
 
   --accent: var(--gold);
   --accent-ink: #3a2e00;
@@ -86,8 +93,11 @@
   --text: #171d2b;
   --text-soft: #45506a;
   --text-muted: #5f6a84;
-  --text-faint: #7b859c;
-  --text-ghost: #9aa3b6;
+  /* Memes seuils que sur le sombre, atteints en assombrissant : le clair
+     etait devenu le maillon faible une fois l'autre corrige. Mesures prises
+     sur le fond enfonce, le plus clair des deux, donc le plus exigeant. */
+  --text-faint: #6a7387;
+  --text-ghost: #7e8595;
 
   --accent: #c98f00;
   --accent-ink: #ffffff;
@@ -288,7 +298,7 @@
   --bg: #f6f2ea; --bg-raised: #fffdf9; --bg-sunken: #fbf8f2; --bg-inset: #efe9dd; --bg-hover: #eae2d3;
   --border: #e2dacb; --border-strong: #cabfa9;
 
-  --text: #221c14; --text-soft: #4d4234; --text-muted: #665b4a; --text-faint: #8a7e6b; --text-ghost: #ada291;
+  --text: #221c14; --text-soft: #4d4234; --text-muted: #665b4a; --text-faint: #7d7261; --text-ghost: #8e8577;
 
   --gold: #a04516; --gold-soft: #e08a35;
   --accent: #a04516; --accent-ink: #fffaf3;
@@ -440,7 +450,7 @@
   --bg: #eef5f4; --bg-raised: #ffffff; --bg-sunken: #f5faf9; --bg-inset: #e6eeee; --bg-hover: #dde8e9;
   --border: #cfdfe1; --border-strong: #a9c6cb;
 
-  --text: #10201f; --text-soft: #395051; --text-muted: #4f6668; --text-faint: #6d8385; --text-ghost: #93a7a9;
+  --text: #10201f; --text-soft: #395051; --text-muted: #4f6668; --text-faint: #637779; --text-ghost: #78898a;
 
   --gold: #1c7049; --gold-soft: #cf7524;
   --accent: #1c7049; --accent-ink: #ffffff;
