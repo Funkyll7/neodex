@@ -122,7 +122,18 @@ function createSyncControls(ctx) {
   document.getElementById("sync-pull").addEventListener("click", async () => {
     try {
       const remote = await sync.fetchRemote();
-      ctx.collection.commitLocal((remote && remote.marks) || {});
+      // `adopterDistant` et non `commitLocal`, pour la raison que `collection.js`
+      // ecrit noir sur blanc au-dessus des deux methodes : `commitLocal` vide la
+      // couche locale parce qu'apres un ENVOI reussi le depot la contient. Ici
+      // le depot ne contient pas ce qui attend d'etre envoye — le vider le
+      // perdait, sans confirmation et sans recours, « Annuler » ne rejouant que
+      // des bascules dont l'etat de depart a disparu.
+      //
+      // Et le piege etait le plus naturel possible : « Recharger » est le bouton
+      // d'a cote d'« Enregistrer », donc le reflexe juste apres un echec
+      // d'envoi — c'est-a-dire exactement quand la couche locale porte tout ce
+      // qui n'a pas pu partir. `sync.js` faisait deja le bon appel, ici seul.
+      ctx.collection.adopterDistant((remote && remote.marks) || {});
       ctx.onCollectionChange();
       sync.emit("ok", t("Collection rechargée depuis le dépôt."));
     } catch {
