@@ -46,7 +46,37 @@ export const SIG = 20;
  */
 
 const SEUIL_FOND = 85; // écart au fond au-delà duquel c'est un sprite
+const SEUIL_SPRITE = 150; // le même, mesuré par `ecartAuFond`, pour le découpage
 const MIN_PIXELS = 260; // en dessous, la case est vide
+
+/**
+ * De combien ce pixel s'écarte-t-il du fond ?
+ *
+ * La somme des écarts par canal ne suffit pas, et Papilusion le prouve. Un pixel
+ * de son aile vaut (230, 234, 233) ; le fond de HOME vaut (187, 240, 225). Le
+ * rouge bondit de 43, mais le vert perd 6 et le bleu gagne 8 : la somme fait 57,
+ * sous n'importe quel seuil utile. Les ailes étaient effacées avant comparaison,
+ * et Papilusion marquait 18 sur sa propre référence.
+ *
+ * Le fond de HOME est déjà très clair — 240 sur le vert. Un sprite pâle ne peut
+ * donc s'en écarter que par un seul canal, et la somme le noie. Mais ce qui les
+ * sépare vraiment saute aux yeux : le fond est VERT, l'aile est NEUTRE. On
+ * mesure donc aussi les écarts ENTRE canaux, qui portent ce changement de
+ * teinte. L'aile passe alors de 57 à 155, quand du vrai fond reste à 13.
+ *
+ * Cela vaut pour tout sprite pâle sur ce fond — Dardargnan, Melofée, Leveinard —
+ * pas seulement pour Papilusion.
+ */
+function ecartAuFond(dr, dv, db) {
+  return (
+    Math.abs(dr) +
+    Math.abs(dv) +
+    Math.abs(db) +
+    Math.abs(dr - dv) +
+    Math.abs(dv - db) +
+    Math.abs(dr - db)
+  );
+}
 
 /**
  * Trois niveaux d'exigence.
@@ -305,15 +335,28 @@ function signatureDeCase(rgba, width, profil, cx, cy, g) {
       const dr = r - fr;
       const dv = v - fv;
       const db = b - fb;
-      const force = Math.abs(dr) + Math.abs(dv) + Math.abs(db);
+      const force = ecartAuFond(dr, dv, db);
       const p = y * w + x;
-      plein[p] = force > SEUIL_FOND ? 1 : 0;
+      plein[p] = force > SEUIL_SPRITE ? 1 : 0;
       toile[p] = estUnTraitDuFond(dr, dv, db, fr, fv, fb) ? 1 : 0;
     }
   }
 
+  // Une aile de Papilusion passe le test du trait de fond, et pour une bonne
+  // raison : elle est blanche, et du blanc sur ce fond EST un éclaircissement.
+  // Le test ne peut pas les distinguer, il ne regarde qu'un pixel.
+  //
+  // Ce qui les sépare est ailleurs, et c'est le même critère que pour les
+  // perforations et les ajours : l'épaisseur. Un trait de toile est fin, une
+  // aile est large. On rend donc au sprite tout ce que ce masque a de gros.
+  //
+  // Sans cela, Papilusion marquait 17 à 20 sur sa PROPRE référence, là où un
+  // Chrysacier tombe à 1,2 : ses ailes étaient effacées avant comparaison.
+  const toileEpaisse = morpho(morpho(toile, w, h, 3, false), w, h, 3, true);
   const sansToile = new Uint8Array(w * h);
-  for (let p = 0; p < w * h; p++) sansToile[p] = plein[p] && !toile[p] ? 1 : 0;
+  for (let p = 0; p < w * h; p++) {
+    sansToile[p] = plein[p] && (!toile[p] || toileEpaisse[p]) ? 1 : 0;
+  }
 
   let solide = morpho(morpho(sansToile, w, h, 3, false), w, h, 3, true);
   if (somme(solide) < MIN_PIXELS) solide = morpho(morpho(plein, w, h, 3, false), w, h, 3, true);
@@ -566,6 +609,11 @@ export function detecterGrille(imageData) {
       const dr = data[q] - fr;
       const dv = data[q + 1] - fv;
       const db = data[q + 2] - fb;
+      // Ici la somme simple, et non `ecartAuFond` : cette passe ne cherche pas
+      // à détourer un sprite mais à situer des colonnes et des lignes, et elle
+      // y arrive très bien avec les seuls corps francs. La mesure sensible aux
+      // pâleurs y ferait entrer assez de fond pour noyer les creux entre
+      // colonnes — essayé, la grille tombait de 7×5 à 7×4 et tout se décalait.
       const force = Math.abs(dr) + Math.abs(dv) + Math.abs(db);
       avant[y * width + x] = force > SEUIL_FOND && !estUnTraitDuFond(dr, dv, db, fr, fv, fb) ? 1 : 0;
     }
