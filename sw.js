@@ -33,8 +33,11 @@
 /* Changer ce numero purge les anciens caches au prochain chargement.
    v2 : les reponses opaques (sprites) entrent enfin dans le cache.
    v3 : les requetes de la coquille contournent le cache HTTP. Les caches v2
-        contiennent du JS perime, il faut les jeter. */
-const VERSION = "funkylldex-v15";
+        contiennent du JS perime, il faut les jeter.
+   v16 : `no-cache` remplace `no-store` — meme garantie de fraicheur, mais la
+        revalidation redevient possible et la coquille n'est plus
+        retelechargee en entier a chaque ouverture. */
+const VERSION = "funkylldex-v16";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;
@@ -74,12 +77,12 @@ self.addEventListener("install", (event) => {
       .open(SHELL)
       // `addAll` echoue en bloc si un seul fichier manque. On prefere un cache
       // partiel a une installation qui ne se fait jamais.
-      // `no-store` pour la meme raison qu'ailleurs : `cache.add()` passerait
+      // `no-cache` pour la meme raison qu'ailleurs : `cache.add()` passerait
       // sinon par le cache HTTP, et on installerait une coquille deja perimee.
       .then((cache) =>
         Promise.allSettled(
           SHELL_FILES.map((file) =>
-            fetch(file, { cache: "no-store" }).then((r) => (r.ok ? cache.put(file, r) : null))
+            fetch(file, { cache: "no-cache" }).then((r) => (r.ok ? cache.put(file, r) : null))
           )
         )
       )
@@ -205,15 +208,23 @@ function cachable(reponse) {
  */
 async function reseauDAbord(request, nomCache) {
   try {
-    // `cache: "no-store"` n'est pas un detail : sans lui, ce `fetch` passe par
-    // le cache HTTP du navigateur. GitHub Pages sert le JS avec un `max-age`,
-    // donc « aller au reseau » pouvait rendre une copie vieille de plusieurs
-    // minutes — et le worker la rangeait ensuite dans SON cache.
+    // Contourner le cache HTTP n'est pas un detail : sans cela, ce `fetch`
+    // pouvait rendre une copie vieille de plusieurs minutes — GitHub Pages sert
+    // le JS avec un `max-age` de dix minutes — et le worker la rangeait ensuite
+    // dans SON cache. C'est exactement comme ca que le site a servi un
+    // index.html neuf avec un sidebar.js perime, et s'est arrete sur « Cannot
+    // set properties of null ».
     //
-    // C'est exactement comme ca que le site a servi un index.html neuf avec un
-    // sidebar.js perime, et s'est arrete sur « Cannot set properties of null ».
-    // « Reseau d'abord » ne veut rien dire si le reseau repond depuis un cache.
-    const reponse = await fetch(request, { cache: "no-store" });
+    // Mais `no-store`, employe jusqu'ici, allait trop loin : il interdit aussi
+    // la REVALIDATION. Le navigateur retelechargeait donc le corps entier de
+    // chaque fichier a chaque ouverture, meme inchange.
+    //
+    // `no-cache` garde la garantie et rend l'economie : le navigateur demande
+    // toujours au serveur, mais avec l'empreinte qu'il detient. Verifie sur le
+    // site en ligne — GitHub Pages envoie bien un ETag et repond « 304, corps
+    // vide » quand rien n'a bouge. C'est le serveur qui tranche, jamais le
+    // cache tout seul : la fraicheur est aussi sure qu'avant.
+    const reponse = await fetch(request, { cache: "no-cache" });
     if (cachable(reponse)) {
       const cache = await caches.open(nomCache);
       cache.put(request, reponse.clone());
@@ -236,11 +247,19 @@ async function cacheDAbord(request, nomCache) {
   if (enCache) {
     // Rafraichissement en arriere-plan : on ne l'attend pas, et son echec est
     // sans consequence puisqu'on a deja repondu.
-    fetch(request)
-      .then(async (reponse) => {
-        if (cachable(reponse)) (await caches.open(nomCache)).put(request, reponse.clone());
-      })
-      .catch(() => {});
+    //
+    // Sauf pour les sprites. Leur adresse porte le SHA du depot (voir
+    // config.js) : elle ne designera JAMAIS une autre image. Les rafraichir
+    // revenait a retelecharger, puis a reecrire dans le cache, mot pour mot ce
+    // qu'on venait de servir — une requete et une ecriture par sprite affiche,
+    // a chaque ouverture, pour un resultat identique par construction.
+    if (nomCache !== SPRITES) {
+      fetch(request)
+        .then(async (reponse) => {
+          if (cachable(reponse)) (await caches.open(nomCache)).put(request, reponse.clone());
+        })
+        .catch(() => {});
+    }
     return enCache;
   }
 
