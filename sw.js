@@ -36,8 +36,11 @@
         contiennent du JS perime, il faut les jeter.
    v16 : `no-cache` remplace `no-store` — meme garantie de fraicheur, mais la
         revalidation redevient possible et la coquille n'est plus
-        retelechargee en entier a chaque ouverture. */
-const VERSION = "funkylldex-v18";
+        retelechargee en entier a chaque ouverture.
+   v19 : l'installation pre-cache enfin TOUS les modules, et non le seul
+        main.js. La liste est lue dans les `modulepreload` d'index.html
+        plutot que recopiee : une seule liste a tenir juste. */
+const VERSION = "funkylldex-v19";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;
@@ -71,22 +74,58 @@ const SHELL_FILES = [
   "./assets/img/logo-quete.png",
 ];
 
+/**
+ * Les modules de la coquille, lus dans index.html.
+ *
+ * SHELL_FILES ne cite que main.js. Les trente modules qu'il importe finissaient
+ * bien en cache — le gestionnaire `fetch` range en SHELL tout ce qui passe —,
+ * mais seulement APRES une visite en ligne. Entre un changement de version, qui
+ * purge les anciens caches, et cette visite, l'application etait vide hors
+ * ligne. C'est ce trou que main.js contourne aujourd'hui en chargeant le
+ * lecteur de captures a l'inactivite « puisque le service worker ne pre-cache
+ * que main.js » : le contournement disparait avec sa cause.
+ *
+ * La liste n'est pas recopiee ici, elle est LUE. index.html porte deja un
+ * `modulepreload` par module, et il le faut — sans eux le navigateur decouvre
+ * le graphe en cascade. Une seule liste a tenir, et c'est celle que le rendu
+ * oblige deja a garder juste. Deux listes auraient derive l'une de l'autre :
+ * celle-ci avait d'ailleurs deja derive de son propre graphe, il y manquait
+ * core/i18n.js et ui/langue.js.
+ *
+ * Si la lecture echoue, rien ne casse : l'installation continue sans eux, et le
+ * gestionnaire `fetch` les rangera a la premiere visite, comme avant.
+ */
+async function modulesDeLaCoquille() {
+  try {
+    const reponse = await fetch("./index.html", { cache: "no-cache" });
+    if (!reponse.ok) return [];
+    const html = await reponse.text();
+    return [...html.matchAll(/<link\b[^>]*\brel="modulepreload"[^>]*\bhref="([^"]+)"/g)].map(
+      (trouve) => `./${trouve[1]}`
+    );
+  } catch {
+    return [];
+  }
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches
-      .open(SHELL)
-      // `addAll` echoue en bloc si un seul fichier manque. On prefere un cache
-      // partiel a une installation qui ne se fait jamais.
+    (async () => {
+      const cache = await caches.open(SHELL);
+      // Un Set : main.js figure dans les deux listes, et une requete suffit.
+      const fichiers = [...new Set([...SHELL_FILES, ...(await modulesDeLaCoquille())])];
+      // `allSettled` et non `addAll` : celui-ci echoue en bloc si un seul
+      // fichier manque, et on prefere un cache partiel a une installation qui
+      // ne se fait jamais.
       // `no-cache` pour la meme raison qu'ailleurs : `cache.add()` passerait
       // sinon par le cache HTTP, et on installerait une coquille deja perimee.
-      .then((cache) =>
-        Promise.allSettled(
-          SHELL_FILES.map((file) =>
-            fetch(file, { cache: "no-cache" }).then((r) => (r.ok ? cache.put(file, r) : null))
-          )
+      await Promise.allSettled(
+        fichiers.map((file) =>
+          fetch(file, { cache: "no-cache" }).then((r) => (r.ok ? cache.put(file, r) : null))
         )
-      )
-      .then(() => self.skipWaiting())
+      );
+      await self.skipWaiting();
+    })()
   );
 });
 

@@ -253,12 +253,12 @@ function start(dataset) {
   // avec le reste : le module arrive au premier clic, ou a l'arrivee d'un
   // partage Android.
   //
-  // Mais pas seulement au clic : le service worker ne pre-cache que `main.js`,
-  // les autres modules n'entrent en cache qu'une fois demandes. Purement
-  // paresseux, le lecteur aurait donc ete indisponible hors ligne pour qui ne
-  // l'a jamais ouvert — une regression silencieuse, et sur le seul appareil ou
-  // la fonction sert vraiment. On le charge donc quand meme, une fois la page
-  // tranquille, en dehors du chemin critique.
+  // Il part quand meme au chargement, mais plus tard, et la raison a change :
+  // le service worker pre-cache desormais tout le graphe de modules — il lit
+  // pour cela les `modulepreload` d'index.html, ou le lecteur figure —, si bien
+  // que la disponibilite hors ligne n'est plus en jeu. Ce qui reste, c'est le
+  // premier clic : sans ce prechargement a l'inactivite, il attendrait le
+  // telechargement et l'analyse des 68 Ko.
   let photos = null;
   let chargementDuLecteur = null;
   const lecteurDeCaptures = () => {
