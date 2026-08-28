@@ -1467,17 +1467,19 @@
     transparent 70%);
   pointer-events: none;
 }
-
 /* ============================== Thèmes ================================== */
-/* Le bouton de la marque ouvre cette palette : avec vingt-six thèmes, un
+/* Le bouton de la marque ouvre cette palette : avec trente-deux thèmes, un
    bouton qui n'en alternait que deux laissait les autres inaccessibles.
 
-   Quatre familles, quatre titres. Vingt-six pastilles d'affilée formaient un
-   mur qu'on parcourait sans rien y chercher ; le titre dit ce qu'on regarde.
-   Et une hauteur bornée : déroulée en entier, la palette poussait « Statut »
-   et les filtres à plus d'un écran du haut de la colonne. */
+   Cinq familles, cinq onglets. Empilées, les trente-deux vignettes faisaient
+   445 px de haut : un mur qu'on parcourait sans rien y chercher, et dont la
+   dernière rangée demandait de faire défiler. Un onglet à la fois, c'est neuf
+   cartes au maximum — le panneau tient désormais entier, sans défilement.
+
+   La hauteur bornée reste, en garde-fou : déroulée en entier, la palette
+   poussait « Statut » et les filtres à plus d'un écran du haut de la colonne. */
 .themes {
-  display: flex; flex-direction: column; gap: var(--sp-3);
+  display: flex; flex-direction: column; gap: var(--sp-2);
   margin-top: calc(-1 * var(--sp-2));
   padding: var(--sp-2);
   /* `flex: none` n'est pas décoratif. La barre latérale est une colonne flex
@@ -1494,31 +1496,141 @@
   box-shadow: var(--shadow-panel);
 }
 .themes[hidden] { display: none; }
-.themes__catname {
-  margin: 0 0 5px;
-  font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text-faint);
+
+/* Les onglets. Deux réglages, pour un même défaut : « Légendaires » (11
+   lettres) s'affichait « Légend… ».
+
+   `flex: 1 1 auto` plutôt que `1 1 0` : à parts strictement égales, « Base »
+   (4 lettres) recevait autant de place que « Légendaires ». On part donc de la
+   largeur du mot, et le reste se répartit.
+
+   `flex-wrap: wrap` ensuite, parce que cela ne suffit pas : mesuré à 195 px de
+   panneau, les cinq mots réclament 255 px et AUCUN arrangement sur une ligne ne
+   les fait tenir. Ils passent alors sur deux lignes, entiers. Sur un panneau
+   large ils tiennent sur une seule, et rien ne change. */
+.themes__tabs {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--border);
 }
-.themes__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-.swatch {
-  display: flex; align-items: center; gap: 7px;
-  cursor: pointer; text-align: left;
-  border: 1px solid var(--border-strong); border-radius: 9px;
-  background: var(--bg-sunken); color: var(--text-soft);
-  padding: 7px 8px;
-  font: inherit; font-size: 11px; font-weight: 800;
+.themes__tab {
+  flex: 1 1 auto; min-width: 0;
+  padding: 7px 6px;
+  border: 1px solid transparent; border-radius: 8px;
+  background: none; color: var(--text-faint);
+  font: inherit; font-size: 10px; font-weight: 800; letter-spacing: .01em;
+  cursor: pointer;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.swatch:hover { background: var(--bg-hover); }
-.swatch[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
-/* La pastille montre les deux couleurs qui font le thème : son fond de page
-   et son accent. C'est plus parlant que le nom seul. */
-.swatch__dot {
-  flex: none; width: 15px; height: 15px; border-radius: 50%;
+@media (hover: hover) {
+  .themes__tab:hover { background: var(--bg-hover); color: var(--text-soft); }
+}
+.themes__tab[aria-selected="true"] {
+  background: var(--bg-sunken);
+  border-color: var(--border-strong);
+  color: var(--accent);
+}
+
+/* `auto-fit` et non trois colonnes fixes : le panneau va de 195 px dans une
+   colonne étroite à 332 px dans le tiroir mobile. À 195 px, trois colonnes
+   donnaient des cartes de 57 px — un trio de starters en fait 70 et débordait.
+   Le plancher de 76 px garantit qu'une carte tient toujours son contenu — un
+   trio en fait 68, marges comprises — et le nombre de colonnes suit la place
+   disponible. Descendu de 82 à 76 px après mesure : à 82, un panneau de 169 px
+   ratait la seconde colonne pour un seul pixel et affichait tout en pile. */
+.themes__panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); gap: 6px; }
+.themes__panel[hidden] { display: none; }
+
+/* La carte est peinte dans les couleurs du thème qu'elle propose : son fond de
+   page et son accent. C'est une vraie prévisualisation, là où un nom seul ne
+   disait rien — et c'est pourquoi elle ignore délibérément les variables du
+   thème COURANT au profit de `--sw-bg` / `--sw-fg`, posées par le script. */
+.thopt {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+  min-height: 76px; padding: 7px 4px 8px;
+  cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--sw-fg) 28%, transparent);
+  border-radius: 11px;
   background: var(--sw-bg);
-  border: 1px solid var(--border-strong);
-  box-shadow: inset 0 0 0 3px var(--sw-fg);
+  color: var(--sw-fg);
+  font: inherit; font-size: 10px; font-weight: 800; line-height: 1.15;
+  text-align: center;
 }
-.swatch__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (hover: hover) {
+  .thopt:hover { border-color: color-mix(in srgb, var(--sw-fg) 65%, transparent); }
+}
+/* L'anneau reprend l'accent du thème, et non `--accent` : sur une carte peinte
+   dans ses propres couleurs, l'accent du thème courant serait un troisième ton
+   sans rapport avec ce qu'on regarde. */
+.thopt[aria-pressed="true"] {
+  border-color: var(--sw-fg);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sw-fg) 45%, transparent);
+}
+
+/* Une aura derrière le sprite, dans l'accent du thème — la même idée que sur
+   les vignettes de la grille, et ici elle règle un vrai problème : un sprite
+   bleu sur un fond bleu très sombre disparaissait purement et simplement.
+   Mesuré sur « Cathode » (Lokhlass, fond #061418) et « Encre » (Léviator, fond
+   #0b0f1a) : la carte semblait vide alors que l'image était bien chargée.
+
+   `closest-side` garantit que le dégradé s'éteint avant le bord de sa boîte :
+   sans lui l'ellipse serait coupée net en haut et en bas. */
+.thopt__art {
+  position: relative;
+  /* `width: 100%` et non la largeur du contenu : la carte centre ses enfants,
+     qui se dimensionnent donc sur leur contenu — et les marges négatives du
+     trio faussaient ce calcul, laissant 5 px déborder de la boîte. */
+  width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  height: 42px;
+}
+.thopt__art::before {
+  content: ""; position: absolute; inset: -5px 6px; border-radius: 50%;
+  background: radial-gradient(
+    ellipse closest-side at 50% 50%,
+    color-mix(in srgb, var(--sw-fg) 30%, transparent),
+    transparent 72%
+  );
+  pointer-events: none;
+}
+/* L'ombre portée sert le cas inverse : Reshiram est blanc, et son thème est le
+   seul fond clair de la famille. Sans elle, le dragon se fondait dans la
+   carte. Invisible sur les fonds sombres, où l'aura suffit. */
+.thopt__sprite {
+  position: relative;
+  height: 42px; width: auto;
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, .5));
+}
+/* Trois sprites côte à côte feraient 126 px dans une carte qui en fait 85 : ils
+   rétrécissent et se chevauchent, comme un trio posé ensemble. À 28 px avec
+   6 px de recouvrement, le groupe occupe 60 px et tient dans la carte la plus
+   étroite que la grille puisse produire. */
+.thopt__art--trio .thopt__sprite { height: 28px; margin-inline: -6px; }
+
+/* Faute de Pokémon à montrer — « Base » et « Couleurs » n'en nomment aucun —,
+   une Poké Ball dessinée avec les deux couleurs du thème : l'accent en haut, le
+   fond de page en bas. Le trait qui les sépare est un mélange des deux, seul
+   moyen de rester visible sur les deux moitiés à la fois. */
+.thopt__ball {
+  position: relative;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--sw-fg) 55%, var(--sw-bg));
+  background: linear-gradient(
+    to bottom,
+    var(--sw-fg) 0 45%,
+    color-mix(in srgb, var(--sw-fg) 55%, var(--sw-bg)) 45% 55%,
+    var(--sw-bg) 55% 100%
+  );
+}
+.thopt__ball::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--sw-bg);
+  border: 1.5px solid color-mix(in srgb, var(--sw-fg) 55%, var(--sw-bg));
+}
+
+.thopt__name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ============ La grille ne se relit plus en entier à chaque case ========== */
 /* 1025 vignettes, c'est plus de 22 000 nœuds. Or le navigateur remet en page
@@ -1900,7 +2012,6 @@
   }
   .to-top { width: 50px; height: 50px; font-size: 21px; }
   .fchips { margin-bottom: var(--sp-2); }
-  .themes__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
   /* Trois onglets sur 375 px : « Pokédex Pokémon HOME » et « Pokédex Pokémon
      GO » ne tiennent pas, et les tronquer donnerait deux fois « Pokédex

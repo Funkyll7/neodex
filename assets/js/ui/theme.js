@@ -7,6 +7,9 @@ import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
 import { THEMES } from "./themes-list.js";
 import { setSpritesEnPixels } from "../domain/sprites.js";
+// Un identifiant d'onglet doit etre de l'ASCII : « Legendaires » et non
+// « Légendaires ». Le pliage existe deja, on ne le reecrit pas ici.
+import { sansAccents } from "../core/data.js";
 
 const KEY = CONFIG.storage.prefs;
 
@@ -47,9 +50,9 @@ export function initTheme() {
 /**
  * Le bouton de la marque ouvre la palette.
  *
- * Il ne fait plus basculer clair / sombre : avec vingt-six themes, un bouton
- * qui en alterne deux laissait les vingt-quatre autres inaccessibles sans un
- * second reglage ailleurs. Il devient donc l'entree unique — un panneau
+ * Il ne fait plus basculer clair / sombre : avec trente-deux themes, un bouton
+ * qui en alterne deux laissait les trente autres inaccessibles sans un second
+ * reglage ailleurs. Il devient donc l'entree unique — un panneau
  * s'ouvre, on choisit, il se referme.
  */
 function initBouton() {
@@ -60,13 +63,10 @@ function initBouton() {
   const ouvrir = (etat) => {
     picker.hidden = !etat;
     button.setAttribute("aria-expanded", String(etat));
-    // La palette s'ouvre sur la famille courante : avec quatre familles, elle
-    // s'ouvrait sinon systematiquement sur « Base » et il fallait faire defiler
-    // pour retrouver ou l'on etait.
-    if (etat) {
-      const actif = picker.querySelector('[aria-pressed="true"]');
-      if (actif) actif.scrollIntoView({ block: "nearest" });
-    }
+    // La palette s'ouvre sur l'onglet de la famille courante : sinon elle
+    // s'ouvrait toujours sur « Base », et retrouver ou l'on etait demandait de
+    // rouvrir les cinq onglets un a un.
+    if (etat) syncPicker();
   };
 
   button.addEventListener("click", (event) => {
@@ -87,7 +87,7 @@ function initBouton() {
   });
 
   picker.addEventListener("click", (event) => {
-    if (event.target.closest(".swatch")) ouvrir(false);
+    if (event.target.closest(".thopt")) ouvrir(false);
   });
 }
 
@@ -108,11 +108,28 @@ function choisir(theme) {
 }
 
 /**
- * La palette, coupee en familles.
+ * La palette, en onglets.
  *
- * Vingt-six pastilles d'affilee formaient un mur qu'on parcourait sans rien y
- * chercher. Les quatre titres disent ce qu'on regarde — une couleur, un
- * legendaire, un trio de depart — et rendent la liste consultable.
+ * Trente-deux pastilles empilees formaient un mur : on le parcourait sans rien
+ * y chercher, et il fallait faire defiler 445 px pour voir la derniere. Deux
+ * changements le rendent consultable.
+ *
+ * Un onglet par famille, d'abord. On ne voit plus qu'une famille a la fois —
+ * neuf cartes au maximum — et le panneau tient desormais entier a l'ecran,
+ * sans defilement du tout. Choisir, c'est deux gestes : la famille, puis la
+ * carte.
+ *
+ * Chaque carte peinte dans SES couleurs, ensuite. Une vignette qui montre le
+ * fond de page du theme et son accent dit ce qu'on va obtenir ; un nom seul ne
+ * le disait pas, et c'est bien la ce qu'on vient chercher. Les familles qui
+ * portent un nom de Pokemon montrent ce Pokemon — reconnaitre Mewtwo est plus
+ * rapide que lire « Mewtwo » —, les autres une Poke Ball dans les deux
+ * couleurs du theme.
+ *
+ * Les sprites du menu sont ceux en pixels, quel que soit le theme actif, et
+ * c'est une question de poids : le rendu HOME de Mewtwo pese 115 Ko, son sprite
+ * en pixels 929 octets. Pour une vignette de 42 px, c'est 125 fois trop cher —
+ * 2,8 Mo pour ouvrir un menu, contre 36 Ko.
  */
 function buildPicker() {
   const root = document.getElementById("theme-picker");
@@ -124,44 +141,151 @@ function buildPicker() {
     familles.get(theme.groupe).push(theme);
   }
 
-  fill(
-    root,
-    [...familles].map(([titre, liste]) =>
+  const onglets = el("div.themes__tabs", { role: "tablist", "aria-label": "Familles de thèmes" });
+  const panneaux = el("div.themes__panels");
+
+  for (const [titre, liste] of familles) {
+    const cle = idDeFamille(titre);
+    onglets.append(
       el(
-        "section.themes__cat",
-        el("h3.themes__catname", titre),
-        el(
-          "div.themes__grid",
-          liste.map((t) =>
-            el(
-              "button.swatch",
-              {
-                type: "button",
-                dataset: { theme: t.value },
-                title: t.label,
-                "aria-label": `Thème ${t.label}`,
-                "--sw-bg": t.bandeau,
-                "--sw-fg": t.pastille,
-                onclick: () => choisir(t.value),
-              },
-              el("span.swatch__dot"),
-              el("span.swatch__name", t.label)
-            )
-          )
-        )
+        "button.themes__tab",
+        {
+          type: "button",
+          role: "tab",
+          id: `theme-tab-${cle}`,
+          "aria-controls": `theme-panel-${cle}`,
+          "aria-selected": "false",
+          tabindex: "-1",
+          dataset: { famille: cle },
+          onclick: () => montrerFamille(root, cle),
+          onkeydown: (event) => naviguerOnglets(root, event),
+        },
+        titre
       )
-    )
-  );
+    );
+    panneaux.append(
+      el(
+        "div.themes__panel",
+        {
+          role: "tabpanel",
+          id: `theme-panel-${cle}`,
+          "aria-labelledby": `theme-tab-${cle}`,
+          dataset: { famille: cle },
+          hidden: true,
+        },
+        liste.map(carte)
+      )
+    );
+  }
+
+  fill(root, onglets, panneaux);
   syncPicker();
 }
 
+/** « Légendaires » -> « legendaires » : un identifiant sur pour aria-controls. */
+function idDeFamille(titre) {
+  return sansAccents(titre).toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
+/** Une carte, peinte dans les couleurs du theme qu'elle propose. */
+function carte(theme) {
+  return el(
+    "button.thopt",
+    {
+      type: "button",
+      dataset: { theme: theme.value },
+      title: theme.label,
+      "aria-label": `Thème ${theme.label}`,
+      "aria-pressed": "false",
+      "--sw-bg": theme.bandeau,
+      "--sw-fg": theme.pastille,
+      onclick: () => choisir(theme.value),
+    },
+    vignette(theme),
+    el("span.thopt__name", theme.label)
+  );
+}
+
+/**
+ * Le dessin de la carte : le Pokemon du theme, ou une Poke Ball a defaut.
+ *
+ * Les trois starters d'une region plutot qu'un seul : un trio de depart ne se
+ * resume pas a l'un des trois, et c'est le trio qu'on reconnait d'un coup
+ * d'oeil. Ils se chevauchent legerement — trois sprites cote a cote ne
+ * tiendraient pas dans les 85 px d'une carte.
+ */
+function vignette(theme) {
+  if (!theme.sprite) {
+    return el("span.thopt__art", el("span.thopt__ball"));
+  }
+  const ids = Array.isArray(theme.sprite) ? theme.sprite : [theme.sprite];
+  const classe = ids.length > 1 ? "span.thopt__art.thopt__art--trio" : "span.thopt__art";
+  return el(
+    classe,
+    ids.map((id) =>
+      el("img.thopt__sprite", {
+        src: `${CONFIG.spritePixelBase}${id}.png`,
+        // Vide et non le nom du Pokemon : le bouton porte deja son `aria-label`,
+        // et « Mewtwo » lu deux fois de suite n'apprend rien.
+        alt: "",
+        loading: "lazy",
+        decoding: "async",
+      })
+    )
+  );
+}
+
+/** Montre une famille et une seule. */
+function montrerFamille(root, cle) {
+  for (const onglet of root.querySelectorAll(".themes__tab")) {
+    const actif = onglet.dataset.famille === cle;
+    onglet.setAttribute("aria-selected", String(actif));
+    onglet.tabIndex = actif ? 0 : -1;
+  }
+  for (const panneau of root.querySelectorAll(".themes__panel")) {
+    panneau.hidden = panneau.dataset.famille !== cle;
+  }
+}
+
+/**
+ * Fleches gauche / droite entre les onglets.
+ *
+ * Attendu d'un `role="tablist"` : sans cela, un seul onglet est atteignable au
+ * clavier, puisque les autres portent `tabindex="-1"` — c'est justement ce qui
+ * evite d'avoir a traverser cinq onglets pour atteindre les cartes.
+ */
+function naviguerOnglets(root, event) {
+  const sens = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+  if (!sens) return;
+  event.preventDefault();
+  const onglets = [...root.querySelectorAll(".themes__tab")];
+  const ici = onglets.indexOf(event.currentTarget);
+  const cible = onglets[(ici + sens + onglets.length) % onglets.length];
+  montrerFamille(root, cible.dataset.famille);
+  cible.focus();
+}
+
+/**
+ * Remet le selecteur d'accord avec le theme applique — la carte cochee, et
+ * l'onglet ouvert sur la famille ou l'on se trouve. C'est ce dernier point qui
+ * fait qu'ouvrir le menu montre toujours d'abord la ou l'on est.
+ */
 function syncPicker() {
   const root = document.getElementById("theme-picker");
   if (!root) return;
   const courant = document.documentElement.dataset.theme;
-  for (const bouton of root.querySelectorAll(".swatch")) {
-    bouton.setAttribute("aria-pressed", String(bouton.dataset.theme === courant));
+
+  let famille = null;
+  for (const bouton of root.querySelectorAll(".thopt")) {
+    const actif = bouton.dataset.theme === courant;
+    bouton.setAttribute("aria-pressed", String(actif));
+    if (actif) famille = bouton.closest(".themes__panel").dataset.famille;
   }
+
+  // Un theme inconnu — une palette retiree, des preferences venues d'ailleurs —
+  // ne doit pas laisser le menu sans aucun onglet ouvert.
+  const premier = root.querySelector(".themes__tab");
+  montrerFamille(root, famille || (premier && premier.dataset.famille));
 }
 
 const PAR_VALEUR = new Map(THEMES.map((t) => [t.value, t]));
