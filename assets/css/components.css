@@ -1824,6 +1824,33 @@
   .search__icon { left: 12px; }
   .segmented button { padding: 8px 10px; font-size: 11.5px; }
   .toggle { padding: 9px 4px; }
+
+  /* Les boutons d'une vignette mesurent 30 à 32 px de haut. Ce sont pourtant
+     ceux qu'on tape le plus, souvent d'une main en jouant, et les
+     recommandations tactiles parlent de 44.
+
+     Les agrandir écarterait toute la grille et ferait tenir moins de Pokémon à
+     l'écran. On étend donc la zone SENSIBLE sans toucher au dessin : un
+     pseudo-élément déborde de six pixels en haut et en bas, ce qui porte la
+     cible à 42 px sans déplacer quoi que ce soit.
+
+     Verticalement seulement, et c'est délibéré : les boutons ne sont séparés
+     que de trois pixels, déborder latéralement ferait se chevaucher deux cibles
+     voisines. Un appui qui touche le mauvais bouton est bien pire qu'un appui
+     qui rate. */
+     `.toggle` porte `overflow: hidden` pour rogner un libellé trop long. Sur
+     une vignette il n'y a que des pastilles, aucun texte — et ce rognage
+     coupait justement le débordement qu'on cherche. On le lève ici, et ici
+     seulement. */
+  .card__toggles .toggle { position: relative; overflow: visible; }
+  .card__toggles .toggle::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -6px;
+    bottom: -6px;
+  }
   .to-top { width: 50px; height: 50px; font-size: 21px; }
   .fchips { margin-bottom: var(--sp-2); }
   .themes__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
