@@ -33,12 +33,50 @@ export function spritesEnPixels() {
 }
 
 export function spriteUrl(id, { shiny = false, female = false } = {}) {
-  // Le dossier en pixels n'a pas de variante femelle : les differences de sexe
-  // n'etaient pas dessinees a cette epoque. On sert le sprite commun plutot que
-  // d'attendre un 404 et de degrader.
-  if (enPixels) return `${CONFIG.spritePixelBase}${shiny ? "shiny/" : ""}${id}.png`;
   return `${CONFIG.spriteBase}${shiny ? "shiny/" : ""}${female ? "female/" : ""}${id}.png`;
 }
+
+/**
+ * L'adresse en pixels, quand le theme la demande — sinon rien.
+ *
+ * Elle se met EN TETE d'une chaine de replis, jamais a la place. Le dossier en
+ * pixels ne couvre pas exactement le meme catalogue que celui de HOME :
+ * quelques formes recentes y manquent, comme il en manque deja dans HOME.
+ * Remplacer l'adresse laissait alors un carre vide ; l'ajouter en tete fait
+ * simplement retomber sur le rendu 3D, ce qui est moche mais visible.
+ *
+ * Le dossier n'a pas non plus de variante femelle — les differences de sexe
+ * n'etaient pas dessinees a cette epoque. On demande le sprite commun.
+ */
+function urlsEnPixels(nom, { shiny = false } = {}) {
+  if (!enPixels) return [];
+  const base = CONFIG.spritePixelBase;
+  // Le chromatique d'abord quand il est demande, puis le normal : mieux vaut un
+  // sprite en pixels de la mauvaise teinte qu'un rendu 3D au milieu des autres.
+  const chaine = shiny ? [`${base}shiny/${nom}.png`, `${base}${nom}.png`] : [`${base}${nom}.png`];
+  const choisi = PIXELS_CHOISIS[nom];
+  if (choisi) chaine.push(choisi());
+  return chaine;
+}
+
+/**
+ * Les rares sprites choisis a la main.
+ *
+ * Onze des douze formes sans sprite dessine sont des Mega-Evolutions —
+ * transformations de combat, que ce site classe deja comme non
+ * collectionnables et qui ne se cochent nulle part. La douzieme, elle, meritait
+ * qu'on s'en occupe.
+ *
+ * Le Pikachu Partenaire n'a de sprite dans AUCUN dossier, pas meme en rendu
+ * HOME. Mais c'est litteralement le Pikachu de Pokemon Jaune : lui donner ce
+ * sprite-la n'est pas un pis-aller, c'est la bonne image.
+ *
+ * Une fonction et non une chaine : `CONFIG` est lu au moment de l'appel, pas au
+ * chargement du module, ce qui laisse la table lisible en tete de fichier.
+ */
+const PIXELS_CHOISIS = {
+  10158: () => `${CONFIG.spriteJauneBase}25.png`,
+};
 
 export function artworkUrl(id, { shiny = false } = {}) {
   return `${CONFIG.artworkBase}${shiny ? "shiny/" : ""}${id}.png`;
@@ -49,7 +87,7 @@ export function artworkUrl(id, { shiny = false } = {}) {
  * On garde `loading="lazy"` : la grille peut afficher un millier d'images.
  */
 export function spriteImg(id, { shiny = false, female = false, alt = "", className = "" } = {}) {
-  const chain = [];
+  const chain = urlsEnPixels(id, { shiny });
   if (female) chain.push(spriteUrl(id, { shiny, female: true }));
   chain.push(spriteUrl(id, { shiny }));
   chain.push(artworkUrl(id, { shiny }));
@@ -64,7 +102,9 @@ export function spriteImg(id, { shiny = false, female = false, alt = "", classNa
  */
 export function formImg(form, { shiny = false, alt = "", className = "" } = {}) {
   const has = form.sprites || {};
-  const chain = [];
+  // En tete, jamais a la place : une forme absente du dossier en pixels
+  // retombe ainsi sur son rendu HOME au lieu de laisser un carre vide.
+  const chain = urlsEnPixels(form.id, { shiny });
   if (shiny) {
     if (has.homeShiny) chain.push(spriteUrl(form.id, { shiny: true }));
     if (has.artShiny) chain.push(artworkUrl(form.id, { shiny: true }));
@@ -73,6 +113,9 @@ export function formImg(form, { shiny = false, alt = "", className = "" } = {}) 
   if (has.art) chain.push(artworkUrl(form.id));
   // Filet de securite si le referentiel n'a pas encore ete regenere.
   if (!chain.length) chain.push(spriteUrl(form.id, { shiny }), artworkUrl(form.id));
+  // Le repli ultime doit exister meme quand `has` a rempli la chaine : sans
+  // lui, une forme absente du dossier en pixels n'avait plus rien a essayer.
+  else if (enPixels) chain.push(spriteUrl(form.id, { shiny }), artworkUrl(form.id));
   return imageFrom(chain, alt || form.name, className);
 }
 
@@ -85,8 +128,12 @@ export function formImg(form, { shiny = false, alt = "", className = "" } = {}) 
 export function cosmeticImg(variant, speciesId, { shiny = false, alt = "", className = "" } = {}) {
   if (!variant.sprite) return spriteImg(speciesId, { shiny, alt: alt || variant.name, className });
 
+  // Le theme « Pixels » vaut ici aussi : le dossier en pixels nomme ses formes
+  // cosmetiques comme le dossier classique, « 172-spiky-eared » y figure. En
+  // tete de chaine et non a la place — une variante qui y manquerait retombe
+  // ainsi sur son sprite habituel.
   const base = variant.spriteSet === "classic" ? CONFIG.spriteClassicBase : CONFIG.spriteBase;
-  const chain = [];
+  const chain = urlsEnPixels(variant.sprite, { shiny });
   if (shiny) chain.push(`${base}shiny/${variant.sprite}.png`);
   chain.push(`${base}${variant.sprite}.png`);
   // Repli si le depot de sprites change de nommage : l'espece, jamais rien.

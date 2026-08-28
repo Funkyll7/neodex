@@ -511,10 +511,66 @@
    l'ordre compte, chacun ignore le mot-clé qu'il ne connaît pas. */
 :root[data-sprites-pixel] .card__img,
 :root[data-sprites-pixel] .gcard__img,
-:root[data-sprites-pixel] .detail__art,
-:root[data-sprites-pixel] .slot__img,
+:root[data-sprites-pixel] .form__img,
+:root[data-sprites-pixel] .ftile__img,
 :root[data-sprites-pixel] .imp__img,
-:root[data-sprites-pixel] .form__img {
+:root[data-sprites-pixel] .log__img,
+:root[data-sprites-pixel] .picker__img,
+:root[data-sprites-pixel] .quest__img,
+:root[data-sprites-pixel] .slot__img,
+:root[data-sprites-pixel] .variants__img {
   image-rendering: crisp-edges;
   image-rendering: pixelated;
+}
+
+/* Cinq déclinaisons sur la recette de « Console » : même structure exactement,
+   seule la teinte change. Un fond très sombre à peine coloré, un accent franc
+   et lumineux — c'est ce contraste-là qui fait ressortir un sprite de 96 px.
+   La gamme reste distincte de la famille « Couleurs », bâtie pour des rendus
+   3D bien plus grands, qui supportent des fonds plus clairs. */
+
+/* Ambré — le vieil écran monochrome, celui des terminaux d'avant la couleur. */
+:root[data-theme="pixels-ambre"] {
+  color-scheme: dark;
+  --bg: #1a1206; --bg-raised: #251b0c; --bg-sunken: #1f1609; --bg-inset: #2b2010; --bg-hover: #352815;
+  --border: #3d2e14; --border-strong: #543f1d;
+  --gold: #ffb340; --gold-soft: #ffd694;
+  --accent: #ffb340; --accent-ink: #2a1a00;
+  --accent-glow: rgba(255, 179, 64, .45); --accent-wash: rgba(255, 179, 64, .13); --accent-border: #4f3712;
+}
+
+/* Cathode — le turquoise d'un tube cathodique, froid et un peu électrique. */
+:root[data-theme="pixels-cyan"] {
+  color-scheme: dark;
+  --bg: #061418; --bg-raised: #0d2026; --bg-sunken: #09191e; --bg-inset: #10262d; --bg-hover: #153038;
+  --border: #17363f; --border-strong: #204c58; --gold: #3fd8e8; --gold-soft: #9cebf4;
+  --accent: #3fd8e8; --accent-ink: #012228;
+  --accent-glow: rgba(63, 216, 232, .45); --accent-wash: rgba(63, 216, 232, .13); --accent-border: #14424c;
+}
+
+/* Néon — l'enseigne de nuit : magenta saturé sur un violet presque noir. */
+:root[data-theme="pixels-magenta"] {
+  color-scheme: dark;
+  --bg: #170a18; --bg-raised: #241130; --bg-sunken: #1c0d22; --bg-inset: #2b1638; --bg-hover: #351c44;
+  --border: #3c2049; --border-strong: #522c63; --gold: #f45fd0; --gold-soft: #ffa9e6;
+  --accent: #f45fd0; --accent-ink: #2c0424;
+  --accent-glow: rgba(244, 95, 208, .45); --accent-wash: rgba(244, 95, 208, .13); --accent-border: #4c1f42;
+}
+
+/* Braise — le rouge d'un feu qui couve, sur un charbon qui ne s'éteint pas. */
+:root[data-theme="pixels-sang"] {
+  color-scheme: dark;
+  --bg: #170808; --bg-raised: #241010; --bg-sunken: #1c0b0b; --bg-inset: #2b1414; --bg-hover: #351a19;
+  --border: #3d1d1c; --border-strong: #542927; --gold: #ff6a4d; --gold-soft: #ffab93;
+  --accent: #ff6a4d; --accent-ink: #2a0700;
+  --accent-glow: rgba(255, 106, 77, .45); --accent-wash: rgba(255, 106, 77, .13); --accent-border: #4e2016;
+}
+
+/* Encre — le bleu d'un écran resté allumé dans une pièce sombre. */
+:root[data-theme="pixels-encre"] {
+  color-scheme: dark;
+  --bg: #0b0f1a; --bg-raised: #141a2b; --bg-sunken: #0e1424; --bg-inset: #1a2236; --bg-hover: #212b43;
+  --border: #242e47; --border-strong: #33405f; --gold: #7f9cff; --gold-soft: #b9c8ff;
+  --accent: #7f9cff; --accent-ink: #06102c;
+  --accent-glow: rgba(127, 156, 255, .45); --accent-wash: rgba(127, 156, 255, .13); --accent-border: #26355c;
 }

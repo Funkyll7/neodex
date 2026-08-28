@@ -60,16 +60,20 @@ export const THEMES = [
   { value: "starters-paldea", label: "Paldéa", groupe: "Starters", bandeau: "#12110a", pastille: "#ff6b3d" },
 
   // --- Pixels ---------------------------------------------------------------
-  // Le seul theme qui ne se contente pas de recolorer : `sprites: "pixel"` fait
-  // servir les sprites dessines plutot que les rendus 3D de HOME. C'est
-  // `ui/theme.js` qui le transmet a `domain/sprites.js`, et `assets/css` qui
-  // coupe le lissage — un pixel agrandi doit rester un carre.
-  {
-    value: "pixels",
-    label: "Pixels",
-    groupe: "Pixels",
-    bandeau: "#141024",
-    pastille: "#8be04e",
-    sprites: "pixel",
-  },
+  // La seule famille qui ne se contente pas de recolorer : `sprites: "pixel"`
+  // fait servir les sprites dessines plutot que les rendus 3D de HOME. C'est
+  // `ui/theme.js` qui le transmet a `domain/sprites.js`, et theme.css qui coupe
+  // le lissage — un pixel agrandi doit rester un carre.
+  //
+  // Six variantes sur la meme recette : un fond tres sombre et legerement
+  // colore, un accent franc et lumineux. C'est ce contraste-la qui fait
+  // ressortir un sprite de 96 pixels, et c'est pourquoi la famille garde sa
+  // propre gamme au lieu de reprendre celle des « Couleurs », batie pour des
+  // rendus 3D bien plus grands.
+  { value: "pixels", label: "Console", groupe: "Pixels", bandeau: "#141024", pastille: "#8be04e", sprites: "pixel" },
+  { value: "pixels-ambre", label: "Ambré", groupe: "Pixels", bandeau: "#1a1206", pastille: "#ffb340", sprites: "pixel" },
+  { value: "pixels-cyan", label: "Cathode", groupe: "Pixels", bandeau: "#061418", pastille: "#3fd8e8", sprites: "pixel" },
+  { value: "pixels-magenta", label: "Néon", groupe: "Pixels", bandeau: "#170a18", pastille: "#f45fd0", sprites: "pixel" },
+  { value: "pixels-sang", label: "Braise", groupe: "Pixels", bandeau: "#170808", pastille: "#ff6a4d", sprites: "pixel" },
+  { value: "pixels-encre", label: "Encre", groupe: "Pixels", bandeau: "#0b0f1a", pastille: "#7f9cff", sprites: "pixel" },
 ];

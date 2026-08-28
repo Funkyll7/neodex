@@ -289,10 +289,18 @@ function start(dataset) {
    * appareil a pu enregistrer.
    */
   // Le theme « Pixels » change les adresses des images : les <img> deja posees
-  // pointent encore vers les rendus HOME, il faut refaire la grille et la fiche.
+  // pointent encore vers les rendus HOME.
+  //
+  // Les TROIS onglets, et pas seulement celui qu'on regarde. Un onglet cache
+  // garde ses vignettes dans le document : n'en refaire qu'un laissait le
+  // Pokedex GO et le Pokemon d'une quete en 3D, et le decalage n'apparaissait
+  // qu'en changeant d'onglet — au moment ou l'on ne fait plus le lien avec le
+  // theme qu'on vient de choisir.
   document.addEventListener("funkylldex:sprites", () => {
     renderList();
     renderDetail();
+    go.render();
+    quest.render();
   });
 
   window.addEventListener("online", () => {

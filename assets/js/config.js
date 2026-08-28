@@ -49,6 +49,15 @@ export const CONFIG = {
   spritePixelBase: `${SPRITES_ROOT}versions/generation-v/black-white/`,
 
   /**
+   * Les sprites de Pokemon Jaune, pour un seul cas : le Pikachu Partenaire.
+   *
+   * Il n'a de sprite dessine dans aucun dossier — ni en pixels, ni meme en
+   * rendu HOME. Mais c'est litteralement le Pikachu de Jaune : lui donner ce
+   * sprite-la n'est pas un pis-aller, c'est la bonne image.
+   */
+  spriteJauneBase: `${SPRITES_ROOT}versions/generation-i/yellow/`,
+
+  /**
    * Sprites « classiques » du depot PokeAPI, nommes par forme ("172-spiky-eared").
    * Les formes cosmetiques y sont toutes presentes, y compris celles qui n'ont
    * pas de rendu HOME — c'est le cas du seul Pichu Troizepi.
