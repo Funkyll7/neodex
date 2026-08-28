@@ -34,6 +34,8 @@ export const THEMES = [
   // --- Base -----------------------------------------------------------------
   { value: "dark", label: "Sombre", groupe: "Base", bandeau: "#0a0d17", pastille: "#ffcb05" },
   { value: "light", label: "Clair", groupe: "Base", bandeau: "#f2f4f9", pastille: "#c98f00" },
+  // Sable et rose en dégradé sur les tuiles, sur une nuit chaude. Voir theme.css.
+  { value: "boussole", label: "Boussole ❤️", groupe: "Base", bandeau: "#14100d", pastille: "#f174d3" },
 
   // --- Couleurs : une palette par teinte ------------------------------------
   { value: "rubis", label: "Rubis", groupe: "Couleurs", bandeau: "#150c0f", pastille: "#f2586c" },

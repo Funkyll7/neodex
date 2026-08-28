@@ -29,9 +29,29 @@
   /* --- Couleurs semantiques communes aux deux themes --- */
   --gold: #ffcb05;
   --gold-soft: #ff9c3d;
+
+  /* Le doré de la COMPLÉTION, décliné comme l'accent l'est déjà : un voile, un
+     halo, une bordure, une encre. Ces quatre-là renvoient à l'accent par
+     défaut, et c'est exact partout — les trente-deux autres palettes posent la
+     même valeur sur « --gold » et sur « --accent », si bien qu'aucune ne change
+     d'un pixel. Boussole est la seule à les séparer : chez elle la complétion
+     est sable et l'interaction est rose, et il fallait de quoi l'écrire. */
+  --gold-wash: var(--accent-wash);
+  --gold-glow: var(--accent-glow);
+  --gold-border: var(--accent-border);
+  --gold-ink: var(--accent-ink);
   --pair: #6fb7ff;
   --female: #ff8fd0;
   --danger: #ff6b6b;
+
+  /* Le voile des tuiles : une couche posée PAR-DESSUS le fond des vignettes,
+     du Pokédex comme du Pokédex GO. « none » par défaut — invisible, et
+     gratuit pour les trente-deux palettes qui ne s'en servent pas.
+
+     Un jeton à part plutôt que de peindre « --bg-sunken » en dégradé : celui-ci
+     sert AUSSI de fond plat ailleurs — barres de défilement, panneaux, tableau
+     des jeux — où un dégradé n'aurait aucun sens. */
+  --tuile-voile: none;
 
   /* Etats du tableau de disponibilite par jeu */
   --avail-ok: #3f8f60;
@@ -160,6 +180,65 @@
   --female: #ff8fd0;
 }
 
+/* Boussole — le sable et le rose pâle, sur une nuit chaude.
+
+   Les deux couleurs demandées ne pouvaient pas tenir le fond : posées en
+   grand, un sable et un rose pâle redonnent un thème clair de plus. Elles
+   servent donc de LUMIÈRE sur une nuit qui tire déjà au brun — le noir qui
+   les reçoit est teinté de sable lui aussi, pour qu'aucun gris froid ne
+   vienne trancher.
+
+   Leur fusion se lit à deux endroits, et ce sont les deux surfaces qu'on
+   regarde le plus : le voile en dégradé de chaque tuile de la grille, et la
+   paire « --gold » → « --gold-soft » des barres de progression et des quêtes
+   finies, ici du sable vers le rose.
+
+   Le rose est un cran plus pâle que le magenta du thème Néon : assez proche
+   pour qu'on reconnaisse la même famille, assez retenu pour ne pas hurler
+   à côté du sable. */
+:root[data-theme="boussole"] {
+  color-scheme: dark;
+  --bg: #14100d; --bg-raised: #201a15; --bg-sunken: #181310; --bg-inset: #26201a; --bg-hover: #2f2820;
+  --border: #362c23; --border-strong: #4c4033;
+
+  /* Le sable prend aussi l'échelle du texte. Les jetons par défaut sont
+     gris-bleu, et un gris froid posé sur un noir chaud se voit tout de suite —
+     c'est la seule palette du lot qui ait besoin de les redéfinir.
+
+     Les trois derniers échelons sont plus clairs qu'ailleurs, et c'est le
+     voile qui l'impose : le petit texte des vignettes — numéro national, liste
+     des jeux — ne se lit pas sur le fond du panneau mais sur la tuile teintée,
+     nettement plus claire. Les rendre au niveau habituel les faisait tomber à
+     3,1 et 2,1 de contraste. Ils sont réancrés sur la surface où ils
+     apparaissent vraiment, en gardant l'écart qui sépare les trois poids. */
+  --text: #f6ecdd; --text-soft: #ddcdb6; --text-muted: #d2c0aa; --text-faint: #c0b19f; --text-ghost: #a89a8b;
+
+  --gold: #e0c79c; --gold-soft: #f174d3;
+  --accent: #f174d3; --accent-ink: #2c0a23;
+  --accent-glow: rgba(241, 116, 211, .42); --accent-wash: rgba(241, 116, 211, .12); --accent-border: #4d2a41;
+
+  /* La complétion est SABLE, l'interaction est ROSE. C'est la règle qui tient
+     tout le thème : ce qu'on a fini se marque au sable — l'étoile du coin, le
+     liseré d'une vignette terminée, le halo de son sprite —, ce qu'on touche
+     répond en rose. Les deux couleurs demandées ont ainsi chacune un rôle au
+     lieu de se disputer les mêmes surfaces. */
+  --gold-wash: rgba(224, 199, 156, .13);
+  --gold-glow: rgba(224, 199, 156, .42);
+  --gold-border: #4a3d2b;
+  --gold-ink: #241a0c;
+
+  /* Le dégradé demandé, sable → rose, posé sur chaque tuile. En diagonale et
+     non de gauche à droite : les vignettes sont presque carrées, et un dégradé
+     horizontal s'y lit comme une bande.
+
+     Le sable est plus opaque que le rose alors qu'ils devraient se valoir. Ce
+     n'est pas un déséquilibre mais sa correction : posé sur un quasi-noir, un
+     ton peu saturé perd sa teinte avant de perdre sa clarté, et un sable à la
+     même opacité que le rose ne rendait qu'un gris tiède — le dégradé entier
+     virait au prune. */
+  --tuile-voile: linear-gradient(135deg, rgba(224, 199, 156, .24), rgba(241, 116, 211, .21));
+}
+
 /* =============================================================================
    FAMILLE « COULEURS »
    Une palette par teinte, et rien d'autre : le fond, les bordures et l'accent
@@ -228,6 +307,7 @@
   --accent: #a97dff; --accent-ink: #1a0940;
   --accent-glow: rgba(169, 125, 255, .45); --accent-wash: rgba(169, 125, 255, .13); --accent-border: #3c2a66;
 }
+
 
 /* =============================================================================
    FAMILLE « LÉGENDAIRES »

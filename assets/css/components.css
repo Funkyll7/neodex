@@ -219,7 +219,7 @@
   cursor: pointer; text-align: left;
   display: flex; flex-direction: column; gap: 5px;
   padding: 10px;
-  background: var(--bg-sunken);
+  background: var(--tuile-voile), var(--bg-sunken);
   border: 2px solid var(--border);
   border-radius: 14px;
   transition: border-color .12s, background .12s, opacity .12s;
@@ -232,7 +232,7 @@
  * peinte comme la vignette sélectionnée, et deux cartes semblaient l'être en
  * même temps. */
 @media (hover: hover) {
-  .card:hover { background: var(--bg-hover); }
+  .card:hover { background: var(--tuile-voile), var(--bg-hover); }
 }
 .card--missing { opacity: .5; }
 /* Ni possédé ni absent : on a quelque chose de ce Pokémon, mais pas sa forme
@@ -245,7 +245,7 @@
 .card--partial .card__img { filter: none; }
 .card--owned { border-color: color-mix(in srgb, var(--type) 45%, transparent); }
 .card--shiny { border-color: var(--accent-border); }
-.card--selected { background: var(--bg-hover); border-color: var(--type); }
+.card--selected { background: var(--tuile-voile), var(--bg-hover); border-color: var(--type); }
 
 .card__select {
   display: flex; flex-direction: column; gap: 5px;
@@ -273,16 +273,17 @@
 /* Tout obtenu : bordure doree, fond teinte, et un liserre qui balaie la carte
    une seule fois, au moment ou elle bascule. */
 .card--complete {
-  border-color: var(--accent);
+  border-color: var(--gold);
   background:
-    linear-gradient(160deg, var(--accent-wash), transparent 62%),
+    linear-gradient(160deg, var(--gold-wash), transparent 62%),
+    var(--tuile-voile),
     var(--bg-sunken);
   opacity: 1;
 }
-.card--complete .card__img { filter: drop-shadow(0 0 9px var(--accent-glow)); }
+.card--complete .card__img { filter: drop-shadow(0 0 9px var(--gold-glow)); }
 .card__complete {
   font-size: 10px; font-weight: 800; letter-spacing: .04em;
-  text-align: center; color: var(--accent);
+  text-align: center; color: var(--gold);
 }
 
 .card--just-complete { animation: card-celebrate .9s ease-out 1; }
@@ -1208,12 +1209,12 @@
    se lit sans compter les boutons un par un. Le basculement se fait par
    `syncMarks()`, sans reconstruire la tuile. */
 .ftile--done {
-  border-color: var(--accent);
-  background: linear-gradient(180deg, var(--accent-wash), transparent 62%), var(--bg-sunken);
-  box-shadow: inset 0 0 0 1px var(--accent-border);
+  border-color: var(--gold);
+  background: linear-gradient(180deg, var(--gold-wash), transparent 62%), var(--bg-sunken);
+  box-shadow: inset 0 0 0 1px var(--gold-border);
 }
-.ftile--done .ftile__art { background: color-mix(in srgb, var(--accent) 10%, var(--bg-inset)); }
-.ftile--done .ftile__name { color: var(--accent); }
+.ftile--done .ftile__art { background: color-mix(in srgb, var(--gold) 10%, var(--bg-inset)); }
+.ftile--done .ftile__name { color: var(--gold); }
 .ftile { position: relative; }
 .ftile--done::after {
   content: "★";
@@ -1221,7 +1222,7 @@
   width: 19px; height: 19px;
   display: grid; place-items: center;
   border-radius: 50%;
-  background: var(--accent);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 78%, #fff), var(--accent));
   color: var(--accent-ink);
   font-size: 11px; font-weight: 800;
   box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
@@ -1319,7 +1320,7 @@
   width: 22px; height: 22px;
   display: grid; place-items: center;
   border-radius: 50%;
-  background: var(--accent);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 78%, #fff), var(--accent));
   color: var(--accent-ink);
   font-size: 12px; font-weight: 800;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
@@ -1872,7 +1873,7 @@
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   padding: 7px 6px 6px;
   border: 1px solid var(--border); border-radius: var(--r-md);
-  background: var(--bg-raised);
+  background: var(--tuile-voile), var(--bg-raised);
   /* Mille vignettes dans une page : le navigateur n'a aucune raison de
      calculer la mise en page de celles qui sont hors écran. */
   content-visibility: auto;
