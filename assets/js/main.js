@@ -27,7 +27,6 @@ import { createShortcuts } from "./ui/shortcuts.js";
 import { createToTop } from "./ui/to-top.js";
 import { createActiveFilters } from "./ui/active-filters.js";
 import { createUndo } from "./ui/undo.js";
-import { createImportPhotos } from "./ui/import-photos.js";
 import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
@@ -243,9 +242,32 @@ function start(dataset) {
   const toTop = createToTop();
   const activeFilters = createActiveFilters(ctx);
   const undo = createUndo(ctx);
-  const photos = createImportPhotos(ctx);
+  // Le lecteur de captures pese 68 Ko a lui seul — `domain/reco.js` et son
+  // interface — pour une fonction qu'on ouvre rarement. Il ne part donc plus
+  // avec le reste : le module arrive au premier clic, ou a l'arrivee d'un
+  // partage Android.
+  //
+  // Mais pas seulement au clic : le service worker ne pre-cache que `main.js`,
+  // les autres modules n'entrent en cache qu'une fois demandes. Purement
+  // paresseux, le lecteur aurait donc ete indisponible hors ligne pour qui ne
+  // l'a jamais ouvert — une regression silencieuse, et sur le seul appareil ou
+  // la fonction sert vraiment. On le charge donc quand meme, une fois la page
+  // tranquille, en dehors du chemin critique.
+  let photos = null;
+  let chargementDuLecteur = null;
+  const lecteurDeCaptures = () => {
+    if (!chargementDuLecteur) {
+      chargementDuLecteur = import("./ui/import-photos.js").then(({ createImportPhotos }) => {
+        photos = photos || createImportPhotos(ctx);
+        return photos;
+      });
+    }
+    return chargementDuLecteur;
+  };
   for (const bouton of document.querySelectorAll("[data-import]")) {
-    bouton.addEventListener("click", () => photos.ouvrir(bouton.dataset.import));
+    bouton.addEventListener("click", () => {
+      lecteurDeCaptures().then((lecteur) => lecteur.ouvrir(bouton.dataset.import));
+    });
   }
   createFolds();
 
@@ -504,14 +526,23 @@ function start(dataset) {
 
   registerWorker();
 
+  // Le prechargement du lecteur de captures, maintenant seulement : place plus
+  // haut, `requestIdleCallback` se declenchait des 17 ms — pendant une attente
+  // du demarrage, donc en concurrence avec le chargement des donnees. Ici, la
+  // grille est peinte et le fil est libre.
+  const quandLaPageSeTait = window.requestIdleCallback || ((f) => setTimeout(f, 3000));
+  quandLaPageSeTait(() => lecteurDeCaptures().catch(() => {}));
+
   // Le site vient d'etre ouvert par le menu « Partager » d'Android : les
   // captures attendent dans un cache, le lecteur les reprend tout de suite.
   // Apres le premier rendu, pour ne pas retarder l'affichage — et sans faire
   // de bruit si ce n'etait pas un partage.
   if (new URLSearchParams(location.search).has("partage")) {
-    photos.reprendrePartage().catch((error) => {
-      console.warn("Funkylldex : captures partagees illisibles.", error);
-    });
+    lecteurDeCaptures()
+      .then((lecteur) => lecteur.reprendrePartage())
+      .catch((error) => {
+        console.warn("Funkylldex : captures partagees illisibles.", error);
+      });
     // L'adresse est nettoyee : recharger la page ne doit pas relancer une
     // lecture dont les fichiers ont deja ete consommes.
     history.replaceState(null, "", location.pathname);

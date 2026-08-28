@@ -2,7 +2,12 @@
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- viewport-fit=cover n'est pas cosmetique : sans lui, les dix regles qui
+     appellent env(safe-area-inset-*) — barre « Filtres », fiche en tiroir,
+     bouton de remontee, lecteur de captures — recoivent TOUJOURS zero, sur
+     tous les appareils. La gestion de l'encoche et de la barre gestuelle
+     etait donc ecrite, mais inerte. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Funkylldex — collection perso</title>
 <meta name="description" content="Pokédex personnel : suivi de collection, formes ♂ / ♀, chromatiques et quêtes de shiny hunt.">
 <meta name="color-scheme" content="dark light">
