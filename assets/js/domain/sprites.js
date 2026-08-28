@@ -118,9 +118,9 @@ const PIXELS_LOCAUX = new Set([
 ]);
 
 /**
- * Celles dont on a AUSSI le chromatique — six sur vingt-six.
+ * Celles dont on a AUSSI le chromatique — sept sur vingt-six.
  *
- * Les vingt autres retombent sur leur sprite normal, ce que le site fait deja
+ * Les dix-neuf autres retombent sur leur sprite normal, ce que le site fait deja
  * pour toute forme sans chromatique connu. Une seconde liste plutot qu'un essai
  * a l'aveugle, pour la meme raison que la premiere : ne jamais demander un
  * fichier qu'on sait absent.
@@ -128,6 +128,7 @@ const PIXELS_LOCAUX = new Set([
 const PIXELS_LOCAUX_SHINY = new Set([
   "darkrai-mega",
   "dragalge-mega",
+  "magearna-mega",
   "magearna-original-mega",
   "scolipede-mega",
   "scrafty-mega",
