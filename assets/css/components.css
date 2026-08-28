@@ -337,7 +337,11 @@
 
 .chip {
   display: inline-block;
-  color: #fff; font-weight: 800;
+  /* `--type-ink` est calcule en JS depuis la couleur du type : blanc sur les
+     quatre types sombres, encre sombre sur les quatorze autres. En blanc
+     partout, Electrik tombait a 1,49 de contraste. Le repli `#fff` couvre le
+     cas ou la variable ne serait pas posee. */
+  color: var(--type-ink, #fff); font-weight: 800;
   border-radius: var(--r-pill);
   background: var(--type);
   font-size: 9px; padding: 2px 7px;
@@ -354,7 +358,7 @@
   color: var(--text-muted);
 }
 .toggle:hover { filter: brightness(1.15); }
-.toggle[aria-pressed="true"] { background: var(--type); color: #fff; }
+.toggle[aria-pressed="true"] { background: var(--type); color: var(--type-ink, #fff); }
 .toggle--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 
 /* Pastilles des boutons. Le bouton reste un flex pour que l'icône et le
@@ -1903,19 +1907,33 @@
   color: var(--text-muted);
 }
 .gcard__btn:hover { filter: brightness(1.15); }
-.gcard__btn[aria-pressed="true"] { background: var(--type); color: #fff; }
+.gcard__btn[aria-pressed="true"] { background: var(--type); color: var(--type-ink, #fff); }
 .gcard__btn--gold[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 /* Pas encore obtenable dans Pokémon GO. La vignette reste dans la grille —
    savoir qu'un Pokémon manque au jeu fait partie de ce qu'on vient chercher —
-   mais elle ne porte aucune case et ne compte dans aucun total. */
-.gcard--absent { opacity: .38; }
-.gcard--absent .gcard__img { filter: var(--sprite-dim); }
+   mais elle ne porte aucune case et ne compte dans aucun total.
+
+   Elle portait `opacity: .38`, ce qui délavait AUSSI son nom : mesuré, le texte
+   composité tombait à 2,35 de contraste sur le fond, pour du 12 px. La norme
+   demande 4,5, et il y a 73 de ces vignettes — on ne pouvait plus lire quels
+   Pokémon manquaient au jeu, ce qui est précisément l'information qu'on vient
+   y chercher.
+
+   Il aurait fallu monter l'opacité à 0,65 pour repasser la barre, et à ce
+   niveau la vignette ne paraît plus éteinte du tout. On assombrit donc ce qui
+   doit l'être — le sprite — et on donne au texte un ton discret mais lisible :
+   `--text-muted` vaut 4,90 sur ce fond. Le cartouche « Pas dans GO » en pointillés
+   et le sprite éteint suffisent à dire que la case n'existe pas. */
+.gcard--absent .gcard__name { color: var(--text-muted); }
+.gcard--absent .gcard__img { filter: var(--sprite-dim); opacity: .45; }
 .gcard__absent {
   flex: 1;
   display: inline-flex; align-items: center; justify-content: center;
   border: 1px dashed var(--border); border-radius: var(--r-sm);
   padding: 7px 4px;
-  color: var(--text-ghost);
+  /* `--text-muted` et non `--text-ghost` : à 9,5 px, ce cartouche a besoin des
+     4,5 de contraste pleins, et le fantôme n'en donnait que 3,44. */
+  color: var(--text-muted);
   font-size: 9.5px; font-weight: 800; letter-spacing: .03em;
   white-space: nowrap;
 }

@@ -30,7 +30,7 @@ import { el, fill } from "../core/dom.js";
 import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { applyGoFilters } from "../domain/filters.js";
 import { goProgressOf } from "../domain/progress.js";
-import { dexNumber } from "./common.js";
+import { dexNumber, typeInk } from "./common.js";
 
 export function createGoDex(ctx) {
   const { store, collection, dataset } = ctx;
@@ -177,6 +177,7 @@ function carte(entry, ctx) {
     "div.gcard",
     {
       "--type": color,
+      "--type-ink": typeInk(color),
       dataset: { key: entry.key, id: entry.id, slot: entry.slot },
       role: "listitem",
     },

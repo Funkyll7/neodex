@@ -17,7 +17,7 @@ import { el, fill } from "../core/dom.js";
 import { spriteImg, formImg } from "../domain/sprites.js";
 import { completionOf } from "../domain/completion.js";
 import { formeDeRepli } from "../domain/display.js";
-import { dexNumber, typeChip } from "./common.js";
+import { dexNumber, typeChip, typeInk } from "./common.js";
 
 export function createGrid(ctx) {
   const grid = document.getElementById("grid");
@@ -254,7 +254,7 @@ function card(species, ctx) {
 
   const node = el(
     "div.card",
-    { "--type": color, dataset: { id: species.id }, role: "listitem" },
+    { "--type": color, "--type-ink": typeInk(color), dataset: { id: species.id }, role: "listitem" },
     el(
       "button.card__select",
       { type: "button", "aria-label": `Ouvrir la fiche de ${species.name}` },
@@ -497,6 +497,7 @@ function quickToggles(species, ctx, color) {
         title,
         "aria-label": `${title} — ${species.name}`,
         "--type": color,
+        "--type-ink": typeInk(color),
         dataset: { slot, species: species.id },
       },
       label
