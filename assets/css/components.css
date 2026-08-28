@@ -6,12 +6,20 @@
 
 /* ------------------------------- Marque ---------------------------------- */
 .brand { display: flex; align-items: center; gap: 11px; }
+/* La Poké Ball du logo, en SVG. Elle portait un dégradé bicolore dessiné en
+   CSS : une approximation, sans la bande noire ni le bouton central, là où le
+   site a déjà son vrai logo — celui du favicon et de l'icône installée.
+
+   `outline` et non `border` : sur une image, une bordure rogne le contenu, et
+   la balle aurait rétréci de 6 px. L'outline se pose autour sans rien prendre,
+   et `outline-offset` recrée le petit jeu que faisait l'ancienne bordure.
+   L'anneau reste en `--gold`, donc il suit le thème — le logo lui-même ne le
+   suit pas, et c'est normal : un logo garde ses couleurs. */
 .brand__ball {
   width: 34px; height: 34px; flex: 0 0 auto;
   border-radius: 50%;
-  background: linear-gradient(180deg, #ff4d4d 50%, #f4f6fa 50%);
-  border: 3px solid var(--bg);
-  box-shadow: 0 0 0 2px var(--gold);
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
 }
 .brand__text { display: flex; flex-direction: column; }
 .brand__title { font-family: var(--font-display); font-size: 20px; font-weight: 800; line-height: 1.1; }

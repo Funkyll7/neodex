@@ -104,7 +104,12 @@
   <!-- ============================= BARRE LATERALE ============================= -->
   <aside id="sidebar" class="sidebar" aria-label="Filtres et progression">
     <div class="brand">
-      <span class="brand__ball" aria-hidden="true"></span>
+      <!-- Le logo du site lui-meme, et non plus une pastille bicolore dessinee
+           en CSS : c'est le meme fichier que le favicon et que l'icone de
+           l'application installee. En SVG pour rester net a toutes les densites
+           d'ecran, et pour 398 octets. -->
+      <img class="brand__ball" src="assets/img/favicon.svg" alt="" aria-hidden="true"
+           width="34" height="34" decoding="async">
       <span class="brand__text">
         <strong class="brand__title">Funkylldex</strong>
         <span class="brand__sub">Collection perso</span>
