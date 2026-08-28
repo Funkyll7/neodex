@@ -60,6 +60,15 @@ export function createImportPhotos(ctx) {
     fond.hidden = true;
     document.body.classList.remove("imp-open");
     resultats = null;
+
+    // La banque d'empreintes pese quatre megaoctets, et elle ne resservira
+    // qu'a la prochaine lecture — c'est-a-dire rarement. La garder vivante
+    // toute la session, apres dix secondes d'usage, c'est ce qui fait basculer
+    // un onglet du cote que le systeme decide de tuer quand la memoire
+    // manque. Sur telephone, ce n'est pas theorique.
+    //
+    // La relire coute une requete, deja servie par le cache du worker.
+    banque = null;
   }
 
   const titre = () =>

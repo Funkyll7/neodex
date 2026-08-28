@@ -44,10 +44,18 @@ export function createShortcuts(ctx) {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
 
     if (isTyping(event.target)) {
-      // Seule sortie utile depuis un champ de recherche : rendre le focus a la
-      // page. On ne vide pas le champ — le filtre en cours est rarement ce
-      // qu'on veut perdre.
-      if (event.key === "Escape" && event.target === champ()) event.target.blur();
+      // Deux sorties depuis un champ de recherche, et toutes deux rendent le
+      // focus a la page sans vider le champ — le filtre en cours est rarement
+      // ce qu'on veut perdre.
+      //
+      // Entree autant qu'Echap, parce qu'un clavier de telephone n'a pas
+      // d'Echap : la recherche filtrant a la frappe, il n'y avait aucun moyen
+      // de refermer le clavier une fois qu'on avait fini de taper. C'est aussi
+      // ce que promet `enterkeyhint="search"` sur le champ.
+      if ((event.key === "Escape" || event.key === "Enter") && event.target === champ()) {
+        event.preventDefault();
+        event.target.blur();
+      }
       return;
     }
 
@@ -71,6 +79,15 @@ export function createShortcuts(ctx) {
     // Cocher sans la souris. Les fleches deplacent, ces deux touches cochent :
     // remonter une boite entiere ne demande plus de lacher le clavier.
     if (event.key === "1" || event.key === "2") {
+      // La repetition automatique du clavier tire une trentaine de bascules par
+      // seconde. La pile d'annulation n'en garde que vingt-cinq : une demi-
+      // seconde de touche maintenue effacait tout ce qu'on aurait voulu
+      // annuler, en cochant et decochant la meme case sans fin.
+      //
+      // Les fleches, elles, gardent la repetition : parcourir une boite en
+      // maintenant une direction est exactement ce qu'on attend d'elles.
+      if (event.repeat) return;
+
       const species = ctx.dataset.byId.get(ctx.store.state.selectedId);
       if (!species) return;
       if (event.key === "2" && species.noShiny) return;
