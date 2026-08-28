@@ -367,7 +367,25 @@ function searchIndex(species) {
     parts.push(species.cosmetic.title);
     for (const variant of species.cosmetic.variants) parts.push(variant.name, variant.short);
   }
-  return parts.filter(Boolean).join(" ").toLowerCase();
+  // L'index est range SANS accents, et la requete sera pliee de la meme
+  // maniere. Personne ne tape « Mélofée » sur un clavier de telephone : on
+  // tape « melofee », et la recherche ne rendait rien. Meme histoire pour
+  // Leviator, Tenefix, Electhor, Ecremeuh et une bonne partie du dex francais.
+  //
+  // On garde le nom accentue partout ailleurs — c'est l'orthographe juste, et
+  // c'est ce qui s'affiche. Seul l'index de recherche est aplati.
+  return sansAccents(parts.filter(Boolean).join(" ").toLowerCase());
+}
+
+/**
+ * Retire les signes diacritiques d'une chaine deja en minuscules.
+ *
+ * `normalize("NFD")` separe la lettre de son accent, le filtre jette les
+ * accents devenus autonomes. Rien a maintenir : ni table de correspondance,
+ * ni liste de cas particuliers.
+ */
+export function sansAccents(texte) {
+  return texte.normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
 /** Categories qui ne sont qu'une transformation de combat : rien a cocher. */

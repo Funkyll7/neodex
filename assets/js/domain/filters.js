@@ -5,6 +5,10 @@
  */
 
 import { completionOf } from "./completion.js";
+// Une fonction pure, sans DOM : l'index de recherche est plié sans accents par
+// `core/data.js`, la requête doit l'être exactement de la même manière. Les
+// écrire à deux endroits les aurait laissés diverger un jour.
+import { sansAccents } from "../core/data.js";
 
 /**
  * Les pastilles de statut.
@@ -145,7 +149,7 @@ function almostSort(collection) {
 }
 
 export function applyFilters(species, state, collection, isComplete = () => false) {
-  const query = state.search.trim().toLowerCase();
+  const query = sansAccents(state.search.trim().toLowerCase());
   const number = numberQuery(query);
 
   const list = species.filter((p) => {
