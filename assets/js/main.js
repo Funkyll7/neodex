@@ -73,9 +73,9 @@ async function boot() {
   } catch (error) {
     const box = document.getElementById("boot-error");
     box.hidden = false;
-    box.textContent =
-      `${error.message}. Les fichiers de data/ se chargent en fetch : ouvre le site via un serveur ` +
-      "(python -m http.server) ou via GitHub Pages, pas en double-cliquant sur index.html.";
+    // Le message technique reste tel quel — il vient du navigateur ; seule
+      // l'explication se traduit.
+    box.textContent = `${error.message}. ${t("Les fichiers de data/ se chargent en fetch : ouvre le site via un serveur (python -m http.server) ou via GitHub Pages, pas en double-cliquant sur index.html.")}`;
     console.error(error);
   }
 }

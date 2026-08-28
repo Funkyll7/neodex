@@ -16,6 +16,10 @@
  */
 
 import { CONFIG } from "../config.js";
+// Les messages d'etat sont lus par l'utilisateur : ils suivent la langue. Les
+// `reason`, elles, restent en francais — ce sont des messages de commit git,
+// ecrits dans l'historique du depot, pas a l'ecran.
+import { t } from "../core/i18n.js";
 
 const API = "https://api.github.com";
 
@@ -66,7 +70,7 @@ export class GitHubSync {
   async connect(token) {
     this.token = String(token || "").trim();
     if (!this.token) throw new Error("jeton vide");
-    this.emit("busy", "Vérification du jeton…");
+    this.emit("busy", t("Vérification du jeton…"));
     try {
       await this.fetchRemote();
     } catch (error) {
@@ -75,7 +79,7 @@ export class GitHubSync {
       throw error;
     }
     writeToken(this.token);
-    this.emit("ok", "Connecté au dépôt.");
+    this.emit("ok", t("Connecté au dépôt."));
 
     // Ce qui a ete coche AVANT le jeton part maintenant.
     //
@@ -147,7 +151,7 @@ export class GitHubSync {
   }
 
   async write(reason, retry = true, keepalive = false, marksImposees = null) {
-    this.emit("busy", "Enregistrement sur GitHub…");
+    this.emit("busy", t("Enregistrement sur GitHub…"));
     const payload = this.collection.toExport("site Funkylldex", marksImposees);
     const body = {
       message: `Collection : ${reason}`,
@@ -168,7 +172,7 @@ export class GitHubSync {
       // Ce qui est dans le depot devient la nouvelle reference : plus rien
       // n'est « modifie dans ce navigateur ».
       this.collection.commitLocal(payload.marks);
-      this.emit("ok", "Enregistré dans le dépôt.");
+      this.emit("ok", t("Enregistré dans le dépôt."));
       return data;
     } catch (error) {
       // 409 / 422 : le fichier a bouge depuis notre derniere lecture — un autre
@@ -179,7 +183,7 @@ export class GitHubSync {
       // l'autre appareil venait d'ajouter : cocher sur le telephone puis laisser
       // le navigateur enregistrer suffisait a perdre la case.
       if (retry && /^Conflit/.test(error.message)) {
-        this.emit("busy", "Fusion avec le dépôt…");
+        this.emit("busy", t("Fusion avec le dépôt…"));
         const distant = await this.fetchRemote();
         const fusionne = this.collection.fusionnerAvec(distant.marks);
         return this.write(reason, false, false, fusionne);
@@ -191,7 +195,7 @@ export class GitHubSync {
       // d'alarmer pour quelque chose qui va se resoudre tout seul.
       if (horsLigne(error)) {
         this.enAttenteDeReseau = true;
-        this.emit("attente", "Hors ligne — envoi dès le retour du réseau.");
+        this.emit("attente", t("Hors ligne — envoi dès le retour du réseau."));
         return null;
       }
 
@@ -246,7 +250,7 @@ export class GitHubSync {
     // `adopterDistant` et non `commitLocal` : le depot ne contient pas encore
     // ce qui est coche ici, vider la couche locale le perdrait.
     const change = this.collection.adopterDistant(distant.marks);
-    if (change) this.emit("ok", "Mis à jour depuis le dépôt.");
+    if (change) this.emit("ok", t("Mis à jour depuis le dépôt."));
     return change;
   }
 
@@ -340,13 +344,15 @@ function horsLigne(error) {
   return error instanceof TypeError;
 }
 
-/** Messages d'erreur en francais, orientes « quoi faire ». */
+/** Messages d'erreur orientes « quoi faire », dans la langue affichee. */
 function describe(status, message) {
-  if (status === 401) return "Jeton refusé : il est invalide ou a expiré.";
-  if (status === 403) return "Accès refusé : le jeton n'a pas le droit d'écriture sur ce dépôt.";
-  if (status === 404) return "Fichier introuvable : vérifie le dépôt, la branche et le chemin.";
-  if (status === 409 || status === 422) return "Conflit : le fichier a changé dans le dépôt.";
-  return message ? `GitHub a répondu : ${message}` : `GitHub a répondu ${status}.`;
+  if (status === 401) return t("Jeton refusé : il est invalide ou a expiré.");
+  if (status === 403) return t("Accès refusé : le jeton n'a pas le droit d'écriture sur ce dépôt.");
+  if (status === 404) return t("Fichier introuvable : vérifie le dépôt, la branche et le chemin.");
+  if (status === 409 || status === 422) return t("Conflit : le fichier a changé dans le dépôt.");
+  // Le message vient de GitHub, donc en anglais quoi qu'il arrive : seule
+  // l'amorce se traduit.
+  return message ? `${t("GitHub a répondu :")} ${message}` : `${t("GitHub a répondu")} ${status}.`;
 }
 
 /** base64 <-> UTF-8 : les noms francais contiennent des accents. */

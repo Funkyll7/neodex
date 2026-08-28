@@ -101,6 +101,11 @@ function appliquer(valeur) {
   document.documentElement.lang = valeur;
   appliquerAuStatique();
 
+  // Le titre de l'onglet vit dans <head>, hors du relevé qui ne parcourt que
+  // <body> : il faut le poser a part. Il compte — c'est ce qu'on lit dans la
+  // liste des onglets du navigateur et dans les favoris.
+  document.title = t("Funkylldex — collection perso");
+
   // Le bouton APRES le statique : son `title` fait partie du releve, et le
   // repeindre ensuite serait le seul texte de la page a rester en arriere.
   const bouton = document.getElementById("lang-toggle");

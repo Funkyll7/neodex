@@ -1,4 +1,5 @@
 {
+  "_comment": "Ce fichier reste en FRANCAIS, et ce n'est pas un oubli. Un manifeste d'application web ne peut pas etre bilingue : le systeme le lit une fois, a l'installation, et fige le nom, la description et les raccourcis de l'icone posee sur l'ecran d'accueil. La bascule FR / EN du site ne peut rien y changer, meme apres coup. Le francais est donc la langue de l'application installee, quelle que soit celle de l'interface.",
   "name": "Funkylldex — collection perso",
   "short_name": "Funkylldex",
   "description": "Pokédex personnel : suivi de collection, formes, chromatiques et shiny hunt.",

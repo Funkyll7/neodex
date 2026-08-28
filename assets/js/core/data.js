@@ -19,13 +19,16 @@
  * groupe `cosmetic`.
  */
 
+// Le message d'echec de chargement est lu par l'utilisateur : il suit la langue.
+import { t } from "./i18n.js";
+
 const BASE = new URL("../../../data/", import.meta.url);
 
 async function loadJson(path) {
   const url = new URL(path, BASE);
   const response = await fetch(url, { cache: "no-cache" });
   if (!response.ok) {
-    throw new Error(`Impossible de charger ${path} (HTTP ${response.status})`);
+    throw new Error(`${t("Impossible de charger")} ${path} (HTTP ${response.status})`);
   }
   return response.json();
 }
