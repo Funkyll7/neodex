@@ -139,7 +139,6 @@ export function createSidebar(ctx) {
     owned: document.getElementById("stat-owned"),
     total: document.getElementById("stat-total"),
     bar: document.getElementById("progress-bar"),
-    segments: document.getElementById("progress-segments"),
     fill: document.getElementById("progress-fill"),
     bars: document.getElementById("progress-bars"),
     titre: document.getElementById("progress-title"),
@@ -171,10 +170,6 @@ export function createSidebar(ctx) {
     out.champs.game.hidden = go;
     out.champs.sort.hidden = go;
     out.legende.hidden = go;
-    // Le Pokedex GO ne se decoupe pas par generation : `goProgressOf` ne range
-    // pas ses boites ainsi, et une bande vide vaudrait moins que rien.
-    out.segments.hidden = go;
-    out.segments.setAttribute("aria-label", t("Progression par génération"));
     out.titre.textContent = go ? "Progression Pokémon GO" : "Progression totale";
     out.resume.textContent = go ? "Détail" : "Détail par forme";
   }
@@ -203,11 +198,6 @@ export function createSidebar(ctx) {
       const actif = row.dataset.cible !== "all" && store.state[row.dataset.filtre] === row.dataset.cible;
       row.setAttribute("aria-pressed", String(actif));
     }
-    // Meme raison que les barres du detail : une tranche cliquee doit
-    // s'allumer tout de suite, sans reparcourir les 1025 especes.
-    for (const seg of out.segments.children) {
-      seg.setAttribute("aria-pressed", String(store.state.gen === seg.dataset.cible));
-    }
     for (const button of viewToggle.children) {
       button.setAttribute("aria-pressed", String(button.dataset.view === store.state.view));
     }
@@ -235,9 +225,6 @@ export function createSidebar(ctx) {
       out.total.textContent = total.total;
       out.fill.style.width = `${total.pct}%`;
       out.bar.setAttribute("aria-valuenow", total.pct);
-      // La meme progression, redecoupee. Apres la barre et non a sa place :
-      // les deux disent la meme chose, l'une en un chiffre, l'autre repartie.
-      if (!surGo() && progress) renderSegments(out, progress, dataset, store);
 
       if (surGo()) renderGoBars(out, go, store);
       else if (progress) renderBars(out, progress, counts, store);
@@ -559,62 +546,3 @@ function renderBars(out, progress, counts, store) {
   );
 }
 
-/**
- * La barre totale, redécoupée en tranches — une par génération.
- *
- * La largeur d'une tranche n'est pas le neuvième de la bande : c'est la part
- * des CASES que cette génération réclame. Kanto pèse 151 espèces sur 1025,
- * mais bien davantage en cases une fois ses Méga et ses formes d'Alola
- * comptées — neuf parts égales auraient menti sur le travail restant.
- *
- * Cette largeur ne dépend donc pas de ce qu'on possède, et c'est le point : une
- * génération à zéro pour cent garde une tranche large et cliquable. Des parts
- * dimensionnées sur le REMPLI auraient donné une cible de largeur nulle
- * exactement là où l'on a le plus envie d'appuyer.
- *
- * Conséquence agréable et voulue : la surface remplie de la bande entière vaut
- * exactement le pourcentage affiché au-dessus. Les deux ne peuvent pas se
- * contredire, puisqu'une case appartient à une seule génération et que la somme
- * des neuf seaux vaut le total — voir `domain/progress.js`.
- *
- * Chaque tranche est un bouton, comme les barres du détail : on lit « Unys
- * traîne », on appuie, la grille ne montre plus qu'Unys. Rappuyer revient à
- * tout. Le titre porte le nom, le décompte et le geste — une tranche fait une
- * vingtaine de pixels de large, aucun texte n'y tiendrait.
- */
-function renderSegments(out, progress, dataset, store) {
-  const total = (progress.all && progress.all.total) || 1;
-  const gens = progress.gens || {};
-
-  fill(
-    out.segments,
-    Object.entries(dataset.generations).map(([numero, meta]) => {
-      const value = gens[numero];
-      if (!value || !value.total) return null;
-
-      const actif = store.state.gen === numero;
-      // Le libellé et la région passent par `t()` séparément, jamais la phrase
-      // assemblée : « Génération V — Unys » n'existe nulle part comme chaîne.
-      const nom = meta.region ? `${t(meta.label)} — ${t(meta.region)}` : t(meta.label);
-      const geste = actif ? t("Cliquer pour retirer le filtre.") : t("Cliquer pour n'afficher que ceux-là.");
-
-      return el(
-        "button.seg",
-        {
-          type: "button",
-          // Un `flex-grow` en variable plutôt qu'une largeur en pourcentage :
-          // les tranches sont séparées par un filet que le pourcentage ignore,
-          // et la somme des neuf aurait débordé la bande.
-          "--poids": String(value.total / total),
-          title: `${nom}\n${value.done} / ${value.total} ${t("cases cochées")} (${value.pct} %)\n${geste}`,
-          // Le bouton n'a aucun texte : sans ce nom accessible il serait muet.
-          "aria-label": `${nom} — ${value.pct} %`,
-          "aria-pressed": String(actif),
-          dataset: { filtre: "gen", cible: numero },
-          onclick: () => store.set({ gen: store.state.gen === numero ? "all" : numero }),
-        },
-        el("span.seg__fill", { style: { width: `${value.pct}%` } })
-      );
-    })
-  );
-}

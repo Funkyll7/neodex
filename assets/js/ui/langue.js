@@ -28,7 +28,6 @@ const LIBELLES = {
  */
 const ZONES_DYNAMIQUES =
   "#grid,#go-grid,#detail,#quest-card,#quest-log,#theme-picker,#status-pills," +
-  "#progress-segments," +
   "#progress-bars,#active-filters,#result-count,#go-count,#dirty-note,#boot-error";
 
 /**

@@ -125,13 +125,6 @@
            quand on lit du francais — plutot que celle qu'on obtiendrait en
            cliquant : un bouton qui affiche « EN » alors qu'on lit du francais
            se lit dans les deux sens, et on ne sait plus lequel est vrai. -->
-      <!-- Les sons : deux seulement, une case chromatique et une quête réussie.
-           Le bouton porte l'état COURANT, comme celui de la langue — un bouton
-           qui montre ce qu'on obtiendrait en cliquant se lit dans les deux sens. -->
-      <button type="button" id="sound-toggle" class="icon-btn"
-              title="Sons activés — cliquer pour les couper"
-              aria-label="Sons activés — cliquer pour les couper"
-              aria-pressed="true">♪</button>
       <button type="button" id="lang-toggle" class="icon-btn icon-btn--lang"
               title="Langue : Français — cliquer pour l'anglais"
               aria-label="Langue : Français — cliquer pour l'anglais">FR</button>
@@ -165,21 +158,6 @@
            est retenu d'une visite à l'autre. -->
       <details id="bars-fold" class="bars-fold">
         <summary class="bars-fold__summary" id="bars-summary">Détail par forme</summary>
-        <!-- La même progression, redécoupée : une tranche par génération, large
-             en proportion des cases qu'elle réclame. La surface remplie de la
-             bande vaut donc exactement le grand chiffre du haut — elle ne dit
-             rien de plus, elle dit la même chose répartie.
-
-             DANS LE TIROIR, et non sous la barre principale : deux barres
-             empilées qui disent la même chose se lisent comme une redondance.
-             Ici elle rejoint les autres découpages, là où l'on vient chercher
-             le détail plutôt que le coup d'œil.
-
-             `role="group"` et non `progressbar` : celui-ci est « children
-             presentational » en ARIA, et les boutons des tranches y auraient été
-             invisibles aux lecteurs d'écran. L'aria-label vient du JavaScript,
-             le conteneur étant dans ZONES_DYNAMIQUES. -->
-        <div id="progress-segments" class="segbar" role="group"></div>
         <div id="progress-bars" class="bars"></div>
       </details>
     </section>
@@ -283,6 +261,7 @@
       <div class="btn-row">
         <button type="button" id="export-btn" class="btn btn--ghost">Exporter</button>
         <button type="button" id="summary-btn" class="btn btn--ghost">Résumé</button>
+        <button type="button" id="sound-toggle" class="btn btn--ghost" aria-pressed="true">Sons</button>
         <button type="button" id="import-btn" class="btn btn--ghost">Importer</button>
         <button type="button" id="reset-btn" class="btn btn--ghost btn--danger">Réinitialiser</button>
       </div>
