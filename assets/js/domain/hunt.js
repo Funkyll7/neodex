@@ -11,7 +11,36 @@
  *
  * Contrairement au mockup d'origine, la lignee est remontee via `evolvesFrom`
  * (donnee PokeAPI presente pour les 1025 especes) et non via une table de noms.
+ *
+ * LA TRADUCTION SE FAIT ICI, et non a l'affichage. Les modeles de hunt.json
+ * portent des variables — `{cible}`, `{nom}`, `{base}` — que `fill()` remplace
+ * pour fabriquer la phrase finale. Traduire cette phrase-la serait impossible :
+ * elle ne figure dans aucune table, puisqu'elle depend de l'espece. On traduit
+ * donc le MODELE d'abord, on remplit ensuite.
+ *
+ * Meme raison pour l'ordre inverse dans `evolutionMethod` : le nom d'une
+ * methode s'insere dans le modele d'une autre, il doit deja etre traduit quand
+ * la composition a lieu.
  */
+
+import { nomEspece, texteChasse } from "../core/i18n.js";
+
+/**
+ * Un bloc de hunt.json, traduit — nom, etapes, et les fragments des modeles.
+ *
+ * Rend une COPIE : les blocs viennent de `this.ref`, partage par tout le site
+ * et charge une seule fois. Les traduire sur place les figerait dans la langue
+ * du premier appel.
+ */
+function traduire(bloc) {
+  if (!bloc) return bloc;
+  const out = { ...bloc };
+  for (const champ of ["name", "intro", "outro", "charme", "evolution"]) {
+    if (typeof bloc[champ] === "string") out[champ] = texteChasse(bloc[champ]);
+  }
+  if (Array.isArray(bloc.steps)) out.steps = bloc.steps.map(texteChasse);
+  return out;
+}
 
 export class HuntPlanner {
   constructor(dataset) {
@@ -76,28 +105,30 @@ export class HuntPlanner {
   /** Meilleure methode pour une espece dans un jeu donne. */
   methodFor(gameCode, species) {
     const game = this.data.gamesByCode.get(gameCode) || { gen: 5 };
-    let base = this.ref.byGame[gameCode] || this.ref.fallback;
+    let base = traduire(this.ref.byGame[gameCode] || this.ref.fallback);
 
     // Poke Radar (Sinnoh, X/Y) : inoperant hors hautes herbes.
     if (this.grassOnly.has(gameCode) && !this.targetIsGrass(species, gameCode)) {
-      base = this.withEraOdds(this.ref.templates.wildFallback, game);
+      base = this.withEraOdds(traduire(this.ref.templates.wildFallback), game);
     }
 
     if (this.isStatic(species)) {
-      if (gameCode === "swsh" && this.dynamax.has(species.id)) return this.ref.templates.dynamax;
-      if (gameCode === "usum" && this.wormhole.has(species.id)) return this.ref.templates.wormhole;
-      return this.withEraOdds(this.ref.templates.softReset, game);
+      if (gameCode === "swsh" && this.dynamax.has(species.id)) return traduire(this.ref.templates.dynamax);
+      if (gameCode === "usum" && this.wormhole.has(species.id)) return traduire(this.ref.templates.wormhole);
+      return this.withEraOdds(traduire(this.ref.templates.softReset), game);
     }
 
     if (!this.isWildIn(species, gameCode)) {
       const target = this.huntTarget(species, gameCode);
+      // L'ESPECE et non son nom : le nom francais sert aux comparaisons, le nom
+      // traduit a l'affichage, et confondre les deux cassait l'un ou l'autre.
       const method = target.isGift
-        ? this.giftMethod(target.species.name, species, game)
-        : this.evolutionMethod(base, target.species.name, species);
-      return this.easiest(method, this.masudaMethod(gameCode, target.species.name, species));
+        ? this.giftMethod(target.species, species, game)
+        : this.evolutionMethod(base, target.species, species);
+      return this.easiest(method, this.masudaMethod(gameCode, target.species, species));
     }
 
-    return this.easiest(base, this.masudaMethod(gameCode, species.name, species));
+    return this.easiest(base, this.masudaMethod(gameCode, species, species));
   }
 
   /** Taux ancien (1/8192) avant la Gen. VI, moderne (1/4096) ensuite. */
@@ -109,40 +140,47 @@ export class HuntPlanner {
     };
   }
 
-  giftMethod(targetName, species, game) {
-    const direct = this.withEraOdds(this.ref.templates.gift, game);
-    if (targetName === species.name) return direct;
-    const tpl = this.ref.templates.giftLine;
+  giftMethod(target, species, game) {
+    const direct = this.withEraOdds(traduire(this.ref.templates.gift), game);
+    if (target.name === species.name) return direct;
+    const tpl = traduire(this.ref.templates.giftLine);
+    const cible = nomEspece(target);
     return {
-      name: fill(tpl.name, { cible: targetName }),
+      name: fill(tpl.name, { cible }),
       odds: direct.odds,
-      steps: tpl.steps.map((s) => fill(s, { cible: targetName, nom: species.name })),
+      steps: tpl.steps.map((s) => fill(s, { cible, nom: nomEspece(species) })),
     };
   }
 
-  evolutionMethod(base, targetName, species) {
-    const tpl = this.ref.templates.evolution;
+  evolutionMethod(base, target, species) {
+    const tpl = traduire(this.ref.templates.evolution);
+    const cible = nomEspece(target);
     return {
-      name: fill(tpl.name, { base: base.name, cible: targetName }),
+      // `base.name` est deja traduit : `methodFor` passe le bloc par `traduire`
+      // avant de le composer ici.
+      name: fill(tpl.name, { base: base.name, cible }),
       odds: base.odds,
       steps: [
-        fill(tpl.intro, { nom: species.name, cible: targetName }),
+        fill(tpl.intro, { nom: nomEspece(species), cible }),
         ...base.steps,
-        `${fill(tpl.outro, { cible: targetName })} ${species.where || ""}`.trim(),
+        `${fill(tpl.outro, { cible })} ${species.where || ""}`.trim(),
       ],
     };
   }
 
-  masudaMethod(gameCode, targetName, species) {
+  masudaMethod(gameCode, target, species) {
     const odds = this.ref.masudaOdds[gameCode];
     if (!odds || this.isStatic(species)) return null;
-    const tpl = this.ref.templates.masuda;
+    const tpl = traduire(this.ref.templates.masuda);
     const hasCharm = oddsValue(odds) <= 512;
+    // La comparaison porte sur les noms FRANCAIS — ce sont eux qui identifient
+    // l'espece —, l'affichage sur les noms traduits.
+    const memeEspece = target.name === species.name;
     const vars = {
-      cible: targetName,
-      nom: species.name,
+      cible: nomEspece(target),
+      nom: nomEspece(species),
       charme: hasCharm ? tpl.charme : "",
-      evolution: targetName === species.name ? "" : fill(tpl.evolution, { nom: species.name }),
+      evolution: memeEspece ? "" : fill(tpl.evolution, { nom: nomEspece(species) }),
     };
     return { name: fill(tpl.name, vars), odds, steps: tpl.steps.map((s) => fill(s, vars)) };
   }

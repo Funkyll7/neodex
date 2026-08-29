@@ -21,7 +21,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
-import { nomEspece, nomCategorie, nomCosmetique, nomForme, enAnglais, t, tn } from "../core/i18n.js";
+import { nomEspece, nomCategorie, nomCosmetique, nomForme, texteChasse, enAnglais, t, tn } from "../core/i18n.js";
 import { embleme } from "./symboles-jeux.js";
 
 export function createDetailPanel(ctx) {
@@ -522,8 +522,8 @@ function cosmeticPicker(species, cosmetic, ctx) {
       ),
       grid
     ),
-    cosmetic.where ? el("p.form__text", cosmetic.where) : null,
-    cosmetic.note ? el("p.form__note", cosmetic.note) : null
+    cosmetic.where ? el("p.form__text", nomCosmetique(cosmetic.where)) : null,
+    cosmetic.note ? el("p.form__note", nomCosmetique(cosmetic.note)) : null
   );
 }
 
@@ -628,8 +628,8 @@ function cosmeticNotes(species, ctx) {
               el("div.form__arts", el("span.form__art", cosmeticImg(variant, species.id, { className: "form__img" }))),
               el("div.form__id", el("div.form__name", nomCosmetique(variant.name)), el("div.form__label", nomCosmetique(cosmetic.title)))
             ),
-            cosmetic.where ? el("p.form__text", cosmetic.where) : null,
-            cosmetic.note ? el("p.form__note", cosmetic.note) : null,
+            cosmetic.where ? el("p.form__text", nomCosmetique(cosmetic.where)) : null,
+            cosmetic.note ? el("p.form__note", nomCosmetique(cosmetic.note)) : null,
             el("p.form__warn", t("Aucune case à cocher : cette forme ne peut pas entrer dans HOME."))
           )
         )
@@ -659,7 +659,7 @@ function cosmeticNotes(species, ctx) {
             el(
               "div",
               el("div.variants__name", nomCosmetique(variant.name)),
-              el("div.variants__where", variant.where),
+              el("div.variants__where", nomCosmetique(variant.where)),
               variant.shinyEntry
                 ? null
                 : el("div.variants__lock", t("✦ Aucun chromatique n'existe pour cette variante."))
@@ -1184,7 +1184,7 @@ function huntSection(species, ctx) {
           el(
             "div.hunt__item",
             el("span.hunt__odds", m.odds),
-            el("div", el("div.hunt__name", m.name), el("div.hunt__how", m.how))
+            el("div", el("div.hunt__name", texteChasse(m.name)), el("div.hunt__how", texteChasse(m.how)))
           )
         )
       ),

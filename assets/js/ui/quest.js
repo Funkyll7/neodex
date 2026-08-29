@@ -109,7 +109,7 @@ export function createQuest(ctx) {
     // fois d affilee. Voir la regle des volumes en tete de ui/sons.js.
     jouer("compteur");
     rafraichirCompteur();
-    renderStats(statsRoot, ctx);
+    renderStats(statsRoot, ctx, remettreLeCompte);
   }
 
   function complete(done) {
@@ -200,6 +200,31 @@ export function createQuest(ctx) {
    * L'index et non l'espèce : on peut avoir chassé deux fois le même Pokémon,
    * et retirer la mauvaise ligne serait plus agaçant que de ne pas pouvoir.
    */
+  /**
+   * Remet « Quêtes accomplies » à zéro, journal compris.
+   *
+   * Ce compteur ne se recalcule à partir de rien : il s'incrémente à chaque
+   * validation et rien d'autre ne le touche. « Oublier » une ligne le
+   * décrémente désormais, mais le journal ne garde que huit prises — passé ce
+   * seuil, un compte faux n'avait plus aucun moyen de redescendre.
+   *
+   * Le JOURNAL part avec lui : laisser des lignes sous un compteur à zéro
+   * aurait recréé, dans l'autre sens, l'écart qu'on vient de corriger.
+   *
+   * Une confirmation, parce que c'est le seul geste du site qui efface
+   * franchement quelque chose sans que « Annuler » puisse le rattraper — le
+   * bandeau d'annulation ne connaît que les cases. Même choix que pour l'oubli
+   * du jeton dans ui/save.js.
+   *
+   * Rien ne part vers le dépôt : ce compteur vit dans le localStorage de ce
+   * navigateur, il n'a jamais été synchronisé.
+   */
+  function remettreLeCompte() {
+    if (!window.confirm(t("Remettre « Quêtes accomplies » à zéro et vider le journal ?"))) return;
+    ctx.store.set({ questDone: 0, questLog: [] });
+    jouer("annuler");
+  }
+
   function oublierDuJournal(index) {
     ctx.store.set((s) => ({
       questLog: s.questLog.filter((_, i) => i !== index),
@@ -233,7 +258,7 @@ export function createQuest(ctx) {
   return {
     render() {
       const state = ctx.store.state;
-      renderStats(statsRoot, ctx);
+      renderStats(statsRoot, ctx, remettreLeCompte);
       renderLog(logRoot, state.questLog, ctx, oublierDuJournal);
       dessiner();
     },
@@ -525,7 +550,7 @@ function compteurDeChasse(method, chasse, compter) {
  * le temps passé plutôt que le résultat obtenu, et c'est pour ça qu'il vaut la
  * peine : une collection ne montre que ce qu'on a fini.
  */
-function renderStats(root, ctx) {
+function renderStats(root, ctx, remettre) {
   if (!root) return;
   const p = progressOf(ctx.dataset.species, ctx.collection);
   const carnet = ctx.collection.quetes;
@@ -534,7 +559,13 @@ function renderStats(root, ctx) {
 
   const cases = [
     { cle: t("Chromatiques"), val: p.shiny.done, note: `/ ${p.shiny.total}`, fort: true },
-    { cle: t("Quêtes accomplies"), val: ctx.store.state.questDone },
+    // Le SEUL compteur qu'on puisse remettre à zéro, et le seul qui en ait
+    // besoin : les trois autres se recalculent depuis la collection ou depuis
+    // le carnet, donc ils ne peuvent pas se tromper. Celui-ci n'a pas de source
+    // — il s'incrémente et rien ne le corrige. Une validation de trop restait
+    // là pour toujours dès que le journal, qui ne garde que huit lignes, ne
+    // portait plus la prise correspondante.
+    { cle: t("Quêtes accomplies"), val: ctx.store.state.questDone, remise: true },
     { cle: t("Chasses en cours"), val: ouvertes },
     { cle: t("Rencontres comptées"), val: cumul },
   ];
@@ -549,7 +580,22 @@ function renderStats(root, ctx) {
           "span.qstat__val",
           String(c.val),
           c.note ? el("span.qstat__note", ` ${c.note}`) : null
-        )
+        ),
+        // Le bouton n'apparaît qu'à partir de 1 : remettre zéro à zéro n'a
+        // aucun sens, et un bouton mort sur une tuile vide n'aurait fait
+        // qu'encombrer.
+        c.remise && remettre && c.val > 0
+          ? el(
+              "button.qstat__raz",
+              {
+                type: "button",
+                title: t("Remettre le compte à zéro"),
+                "aria-label": t("Remettre le compte à zéro"),
+                onclick: remettre,
+              },
+              "↺"
+            )
+          : null
       )
     )
   );

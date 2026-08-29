@@ -2514,6 +2514,7 @@
   margin-bottom: var(--sp-3);
 }
 .qstat {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -2522,6 +2523,36 @@
   background: var(--bg-raised);
   border: 1px solid var(--border);
 }
+/* La remise à zéro de « Quêtes accomplies ».
+
+   Dans le coin, en retrait, et absente tant que le compte vaut zéro : c'est un
+   geste de correction, pas une commande qu'on cherche. Il ne prend aucune place
+   dans le flux — la tuile garde exactement la hauteur des trois autres, qui
+   n'ont pas de bouton.
+
+   La zone tactile fait 26 px alors que le glyphe en fait 13 : au pouce, une
+   cible de la taille de son dessin se rate. */
+.qstat__raz {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-ghost);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: .55;
+}
+.qstat__raz:hover,
+.qstat__raz:focus-visible { opacity: 1; color: var(--accent); background: var(--bg-sunken); }
 /* Le premier compte ce que tout le reste sert à obtenir : il porte l'accent. */
 .qstat--fort { border-left: 3px solid var(--gold); }
 .qstat__cle {

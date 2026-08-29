@@ -178,19 +178,37 @@ export function nomForme(forme) {
 }
 
 /**
- * Le nom d'une forme cosmetique — un Zarbi, un motif de Prismillon, une
- * casquette de Pikachu.
+ * Un texte de `data/details/cosmetic-forms.json` — le nom d'un Zarbi, le titre
+ * d'une famille, mais aussi le « ou trouver » d'une variante et ses notes.
  *
- * Clee par le nom FRANCAIS, et non par une cle PokeAPI comme les formes
+ * Clee par le texte FRANCAIS, et non par une cle PokeAPI comme les formes
  * alternatives : ces variantes-la n'en ont pas. Elles sont fabriquees au
- * chargement a partir de `data/details/cosmetic-forms.json`, et leur nom
- * francais est ce qu'elles ont de stable. Meme convention que `t()`, donc, mais
- * dans une table a part : 191 entrees qui n'ont rien a faire dans `ui`, et que
- * `t()` n'a aucune raison de parcourir a chaque libelle d'interface.
+ * chargement a partir du fichier, et leur texte francais est ce qu'elles ont de
+ * stable. Meme convention que `t()`, donc, mais dans une table a part : 330
+ * entrees qui n'ont rien a faire dans `ui`, et que `t()` n'a aucune raison de
+ * parcourir a chaque libelle d'interface.
  */
 export function nomCosmetique(nom) {
   if (langue === "fr" || !table) return nom;
   return (table.cosmetics || {})[nom] || nom;
+}
+
+/**
+ * Un texte de `data/reference/hunt.json` : nom de methode, etape, fragment.
+ *
+ * Table a part, et non `ui`, pour la meme raison que les cosmetiques : 133
+ * phrases de chasse au chromatique n'ont rien a faire au milieu des libelles
+ * d'interface, et `t()` n'a aucune raison de les parcourir a chaque bouton.
+ *
+ * LES EMPLACEMENTS A VARIABLES SURVIVENT. Les modeles portent `{cible}`,
+ * `{nom}`, `{base}`, `{charme}`, `{evolution}`, et `domain/hunt.js` les remplit
+ * APRES coup. La traduction doit donc les reproduire tels quels — c'est
+ * verifie : chaque entree anglaise porte exactement les memes accolades que sa
+ * source francaise.
+ */
+export function texteChasse(fr) {
+  if (langue === "fr" || !table) return fr;
+  return (table.hunt || {})[fr] || fr;
 }
 
 /**
