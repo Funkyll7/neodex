@@ -12,6 +12,7 @@ import { t, tn } from "../core/i18n.js";
 import { resumeDuRapport } from "../domain/sync.js";
 import { progressOf } from "../domain/progress.js";
 import { downloadJson } from "./common.js";
+import { el } from "../core/dom.js";
 
 export function createSaveControls(ctx) {
   const note = document.getElementById("dirty-note");
@@ -27,7 +28,7 @@ export function createSaveControls(ctx) {
   // Le partage doit partir du geste lui-meme : `navigator.share` refuse tout
   // appel qui ne descend pas directement d'un clic.
   document.getElementById("summary-btn").addEventListener("click", () => {
-    partagerResume(ctx, (niveau, message) => ctx.sync.emit(niveau, message));
+    partagerResume(ctx);
   });
 
   fileInput.addEventListener("change", async () => {
@@ -227,20 +228,52 @@ function texteDuResume(ctx) {
  * Une annulation n'est pas une erreur : fermer le menu de partage lève un
  * `AbortError`, qu'il serait absurde de signaler comme un échec.
  */
-async function partagerResume(ctx, emit) {
+async function partagerResume(ctx) {
   const texte = texteDuResume(ctx);
+  // Montrer le texte AVANT toute tentative de partage. « Copié » sans dire quoi
+  // oblige à aller coller ailleurs pour savoir ce qu'on partage — et sur un
+  // ordinateur sans `navigator.share` ni presse-papiers autorisé, le bouton
+  // n'avait aucun effet visible du tout.
+  const suite = afficherResume(texte);
   try {
     if (navigator.share) {
       await navigator.share({ text: texte });
+      suite(t("Partagé."));
       return;
     }
     await navigator.clipboard.writeText(texte);
-    emit("ok", t("Résumé copié dans le presse-papiers."));
+    suite(t("Copié dans le presse-papiers."));
   } catch (error) {
-    if (error && error.name === "AbortError") return;
-    // Ni partage ni presse-papiers — un navigateur ancien, ou une page servie
-    // hors d'un contexte securise. On montre le texte : il reste selectionnable
-    // a la main, ce qui vaut mieux que de ne rien pouvoir faire.
-    emit("erreur", `${t("Copie impossible")} — ${texte.replace(/\n/g, " · ")}`);
+    // Fermer le menu de partage lève un `AbortError` : ce n'est pas un échec,
+    // c'est un renoncement.
+    if (error && error.name === "AbortError") {
+      suite(t("Partage annulé."));
+      return;
+    }
+    suite(t("Sélectionnez le texte pour le copier."));
   }
+}
+
+/**
+ * Pose le bandeau du résumé et rend de quoi en changer la dernière ligne.
+ *
+ * Le texte reste sélectionnable, et c'est le point : quand ni le partage ni le
+ * presse-papiers ne sont disponibles — navigateur ancien, page hors contexte
+ * sécurisé —, l'attraper à la main reste possible. Un message d'échec seul
+ * aurait laissé l'utilisateur sans rien.
+ */
+function afficherResume(texte) {
+  document.querySelector(".resume-bandeau")?.remove();
+  const suite = el("span.resume-bandeau__suite");
+  const bandeau = el(
+    "div.resume-bandeau",
+    { role: "status", "aria-live": "polite" },
+    el("span.resume-bandeau__texte", texte),
+    suite
+  );
+  document.body.append(bandeau);
+  setTimeout(() => bandeau.remove(), 12000);
+  return (message) => {
+    suite.textContent = message;
+  };
 }

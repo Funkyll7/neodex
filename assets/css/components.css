@@ -1493,10 +1493,10 @@
 
      `--type-2` vaut `--type` pour les cinq cents mono-types : leur dégradé
      linéaire reste une couleur plate, que les arrêts ne changent pas. */
-  background: linear-gradient(115deg, var(--type) 25%, var(--type-2, var(--type)) 75%);
-  opacity: .28;
-  -webkit-mask: radial-gradient(ellipse closest-side at 50% 50%, #000, transparent 70%);
-          mask: radial-gradient(ellipse closest-side at 50% 50%, #000, transparent 70%);
+  background: linear-gradient(115deg, var(--type) 22%, var(--type-2, var(--type)) 78%);
+  opacity: .44;
+  -webkit-mask: radial-gradient(ellipse closest-side at 50% 50%, #000 35%, transparent 78%);
+          mask: radial-gradient(ellipse closest-side at 50% 50%, #000 35%, transparent 78%);
   pointer-events: none;
 }
 /* ============================== Thèmes ================================== */
@@ -2228,7 +2228,8 @@
 
 /* Le bandeau de déverrouillage. Même place et même durée que celui d'« Annuler »,
    dont il reprend la logique : bas de l'écran, il s'efface tout seul. */
-.succes-bandeau {
+.succes-bandeau,
+.resume-bandeau {
   position: fixed;
   left: 50%; bottom: 18px;
   transform: translateX(-50%);
@@ -2242,10 +2243,13 @@
   box-shadow: 0 6px 22px rgba(0, 0, 0, .45);
   text-align: center;
 }
-.succes-bandeau__texte { font-weight: 800; font-size: 13px; }
-.succes-bandeau__suite { font-size: 11.5px; opacity: .85; }
+.succes-bandeau__texte,
+.resume-bandeau__texte { font-weight: 800; font-size: 13px; }
+.succes-bandeau__suite,
+.resume-bandeau__suite { font-size: 11.5px; opacity: .85; }
 @media (prefers-reduced-motion: no-preference) {
-  .succes-bandeau { animation: succes-entree .35s ease-out 1; }
+  .succes-bandeau,
+  .resume-bandeau { animation: succes-entree .35s ease-out 1; }
   @keyframes succes-entree {
     from { opacity: 0; transform: translate(-50%, 12px); }
     to   { opacity: 1; transform: translate(-50%, 0); }
@@ -2339,4 +2343,21 @@
     71%           { opacity: .5;  transform: scale(.82); }
     83%           { opacity: 1;   transform: scale(1.18); }
   }
+}
+
+/* Le résumé s'affiche en toutes lettres, et pas seulement dans le presse-papiers.
+   « Copié » sans montrer QUOI oblige à aller coller ailleurs pour savoir ce
+   qu'on partage — et sur un ordinateur sans `navigator.share`, le bouton
+   n'avait aucun effet visible. Le texte est sélectionnable : à défaut de
+   presse-papiers, il reste attrapable à la main. */
+.resume-bandeau {
+  max-width: min(94vw, 460px);
+  user-select: text;
+  -webkit-user-select: text;
+}
+.resume-bandeau__texte {
+  white-space: pre-line;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: left;
 }
