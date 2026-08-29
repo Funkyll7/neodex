@@ -47,6 +47,23 @@ import {
 
 export const SLOT_KEYS = ["om", "of", "sm", "sf", "gn", "gs", "vo", "vs", "vof", "vsf"];
 
+/**
+ * Cette case est-elle celle d'un chromatique ?
+ *
+ * Les formes sont nombreuses — `sm`, `sf` pour l'espèce, `f10161s` pour une
+ * forme, `gf10161s` dans GO, `y201-b` pour une cosmétique —, et le préfixe seul
+ * ne suffit pas : `gs` est la case chromatique de GO, `gn` sa case normale.
+ * D'où cette liste, tenue à côté de celle qui valide les clés.
+ */
+export function estCaseChromatique(slot) {
+  if (typeof slot !== "string") return false;
+  if (/^(sm|sf|gs|vs|vsf)$/.test(slot)) return true;
+  if (/^f\d+sf?$/.test(slot)) return true;
+  if (/^gf\d+s$/.test(slot)) return true;
+  if (/^y\d+-/.test(slot)) return true;
+  return false;
+}
+
 /** Cases de forme : "f10161", "f10161s" (chromatique), "…f" (femelle). */
 const FORM_SLOT = /^f\d+s?f?$/;
 /**

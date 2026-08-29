@@ -17,7 +17,10 @@ import { applyFilters } from "./domain/filters.js";
 import { isComplete, requiredSlots } from "./domain/completion.js";
 import { progressOf, goProgressOf } from "./domain/progress.js";
 import { initTheme, majSucces } from "./ui/theme.js";
+import { initBoutonSons, jouerShiny } from "./ui/sons.js";
 import { chassesOuvertes } from "./domain/quetes.js";
+import { estCaseChromatique } from "./domain/collection.js";
+
 import { createSidebar } from "./ui/sidebar.js";
 import { createGrid } from "./ui/dex-grid.js";
 import { createGoDex } from "./ui/go-dex.js";
@@ -38,6 +41,7 @@ const GO_KEYS = ["goSearch", "goGen", "goStatus", "goType"];
 
 migrateStorage();
 initTheme();
+initBoutonSons();
 boot();
 
 /**
@@ -133,6 +137,12 @@ function start(dataset) {
       // regarder l'ecran.
       if (species && !etaitComplet && complete(species)) tapComplet();
       else tapCase();
+      // Le son ne se joue qu a la COCHE, jamais au decochage : une case retiree
+      // n est pas une reussite, et la recompenser aurait ete absurde. Il est
+      // reserve aux chromatiques — on coche des milliers de cases ordinaires, et
+      // leur donner un son aurait fait un crepitement qu on aurait coupe au bout
+      // d une minute.
+      if (!avant && estCaseChromatique(slot)) jouerShiny();
       onCollectionChange(id);
     },
 

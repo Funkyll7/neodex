@@ -17,6 +17,7 @@ import { dexNumber, typeChip } from "./common.js";
 import { nomEspece, t, tn } from "../core/i18n.js";
 import { oddsValue } from "../domain/hunt.js";
 import { progressOf } from "../domain/progress.js";
+import { jouerQuete } from "./sons.js";
 import { symboleJeu } from "./symboles-jeux.js";
 import {
   chassesOuvertes,
@@ -112,6 +113,7 @@ export function createQuest(ctx) {
       const rencontres = chasse ? totalPartie(chasse.part) : 0;
 
       ctx.collection.mark(species.id, "sm");
+      jouerQuete();
 
       // La chasse passe à « prise » au lieu d'être supprimée : sous une fusion
       // par union, une suppression est ressuscitée par l'appareil qui ne l'a pas
