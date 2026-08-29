@@ -64,7 +64,7 @@ const SYMBOLES = {
   b2w2: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/><path d="M12 8v8" stroke="currentColor" stroke-width="1.6"/>',
 
   /* Gen 6 — les deux lettres, qui sont le titre lui-même. */
-  xy: '<path d="M3 4.5 10 12l-7 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10 4.5 3 12M14 4.5l3.5 5 3.5-5M17.5 9.5v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  xy: '<path d="M3 4.5 10 12l-7 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10 4.5 3 12 10 19.5M14 4.5l3.5 5 3.5-5M17.5 9.5v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
   /* Oméga / Alpha — la lettre grecque du remake. */
   oras: '<path d="M7 20h3.2a7 7 0 1 1 3.6 0H17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
 

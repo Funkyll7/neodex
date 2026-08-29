@@ -100,7 +100,14 @@ export class GitHubSync {
     if (!this.token) throw new Error("jeton vide");
     this.emit("busy", t("Vérification du jeton…"));
     try {
-      await this.fetchRemote();
+      // Ce qu on lit ici n est PAS jetable. `fetchRemote` pose `this.sha`, et
+      // `write()` ne fusionne le distant que lorsqu il ne connait pas encore de
+      // sha : verifier le jeton suffisait donc a court-circuiter cette fusion,
+      // et le premier envoi apres la connexion ecrasait le depot — cases comme
+      // carnet. On adopte ce qu on vient de lire.
+      const distant = await this.fetchRemote();
+      this.collection.adopterDistant(distant.marks);
+      this.collection.adopterQuetes(distant.quetes);
     } catch (error) {
       this.token = "";
       this.emit("error", error.message);
@@ -262,6 +269,12 @@ export class GitHubSync {
         this.emit("busy", t("Fusion avec le dépôt…"));
         const distant = await this.fetchRemote();
         const fusionne = this.collection.fusionnerAvec(distant.marks);
+        // Le CARNET aussi, et il manquait. La reecriture repartait avec notre
+        // carnet seul : les chasses comptees sur l autre appareil etaient
+        // effacees du depot, et l acquittement qui suit les declarait envoyees,
+        // donc rien ne les rattrapait jamais. La jointure est idempotente, la
+        // rejouer ici ne coute rien et ne peut rien casser.
+        this.collection.adopterQuetes(distant.quetes);
         return this.write(reason, false, false, fusionne);
       }
       // Hors ligne, ce n'est pas une erreur : c'est le cas normal du site. On

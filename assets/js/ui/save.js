@@ -41,6 +41,15 @@ export function createSaveControls(ctx) {
       const marks = parsed && parsed.marks ? parsed.marks : parsed;
       if (!marks || typeof marks !== "object") throw new Error(t("format inattendu"));
       ctx.collection.replaceLocal(marks);
+      // Le CARNET aussi. L export l ecrit, l import ne le relisait pas : sans
+      // jeton — le cas que l en-tete de ce fichier designe comme le principal,
+      // passer d un navigateur a l autre — des centaines de rencontres
+      // comptees disparaissaient a la restauration, sans un message.
+      //
+      // `adopterQuetes` et non un remplacement : c est une jointure, donc ce
+      // qui est deja la survit. Importer une vieille sauvegarde n efface pas
+      // les chasses commencees depuis.
+      if (parsed && parsed.quetes) ctx.collection.adopterQuetes(parsed.quetes);
       ctx.onCollectionChange();
       ctx.sync.schedule("import d'une sauvegarde");
     } catch (error) {

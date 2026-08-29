@@ -102,7 +102,7 @@ export function createQuest(ctx) {
     // Tres discret, et fortement limite : ce bouton se presse des centaines de
     // fois d affilee. Voir la regle des volumes en tete de ui/sons.js.
     jouer("compteur");
-    dessiner();
+    rafraichirCompteur();
     renderStats(statsRoot, ctx);
   }
 
@@ -151,6 +151,34 @@ export function createQuest(ctx) {
       jouer("passe");
     }
     ctx.store.set({ quest: tirer() });
+  }
+
+  /**
+   * Met à jour le compteur SUR PLACE, sans reconstruire la carte.
+   *
+   * `dessiner()` remplace tout le contenu de la carte. Appelé à chaque « +1 »,
+   * il détruisait le bouton qui avait le focus — donc, au clavier, il fallait
+   * re-tabuler entre chaque rencontre sur un bouton qu'on presse des centaines
+   * de fois. Il recréait aussi le sprite, un `<img>` distant qui repartait sans
+   * image décodée : le plus gros élément de la carte clignotait à chaque appui.
+   * Et la transition de la jauge ne jouait jamais, un élément neuf n'ayant pas
+   * d'état de départ d'où partir.
+   */
+  function rafraichirCompteur() {
+    const { quest } = ctx.store.state;
+    if (!quest) return;
+    const species = ctx.dataset.byId.get(quest.id);
+    if (!species) return;
+    const m = mesureChasse(ctx.planner.methodFor(quest.game, species), chasseCourante());
+
+    const nombre = card.querySelector(".chasse__n");
+    const remplissage = card.querySelector(".chasse__jauge-fill");
+    const jauge = card.querySelector(".chasse__jauge");
+    const note = card.querySelector(".chasse__note");
+    if (nombre) nombre.textContent = String(m.n);
+    if (remplissage) remplissage.style.width = `${Math.min(100, m.pct)}%`;
+    if (jauge) jauge.setAttribute("aria-label", m.chance);
+    if (note) note.textContent = m.note;
   }
 
   /** Redessine la carte seule, sans toucher au reste de l'onglet. */
@@ -387,33 +415,45 @@ function renderLog(root, entries, ctx) {
  * le prochain soit le bon — celle-là ne bouge jamais, et les confondre est
  * l'erreur classique du chasseur. Le libellé le dit en toutes lettres.
  */
-function compteurDeChasse(method, chasse, compter) {
+/**
+ * Les trois chiffres du compteur, calculés une seule fois.
+ *
+ * Partagé entre la construction de la carte et son rafraîchissement : sans ce
+ * partage, la formule de la probabilité aurait vécu à deux endroits, et la
+ * médiane à deux endroits aussi.
+ */
+function mesureChasse(method, chasse) {
   const n = chasse ? totalPartie(chasse.part) : 0;
   const denominateur = oddsValue(method.odds);
-  const chance = chanceCumulee(n, denominateur);
-  const pct = Math.round(chance * 100);
+  const pct = Math.round(chanceCumulee(n, denominateur) * 100);
   // La médiane : le nombre d'essais après lequel une chasse sur deux a abouti.
   // Plus parlant que la moyenne, qu'une longue traîne tire vers le haut.
-  const mediane = Number.isFinite(denominateur) ? Math.ceil(Math.log(0.5) / Math.log(1 - 1 / denominateur)) : null;
+  const mediane = Number.isFinite(denominateur)
+    ? Math.ceil(Math.log(0.5) / Math.log(1 - 1 / denominateur))
+    : null;
+  const chance = `${pct} % ${t("de chance d'avoir déjà réussi")}`;
+  return { n, pct, chance, note: mediane ? `${chance} · ${t("médiane")} ${mediane}` : chance };
+}
+
+function compteurDeChasse(method, chasse, compter) {
+  const m = mesureChasse(method, chasse);
 
   return el(
     "section.chasse",
     el(
       "div.chasse__tete",
       el("span.chasse__cle", t("Rencontres")),
-      el("span.chasse__n", String(n))
+      // `aria-live` : le compte est la seule chose qui bouge quand on appuie, et
+      // rien ne l'annonçait. « polite » et non « assertive » — on n'interrompt
+      // pas quelqu'un pour lui dire 41.
+      el("span.chasse__n", { "aria-live": "polite" }, String(m.n))
     ),
     el(
       "div.chasse__jauge",
-      { role: "img", "aria-label": `${pct} % ${t("de chance d'avoir déjà réussi")}` },
-      el("span.chasse__jauge-fill", { style: { width: `${Math.min(100, pct)}%` } })
+      { role: "img", "aria-label": m.chance },
+      el("span.chasse__jauge-fill", { style: { width: `${Math.min(100, m.pct)}%` } })
     ),
-    el(
-      "p.chasse__note",
-      mediane
-        ? `${pct} % ${t("de chance d'avoir déjà réussi")} · ${t("médiane")} ${mediane}`
-        : `${pct} % ${t("de chance d'avoir déjà réussi")}`
-    ),
+    el("p.chasse__note", m.note),
     el(
       "div.chasse__boutons",
       el(
