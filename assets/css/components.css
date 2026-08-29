@@ -2300,3 +2300,43 @@
 @media (prefers-reduced-motion: no-preference) {
   .seg__fill { transition: width .25s ease-out, background .12s; }
 }
+
+/* ------------------------ Le scintillement chromatique -------------------- */
+/* L'étoile du coin marquait déjà le chromatique, mais sans bouger : dans une
+   grille de mille vignettes elle se confondait avec les autres pastilles. Elle
+   respire maintenant, une fois par cycle.
+
+   L'animation ne porte que sur ce glyphe de 14 px, et sur rien d'autre : faire
+   pulser le halo du sprite aurait demandé d'animer un `filter` sur des images
+   de 70 px, quarante à l'écran à la fois. Le coût est celui d'un `transform` et
+   d'une `opacity`, les deux seules propriétés qu'un navigateur sait animer sans
+   repeindre.
+
+   Et il n'y en a jamais mille en même temps : les vignettes hors écran sont
+   vidées par le recycleur de dex-grid.js, et celles qui restent portent
+   `content-visibility`. Ce qui n'est pas peint n'est pas animé.
+
+   Le cycle est immobile les deux tiers du temps. Une pulsation continue sur
+   quarante vignettes serait insupportable ; ici l'œil attrape un éclat de temps
+   en temps, ce qui est exactement ce que fait un chromatique dans le jeu. */
+@media (prefers-reduced-motion: no-preference) {
+  .card__spark {
+    transform-origin: center;
+    animation: etincelle 2.8s ease-in-out infinite;
+  }
+  /* Cinq retards : sans eux, toute une rangée clignote à l'unisson, ce qui se
+     remarque comme un défaut et non comme un détail. Le décalage suit la
+     position dans la grille, seule variation dont le CSS dispose — il n'y a pas
+     de hasard en feuille de style, et en fabriquer un dans le JavaScript aurait
+     posé un style en ligne sur chaque vignette. */
+  .card:nth-child(5n + 2) .card__spark { animation-delay: .55s; }
+  .card:nth-child(5n + 3) .card__spark { animation-delay: 1.1s; }
+  .card:nth-child(5n + 4) .card__spark { animation-delay: 1.65s; }
+  .card:nth-child(5n + 5) .card__spark { animation-delay: 2.2s; }
+
+  @keyframes etincelle {
+    0%, 62%, 100% { opacity: 1; transform: scale(1); }
+    71%           { opacity: .5;  transform: scale(.82); }
+    83%           { opacity: 1;   transform: scale(1.18); }
+  }
+}
