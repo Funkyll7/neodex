@@ -16,6 +16,7 @@ import { debounce } from "../core/store.js";
 import { el, fill } from "../core/dom.js";
 import { spriteImg, formImg } from "../domain/sprites.js";
 import { completionOf } from "../domain/completion.js";
+import { progressOf } from "../domain/progress.js";
 import { formeDeRepli } from "../domain/display.js";
 import { dexNumber, typeChip, typeInk } from "./common.js";
 import { nomCosmetique, nomEspece, nomForme, t, tn } from "../core/i18n.js";
@@ -126,6 +127,17 @@ export function createGrid(ctx) {
    */
   let derniereGen = null;
 
+  /**
+   * L'avancement par génération, pour les bandeaux. Recalculé UNE fois par
+   * rendu complet et non par bandeau : `progressOf` parcourt les 1025 espèces
+   * et toutes leurs cases, et il y a jusqu'à neuf bandeaux par grille.
+   *
+   * `null` tant qu'aucun rendu n'a eu lieu — les paliers suivants réutilisent
+   * alors ce que le premier a calculé, ce qui est exact : ajouter des vignettes
+   * ne change pas la collection.
+   */
+  let avancementParGen = null;
+
   function appendPage() {
     const next = list.slice(shown, shown + CONFIG.pageSize);
     const noeuds = [];
@@ -136,7 +148,7 @@ export function createGrid(ctx) {
 
     for (const species of next) {
       if (parNumero && species.gen !== derniereGen) {
-        noeuds.push(separateurGeneration(species.gen, ctx));
+        noeuds.push(separateurGeneration(species.gen, ctx, avancementParGen));
         derniereGen = species.gen;
       }
       noeuds.push(card(species, ctx));
@@ -312,6 +324,7 @@ export function createGrid(ctx) {
       // changement de filtre est le moment ou l'on accepte que la liste bouge.
       rangees.clear();
       derniereGen = null;
+      avancementParGen = progressOf(ctx.dataset.species, ctx.collection).gens;
       // Les anciennes vignettes disparaissent : plus rien a surveiller sur elles.
       veilleur.disconnect();
       grid.replaceChildren();
@@ -396,10 +409,31 @@ export function createGrid(ctx) {
  * Trie par nom ou par statistiques, un bandeau « Génération III » au milieu de
  * la liste ne voudrait rien dire.
  */
-function separateurGeneration(gen, ctx) {
+function separateurGeneration(gen, ctx, avancement) {
   const info = ctx.dataset.generations[gen] || {};
   const titre = info.region ? `${t(info.label)} — ${t(info.region)}` : t(info.label || `${t("Génération")} ${gen}`);
-  return el("div.gen-sep", { dataset: { gen: String(gen) }, "aria-hidden": "true" }, titre);
+
+  // Le compte de la génération, à droite du nom.
+  //
+  // C'était le seul repère de navigation d'une grille de 1025 vignettes, et il
+  // ne disait que son nom. « Kanto » ne se compare à rien ; « Kanto 148/151 »
+  // dit d'un coup s'il reste du travail ici ou s'il faut descendre.
+  //
+  // Le bandeau reste une PASTILLE et non une barre pleine largeur, malgré
+  // l'envie : il est collant, opaque, et une bande de la largeur de la grille
+  // masquerait une rangée entière de vignettes pendant tout le défilement.
+  // La pastille, elle, laisse passer les cartes de chaque côté.
+  const seau = avancement && avancement[gen];
+  const compte = seau
+    ? el("span.gen-sep__compte", `${seau.done} / ${seau.total}`)
+    : null;
+
+  return el(
+    "div.gen-sep",
+    { dataset: { gen: String(gen) }, "aria-hidden": "true" },
+    el("span.gen-sep__nom", titre),
+    compte
+  );
 }
 
 /**
