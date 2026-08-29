@@ -1476,6 +1476,15 @@
      couleurs à une forme ronde : `background` ne prend qu'un dégradé, et un
      radial ne sait pas balayer une teinte vers une autre le long d'un axe.
 
+     Les arrêts sont à 25 % et 75 %, et c'est TOUT le sujet. Le masque s'éteint
+     à 70 % du rayon, ce qui ne laisse voir que la tranche 25–75 % du dégradé :
+     posées par défaut aux extrémités, les deux couleurs pures tombaient donc
+     exactement dans ce que le masque efface, et il ne restait à l'écran que
+     deux mélanges à mi-chemin l'un de l'autre. Pour un Bulbizarre, du
+     rgb(117,167,118) et du rgb(153,126,173) au lieu du vert et du violet — on
+     ne voyait aucune bicolorité. Les arrêts ramenés aux bords de la fenêtre
+     visible, ce sont les teintes pures qu'on voit, et l'écart double.
+
      `ellipse closest-side` plutôt qu'un cercle, comme avant : le rayon se cale
      sur le bord le plus PROCHE, dans chaque axe séparément. Le halo s'éteint
      donc toujours avant d'atteindre une arête, quelle que soit la forme de la
@@ -1483,11 +1492,9 @@
      plus large que haute, et c'est de là que venaient les deux lignes droites.
 
      `--type-2` vaut `--type` pour les cinq cents mono-types : leur dégradé
-     linéaire est alors une couleur plate, et leur vignette est au pixel près
-     celle d'avant. L'opacité .22 remplace le `color-mix(… 22%, transparent)`
-     d'origine et donne exactement la même rampe — 22 % au centre, zéro à 70 %. */
-  background: linear-gradient(115deg, var(--type), var(--type-2, var(--type)));
-  opacity: .22;
+     linéaire reste une couleur plate, que les arrêts ne changent pas. */
+  background: linear-gradient(115deg, var(--type) 25%, var(--type-2, var(--type)) 75%);
+  opacity: .28;
   -webkit-mask: radial-gradient(ellipse closest-side at 50% 50%, #000, transparent 70%);
           mask: radial-gradient(ellipse closest-side at 50% 50%, #000, transparent 70%);
   pointer-events: none;
