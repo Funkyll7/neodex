@@ -18,6 +18,7 @@ import { lieuEspece, nomEspece, t, tn } from "../core/i18n.js";
 import { oddsValue } from "../domain/hunt.js";
 import { progressOf } from "../domain/progress.js";
 import { jouer } from "./sons.js";
+import { isTyping } from "./shortcuts.js";
 import { embleme, emblemePaire } from "./symboles-jeux.js";
 import {
   chassesOuvertes,
@@ -128,6 +129,36 @@ export function createQuest(ctx) {
     renderStats(statsRoot, ctx, remettreLeCompte);
   }
 
+  /**
+   * Compter à la BARRE D'ESPACE, et en la maintenant.
+   *
+   * Une chasse, c'est des centaines d'appuis sur le même bouton. Viser une
+   * cible de quarante pixels à chaque rencontre, pendant deux heures, use plus
+   * que la chasse elle-même — et sur un ordinateur, la main quitte le clavier à
+   * chaque fois.
+   *
+   * LE MAINTIEN EST GRATUIT : le navigateur répète déjà `keydown` tant que la
+   * touche est enfoncée. On ne filtre donc pas `event.repeat`, et garder la
+   * barre appuyée fait défiler le compteur. Le limiteur de `ui/sons.js` s'occupe
+   * du bruit — un tic toutes les 40 ms au plus, pas un par rencontre.
+   *
+   * `preventDefault` est obligatoire : la barre d'espace fait défiler la page,
+   * et la carte serait partie vers le bas dès le premier appui.
+   *
+   * Trois gardes : seulement sur l'onglet des quêtes, jamais dans un champ de
+   * saisie, et jamais avec un modificateur — Ctrl+Espace appartient au système.
+   */
+  document.addEventListener("keydown", (event) => {
+    if (ctx.store.state.tab !== "quest") return;
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (isTyping(event.target)) return;
+
+    const delta = event.key === " " || event.key === "+" ? 1 : event.key === "-" ? -1 : 0;
+    if (!delta) return;
+    event.preventDefault();
+    compter(delta);
+  });
+
   function complete(done) {
     const { quest } = ctx.store.state;
     if (done && quest) {
@@ -171,7 +202,17 @@ export function createQuest(ctx) {
           // d aucune langue. Le nom reste pour les entrees deja ecrites.
           { id: species.id, name: species.name, game: game.name, code: game.code, method: method.name, rencontres },
           ...s.questLog,
-        ].slice(0, 8),
+          // DEUX CENTS et non huit. Le plafond d'origine tenait au rendu — huit
+          // lignes suffisent à l'écran —, mais il jetait l'histoire avec :
+          // passé la huitième prise, la neuvième d'avant disparaissait sans
+          // qu'on puisse la revoir, et avec elle le nombre de rencontres qu'elle
+          // avait coûté. C'est justement ce qu'on veut relire des mois plus
+          // tard.
+          //
+          // Deux cents entrées pèsent une vingtaine de kilo-octets dans le
+          // localStorage, qui en accepte cinq mille. Le rendu, lui, n'en montre
+          // toujours que huit — le reste se déplie (voir `renderLog`).
+        ].slice(0, 200),
       }));
       ctx.onCollectionChange(species.id);
     } else {
@@ -454,40 +495,76 @@ function renderLog(root, entries, ctx, oublier) {
     );
     return;
   }
+  // Huit lignes à l'écran, le reste replié. Le journal garde deux cents prises
+  // (voir le plafond dans `complete`), mais les dérouler toutes pousserait la
+  // carte de quête hors de portée — et c'est elle qu'on vient voir.
+  const VISIBLES = 8;
+  const dessus = entries.slice(0, VISIBLES);
+  const dessous = entries.slice(VISIBLES);
+
   fill(
     root,
     el(
       "div.log",
-      entries.map((entry, index) => {
-        // Par le code quand il est la, par le nom pour les entrees d avant.
-        const jeu =
-          (entry.code && ctx.dataset.gamesByCode.get(entry.code)) ||
-          [...ctx.dataset.gamesByCode.values()].find((g) => g.name === entry.game);
-        return el(
-          "div.log__item",
-          spriteImg(entry.id, { shiny: true, alt: nomJournal(entry, ctx), className: "log__img" }),
-          el(
-            "div.log__corps",
-            el("div.log__name", `✦ ${nomJournal(entry, ctx)}`),
-            el("div.log__meta", `${t(entry.game)} · ${entry.method}`)
-          ),
-          // Le nombre de rencontres qu'a pris la prise. Absent des entrées
-          // d'avant le compteur : on n'affiche alors rien plutôt qu'un zéro,
-          // qui aurait laissé croire à une chance insolente.
-          entry.rencontres ? el("span.log__n", String(entry.rencontres)) : null,
-          // Les logos du jeu, à droite et en grand.
-          logoDuJournal(jeu),
-          // Oublier la ligne. Elle ne DÉCOCHE rien : le chromatique reste dans
-          // la collection, c'est la trace qui disparaît. D'où « oublier » et
-          // non « supprimer » — le mot dit ce que le geste fait vraiment.
-          el("button.log__oubli", {
-            type: "button",
-            title: t("Oublier cette prise du journal"),
-            "aria-label": `${t("Oublier cette prise du journal")} — ${nomJournal(entry, ctx)}`,
-            onclick: () => oublier(index),
-          }, "✕")
-        );
-      })
+      dessus.map((entry, index) => ligneDuJournal(entry, index, ctx, oublier)),
+      // `<details>` et non un bouton : le navigateur gère l'ouverture, l'état
+      // au clavier et l'annonce aux lecteurs d'écran sans une ligne de script.
+      dessous.length
+        ? el(
+            "details.log__reste",
+            el(
+              "summary.log__reste-titre",
+              `${dessous.length} ${tn(dessous.length, "prise plus ancienne", "prises plus anciennes")}`
+            ),
+            // L'index repart de `VISIBLES` : `oublier` travaille sur la position
+            // dans le tableau complet, pas dans la tranche affichée. Sans ce
+            // décalage, oublier la neuvième ligne en retirait la première.
+            dessous.map((entry, i) => ligneDuJournal(entry, i + VISIBLES, ctx, oublier))
+          )
+        : null
+    )
+  );
+}
+
+/**
+ * Une ligne du journal.
+ *
+ * `index` est la position dans le tableau COMPLET, pas dans la tranche
+ * affichée : c'est lui que reçoit `oublier`, et les lignes repliées sont
+ * décalées de huit.
+ */
+function ligneDuJournal(entry, index, ctx, oublier) {
+  // Par le code quand il est la, par le nom pour les entrees d avant.
+  const jeu =
+    (entry.code && ctx.dataset.gamesByCode.get(entry.code)) ||
+    [...ctx.dataset.gamesByCode.values()].find((g) => g.name === entry.game);
+
+  return el(
+    "div.log__item",
+    spriteImg(entry.id, { shiny: true, alt: nomJournal(entry, ctx), className: "log__img" }),
+    el(
+      "div.log__corps",
+      el("div.log__name", `✦ ${nomJournal(entry, ctx)}`),
+      el("div.log__meta", `${t(entry.game)} · ${entry.method}`)
+    ),
+    // Le nombre de rencontres qu'a pris la prise. Absent des entrées d'avant le
+    // compteur : on n'affiche alors rien plutôt qu'un zéro, qui aurait laissé
+    // croire à une chance insolente.
+    entry.rencontres ? el("span.log__n", String(entry.rencontres)) : null,
+    // Les logos du jeu, à droite et en grand.
+    logoDuJournal(jeu),
+    // Oublier la ligne. Elle ne DÉCOCHE rien : le chromatique reste dans la
+    // collection, c'est la trace qui disparaît. D'où « oublier » et non
+    // « supprimer » — le mot dit ce que le geste fait vraiment.
+    el(
+      "button.log__oubli",
+      {
+        type: "button",
+        title: t("Oublier cette prise du journal"),
+        "aria-label": `${t("Oublier cette prise du journal")} — ${nomJournal(entry, ctx)}`,
+        onclick: () => oublier(index),
+      },
+      "✕"
     )
   );
 }

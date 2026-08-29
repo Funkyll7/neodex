@@ -1282,24 +1282,21 @@
   display: block;
   width: 13px;
   height: 13px;
-  /* Un liseré NOIR, et non plus une aura blanche. Le bouton coché est un aplat
-     franc — vert, or, orange —, et un halo blanc sur du jaune vif ne détache
-     rien du tout : le logo s'y noyait exactement comme l'emblème Gigamax se
-     noyait sur les types rouges avant qu'on le cerne. Le noir est la seule
-     couleur plus sombre que tous les fonds de pastille à la fois. */
+  /* Un liseré NOIR, et non plus une aura, DANS LES DEUX ÉTATS du bouton.
+   *
+   * L'aura était blanche sur un bouton coché et en `currentColor` sur un bouton
+   * éteint, au motif qu'un contour sombre ne se verrait pas sur un fond sombre.
+   * C'est vrai du FOND, pas du LOGO : celui de Gigamax est rose vif, ceux
+   * d'Alola et de Galar sont clairs, et c'est leur bord à eux que le liseré
+   * détache. L'aura, elle, les faisait baver dans les deux cas.
+   *
+   * Un seul traitement pour les deux états, donc : le logo garde exactement le
+   * même dessin qu'on ait la forme ou non, et c'est le fond du bouton — teinté
+   * ou éteint — qui dit l'état. Un logo qui change de rendu en même temps que
+   * son fond faisait lire deux informations là où il n'y en a qu'une. */
   filter: var(--contour-noir);
 }
 
-/* Bouton non coché : le fond redevient sombre, et un contour noir sur du sombre
-   ne se voit pas. On rend alors au logo l'aura qui le détachait — dans la
-   couleur du bouton lui-même.
-   `currentColor` est la couleur dont sont déjà faites les pastilles voisines du
-   même bouton : le logo pèse ainsi exactement le même poids qu'elles. */
-.toggle[aria-pressed="false"] .toggle__fam {
-  filter:
-    drop-shadow(0 0 1.5px currentColor)
-    drop-shadow(0 0 3px currentColor);
-}
 /* La barre d'outils et la grille se touchaient : `#tab-dex` est en
    `display: block`, sans gap, et ni l'une ni l'autre ne portait de marge. Les
    vignettes butaient donc contre le champ de recherche. Une marge plutôt qu'un
@@ -2841,3 +2838,30 @@
    montré de plus. */
 [data-compact] #grid { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
 [data-compact] .card__img { max-width: 76px; }
+
+/* Les prises plus anciennes, repliees. Le journal en garde deux cents ; huit
+   restent a l ecran, le reste attend qu on le demande. */
+.log__reste { margin-top: var(--sp-2); }
+.log__reste-titre {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 800;
+}
+.log__reste-titre::-webkit-details-marker { display: none; }
+/* Un chevron qui tourne : c est le seul signe qu il y a quelque chose dessous,
+   la ligne ne se distingue autrement pas d une note. */
+.log__reste-titre::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: var(--sp-2);
+  transition: transform .15s ease;
+  color: var(--text-faint);
+}
+.log__reste[open] > .log__reste-titre::before { transform: rotate(90deg); }
+.log__reste[open] > .log__reste-titre { margin-bottom: var(--sp-2); }
+.log__reste .log__item + .log__item { margin-top: var(--sp-2); }
