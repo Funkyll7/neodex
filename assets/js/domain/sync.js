@@ -19,7 +19,7 @@ import { CONFIG } from "../config.js";
 // Les messages d'etat sont lus par l'utilisateur : ils suivent la langue. Les
 // `reason`, elles, restent en francais — ce sont des messages de commit git,
 // ecrits dans l'historique du depot, pas a l'ecran.
-import { t, tn, nomEspece } from "../core/i18n.js";
+import { deuxPoints, t, tn, nomEspece } from "../core/i18n.js";
 
 const API = "https://api.github.com";
 
@@ -56,7 +56,7 @@ export function resumeDuRapport(rapport) {
   if (rapport.perdues) {
     parts.push(`${rapport.perdues} ${tn(rapport.perdues, t("case décochée"), t("cases décochées"))}`);
   }
-  return `${t("Mis à jour depuis le dépôt")} : ${parts.join(", ")} — ${liste}`;
+  return `${deuxPoints(t("Mis à jour depuis le dépôt"), parts.join(", "))} — ${liste}`;
 }
 
 export class GitHubSync {

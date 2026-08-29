@@ -8,7 +8,7 @@
  *     a passer d'un navigateur a l'autre ou a repartir d'une sauvegarde.
  */
 
-import { t, tn } from "../core/i18n.js";
+import { deuxPoints, t, tn } from "../core/i18n.js";
 import { resumeDuRapport } from "../domain/sync.js";
 import { progressOf } from "../domain/progress.js";
 import { downloadJson } from "./common.js";
@@ -237,7 +237,7 @@ function resumeDeLaCollection(ctx) {
     `${p.all.pct} % · ${p.all.done} / ${p.all.total} ${t("cases cochées")}`,
     `${p.shiny.done} ${tn(p.shiny.done, t("chromatique"), t("chromatiques"))} · ` +
       `${p.pairs.done} / ${p.pairs.total} ${tn(p.pairs.total, t("paire ♂ / ♀"), t("paires ♂ / ♀"))}`,
-    retard.length ? `${t("Reste à faire")} : ${retard.join(" · ")}` : "",
+    retard.length ? deuxPoints(t("Reste à faire"), retard.join(" · ")) : "",
   ]
     .filter(Boolean)
     .join("\n");

@@ -125,6 +125,22 @@ export function t(fr, contexte) {
 }
 
 /**
+ * « Etiquette : valeur », avec l'espacement de la langue affichee.
+ *
+ * Le francais met une espace avant les deux-points, l'anglais non. Composee a
+ * la main dans chaque appelant — `${t("Suivant")} : ${nom}` —, la regle
+ * francaise se retrouvait ecrite en dur au milieu de phrases anglaises :
+ * « Next : Ivysaur », « Still to do : … », « Updated from the repository : … ».
+ *
+ * Passer les deux-points DANS la chaine traduite marche aussi, et c'est ce
+ * qu'on fait quand l'etiquette est fixe. Ici elle ne l'est pas — « Precedent »
+ * ou « Suivant » selon la fleche — et il aurait fallu doubler chaque cle.
+ */
+export function deuxPoints(etiquette, valeur) {
+  return langue === "fr" ? `${etiquette} : ${valeur}` : `${etiquette}: ${valeur}`;
+}
+
+/**
  * Une chaine qui s'accorde en nombre.
  *
  * Le francais du site n'a jamais eu de forme singulier — il affiche « 1 / 1025

@@ -21,7 +21,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
-import { nomEspece, nomCategorie, nomCosmetique, nomForme, lieuEspece, noteDonnees, texteChasse, enAnglais, t, tn } from "../core/i18n.js";
+import { nomEspece, nomCategorie, nomCosmetique, nomForme, lieuEspece, noteDonnees, texteChasse, deuxPoints, enAnglais, t, tn } from "../core/i18n.js";
 import { embleme } from "./symboles-jeux.js";
 
 export function createDetailPanel(ctx) {
@@ -351,7 +351,7 @@ function stepper(species, ctx) {
   // francais la fonction rend `target.name` sans rien faire — l'infobulle est
   // donc inchangee.
   const button = (target, delta, glyph, sens, aucun) => {
-    const label = target ? `${t(sens)} : ${nomEspece(target)}` : t(aucun);
+    const label = target ? deuxPoints(t(sens), nomEspece(target)) : t(aucun);
     return el(
       "button.detail__step",
       {
