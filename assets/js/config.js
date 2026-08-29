@@ -137,6 +137,8 @@ export const CONFIG = {
    */
   storage: {
     marks: "funkylldex.marks.v1",
+    /** Le carnet de chasses pas encore envoye. Voir domain/quetes.js. */
+    quetes: "funkylldex.quetes.v1",
     quest: "funkylldex.quest.v1",
     prefs: "funkylldex.prefs.v1",
     filters: "funkylldex.filters.v1",

@@ -35,6 +35,15 @@
  */
 
 import { CONFIG } from "../config.js";
+// Le carnet de chasses voyage dans le meme fichier que les cases, mais par un
+// chemin entierement separe : sa fusion est une JOINTURE — union, max, treillis
+// —, la leur un arbitrage a trois voies. Les melanger aurait mis les cases en
+// danger pour rien, les deux problemes n'ayant pas la meme forme.
+import {
+  sanitizeQuetes,
+  joinQuetes,
+  egalQuetes,
+} from "./quetes.js";
 
 export const SLOT_KEYS = ["om", "of", "sm", "sf", "gn", "gs", "vo", "vs", "vof", "vsf"];
 
@@ -87,6 +96,14 @@ export class Collection {
     this.dataset = dataset;
     this.base = sanitize(base && base.marks);
     this.local = readLocal();
+
+    // Le carnet vit a cote, jamais dedans. `quetesEnvoyees` est ce que le depot
+    // contenait a la derniere lecture ; `quetes` y ajoute ce qui n a pas encore
+    // pu partir. La jointure etant idempotente, il n y a pas d ancetre a garder :
+    // rejouer une fusion ne change rien, contrairement aux cases.
+    this.quetesEnvoyees = sanitizeQuetes(base && base.quetes);
+    this.quetes = joinQuetes(this.quetesEnvoyees, lireQuetesLocales());
+
     this.migrateLegacySlots();
   }
 
@@ -294,6 +311,44 @@ export class Collection {
     return rapportDeChangement(avant, this.toExport("comparaison").marks, this.dataset);
   }
 
+
+  /* ------------------------- le carnet de chasses ------------------------ */
+
+  /**
+   * Reste-t-il du carnet a envoyer ?
+   *
+   * Comparaison STRUCTURELLE et non textuelle : l'ordre des cles d'un objet
+   * suit l'ordre d'insertion, et deux carnets egaux construits dans un ordre
+   * different auraient semble differer — donc auraient declenche une ecriture,
+   * qui aurait replanifie la suivante, sans fin.
+   */
+  get quetesEnAttente() {
+    return !egalQuetes(this.quetes, this.quetesEnvoyees);
+  }
+
+  /**
+   * Remplace le carnet par sa jointure avec celui qu'on vient de lire ou
+   * d'ecrire, et retient ce que le depot contient desormais.
+   *
+   * Le meme appel sert aux deux cas — relecture et acquittement — parce que la
+   * jointure ne distingue pas : elle est idempotente. C'est toute la difference
+   * avec les cases, ou lire et ecrire demandent deux methodes distinctes.
+   */
+  adopterQuetes(distantes) {
+    const propre = sanitizeQuetes(distantes);
+    this.quetes = joinQuetes(this.quetes, propre);
+    this.quetesEnvoyees = propre;
+    // On ne garde en local QUE ce que le depot n'a pas encore : sinon le
+    // localStorage grossirait d'une copie complete du carnet a chaque fusion.
+    ecrireQuetesLocales(this.quetes);
+  }
+
+  /** Applique une modification au carnet, et la note comme a envoyer. */
+  majQuetes(carnet) {
+    this.quetes = sanitizeQuetes(carnet);
+    ecrireQuetesLocales(this.quetes);
+  }
+
   /**
    * Objet pret a etre ecrit dans data/collection.json.
    *
@@ -318,6 +373,11 @@ export class Collection {
       updatedAt: new Date().toISOString(),
       source,
       marks: ordered,
+      // TEL QUEL, sans elagage ni borne ni tri. Voir la LOI en tete de
+      // domain/quetes.js : normaliser ici et pas dans l etat ferait renaitre un
+      // ecart juste apres chaque ecriture reussie, donc un commit toutes les
+      // quatre secondes, indefiniment.
+      quetes: this.quetes,
     };
   }
 
@@ -351,6 +411,31 @@ export class Collection {
 }
 
 /* ------------------------------ persistance ------------------------------ */
+
+
+/* ------------------------------------------------------------------------ *
+ * Le carnet de chasses.
+ *
+ * Voyage dans le meme fichier que les cases, mais sans jamais croiser leur
+ * chemin : sa fusion est une jointure idempotente, la leur un arbitrage a trois
+ * voies. Voir domain/quetes.js, et la LOI qui y est ecrite en tete.
+ * ------------------------------------------------------------------------ */
+
+function lireQuetesLocales() {
+  try {
+    return sanitizeQuetes(JSON.parse(localStorage.getItem(CONFIG.storage.quetes) || "{}"));
+  } catch {
+    return { parties: {} };
+  }
+}
+
+function ecrireQuetesLocales(carnet) {
+  try {
+    localStorage.setItem(CONFIG.storage.quetes, JSON.stringify(carnet));
+  } catch {
+    /* quota depasse : on continue sans persister */
+  }
+}
 
 function readLocal() {
   try {

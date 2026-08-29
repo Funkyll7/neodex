@@ -214,6 +214,7 @@ export class GitHubSync {
         const distant = await this.fetchRemote();
         if (!marksImposees) {
           this.collection.adopterDistant(distant.marks);
+          this.collection.adopterQuetes(distant.quetes);
           payload = this.collection.toExport("site Funkylldex");
           body.content = encodeBase64(`${JSON.stringify(payload, null, 1)}\n`);
         }
@@ -238,10 +239,16 @@ export class GitHubSync {
       // pendant le vol, il ne reste rien : le comportement est exactement celui
       // de `commitLocal`, sans le trou.
       this.collection.adopterDistant(payload.marks);
+      // Le carnet suit le meme acquittement : ce qu on vient d ecrire devient ce
+      // que le depot contient. La jointure etant idempotente, ceci ne peut pas
+      // creer d ecart — c est ce qui garantit qu on ne replanifie pas sans fin.
+      this.collection.adopterQuetes(payload.quetes);
       this.emit("ok", t("Enregistré dans le dépôt."));
       // Reste-t-il quelque chose ? Alors c'est qu'une case est arrivee pendant
       // le vol, et personne ne la renverrait avant la prochaine bascule.
-      if (this.collection.dirtyCount) this.schedule("suite de l'enregistrement");
+      if (this.collection.dirtyCount || this.collection.quetesEnAttente) {
+        this.schedule("suite de l'enregistrement");
+      }
       return data;
     } catch (error) {
       // 409 / 422 : le fichier a bouge depuis notre derniere lecture — un autre
@@ -319,6 +326,7 @@ export class GitHubSync {
     // `adopterDistant` et non `commitLocal` : le depot ne contient pas encore
     // ce qui est coche ici, vider la couche locale le perdrait.
     const rapport = this.collection.adopterDistant(distant.marks);
+    this.collection.adopterQuetes(distant.quetes);
     if (rapport) this.emit("ok", resumeDuRapport(rapport));
     return rapport;
   }
