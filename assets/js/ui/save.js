@@ -53,7 +53,7 @@ export function createSaveControls(ctx) {
       ctx.onCollectionChange();
       ctx.sync.schedule("import d'une sauvegarde");
     } catch (error) {
-      window.alert(`${t("Import impossible")} : ${error.message}`);
+      window.alert(deuxPoints(t("Import impossible"), error.message));
     }
   });
 
