@@ -71,7 +71,7 @@ const SHELL_FILES = [
   "./assets/img/gigamax-nb.png",
   "./assets/img/logo-home.png",
   "./assets/img/logo-go.png",
-  "./assets/img/logo-quete.png",
+  "./assets/img/logo-quete.svg",
 ];
 
 /**

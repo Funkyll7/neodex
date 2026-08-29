@@ -425,7 +425,7 @@ function start(dataset) {
         // Une pastille en couleur comme ses deux voisines, et non un symbole
         // monochrome : le ✦ qu'elle remplace faisait tache a cote de deux
         // logotypes en couleur.
-        ["quest", "assets/img/logo-quete.png", t("Quêtes"), t("Quêtes"), String(store.state.questDone)],
+        ["quest", "assets/img/logo-quete.svg", t("Quêtes"), t("Quêtes"), String(store.state.questDone)],
       ].map(([value, logo, long, court, badge]) =>
         el(
           "button.tab",

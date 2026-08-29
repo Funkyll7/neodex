@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Quêtes">
+  <defs>
+    <!-- Le cœur lumineux est décentré vers le haut à gauche, comme sur une
+         sphère éclairée d'en haut : un dégradé centré aurait donné une pastille
+         plate, sans volume. -->
+    <radialGradient id="q-corps" cx="38%" cy="32%" r="78%">
+      <stop offset="0%" stop-color="#7ff0ff"/>
+      <stop offset="38%" stop-color="#22c3dd"/>
+      <stop offset="78%" stop-color="#0b8ba6"/>
+      <stop offset="100%" stop-color="#046b83"/>
+    </radialGradient>
+    <!-- Le liseré passe du clair en haut au sombre en bas : c'est ce qui fait
+         lire un disque plutôt qu'un cercle dessiné. -->
+    <linearGradient id="q-bord" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a8f6ff" stop-opacity=".95"/>
+      <stop offset="55%" stop-color="#0e7f97" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#023f4e" stop-opacity=".85"/>
+    </linearGradient>
+    <!-- Le reflet du haut, très doux : il s'éteint avant la moitié pour ne pas
+         délaver la couleur. -->
+    <linearGradient id="q-reflet" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".42"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="32" cy="32" r="30" fill="url(#q-corps)"/>
+  <circle cx="32" cy="32" r="30" fill="none" stroke="url(#q-bord)" stroke-width="2"/>
+  <!-- Une calotte, et non un cercle entier : un reflet qui ferait le tour
+       ressemblerait à un second liseré. -->
+  <path d="M32 5.5A26.5 26.5 0 0 1 56 21 40 40 0 0 0 8 21 26.5 26.5 0 0 1 32 5.5Z" fill="url(#q-reflet)"/>
+
+  <!-- La barre et le point, aux extrémités arrondies. Le point est plus large
+       que la barre — c'est ce que fait un vrai point d'exclamation, et sans cet
+       écart il se lit comme un « i ». -->
+  <g fill="#f2feff">
+    <rect x="27.6" y="15" width="8.8" height="24" rx="4.4"/>
+    <circle cx="32" cy="46.6" r="5"/>
+  </g>
+</svg>
