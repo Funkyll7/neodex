@@ -213,8 +213,8 @@ export function initBoutonSons() {
     // « Sons coupes » quand ils ne marchent pas. Un bouton qui annonce ce qu il
     // ferait se lit dans les deux sens, et on ne sait plus lequel est vrai —
     // meme raisonnement que pour le bouton de langue.
-    bouton.textContent = actifs ? "♪ Sons" : "Sons coupés";
-    bouton.classList.toggle("btn--muet", !actifs);
+    bouton.textContent = actifs ? "♪" : "♪̸";
+    bouton.classList.toggle("icon-btn--muet", !actifs);
     bouton.setAttribute("aria-pressed", String(actifs));
     const titre = actifs
       ? "Sons activés — cliquer pour les couper"

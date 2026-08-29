@@ -232,20 +232,19 @@ function questBody(species, game, ctx, complete, chasse, compter) {
         "div.quest__id",
         el("div.quest__num", dexNumber(species.id)),
         el("h2.quest__name", `✦ ${nomEspece(species)}`),
-        el(
-          "p.quest__where",
-          // L'emblème du jeu avant son nom. `.filter(Boolean)` parce qu'un code
-          // sans symbole rend `null` : le jeu s'affiche alors sans emblème au
-          // lieu de casser la ligne.
-          [`${t("dans")} `, embleme(game.code, 26), el("strong", t(game.name))].filter(Boolean)
-        ),
+        el("p.quest__where", [`${t("dans")} `, el("strong", t(game.name))]),
         el(
           "div.detail__chips",
           // `type` et non `t` : une variable nommee `t` masquerait la fonction
           // de traduction dans cette portee.
           species.types.map((type) => typeChip(type, dataset.types[type] || "#8b8b8b", "lg"))
         )
-      )
+      ),
+      // Le logo du jeu, GRAND et à droite. Il était glissé dans la ligne
+      // « dans … » à seize pixels, où il ne se lisait pas et encombrait une
+      // phrase. Ici il a la place d'être reconnu d'un coup d'œil, et c'est bien
+      // ce qu'un logo sert à faire : dire de quel jeu il s'agit sans le lire.
+      logoDuJeu(game)
     )
   );
 
@@ -388,18 +387,16 @@ function renderLog(root, entries, ctx) {
           el(
             "div.log__corps",
             el("div.log__name", `✦ ${nomJournal(entry, ctx)}`),
-            el(
-              "div.log__meta",
-              [
-                jeu ? embleme(jeu.code, 16) : null,
-                `${t(entry.game)} · ${entry.method}`,
-              ].filter(Boolean)
-            )
+            el("div.log__meta", `${t(entry.game)} · ${entry.method}`)
           ),
           // Le nombre de rencontres qu'a pris la prise. Absent des entrées
           // d'avant le compteur : on n'affiche alors rien plutôt qu'un zéro,
           // qui aurait laissé croire à une chance insolente.
-          entry.rencontres ? el("span.log__n", String(entry.rencontres)) : null
+          entry.rencontres ? el("span.log__n", String(entry.rencontres)) : null,
+          // Le logo à DROITE et plus grand, comme dans le bandeau de la quête.
+          // Devant le nom du jeu, à seize pixels, il se confondait avec la
+          // ponctuation de la ligne.
+          logoDuJournal(jeu)
         );
       })
     )
@@ -514,4 +511,28 @@ function renderStats(root, ctx) {
       )
     )
   );
+}
+
+/**
+ * Le logo d'un jeu, en grand, pour le bandeau de la quête.
+ *
+ * `null` quand le jeu n'a pas de logo : le bandeau se referme alors sur le
+ * sprite et le nom, sans trou. `embleme()` retomberait sur le dessin, mais un
+ * emblème monochrome de soixante-douze pixels sur un fond coloré ne dirait rien
+ * — mieux vaut ne rien montrer.
+ */
+function logoDuJeu(game) {
+  const img = embleme(game.code, 72);
+  if (!img || img.tagName !== "IMG") return null;
+  img.classList.add("quest__logo");
+  return img;
+}
+
+/** Le logo d'un jeu pour une ligne du journal. `null` s'il n'en a pas. */
+function logoDuJournal(jeu) {
+  if (!jeu) return null;
+  const img = embleme(jeu.code, 34);
+  if (!img || img.tagName !== "IMG") return null;
+  img.classList.add("log__logo");
+  return img;
 }

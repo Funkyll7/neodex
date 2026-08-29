@@ -5,7 +5,13 @@
    ========================================================================== */
 
 /* ------------------------------- Marque ---------------------------------- */
-.brand { display: flex; align-items: center; gap: 11px; }
+/* Deux lignes : le nom, puis les reglages. Sur une seule, la barre laterale
+   de 268 px ne tenait pas trois boutons — le dernier sortait du conteneur et
+   passait sous le panneau principal. */
+.brand { display: flex; flex-direction: column; gap: 9px; }
+.brand__ligne { display: flex; align-items: center; gap: 11px; }
+/* Alignes a gauche, sous le nom : c est la ou l oeil revient. */
+.brand__reglages { display: flex; align-items: center; gap: 8px; }
 /* La Poké Ball du logo, en SVG. Elle portait un dégradé bicolore dessiné en
    CSS : une approximation, sans la bande noire ni le bouton central, là où le
    site a déjà son vrai logo — celui du favicon et de l'icône installée.
@@ -2527,4 +2533,35 @@
 .sym-jeu--logo {
   object-fit: contain;
   border-radius: 3px;
+}
+
+/* Le logo du jeu dans le bandeau de la quête : grand, et poussé à droite.
+   Il était glissé dans la ligne « dans … » à seize pixels, où il ne se lisait
+   pas et encombrait une phrase. Un logo sert à dire de quel jeu il s'agit sans
+   qu'on ait à le lire — encore faut-il lui en laisser la place. */
+.quest__logo {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  /* Le bandeau est teinté par les types : un liseré clair détache le logo du
+     fond sans l'assombrir, quelle que soit la couleur derrière. */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .22), 0 4px 14px rgba(0, 0, 0, .3);
+}
+/* Sur téléphone la ligne passe en colonne : le logo garde sa place à droite
+   plutôt que de partir seul sur une ligne à lui. */
+@media (max-width: 560px) {
+  .quest__logo { width: 52px; height: 52px; }
+}
+
+/* Le logo du jeu, au bout de la ligne du journal. Devant le nom, à seize
+   pixels, il se confondait avec la ponctuation. */
+.log__logo {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  margin-left: 10px;
+  opacity: .95;
 }
