@@ -27,8 +27,9 @@ const LIBELLES = {
  * « Trier par » de traduction.
  */
 const ZONES_DYNAMIQUES =
-  "#grid,#go-grid,#detail,#quest-card,#quest-log,#theme-picker,#status-pills," +
-  "#progress-bars,#active-filters,#result-count,#go-count,#dirty-note,#boot-error";
+  "#grid,#go-grid,#detail,#quest-card,#quest-log,#theme-picker,#settings-panel," +
+  "#status-pills,#progress-bars,#active-filters,#result-count,#go-count," +
+  "#dirty-note,#boot-error";
 
 /**
  * Ce qui a ete releve dans index.html, avec son texte francais d'origine.

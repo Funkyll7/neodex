@@ -25,26 +25,20 @@
 
   /* Le liseré noir des logos de forme et de l'emblème Gigamax.
 
-     Quatre `drop-shadow` décalés d'un pixel plutôt qu'un `outline` : celui-ci
-     suivrait la BOÎTE carrée de l'image, alors qu'un `drop-shadow` suit sa
-     SILHOUETTE. Le contour épouse donc le dessin, ce qui est le seul rendu qui
-     ait l'air voulu sur un logo détouré.
+     Quatre `drop-shadow` décalés plutôt qu'un `outline` : celui-ci suivrait la
+     BOÎTE carrée de l'image, alors qu'un `drop-shadow` suit sa SILHOUETTE. Le
+     contour épouse donc le dessin, ce qui est le seul rendu qui ait l'air voulu
+     sur un logo détouré.
+
+     UN DEMI-PIXEL, et pas un. Ces logos font 13 à 18 px : un pixel plein y fait
+     près de huit pour cent de la largeur, et le contour devient un cadre — le
+     dessin s'épaissit au lieu de se détacher. Un demi-pixel sépare autant sans
+     se voir lui-même.
 
      Nommé ici parce que quatre règles le recopiaient, et qu'elles avaient déjà
      commencé à diverger. Il ne dépend d'aucune palette : c'est du noir, et son
      rôle est justement d'être plus sombre que tous les fonds du site. */
   --contour-noir:
-    drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000)
-    drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000);
-
-  /* La même chose, deux fois plus fine, pour les logos de forme.
-
-     Un pixel plein convient à l'emblème Gigamax, qui se pose sur l'illustration
-     et doit tenir tête à un fond très chargé. Sur un logo de 13 px posé dans un
-     bouton, ce même pixel fait près de huit pour cent de la largeur : le
-     contour devient un cadre et le dessin s'épaissit. Un demi-pixel sépare
-     autant sans se voir lui-même. */
-  --contour-noir-fin:
     drop-shadow(.5px 0 0 #000) drop-shadow(-.5px 0 0 #000)
     drop-shadow(0 .5px 0 #000) drop-shadow(0 -.5px 0 #000);
 
