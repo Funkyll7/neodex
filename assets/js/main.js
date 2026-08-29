@@ -551,11 +551,11 @@ function start(dataset) {
       // n'aurait jamais demarre.
       if (state.tab === "go") go.reveal();
     }
-    if (changed.has("quest") || changed.has("questDone") || changed.has("questSkipped")) {
+    if (changed.has("quest") || changed.has("questDone")) {
       quest.render();
       renderTabs();
     }
-    if (["quest", "questDone", "questSkipped", "questLog"].some((key) => changed.has(key))) {
+    if (["quest", "questDone", "questLog"].some((key) => changed.has(key))) {
       saveQuestState(state);
     }
     if (changed.has("view")) renderDetail();
@@ -729,7 +729,7 @@ function saveFilters(state) {
 /* ------------------------- persistance des quetes ------------------------ */
 
 function loadQuestState() {
-  const empty = { quest: null, questDone: 0, questSkipped: 0, questLog: [] };
+  const empty = { quest: null, questDone: 0, questLog: [] };
   try {
     const saved = JSON.parse(localStorage.getItem(CONFIG.storage.quest) || "null");
     return saved ? { ...empty, ...saved } : empty;
@@ -745,7 +745,6 @@ function saveQuestState(state) {
       JSON.stringify({
         quest: state.quest,
         questDone: state.questDone,
-        questSkipped: state.questSkipped,
         questLog: state.questLog,
       })
     );

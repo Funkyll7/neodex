@@ -116,10 +116,6 @@ export function symboleJeu(code, taille = 14) {
   return svg;
 }
 
-/** Les codes qui ont un symbole. Sert à vérifier la couverture des données. */
-export function codesAvecSymbole() {
-  return Object.keys(SYMBOLES);
-}
 
 /**
  * Le logo officiel de chaque jeu, fourni par l'auteur du site.

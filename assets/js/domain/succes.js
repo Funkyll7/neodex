@@ -111,16 +111,3 @@ export function evaluerSucces(progress) {
   });
 }
 
-/** Les valeurs de thème que la collection actuelle rend visibles. */
-export function themesDeverrouilles(progress) {
-  return new Set(
-    evaluerSucces(progress)
-      .filter((succes) => succes.obtenu)
-      .map((succes) => succes.theme)
-  );
-}
-
-/** Le succès qui garde ce thème, ou `undefined` s'il est libre d'accès. */
-export function succesDuTheme(valeur) {
-  return SUCCES.find((succes) => succes.theme === valeur);
-}

@@ -193,10 +193,6 @@ export function jouer(nom) {
   });
 }
 
-/** Raccourcis nommés, pour que les appelants ne manipulent pas de chaînes. */
-export const jouerShiny = () => jouer("shiny");
-export const jouerQuete = () => jouer("quete");
-
 /**
  * Câble le bouton de l'en-tête.
  *

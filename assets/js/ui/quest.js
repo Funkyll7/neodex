@@ -147,7 +147,9 @@ export function createQuest(ctx) {
       }));
       ctx.onCollectionChange(species.id);
     } else {
-      ctx.store.set((s) => ({ questSkipped: s.questSkipped + 1 }));
+      // Rien a compter : « quetes passees » n est plus affiche depuis que la
+      // barre de compteurs dit des choses plus utiles — chromatiques, chasses
+      // en cours, rencontres cumulees. Le son suffit a accuser reception.
       jouer("passe");
     }
     ctx.store.set({ quest: tirer() });
