@@ -4,7 +4,8 @@
  * critere, ajouter une clause ici et le controle correspondant dans ui/sidebar.js.
  */
 
-import { completionOf } from "./completion.js";
+import { completionOf, neManqueQueLeChromatique } from "./completion.js";
+import { estCaseChromatique } from "./collection.js";
 // Une fonction pure, sans DOM : l'index de recherche est plié sans accents par
 // `core/data.js`, la requête doit l'être exactement de la même manière. Les
 // écrire à deux endroits les aurait laissés diverger un jour.
@@ -30,6 +31,10 @@ export const STATUS_FILTERS = [
   { value: "missing", label: "Manquants", key: "missing" },
   { value: "complete", label: "★ Complets", key: "complete" },
   { value: "incomplete", label: "À terminer", key: "incomplete" },
+  // Le filtre du chasseur : a UNE case de la completion, et c est la case qui
+  // demande des heures. « A terminer » les noyait parmi ceux a qui il manque six
+  // formes.
+  { value: "shiny-restant", label: "✦ Plus que le shiny", key: "shinyRestant" },
 ];
 
 /**
@@ -229,6 +234,8 @@ export function applyFilters(species, state, collection, isComplete = () => fals
         return isComplete(p);
       case "incomplete":
         return !isComplete(p);
+      case "shiny-restant":
+        return neManqueQueLeChromatique(p, collection, estCaseChromatique);
       default:
         return true;
     }

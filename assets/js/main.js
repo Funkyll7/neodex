@@ -14,7 +14,7 @@ import { Collection } from "./domain/collection.js";
 import { GitHubSync } from "./domain/sync.js";
 import { HuntPlanner } from "./domain/hunt.js";
 import { applyFilters } from "./domain/filters.js";
-import { isComplete, requiredSlots } from "./domain/completion.js";
+import { isComplete, requiredSlots, neManqueQueLeChromatique } from "./domain/completion.js";
 import { progressOf, goProgressOf } from "./domain/progress.js";
 import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
 import { jouer } from "./ui/sons.js";
@@ -420,6 +420,8 @@ function start(dataset) {
 
   /** « Tout obtenu » : dépend des formes et du verrou chromatique. */
   const complete = (species) => isComplete(species, collection);
+  /** « À une case du bout, et c'est le chromatique. » Voir la pastille du même nom. */
+  const presqueShiny = (species) => neManqueQueLeChromatique(species, collection, estCaseChromatique);
 
   /**
    * Cette espece a-t-elle encore sa place dans la liste affichee ?
@@ -492,7 +494,7 @@ function start(dataset) {
   function renderCounts() {
     const progression = progressOf(dataset.species, collection);
     sidebar.render(
-      collection.counts(dataset.species, complete),
+      collection.counts(dataset.species, complete, presqueShiny),
       progression,
       goProgressOf(dataset.goEntries, collection)
     );

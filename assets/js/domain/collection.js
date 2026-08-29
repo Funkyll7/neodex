@@ -212,16 +212,21 @@ export class Collection {
    * @param {(species: object) => boolean} [isComplete]  test « tout obtenu »,
    *   injecte par l'appelant : la collection ne connait ni les jeux ni les formes.
    */
-  counts(species, isComplete = () => false) {
+  counts(species, isComplete = () => false, presqueShiny = () => false) {
     let owned = 0;
     let shiny = 0;
     let pair = 0;
     let complete = 0;
+    // « Plus que le shiny » : le compte de la pastille du même nom. Calculé ici
+    // plutôt que dans une seconde boucle ailleurs — on parcourt déjà les 1025
+    // espèces, et ce test coûte le même prix que les quatre autres.
+    let shinyRestant = 0;
     for (const p of species) {
       if (this.isOwned(p.id)) owned += 1;
       if (this.isShiny(p.id)) shiny += 1;
       if (this.isCompletePair(p.id)) pair += 1;
       if (isComplete(p)) complete += 1;
+      if (presqueShiny(p)) shinyRestant += 1;
     }
     const total = species.length;
     return {
@@ -232,6 +237,7 @@ export class Collection {
       pair,
       complete,
       incomplete: total - complete,
+      shinyRestant,
       pct: total ? Math.round((owned / total) * 100) : 0,
     };
   }

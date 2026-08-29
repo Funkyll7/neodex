@@ -140,6 +140,35 @@ export function isComplete(species, collection) {
   return true;
 }
 
+/**
+ * « Il ne manque que le chromatique. »
+ *
+ * Le filtre le plus utile du site pour qui chasse : ces Pokémon-là sont à UNE
+ * case de la complétion, et cette case est justement celle qui demande des
+ * heures. Les autres filtres ne savaient pas les montrer — « À terminer » les
+ * noie parmi ceux à qui il manque six formes.
+ *
+ * Vrai seulement s'il manque quelque chose : un Pokémon complet n'a rien à
+ * chasser, et l'inclure aurait rempli la liste de travail déjà fait.
+ *
+ * Aucune allocation, contrairement à `completionOf` : ce test tourne sur les
+ * 1025 espèces à chaque frappe dans le champ de recherche.
+ *
+ * @param {(slot: string) => boolean} estChromatique  passé par l'appelant plutôt
+ *   qu'importé : la reconnaissance des cases chromatiques vit dans
+ *   `domain/collection.js`, qui ne connaît pas ce fichier et n'a pas à le
+ *   connaître. L'inverse aurait créé un cycle.
+ */
+export function neManqueQueLeChromatique(species, collection, estChromatique) {
+  let manque = false;
+  for (const entry of requiredSlots(species)) {
+    if (collection.has(species.id, entry.slot)) continue;
+    if (!estChromatique(entry.slot)) return false;
+    manque = true;
+  }
+  return manque;
+}
+
 /** Nombre de Pokémon entièrement obtenus, pour les compteurs. */
 export function countComplete(speciesList, collection) {
   let count = 0;
