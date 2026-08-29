@@ -2180,3 +2180,74 @@
 @media (max-width: 860px) {
   .gen-sep { top: calc(45px + var(--barre-outils-h, 124px)); }
 }
+
+/* ---------------------- Thèmes qu'il faut mériter ------------------------- */
+/* Une carte verrouillée ne montre ni le fond ni l'accent de sa palette : c'est
+   ce qui en fait un cosmétique CACHÉ. Elle emprunte les couleurs du thème
+   courant, comme n'importe quelle surface neutre du site. */
+.thopt--verrou {
+  cursor: default;
+  background: var(--bg-inset);
+  border-style: dashed;
+  border-color: var(--border-strong);
+  /* Le style de base baisse l'opacité des boutons désactivés. Ici ce serait
+     contraire au but : la carte doit se lire, c'est elle qui donne envie. */
+  opacity: 1;
+}
+.thopt--verrou .thopt__art {
+  background: var(--bg-sunken);
+  display: grid;
+  place-items: center;
+}
+/* Le cadenas est dessiné et non écrit : un emoji change de forme d'un système à
+   l'autre, et celui-ci est répété cinq fois côte à côte. */
+.thopt__cadenas {
+  width: 22px; height: 26px;
+  border-radius: 4px;
+  background: var(--text-ghost);
+  position: relative;
+}
+.thopt__cadenas::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: -11px;
+  width: 14px; height: 14px;
+  transform: translateX(-50%);
+  border: 3px solid var(--text-ghost);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+.thopt--verrou .thopt__name { color: var(--text-muted); }
+.thopt__reste {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Le bandeau de déverrouillage. Même place et même durée que celui d'« Annuler »,
+   dont il reprend la logique : bas de l'écran, il s'efface tout seul. */
+.succes-bandeau {
+  position: fixed;
+  left: 50%; bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 60;
+  max-width: min(92vw, 420px);
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 11px 16px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(100deg, var(--gold), var(--gold-soft));
+  color: var(--gold-ink);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .45);
+  text-align: center;
+}
+.succes-bandeau__texte { font-weight: 800; font-size: 13px; }
+.succes-bandeau__suite { font-size: 11.5px; opacity: .85; }
+@media (prefers-reduced-motion: no-preference) {
+  .succes-bandeau { animation: succes-entree .35s ease-out 1; }
+  @keyframes succes-entree {
+    from { opacity: 0; transform: translate(-50%, 12px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+}

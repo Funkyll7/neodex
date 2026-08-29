@@ -16,7 +16,7 @@ import { HuntPlanner } from "./domain/hunt.js";
 import { applyFilters } from "./domain/filters.js";
 import { isComplete, requiredSlots } from "./domain/completion.js";
 import { progressOf, goProgressOf } from "./domain/progress.js";
-import { initTheme } from "./ui/theme.js";
+import { initTheme, majSucces } from "./ui/theme.js";
 import { createSidebar } from "./ui/sidebar.js";
 import { createGrid } from "./ui/dex-grid.js";
 import { createGoDex } from "./ui/go-dex.js";
@@ -438,11 +438,16 @@ function start(dataset) {
   }
 
   function renderCounts() {
+    const progression = progressOf(dataset.species, collection);
     sidebar.render(
       collection.counts(dataset.species, complete),
-      progressOf(dataset.species, collection),
+      progression,
       goProgressOf(dataset.goEntries, collection)
     );
+    // Les succes se DEDUISENT de ces memes compteurs. Les recalculer ici, et
+    // nulle part ailleurs, garantit qu'ils ne peuvent pas diverger de ce que la
+    // barre laterale affiche au meme instant.
+    majSucces(progression);
     save.render();
     renderTabs();
   }

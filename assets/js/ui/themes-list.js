@@ -92,4 +92,22 @@ export const THEMES = [
   { value: "pixels-magenta", label: "Néon", groupe: "Pixels", bandeau: "#170a18", pastille: "#f45fd0", sprites: "pixel", sprite: 151 },
   { value: "pixels-sang", label: "Braise", groupe: "Pixels", bandeau: "#170808", pastille: "#ff6a4d", sprites: "pixel", sprite: 6 },
   { value: "pixels-encre", label: "Encre", groupe: "Pixels", bandeau: "#0b0f1a", pastille: "#7f9cff", sprites: "pixel", sprite: 130 },
+
+  // --- Récompenses : on ne les choisit pas, on les gagne ---------------------
+  // `verrou` porte la clé du succès qui les ouvre — voir domain/succes.js, qui
+  // DÉDUIT les succès des compteurs au lieu de les stocker.
+  //
+  // Tant qu'elles sont fermées, le menu ne montre ni leur fond ni leur accent :
+  // il dessine un cadenas et ce qu'il reste à faire. C'est le sens de
+  // « cosmétique caché » — la palette est une surprise, pas la condition. Une
+  // récompense qu'on ne sait pas exister ne donne envie de rien.
+  //
+  // Toutes sont bi- ou tricolores, ce qu'aucune autre famille ne fait : elles
+  // séparent la couleur de ce qu'on TERMINE de celle de ce qu'on TOUCHE, et
+  // les font se rencontrer dans le voile des vignettes. Voir theme.css.
+  { value: "aube", label: "Aube", groupe: "Récompenses", bandeau: "#0c0e1a", pastille: "#ff9a5c", verrou: "mille-cases" },
+  { value: "prisme", label: "Prisme", groupe: "Récompenses", bandeau: "#0a0c14", pastille: "#7ee7ff", verrou: "cent-chromatiques" },
+  { value: "cartouche", label: "Cartouche", groupe: "Récompenses", bandeau: "#15151b", pastille: "#9ef01a", verrou: "une-generation" },
+  { value: "duo", label: "Duo", groupe: "Récompenses", bandeau: "#0c1414", pastille: "#ff7a6b", verrou: "toutes-les-paires" },
+  { value: "couronne", label: "Couronne", groupe: "Récompenses", bandeau: "#12100c", pastille: "#ffcf4d", verrou: "pokedex-entier" },
 ];

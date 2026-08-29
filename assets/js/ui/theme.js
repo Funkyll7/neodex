@@ -10,6 +10,8 @@ import { setSpritesEnPixels } from "../domain/sprites.js";
 // Un identifiant d'onglet doit etre de l'ASCII : « Legendaires » et non
 // « Légendaires ». Le pliage existe deja, on ne le reecrit pas ici.
 import { sansAccents } from "../core/data.js";
+import { evaluerSucces } from "../domain/succes.js";
+import { t } from "../core/i18n.js";
 
 const KEY = CONFIG.storage.prefs;
 
@@ -187,8 +189,28 @@ function idDeFamille(titre) {
   return sansAccents(titre).toLowerCase().replace(/[^a-z0-9]+/g, "-");
 }
 
-/** Une carte, peinte dans les couleurs du theme qu'elle propose. */
+/**
+ * Une carte, peinte dans les couleurs du theme qu'elle propose.
+ *
+ * Sauf si le theme se merite et n'est pas encore gagne : la carte ne montre
+ * alors NI son fond NI son accent, seulement un cadenas et ce qu'il reste a
+ * faire. C'est ce qui fait d'une palette un cosmetique cache — la couleur est
+ * la surprise, la condition ne l'est pas. Une recompense dont on ignore
+ * l'existence ne donne envie de rien.
+ */
 function carte(theme) {
+  const succes = theme.verrou ? etatSucces.find((s) => s.cle === theme.verrou) : null;
+  // Le theme COURANT reste toujours choisissable, meme si son succes n'est
+  // plus atteint. Decocher une case ne doit pas arracher a quelqu'un la
+  // palette qu'il a sous les yeux, ni la faire disparaitre du menu ou il vient
+  // de la selectionner.
+  const ouvert =
+    !theme.verrou ||
+    (succes && succes.obtenu) ||
+    document.documentElement.dataset.theme === theme.value;
+
+  if (!ouvert) return carteFermee(succes);
+
   return el(
     "button.thopt",
     {
@@ -203,6 +225,38 @@ function carte(theme) {
     },
     vignette(theme),
     el("span.thopt__name", theme.label)
+  );
+}
+
+/**
+ * La carte d'un theme pas encore gagne.
+ *
+ * `disabled` et non un clic qui ne fait rien : un bouton mort qui garde l'air
+ * vivant est le pire des deux. Le lecteur d'ecran l'annonce comme indisponible,
+ * et le nom accessible porte la condition entiere — sans quoi il aurait lu
+ * « cadenas » et rien d'autre.
+ *
+ * Le titre porte le succes, ce qu'il demande et l'avancement chiffre. Une carte
+ * fait 85 px : le compte tient sous le nom, le reste passe par l'infobulle.
+ */
+function carteFermee(succes) {
+  if (!succes) return el("button.thopt.thopt--verrou", { type: "button", disabled: true },
+    el("span.thopt__art", el("span.thopt__cadenas")), el("span.thopt__name", "?"));
+
+  const compte = `${succes.fait} / ${succes.total}`;
+  const titre = `${t(succes.titre)}\n${t(succes.resume)}\n${compte}`;
+  return el(
+    "button.thopt.thopt--verrou",
+    {
+      type: "button",
+      disabled: true,
+      title: titre,
+      "aria-label": `${t("Thème à débloquer")} — ${t(succes.resume)} — ${compte}`,
+      dataset: { succes: succes.cle },
+    },
+    el("span.thopt__art", el("span.thopt__cadenas")),
+    el("span.thopt__name", t(succes.titre)),
+    el("span.thopt__reste", compte)
   );
 }
 
@@ -263,6 +317,92 @@ function naviguerOnglets(root, event) {
   const cible = onglets[(ici + sens + onglets.length) % onglets.length];
   montrerFamille(root, cible.dataset.famille);
   cible.focus();
+}
+
+
+/* ============================ Récompenses ================================= */
+
+/**
+ * L'état des succès au dernier calcul. Vide tant que la collection n'est pas
+ * lue : les cartes verrouillées se dessinent alors sans compte, ce qui est
+ * juste — on ne connaît pas encore l'avancement, on ne l'invente pas.
+ */
+let etatSucces = [];
+
+/**
+ * Les succès dont le bandeau a déjà été montré.
+ *
+ * Dans les préférences locales, et NON dans la collection : savoir qu'on a déjà
+ * félicité quelqu'un est un confort d'affichage propre à un appareil, pas un
+ * fait de la collection. Les succès eux-mêmes ne se stockent nulle part — voir
+ * l'en-tête de `domain/succes.js`, qui explique pourquoi les déduire vaut mieux
+ * que les retenir.
+ */
+function annoncesVues() {
+  const prefs = readPrefs();
+  return new Set(Array.isArray(prefs.succesVus) ? prefs.succesVus : []);
+}
+
+/**
+ * Recalcule les succès et rafraîchit ce qui en dépend.
+ *
+ * Appelé par `main.js` à chaque fois que les compteurs sont refaits, donc à
+ * chaque case cochée. Le travail est borné : cinq mesures sur des compteurs
+ * déjà calculés, et un redessin de cinq cartes seulement quand l'une d'elles
+ * change d'état.
+ */
+export function majSucces(progress) {
+  const avant = etatSucces;
+  etatSucces = evaluerSucces(progress);
+
+  // Ne redessiner que si quelque chose a bougé : sans ce test, cocher une case
+  // reconstruirait cinq boutons à chaque fois, pour rien.
+  const bouge =
+    avant.length !== etatSucces.length ||
+    etatSucces.some((s, i) => !avant[i] || avant[i].obtenu !== s.obtenu || avant[i].fait !== s.fait);
+  if (bouge) redessinerRecompenses();
+
+  const vues = annoncesVues();
+  const nouveaux = etatSucces.filter((s) => s.obtenu && !vues.has(s.cle));
+  if (!nouveaux.length) return;
+
+  for (const succes of nouveaux) vues.add(succes.cle);
+  writePrefs({ ...readPrefs(), succesVus: [...vues] });
+  annoncer(nouveaux);
+}
+
+/** Repeint le panneau des récompenses, s'il est construit. */
+function redessinerRecompenses() {
+  const panneau = document.querySelector('.themes__panel[data-famille="recompenses"]');
+  if (!panneau) return;
+  fill(panneau, THEMES.filter((theme) => idDeFamille(theme.groupe) === "recompenses").map(carte));
+  syncPicker();
+}
+
+/**
+ * Le bandeau de déverrouillage.
+ *
+ * `role="status"` et non `alert` : c'est une bonne nouvelle, pas une urgence —
+ * un lecteur d'écran doit l'annoncer quand il a fini sa phrase, sans couper.
+ *
+ * Il ne dit pas quelle palette a été gagnée, et c'est délibéré : la couleur est
+ * la surprise. Il dit qu'il y a quelque chose à aller voir.
+ */
+function annoncer(nouveaux) {
+  const titres = nouveaux.map((s) => t(s.titre)).join(", ");
+  const texte =
+    nouveaux.length > 1
+      ? `${t("Succès débloqués")} : ${titres}`
+      : `${t("Succès débloqué")} : ${titres}`;
+
+  const bandeau = el(
+    "div.succes-bandeau",
+    { role: "status", "aria-live": "polite" },
+    el("span.succes-bandeau__texte", texte),
+    el("span.succes-bandeau__suite", t("Un nouveau thème vous attend."))
+  );
+  document.body.append(bandeau);
+  setTimeout(() => bandeau.remove(), 7000);
 }
 
 /**

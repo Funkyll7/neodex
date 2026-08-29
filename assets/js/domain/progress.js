@@ -93,10 +93,21 @@ export function progressOf(speciesList, collection) {
   const kinds = {};
   for (const kind of FORM_KINDS) kinds[kind] = empty();
   const gmaxExtra = { shiny: 0, pairs: 0, pairsTotal: 0 };
+  /**
+   * Un seau par generation. Une case appartient a UNE seule generation, celle
+   * de son espece : la somme des neuf vaut donc exactement `all`. C est cette
+   * propriete, et elle seule, qui autorise a les peindre comme les tranches
+   * d une meme barre — un decoupage ou les parts se recouvriraient, capture et
+   * chromatique et paire, ferait une bande dont le tout ne veut rien dire.
+   */
+  const gens = {};
 
   for (const species of speciesList) {
+    const gen = gens[species.gen] || (gens[species.gen] = empty());
     for (const entry of requiredSlots(species)) {
-      bump(all, collection.has(species.id, entry.slot));
+      const possede = collection.has(species.id, entry.slot);
+      bump(all, possede);
+      bump(gen, possede);
     }
 
     // Une paire ♂ / ♀ n'a de sens que chez les espèces à dimorphisme visible :
@@ -155,6 +166,7 @@ export function progressOf(speciesList, collection) {
   }
 
   for (const kind of FORM_KINDS) seal(kinds[kind]);
+  for (const seau of Object.values(gens)) seal(seau);
   Object.assign(kinds.gmax, gmaxExtra);
 
   return {
@@ -162,6 +174,8 @@ export function progressOf(speciesList, collection) {
     pairs: seal(pairs),
     shiny: seal(shiny),
     kinds,
+    /** Un seau par generation, clee par son numero. La somme vaut `all`. */
+    gens,
     /** Raccourci : la barre Gigamax porte aussi ses paires et ses chromatiques. */
     gmax: kinds.gmax,
   };

@@ -658,3 +658,132 @@
   --accent: #7f9cff; --accent-ink: #06102c;
   --accent-glow: rgba(127, 156, 255, .45); --accent-wash: rgba(127, 156, 255, .13); --accent-border: #26355c;
 }
+
+/* =============================================================================
+   FAMILLE « RÉCOMPENSES »
+   Cinq palettes qu'on ne choisit pas : on les gagne. Elles n'apparaissent dans
+   le menu qu'une fois leur succès atteint — voir domain/succes.js pour les
+   conditions, qui se DÉDUISENT des compteurs et ne se stockent nulle part.
+
+   Elles sont toutes bi- ou tricolores, et c'est leur raison d'être : les
+   trente-trois autres palettes déclinent une seule teinte, celles-ci en font
+   se rencontrer deux ou trois. Le mécanisme est celui que Boussole a introduit,
+   poussé plus loin —
+
+     `--accent`      ce qu'on TOUCHE : sélection, boutons, focus.
+     `--gold` et ses satellites   ce qu'on a TERMINÉ : liseré d'une vignette
+                     complète, étoile, halo du sprite, « ★ Complet ».
+     `--gold-soft`   la troisième teinte des tricolores. Elle n'est pas
+                     décorative : `--gold` → `--gold-soft` est le dégradé de la
+                     barre de progression et des quêtes finies, donc l'endroit
+                     du site où deux jetons se rencontrent dans une surface.
+     `--tuile-voile` le dégradé posé sur chaque vignette, qui fait voir
+                     l'ensemble d'un coup d'œil au lieu de le disperser.
+
+   Les voiles restent autour de .22 : la grille en montre plusieurs centaines à
+   la fois, et ce qui passe inaperçu sur une tuile fait une nappe sur mille.
+   ========================================================================== */
+
+
+/* Les trois derniers échelons de texte, relevés pour les cinq d'un coup.
+   Même raison que pour Boussole : le voile éclaircit les tuiles, et le petit
+   texte qui s'y trouve — numéro national, liste des jeux — ne se lit pas sur le
+   fond d'un panneau mais sur cette surface-là, plus claire. Aux valeurs par
+   défaut il tombait à 2,3 de contraste.
+
+   Une seule règle pour les cinq, et non cinq blocs : le pire fond de tuile de
+   la famille est le bout violet de Cartouche (#454259), et des tons qui passent
+   sur celui-là passent sur les quatre autres. Mesuré, pas estimé.
+
+   `--text-faint` monte à 4,5 — le seuil AA plein. `--text-ghost` s'arrête à
+   3,76, soit exactement le niveau qu'il a partout ailleurs dans le site : le
+   pousser à 4,5 l'aurait rendu plus clair que `--text-faint`, donc aurait
+   inversé les deux poids que ces jetons servent justement à distinguer. */
+:root[data-theme="aube"],
+:root[data-theme="prisme"],
+:root[data-theme="cartouche"],
+:root[data-theme="duo"],
+:root[data-theme="couronne"] {
+  --text-muted: #c4ccdd;
+  --text-faint: #aab1c2;
+  --text-ghost: #9da1af;
+}
+
+/* Aube — la nuit indigo prise de biais par un lever orange. Deux couleurs qui
+   ne se mélangent jamais : le froid tient le fond, le chaud ne sert qu'à ce
+   qu'on touche. */
+:root[data-theme="aube"] {
+  color-scheme: dark;
+  --bg: #0c0e1a; --bg-raised: #161a2b; --bg-sunken: #101322; --bg-inset: #1c2136; --bg-hover: #232941;
+  --border: #232a45; --border-strong: #333d63;
+  --gold: #6ea8ff; --gold-soft: #a8c9ff;
+  --accent: #ff9a5c; --accent-ink: #2a1000;
+  --accent-glow: rgba(255, 154, 92, .42); --accent-wash: rgba(255, 154, 92, .12); --accent-border: #5c3722;
+  --gold-wash: rgba(110, 168, 255, .13); --gold-glow: rgba(110, 168, 255, .42);
+  --gold-border: #2c4270; --gold-ink: #04122b;
+  --tuile-voile: linear-gradient(135deg, rgba(255, 154, 92, .20), rgba(110, 168, 255, .22));
+}
+
+/* Prisme — la récompense de la chasse au chromatique, donc trois couleurs et
+   non deux : c'est la seule palette du site où la barre de progression change
+   franchement de teinte sur sa longueur, du rose vers l'or. */
+:root[data-theme="prisme"] {
+  color-scheme: dark;
+  --bg: #0a0c14; --bg-raised: #141824; --bg-sunken: #0e1119; --bg-inset: #1a1f2e; --bg-hover: #212739;
+  --border: #202739; --border-strong: #2f3a55;
+  --gold: #ff8ad8; --gold-soft: #ffe08a;
+  --accent: #7ee7ff; --accent-ink: #04222b;
+  --accent-glow: rgba(126, 231, 255, .42); --accent-wash: rgba(126, 231, 255, .12); --accent-border: #23485c;
+  --gold-wash: rgba(255, 138, 216, .13); --gold-glow: rgba(255, 138, 216, .42);
+  --gold-border: #5c2a4c; --gold-ink: #2b0620;
+  /* Trois arrêts, un par teinte, et les deux premiers rapprochés : le masque
+     des vignettes n'en laisse voir que la tranche centrale — voir l'aura de
+     components.css, où la même contrainte a d'abord été manquée. */
+  --tuile-voile: linear-gradient(135deg, rgba(126, 231, 255, .22) 20%, rgba(255, 138, 216, .20) 50%, rgba(255, 224, 138, .20) 80%);
+}
+
+/* Cartouche — le plastique gris d'une cartouche et l'étiquette vert acide.
+   Récompense d'une génération bouclée, donc une palette qui sent la console. */
+:root[data-theme="cartouche"] {
+  color-scheme: dark;
+  --bg: #15151b; --bg-raised: #20212a; --bg-sunken: #191a21; --bg-inset: #262833; --bg-hover: #2e3040;
+  --border: #2d2f3d; --border-strong: #414458;
+  --gold: #c8b6ff; --gold-soft: #e2d8ff;
+  --accent: #9ef01a; --accent-ink: #101f05;
+  --accent-glow: rgba(158, 240, 26, .40); --accent-wash: rgba(158, 240, 26, .11); --accent-border: #3d5418;
+  --gold-wash: rgba(200, 182, 255, .13); --gold-glow: rgba(200, 182, 255, .40);
+  --gold-border: #453a6b; --gold-ink: #150a2e;
+  --tuile-voile: linear-gradient(135deg, rgba(158, 240, 26, .17), rgba(200, 182, 255, .22));
+}
+
+/* Duo — corail et turquoise, deux teintes de force égale qui ne cèdent pas
+   l'une à l'autre. Récompense des paires ♂ / ♀, d'où le nom.
+   Elles sont volontairement LOIN du bleu et du rose des boutons de sexe :
+   ceux-là ne changent jamais de teinte, et une palette qui s'en approchait
+   aurait fait disparaître les deux glyphes dans le décor. */
+:root[data-theme="duo"] {
+  color-scheme: dark;
+  --bg: #0c1414; --bg-raised: #142020; --bg-sunken: #0f1a1a; --bg-inset: #1a2828; --bg-hover: #213131;
+  --border: #1e3030; --border-strong: #2c4444;
+  --gold: #3fd6c0; --gold-soft: #8ae8db;
+  --accent: #ff7a6b; --accent-ink: #2a0703;
+  --accent-glow: rgba(255, 122, 107, .42); --accent-wash: rgba(255, 122, 107, .12); --accent-border: #5c2a24;
+  --gold-wash: rgba(63, 214, 192, .13); --gold-glow: rgba(63, 214, 192, .42);
+  --gold-border: #1e5850; --gold-ink: #032420;
+  --tuile-voile: linear-gradient(135deg, rgba(255, 122, 107, .20), rgba(63, 214, 192, .20));
+}
+
+/* Couronne — la dernière, celle du Pokédex entier. Or, ivoire et rouge
+   profond : trois teintes, et la seule palette du site dont le fond est
+   franchement brun plutôt que noir teinté. */
+:root[data-theme="couronne"] {
+  color-scheme: dark;
+  --bg: #12100c; --bg-raised: #1d1a13; --bg-sunken: #16140f; --bg-inset: #24201a; --bg-hover: #2c2820;
+  --border: #2c2820; --border-strong: #453e30;
+  --gold: #e8e2d0; --gold-soft: #d4574e;
+  --accent: #ffcf4d; --accent-ink: #2a1e00;
+  --accent-glow: rgba(255, 207, 77, .42); --accent-wash: rgba(255, 207, 77, .12); --accent-border: #5c4a18;
+  --gold-wash: rgba(232, 226, 208, .12); --gold-glow: rgba(232, 226, 208, .38);
+  --gold-border: #5a5344; --gold-ink: #1a1610;
+  --tuile-voile: linear-gradient(135deg, rgba(255, 207, 77, .20) 22%, rgba(232, 226, 208, .16) 55%, rgba(212, 87, 78, .20) 82%);
+}
