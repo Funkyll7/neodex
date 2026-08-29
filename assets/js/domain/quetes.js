@@ -236,6 +236,35 @@ export function chassesOuvertes(carnet) {
 }
 
 /**
+ * Toutes les chasses ouvertes sur la MÊME paire espèce-jeu, clés triées.
+ *
+ * `chassesOuvertes` n'en désigne qu'une, et il en faut bien une seule : c'est
+ * elle qui reçoit les « +1 », et deux appareils doivent la choisir pareil sans
+ * se parler. Mais le COMPTE, lui, doit les additionner.
+ *
+ * Deux appareils hors ligne ouvrent chacun la sienne — aucun n'a vu l'autre, ils
+ * tirent donc deux clés différentes. Leurs colonnes restent disjointes par
+ * construction, il n'y a aucun double compte à craindre. En n'affichant que la
+ * chasse désignée, on faisait pourtant DISPARAÎTRE de l'écran les rencontres de
+ * l'autre appareil à la première synchronisation : mesuré à deux navigateurs,
+ * 27 + 5 rencontres réelles s'affichaient « 27 ». Rien n'était perdu dans le
+ * carnet, mais le compteur mentait, et celui qui avait compté les 5 les voyait
+ * s'évaporer.
+ *
+ * Le JEU compte autant que l'espèce : chasser Ronflex dans HeartGold et dans
+ * Or n'est pas la même chasse, et les additionner gonflerait le compte.
+ */
+export function chassesDeLaPaire(carnet, espece, jeu) {
+  const cles = [];
+  for (const [cle, part] of Object.entries((carnet && carnet.parties) || {})) {
+    if (part.s !== "encours" || part.e !== espece || part.j !== jeu) continue;
+    if (!Object.values(part.r).some((n) => n > 0)) continue;
+    cles.push(cle);
+  }
+  return cles.sort();
+}
+
+/**
  * La probabilité d'avoir DÉJÀ réussi après n tentatives à 1 sur d.
  *
  * 1 − (1 − 1/d)^n. C'est le chiffre qui donne son sel au compteur : « 340

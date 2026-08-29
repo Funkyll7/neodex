@@ -22,6 +22,7 @@ import { embleme, emblemePaire } from "./symboles-jeux.js";
 import {
   chassesOuvertes,
   chanceCumulee,
+  chassesDeLaPaire,
   nouvelAppareil,
   nouvelleCle,
   totalPartie,
@@ -67,13 +68,28 @@ export function createQuest(ctx) {
     return ctx.planner.roll(ctx.collection, chassesOuvertes(ctx.collection.quetes));
   }
 
-  /** La chasse en cours pour la quête affichée, ou `null` si aucune. */
+  /**
+   * La chasse en cours pour la quête affichée, ou `null` si aucune.
+   *
+   * `cle` DÉSIGNE la chasse — c'est elle qui reçoit les « +1 » —, tandis que
+   * `cles` et `total` couvrent toutes celles ouvertes sur la même paire. Les
+   * deux ne coïncident que sur un seul appareil : dès qu'un second a compté
+   * hors ligne, il a ouvert sa propre clé, et n'additionner que la désignée
+   * effaçait ses rencontres de l'écran. Voir `chassesDeLaPaire`.
+   */
   function chasseCourante() {
     const { quest } = ctx.store.state;
     if (!quest) return null;
-    const vue = chassesOuvertes(ctx.collection.quetes).get(quest.id);
+    const carnet = ctx.collection.quetes;
+    const vue = chassesOuvertes(carnet).get(quest.id);
     if (!vue) return null;
-    return { cle: vue.cle, part: ctx.collection.quetes.parties[vue.cle] };
+    const cles = chassesDeLaPaire(carnet, quest.id, vue.jeu);
+    return {
+      cle: vue.cle,
+      part: carnet.parties[vue.cle],
+      cles,
+      total: cles.reduce((somme, c) => somme + totalPartie(carnet.parties[c]), 0),
+    };
   }
 
   /**
@@ -119,7 +135,7 @@ export function createQuest(ctx) {
       const game = ctx.dataset.gamesByCode.get(quest.game);
       const method = ctx.planner.methodFor(quest.game, species);
       const chasse = chasseCourante();
-      const rencontres = chasse ? totalPartie(chasse.part) : 0;
+      const rencontres = chasse ? chasse.total : 0;
 
       ctx.collection.mark(species.id, "sm");
       jouer("quete");
@@ -127,13 +143,19 @@ export function createQuest(ctx) {
       // La chasse passe à « prise » au lieu d'être supprimée : sous une fusion
       // par union, une suppression est ressuscitée par l'appareil qui ne l'a pas
       // vue. Le statut, lui, est un treillis — il ne redescend jamais.
+      //
+      // TOUTES les chasses de la paire, et non la seule désignée : quand deux
+      // appareils en ont ouvert chacun une, n'en fermer qu'une laissait l'autre
+      // « en cours » pour toujours. Elle ne se serait jamais refermée — la
+      // quête, elle, disparaît du tirage dès que le chromatique est coché — et
+      // « Chasses en cours » aurait compté un fantôme à chaque prise.
       if (chasse) {
-        ctx.collection.majQuetes({
-          parties: {
-            ...ctx.collection.quetes.parties,
-            [chasse.cle]: { ...chasse.part, s: "prise", f: Date.now() },
-          },
-        });
+        const fin = Date.now();
+        const parties = { ...ctx.collection.quetes.parties };
+        for (const cle of chasse.cles) {
+          parties[cle] = { ...parties[cle], s: "prise", f: fin };
+        }
+        ctx.collection.majQuetes({ parties });
       }
 
       // Valider une quete coche une case comme n'importe quel clic : elle doit
@@ -489,7 +511,9 @@ function renderLog(root, entries, ctx, oublier) {
  * médiane à deux endroits aussi.
  */
 function mesureChasse(method, chasse) {
-  const n = chasse ? totalPartie(chasse.part) : 0;
+  // `chasse.total` et non `totalPartie(chasse.part)` : la somme de TOUTES les
+  // chasses ouvertes sur la paire, pas seulement celle qui est designee.
+  const n = chasse ? chasse.total : 0;
   const denominateur = oddsValue(method.odds);
   const pct = Math.round(chanceCumulee(n, denominateur) * 100);
   // La médiane : le nombre d'essais après lequel une chasse sur deux a abouti.
