@@ -22,6 +22,7 @@
 import { el } from "../core/dom.js";
 import { isTyping } from "./shortcuts.js";
 import { jouer } from "./sons.js";
+import { deuxPoints, t } from "../core/i18n.js";
 
 /** Le bandeau couvre le bas de l'ecran — la ou se trouvent les cases de la
     vignette suivante. Il se retire donc tout seul. */
@@ -40,6 +41,13 @@ export function createUndo(ctx) {
 
   function montrer(message) {
     texte.textContent = message;
+    // Le libellé du bouton se repose à CHAQUE apparition, et non une seule fois
+    // à la construction. Le bandeau naît avec la page, donc avant que la table
+    // anglaise soit chargée — et il naît APRÈS le relevé du statique de
+    // `ui/langue.js`, qui ne l'a donc jamais vu. Il restait « Annuler » sous un
+    // message anglais, pour toute la visite. Le reposer ici ne coûte rien : la
+    // fonction ne s'exécute qu'au moment où l'on coche.
+    bouton.textContent = t("Annuler");
     bandeau.hidden = false;
     clearTimeout(minuteur);
     minuteur = setTimeout(cacher, DUREE_MS);
@@ -64,9 +72,9 @@ export function createUndo(ctx) {
     // ratees coup sur coup se defont en deux appuis au meme endroit, sans
     // avoir a rechercher le bouton.
     if (pile.length) {
-      montrer(`Annulé : ${pas.titre} — encore ${pile.length}`);
+      montrer(`${deuxPoints(t("Annulé"), pas.titre)} — ${t("encore")} ${pile.length}`);
     } else {
-      montrer(`Annulé : ${pas.titre}`);
+      montrer(deuxPoints(t("Annulé"), pas.titre));
       // Plus rien a defaire : le bouton ne doit pas promettre le contraire.
       bouton.disabled = true;
     }
