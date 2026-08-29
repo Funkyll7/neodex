@@ -288,7 +288,10 @@ export class Collection {
     this.local = local;
     writeLocal(this.local);
 
-    return !sameCollections(avant, this.toExport("comparaison").marks);
+    // Un RAPPORT et non un booleen : « Mis a jour depuis le depot » ne disait
+    // pas QUOI, et c est justement ce qu on veut savoir en rentrant chez soi.
+    // Il reste faux quand rien n a bouge, donc aucun appelant ne change.
+    return rapportDeChangement(avant, this.toExport("comparaison").marks, this.dataset);
   }
 
   /**
@@ -407,6 +410,47 @@ function sameMarks(a = {}, b = {}) {
 }
 
 /** La meme comparaison, mais d'une collection entiere a une autre. */
+
+/**
+ * Ce qui a changé entre deux états de la collection.
+ *
+ * Rend `null` quand rien n'a bougé, et NON un objet vide. Les appelants
+ * écrivent « if (!change) return » : un objet aurait toujours été vrai, et la
+ * grille se serait reconstruite à chaque retour sur l'onglet. C'est aussi ce
+ * qui permet de remplacer le booléen d'`adopterDistant` sans toucher à aucun
+ * appelant — `null` est faux, un rapport est vrai.
+ *
+ * Les deux sens comptent. Une synchronisation peut RETIRER une case : décocher
+ * sur le téléphone est une décision comme une autre, et un message qui ne
+ * parlerait que des arrivées aurait laissé croire à une perte silencieuse.
+ */
+function rapportDeChangement(avant, apres, dataset) {
+  const especes = [];
+  let gagnees = 0;
+  let perdues = 0;
+
+  for (const id of new Set([...Object.keys(avant), ...Object.keys(apres)])) {
+    const a = avant[id] || {};
+    const b = apres[id] || {};
+    const plus = [];
+    const moins = [];
+    for (const slot of new Set([...Object.keys(a), ...Object.keys(b)])) {
+      if (!a[slot] && b[slot]) plus.push(slot);
+      else if (a[slot] && !b[slot]) moins.push(slot);
+    }
+    if (!plus.length && !moins.length) continue;
+    gagnees += plus.length;
+    perdues += moins.length;
+    // L'espèce ENTIÈRE et non son nom : le nom dépend de la langue affichée, et
+    // ce module n'a pas à la connaître. Celui qui écrit le message la connaît.
+    especes.push({ id: Number(id), espece: dataset ? dataset.byId.get(Number(id)) : null, gagnees: plus, perdues: moins });
+  }
+
+  if (!especes.length) return null;
+  especes.sort((x, y) => x.id - y.id);
+  return { especes, gagnees, perdues };
+}
+
 function sameCollections(a = {}, b = {}) {
   const ids = new Set([...Object.keys(a), ...Object.keys(b)]);
   for (const id of ids) if (!sameMarks(a[id], b[id])) return false;

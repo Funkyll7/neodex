@@ -19,7 +19,7 @@ import { CONFIG } from "../config.js";
 // Les messages d'etat sont lus par l'utilisateur : ils suivent la langue. Les
 // `reason`, elles, restent en francais — ce sont des messages de commit git,
 // ecrits dans l'historique du depot, pas a l'ecran.
-import { t } from "../core/i18n.js";
+import { t, tn, nomEspece } from "../core/i18n.js";
 
 const API = "https://api.github.com";
 
@@ -30,6 +30,34 @@ const API = "https://api.github.com";
  * couvre. Une collection complete tourne autour de 50 Ko encodee.
  */
 const KEEPALIVE_MAX_BYTES = 60 * 1024;
+
+
+/**
+ * Ce qu'une synchronisation vient de rapporter, en une phrase.
+ *
+ * « Mis à jour depuis le dépôt » ne disait pas QUOI, et c'est précisément la
+ * question qu'on se pose en rentrant chez soi après avoir coché sur le
+ * téléphone. Trois noms au plus, puis un compte : au-delà, la phrase devient
+ * une liste qu'on ne lit pas, et le nombre suffit à rassurer.
+ *
+ * Les décochages sont dits aussi. Décocher sur un autre appareil est une
+ * décision comme une autre, mais une phrase qui ne parlerait que des arrivées
+ * aurait laissé une disparition passer pour un bug.
+ */
+export function resumeDuRapport(rapport) {
+  const noms = rapport.especes.slice(0, 3).map((e) => (e.espece ? nomEspece(e.espece) : `#${e.id}`));
+  const reste = rapport.especes.length - noms.length;
+  const liste = reste > 0 ? `${noms.join(", ")} +${reste}` : noms.join(", ");
+
+  const parts = [];
+  if (rapport.gagnees) {
+    parts.push(`${rapport.gagnees} ${tn(rapport.gagnees, t("case cochée"), t("cases cochées"))}`);
+  }
+  if (rapport.perdues) {
+    parts.push(`${rapport.perdues} ${tn(rapport.perdues, t("case décochée"), t("cases décochées"))}`);
+  }
+  return `${t("Mis à jour depuis le dépôt")} : ${parts.join(", ")} — ${liste}`;
+}
 
 export class GitHubSync {
   constructor(collection) {
@@ -169,10 +197,23 @@ export class GitHubSync {
         keepalive: keepalive && withinKeepalive(text),
       });
       this.sha = data.content && data.content.sha;
-      // Ce qui est dans le depot devient la nouvelle reference : plus rien
-      // n'est « modifie dans ce navigateur ».
-      this.collection.commitLocal(payload.marks);
+      // `adopterDistant` et non `commitLocal`, alors que c'est bien nous qui
+      // venons d'ecrire. La raison est une course : l'instantane `payload` est
+      // pris AVANT le PUT, qui dure le temps d'un aller-retour reseau. Une case
+      // cochee pendant ce vol se trouve dans la couche locale mais pas dans
+      // `payload.marks` — et `commitLocal` vidait la couche entiere, donc cette
+      // case avec. Une seconde de fenetre, mais deterministe : cocher vite
+      // pendant un enregistrement suffisait.
+      //
+      // `adopterDistant` prend ce qu'on vient d'ecrire pour nouvel ancetre et
+      // ne garde en attente que ce qui l'en ecarte. Quand rien n'a bouge
+      // pendant le vol, il ne reste rien : le comportement est exactement celui
+      // de `commitLocal`, sans le trou.
+      this.collection.adopterDistant(payload.marks);
       this.emit("ok", t("Enregistré dans le dépôt."));
+      // Reste-t-il quelque chose ? Alors c'est qu'une case est arrivee pendant
+      // le vol, et personne ne la renverrait avant la prochaine bascule.
+      if (this.collection.dirtyCount) this.schedule("suite de l'enregistrement");
       return data;
     } catch (error) {
       // 409 / 422 : le fichier a bouge depuis notre derniere lecture — un autre
@@ -249,9 +290,9 @@ export class GitHubSync {
 
     // `adopterDistant` et non `commitLocal` : le depot ne contient pas encore
     // ce qui est coche ici, vider la couche locale le perdrait.
-    const change = this.collection.adopterDistant(distant.marks);
-    if (change) this.emit("ok", t("Mis à jour depuis le dépôt."));
-    return change;
+    const rapport = this.collection.adopterDistant(distant.marks);
+    if (rapport) this.emit("ok", resumeDuRapport(rapport));
+    return rapport;
   }
 
   /**
