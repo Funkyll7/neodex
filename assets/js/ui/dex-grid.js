@@ -355,7 +355,7 @@ export function createGrid(ctx) {
 
     /** Repeint une seule vignette apres un clic sur une case. */
     refresh(id) {
-      const node = grid.querySelector(`[data-id=""]`);
+      const node = grid.querySelector(`[data-id="${id}"]`);
       if (!node) return;
       // Une vignette videe n'a rien a repeindre : elle se regarnira a jour
       // quand elle reviendra pres de l'ecran.
