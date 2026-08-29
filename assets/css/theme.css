@@ -37,6 +37,17 @@
     drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000)
     drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000);
 
+  /* La même chose, deux fois plus fine, pour les logos de forme.
+
+     Un pixel plein convient à l'emblème Gigamax, qui se pose sur l'illustration
+     et doit tenir tête à un fond très chargé. Sur un logo de 13 px posé dans un
+     bouton, ce même pixel fait près de huit pour cent de la largeur : le
+     contour devient un cadre et le dessin s'épaissit. Un demi-pixel sépare
+     autant sans se voir lui-même. */
+  --contour-noir-fin:
+    drop-shadow(.5px 0 0 #000) drop-shadow(-.5px 0 0 #000)
+    drop-shadow(0 .5px 0 #000) drop-shadow(0 -.5px 0 #000);
+
   --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Baloo 2", var(--font-body);
 

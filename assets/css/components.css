@@ -659,7 +659,7 @@
   opacity: .9;
   /* Meme liseré que sur les boutons de la grille : la tuile de forme est
      cliquable elle aussi, et son logo se pose sur un fond teinté par le type. */
-  filter: var(--contour-noir);
+  filter: var(--contour-noir-fin);
 }
 /* La pastille de repli, pour les familles sans logo officiel. En masque, donc
    elle prend le ton du texte de la tuile au lieu d'imposer une couleur. */
@@ -1147,7 +1147,7 @@
 .bars__label { flex: 1; min-width: 0; }
 
 /* ===================== Formes présentes pour l'information =============== */
-.forms__icon { flex: none; vertical-align: -3px; margin-right: 5px; filter: var(--contour-noir); }
+.forms__icon { flex: none; vertical-align: -3px; margin-right: 5px; filter: var(--contour-noir-fin); }
 .forms__title { display: flex; align-items: center; gap: 0; }
 
 /* Ce qui ne se coche pas est mis a distance : un trait, un retrait de ton, et
@@ -1240,8 +1240,11 @@
      franc — vert, or, orange —, et un halo blanc sur du jaune vif ne détache
      rien du tout : le logo s'y noyait exactement comme l'emblème Gigamax se
      noyait sur les types rouges avant qu'on le cerne. Le noir est la seule
-     couleur plus sombre que tous les fonds de pastille à la fois. */
-  filter: var(--contour-noir);
+     couleur plus sombre que tous les fonds de pastille à la fois.
+
+     La version FINE : à 13 px, le pixel plein de l'emblème Gigamax faisait un
+     cadre autour du dessin au lieu de le détacher. */
+  filter: var(--contour-noir-fin);
 }
 
 /* Bouton non coché : le fond redevient sombre, et un contour noir sur du sombre
