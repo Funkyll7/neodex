@@ -240,7 +240,16 @@ export function lieuEspece(fr) {
  */
 export function noteDonnees(fr) {
   if (langue === "fr" || !table) return fr;
-  return (table.notes || {})[fr] || fr;
+  // DEUX tables, interrogees dans l'ordre : `notes` porte shiny-locks.json et
+  // les notes d'especes, `formes` porte les « ou trouver » et les notes de
+  // details/forms.json. Elles restent separees parce que leurs fichiers le sont
+  // — une meme phrase francaise dans deux fichiers pourrait vouloir deux
+  // traductions, et les fondre rendrait ce conflit invisible. Mais elles
+  // servent la meme chose a l'ecran, la prose qui explique une forme ou une
+  // absence, d'ou un seul lecteur.
+  const tables = [table.notes, table.formes];
+  for (const t of tables) if (t && t[fr]) return t[fr];
+  return fr;
 }
 
 /**

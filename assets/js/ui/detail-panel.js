@@ -923,7 +923,7 @@ function formTile(form, species, ctx) {
       "details.ftile__more",
       { dataset: { key: `${species.id}-${form.key}` } },
       el("summary.ftile__summary", t("Détails")),
-      form.where ? el("p.form__text", form.where) : null,
+      form.where ? el("p.form__text", noteDonnees(form.where)) : null,
       el(
         "p.form__games",
         games.length
