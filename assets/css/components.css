@@ -305,7 +305,15 @@
 }
 
 .card__art { position: relative; height: 78px; display: flex; align-items: center; justify-content: center; }
-.card__img { width: 70px; height: 70px; max-width: 100%; object-fit: contain; transition: filter .2s; }
+/* Au-dessus de l aura, et il faut le dire explicitement : celle-ci est un
+   ::before POSITIONNE, donc peint apres le contenu en flux du meme conteneur.
+   Elle recouvrait donc le sprite depuis toujours — invisible tant qu elle etait
+   a 22 %, franchement genant des qu on l a renforcee. */
+.card__img {
+  position: relative; z-index: 1;
+  width: 70px; height: 70px; max-width: 100%; object-fit: contain;
+  transition: filter .2s;
+}
 .card--missing .card__img { filter: var(--sprite-dim); }
 .card--shiny-art .card__img { filter: drop-shadow(0 0 8px var(--accent-glow)); }
 /* Le logo chromatique, en MASQUE et non en image : le fichier est turquoise,
@@ -2228,32 +2236,91 @@
 
 /* Le bandeau de déverrouillage. Même place et même durée que celui d'« Annuler »,
    dont il reprend la logique : bas de l'écran, il s'efface tout seul. */
+/* ------------------------- Les bandeaux flottants ------------------------- */
+/* Un succès débloqué, un résumé de collection. Deux contenus, une seule mise
+   en forme.
+
+   Une CARTE et non une pastille. La pastille — `border-radius: pill` — allait
+   pour une phrase d'une ligne, celle d'« Annuler ». Passé à quatre lignes elle
+   devenait une ellipse énorme dont la courbure mangeait les coins du texte.
+
+   Fond neutre et non le dégradé doré. Peindre `--gold` → `--gold-soft` sous du
+   texte, c'était poser une encre sombre sur deux teintes claires qui changent
+   d'un thème à l'autre : illisible chez certains, et impossible à garantir chez
+   les trente-huit. La couleur du thème passe désormais par le seul filet de
+   gauche, où elle ne gêne aucune lecture. */
 .succes-bandeau,
 .resume-bandeau {
   position: fixed;
   left: 50%; bottom: 18px;
   transform: translateX(-50%);
   z-index: 60;
-  max-width: min(92vw, 420px);
-  display: flex; flex-direction: column; gap: 2px;
-  padding: 11px 16px;
-  border-radius: var(--r-pill);
-  background: linear-gradient(100deg, var(--gold), var(--gold-soft));
-  color: var(--gold-ink);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, .45);
-  text-align: center;
+  width: min(92vw, 360px);
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 14px 16px 13px;
+  border-radius: var(--r-md);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--gold);
+  color: var(--text);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, .45);
+  text-align: left;
 }
-.succes-bandeau__texte,
-.resume-bandeau__texte { font-weight: 800; font-size: 13px; }
-.succes-bandeau__suite,
-.resume-bandeau__suite { font-size: 11.5px; opacity: .85; }
+/* Le titre du bandeau : ce dont il s'agit, en une ligne. */
+.bandeau__titre {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13.5px;
+  letter-spacing: .01em;
+  color: var(--gold);
+}
+/* La dernière ligne : ce qui vient de se passer. Discrète, mais pas invisible —
+   c'est elle qui dit si la copie a marché. */
+.bandeau__suite {
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+/* Le résumé, en lignes étiquette / valeur.
+   Une grille à deux colonnes plutôt qu'un bloc de texte : les valeurs
+   s'alignent, et « 30 / 102 paires ♂ / ♀ » ne se coupe plus n'importe où —
+   c'était le cas dans le bloc, où la fin partait seule à la ligne suivante. */
+.resume__lignes {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  font-size: 12.5px;
+}
+.resume__cle { color: var(--text-muted); }
+.resume__valeur {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  /* Les symboles ♂ / ♀ et les nombres ne se coupent pas en deux. */
+  white-space: nowrap;
+}
+/* Le grand chiffre, comme dans la barre latérale : c'est ce qu'on lit d'abord. */
+.resume__pct {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--gold);
+}
+.resume__pct span { font-size: 12px; margin-left: 2px; }
+.resume__reste {
+  font-size: 11.5px;
+  color: var(--text-soft);
+  /* Celle-ci a le droit de passer à la ligne : c'est une énumération. */
+  white-space: normal;
+}
 @media (prefers-reduced-motion: no-preference) {
   .succes-bandeau,
-  .resume-bandeau { animation: succes-entree .35s ease-out 1; }
-  @keyframes succes-entree {
+  .resume-bandeau { animation: bandeau-entree .35s ease-out 1; }
+  @keyframes bandeau-entree {
     from { opacity: 0; transform: translate(-50%, 12px); }
     to   { opacity: 1; transform: translate(-50%, 0); }
   }
+}
 }
 
 /* ------------------ La progression, redécoupée par génération ------------- */
@@ -2345,19 +2412,20 @@
   }
 }
 
-/* Le résumé s'affiche en toutes lettres, et pas seulement dans le presse-papiers.
-   « Copié » sans montrer QUOI oblige à aller coller ailleurs pour savoir ce
-   qu'on partage — et sur un ordinateur sans `navigator.share`, le bouton
-   n'avait aucun effet visible. Le texte est sélectionnable : à défaut de
-   presse-papiers, il reste attrapable à la main. */
+/* Le résumé reste sélectionnable : quand ni le partage ni le presse-papiers ne
+   marchent — navigateur ancien, page hors contexte sécurisé —, l'attraper à la
+   main reste possible. Un message d'échec seul aurait laissé sans recours. */
 .resume-bandeau {
-  max-width: min(94vw, 460px);
   user-select: text;
   -webkit-user-select: text;
 }
-.resume-bandeau__texte {
-  white-space: pre-line;
-  font-weight: 700;
-  line-height: 1.45;
-  text-align: left;
+
+/* La liste des succès qui viennent de tomber. Séparés par un point médian et
+   non par une virgule : ce sont des noms propres, pas une énumération. */
+.succes__liste {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--text);
 }

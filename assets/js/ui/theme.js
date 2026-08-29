@@ -389,17 +389,14 @@ function redessinerRecompenses() {
  * la surprise. Il dit qu'il y a quelque chose à aller voir.
  */
 function annoncer(nouveaux) {
-  const titres = nouveaux.map((s) => t(s.titre)).join(", ");
-  const texte =
-    nouveaux.length > 1
-      ? `${t("Succès débloqués")} : ${titres}`
-      : `${t("Succès débloqué")} : ${titres}`;
+  const titres = nouveaux.map((s) => t(s.titre)).join(" · ");
 
   const bandeau = el(
     "div.succes-bandeau",
     { role: "status", "aria-live": "polite" },
-    el("span.succes-bandeau__texte", texte),
-    el("span.succes-bandeau__suite", t("Un nouveau thème vous attend."))
+    el("span.bandeau__titre", nouveaux.length > 1 ? t("Succès débloqués") : t("Succès débloqué")),
+    el("p.succes__liste", titres),
+    el("span.bandeau__suite", t("Une nouvelle palette vous attend dans les thèmes."))
   );
   document.body.append(bandeau);
   setTimeout(() => bandeau.remove(), 7000);

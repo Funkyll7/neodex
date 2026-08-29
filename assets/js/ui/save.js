@@ -180,23 +180,22 @@ function createSyncControls(ctx) {
 }
 
 /**
- * Le résumé qu'on montre à quelqu'un.
+ * Le résumé : ce qu'on AFFICHE, et ce qu'on PARTAGE.
  *
- * Du TEXTE, et non une image. Une image aurait demandé un canvas, une police
- * chargée, une mise en page à refaire à chaque ajout de compteur — et surtout
- * elle ne se colle pas dans une conversation, ne se cherche pas, ne se lit pas
- * à voix haute par un lecteur d'écran. Le texte se colle partout.
- *
- * Les générations sont triées par avancement croissant et non par numéro : ce
- * qu'on montre à quelqu'un, c'est où l'on en est, et la première ligne
- * intéressante est celle qui traîne. Trois suffisent — la liste des neuf serait
- * un tableau, pas un résumé.
+ * Les deux ne peuvent pas être la même chose. Le texte partagé doit tenir dans
+ * un message, donc être plat ; l'affichage doit se lire d'un coup d'œil, donc
+ * être aligné. Un seul bloc de texte servant aux deux donnait ce qu'on a vu :
+ * quatre lignes entassées, dont « 30 / 102 paires ♂ / ♀ » qui se coupait en
+ * plein milieu du symbole.
  */
-function texteDuResume(ctx) {
+function resumeDeLaCollection(ctx) {
   const { dataset, collection } = ctx;
   const p = progressOf(dataset.species, collection);
 
-  const gens = Object.entries(p.gens || {})
+  // Les générations les plus en retard, et non les premières par numéro : ce
+  // qu'on montre, c'est où l'on en est, et la ligne intéressante est celle qui
+  // traîne.
+  const retard = Object.entries(p.gens || {})
     .filter(([, v]) => v.total)
     .sort((a, b) => a[1].pct - b[1].pct)
     .slice(0, 3)
@@ -207,41 +206,46 @@ function texteDuResume(ctx) {
     });
 
   const lignes = [
+    { cle: t("Cases cochées"), valeur: `${p.all.done} / ${p.all.total}` },
+    { cle: t("Chromatiques"), valeur: String(p.shiny.done) },
+    { cle: t("Paires ♂ / ♀"), valeur: `${p.pairs.done} / ${p.pairs.total}` },
+  ];
+
+  const texte = [
     `Funkylldex — ${t("ma collection")}`,
     `${p.all.pct} % · ${p.all.done} / ${p.all.total} ${t("cases cochées")}`,
     `${p.shiny.done} ${tn(p.shiny.done, t("chromatique"), t("chromatiques"))} · ` +
       `${p.pairs.done} / ${p.pairs.total} ${tn(p.pairs.total, t("paire ♂ / ♀"), t("paires ♂ / ♀"))}`,
-  ];
-  if (gens.length) lignes.push(`${t("Reste à faire")} : ${gens.join(" · ")}`);
-  return lignes.join("\n");
+    retard.length ? `${t("Reste à faire")} : ${retard.join(" · ")}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return { pct: p.all.pct, lignes, retard, texte };
 }
 
 /**
  * Partage le résumé, ou le copie à défaut.
  *
- * `navigator.share` d'abord : sur téléphone il ouvre le menu du système, qui
- * est là où l'on partage vraiment. Il n'existe pas sur la plupart des
- * navigateurs de bureau, et il refuse tout appel qui ne descend pas d'un geste
- * de l'utilisateur — d'où l'appel direct dans le gestionnaire de clic, sans
- * `await` avant lui.
+ * Le bandeau est posé AVANT toute tentative : « Copié » sans dire quoi oblige à
+ * aller coller ailleurs pour savoir ce qu'on partage, et sur un ordinateur sans
+ * `navigator.share` ni presse-papiers autorisé, le bouton n'avait aucun effet
+ * visible du tout.
  *
- * Une annulation n'est pas une erreur : fermer le menu de partage lève un
- * `AbortError`, qu'il serait absurde de signaler comme un échec.
+ * `navigator.share` d'abord : sur téléphone il ouvre le menu du système, qui est
+ * là où l'on partage vraiment. Il refuse tout appel qui ne descend pas d'un
+ * geste de l'utilisateur, d'où l'appel sans `await` avant lui.
  */
 async function partagerResume(ctx) {
-  const texte = texteDuResume(ctx);
-  // Montrer le texte AVANT toute tentative de partage. « Copié » sans dire quoi
-  // oblige à aller coller ailleurs pour savoir ce qu'on partage — et sur un
-  // ordinateur sans `navigator.share` ni presse-papiers autorisé, le bouton
-  // n'avait aucun effet visible du tout.
-  const suite = afficherResume(texte);
+  const resume = resumeDeLaCollection(ctx);
+  const suite = afficherResume(resume);
   try {
     if (navigator.share) {
-      await navigator.share({ text: texte });
+      await navigator.share({ text: resume.texte });
       suite(t("Partagé."));
       return;
     }
-    await navigator.clipboard.writeText(texte);
+    await navigator.clipboard.writeText(resume.texte);
     suite(t("Copié dans le presse-papiers."));
   } catch (error) {
     // Fermer le menu de partage lève un `AbortError` : ce n'est pas un échec,
@@ -254,21 +258,26 @@ async function partagerResume(ctx) {
   }
 }
 
-/**
- * Pose le bandeau du résumé et rend de quoi en changer la dernière ligne.
- *
- * Le texte reste sélectionnable, et c'est le point : quand ni le partage ni le
- * presse-papiers ne sont disponibles — navigateur ancien, page hors contexte
- * sécurisé —, l'attraper à la main reste possible. Un message d'échec seul
- * aurait laissé l'utilisateur sans rien.
- */
-function afficherResume(texte) {
+/** Pose le bandeau et rend de quoi en changer la dernière ligne. */
+function afficherResume(resume) {
   document.querySelector(".resume-bandeau")?.remove();
-  const suite = el("span.resume-bandeau__suite");
+  const suite = el("span.bandeau__suite");
+
   const bandeau = el(
     "div.resume-bandeau",
     { role: "status", "aria-live": "polite" },
-    el("span.resume-bandeau__texte", texte),
+    el("span.bandeau__titre", t("Ma collection")),
+    el("p.resume__pct", String(resume.pct), el("span", "%")),
+    el(
+      "div.resume__lignes",
+      resume.lignes.flatMap((l) => [
+        el("span.resume__cle", l.cle),
+        el("span.resume__valeur", l.valeur),
+      ])
+    ),
+    resume.retard.length
+      ? el("p.resume__reste", `${t("Reste à faire")} : ${resume.retard.join(" · ")}`)
+      : null,
     suite
   );
   document.body.append(bandeau);
