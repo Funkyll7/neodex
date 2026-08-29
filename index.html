@@ -136,16 +136,25 @@
            qui affiche l'action se lit dans les deux sens, et on ne sait plus
            lequel est vrai. -->
       <div class="brand__reglages">
-        <button type="button" id="sound-toggle" class="icon-btn"
-                title="Sons activés — cliquer pour les couper"
-                aria-label="Sons activés — cliquer pour les couper"
-                aria-pressed="true">♪</button>
-        <button type="button" id="lang-toggle" class="icon-btn icon-btn--lang"
-                title="Langue : Français — cliquer pour l'anglais"
-                aria-label="Langue : Français — cliquer pour l'anglais">FR</button>
-        <button type="button" id="theme-toggle" class="icon-btn"
-                aria-expanded="false" aria-controls="theme-picker"
-                title="Changer de thème" aria-label="Changer de thème"><span class="theme-wheel" aria-hidden="true"></span></button>
+        <span class="reglage">
+          <button type="button" id="sound-toggle" class="icon-btn"
+                  title="Sons activés — cliquer pour les couper"
+                  aria-label="Sons activés — cliquer pour les couper"
+                  aria-pressed="true">♪</button>
+          <span class="reglage__mot" aria-hidden="true">Sons</span>
+        </span>
+        <span class="reglage">
+          <button type="button" id="lang-toggle" class="icon-btn icon-btn--lang"
+                  title="Langue : Français — cliquer pour l'anglais"
+                  aria-label="Langue : Français — cliquer pour l'anglais">FR</button>
+          <span class="reglage__mot" aria-hidden="true">Langue</span>
+        </span>
+        <span class="reglage">
+          <button type="button" id="theme-toggle" class="icon-btn"
+                  aria-expanded="false" aria-controls="theme-picker"
+                  title="Changer de thème" aria-label="Changer de thème"><span class="theme-wheel" aria-hidden="true"></span></button>
+          <span class="reglage__mot" aria-hidden="true">Thèmes</span>
+        </span>
       </div>
     </div>
 
@@ -204,8 +213,17 @@
           <label class="field__label" for="filter-form">Forme</label>
           <select id="filter-form" class="select"></select>
         </p>
+        <!-- Le logo du jeu choisi, à côté de l'étiquette. Il ne peut pas aller
+             DANS le menu : un `option` n'accepte ni image ni SVG, aucun
+             navigateur ne le rend, et remplacer le `select` natif par une liste
+             sur mesure aurait coûté la navigation au clavier, la recherche par
+             frappe et le sélecteur natif du téléphone — bien meilleur que ce
+             qu'on écrirait. À côté, il dit la même chose sans rien coûter. -->
         <p class="field" id="field-game">
-          <label class="field__label" for="filter-game">Disponible dans</label>
+          <span class="field__tete">
+            <label class="field__label" for="filter-game">Disponible dans</label>
+            <span id="game-logo" class="field__logo" aria-hidden="true"></span>
+          </span>
           <select id="filter-game" class="select"></select>
         </p>
         <p class="field" id="field-sort">

@@ -83,6 +83,24 @@ export const GO_FILTERS = [
   { value: "absent", label: "Pas dans GO" },
 ];
 
+
+/**
+ * Les types d'une boîte du Pokédex GO.
+ *
+ * Ceux de la FORME quand il y en a une, ceux de l'espèce sinon. Le filtre se
+ * fondait sur l'espèce seule : Sulfura de Galar ressortait donc sous « Feu »
+ * alors qu'il est Ténèbres / Vol, et le Miaouss d'Alola sous « Normal » alors
+ * qu'il est Acier. Une forme régionale change souvent de types — c'est même une
+ * bonne part de son intérêt.
+ *
+ * Les variantes cosmétiques n'ont pas de types propres : un Pikachu à casquette
+ * reste Électrik. Elles n'ont pas de `form`, elles retombent donc sur l'espèce,
+ * ce qui est exact.
+ */
+function typesDeLaBoite(entry) {
+  return (entry.form && entry.form.types) || entry.species.types;
+}
+
 /**
  * Meme grammaire de recherche que le Pokedex HOME — numero exact ou debut de
  * numero, sinon `species.search` — mais sur les BOITES de GO : les especes et
@@ -100,12 +118,12 @@ export function applyGoFilters(entries, state, collection) {
   // etaient dans le meme cas.
   const query = sansAccents((state.goSearch || "").trim().toLowerCase());
   const number = numberQuery(query);
-  const combinaison = combinaisonDeTypes(query, entries, (e) => e.species);
+  const combinaison = combinaisonDeTypes(query, entries, (e) => ({ types: typesDeLaBoite(e) }));
 
   const list = entries.filter((e) => {
     const p = e.species;
     if (query && !matches(p, query, number, combinaison)) return false;
-    if (state.goType !== "all" && !p.types.includes(state.goType)) return false;
+    if (state.goType !== "all" && !typesDeLaBoite(e).includes(state.goType)) return false;
     if (state.goGen !== "all" && String(p.gen) !== state.goGen) return false;
     switch (state.goStatus) {
       // « A attraper » ne propose que ce qui EST attrapable : les 73 especes

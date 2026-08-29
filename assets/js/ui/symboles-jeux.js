@@ -134,30 +134,65 @@ export function symboleJeu(code, taille = 14) {
  * Le gestionnaire `fetch` les range à la première visite qui les affiche.
  */
 const LOGOS = {
-  rb: "pokemon-red",
-  y: "pokemon-yellow",
-  gs: "pokemon-gold",
-  c: "pokemon-crystal",
-  rs: "pokemon-rubis",
-  e: "pokemon-emerald",
-  frlg: "pokemon-fire-red",
-  col: "pokemon-colosseum",
-  dp: "pokemon-diamond",
-  pt: "pokemon-platinum",
-  hgss: "pokemon-heartgold",
-  bw: "pokemon-black",
-  b2w2: "pokemon-black2",
-  xy: "pokemon-x",
-  oras: "pokemon-omegarubis",
-  sm: "pokemon-sun",
-  usum: "pokemon-ultrasun",
-  lgpe: "pokemon-letsgopikachu",
-  swsh: "pokemon-sword",
-  bdsp: "pokemon-brilliantdiamond",
-  pla: "pokemon-arceus",
-  sv: "pokemon-scarlet",
-  za: "pokemon-za",
+  rb: ["pokemon-red", "pokemon-blue"],
+  y: ["pokemon-yellow"],
+  gs: ["pokemon-gold", "pokemon-silver"],
+  c: ["pokemon-crystal"],
+  rs: ["pokemon-rubis", "pokemon-sapphire"],
+  e: ["pokemon-emerald"],
+  frlg: ["pokemon-fire-red", "pokemon-leaf-green"],
+  col: ["pokemon-colosseum", "pokemon-xd"],
+  dp: ["pokemon-diamond", "pokemon-perl"],
+  pt: ["pokemon-platinum"],
+  hgss: ["pokemon-heartgold", "pokemon-soulsilver"],
+  bw: ["pokemon-black", "pokemon-white"],
+  b2w2: ["pokemon-black2", "pokemon-white2"],
+  xy: ["pokemon-x", "pokemon-y"],
+  oras: ["pokemon-omegarubis", "pokemon-alphasapphire"],
+  sm: ["pokemon-sun", "pokemon-moon"],
+  usum: ["pokemon-ultrasun", "pokemon-ultramoon"],
+  lgpe: ["pokemon-letsgopikachu", "pokemon-letsgoevoli"],
+  swsh: ["pokemon-sword", "pokemon-shield"],
+  bdsp: ["pokemon-brilliantdiamond", "pokemon-shiningpearl"],
+  pla: ["pokemon-arceus"],
+  sv: ["pokemon-scarlet", "pokemon-violet"],
+  za: ["pokemon-za"],
 };
+
+/** Une image de logo, prête à poser. */
+function imageLogo(fichier, taille) {
+  const img = document.createElement("img");
+  img.src = `assets/img/jeux/${fichier}.png`;
+  img.width = taille;
+  img.height = taille;
+  img.className = "sym-jeu sym-jeu--logo";
+  img.loading = "lazy";
+  img.decoding = "async";
+  // Décoratif : le nom du jeu est écrit juste à côté, le faire lire deux fois
+  // n'apprendrait rien.
+  img.alt = "";
+  return img;
+}
+
+/**
+ * Les DEUX logos d'un couple de versions, côte à côte.
+ *
+ * « Ultra-Soleil / Ultra-Lune » est un couple, et n'en montrer qu'un revenait à
+ * n'en nommer qu'un. Là où la place le permet — le bandeau de quête, le journal
+ * — on montre les deux ; ailleurs, à vingt pixels dans un tableau de vingt-trois
+ * lignes, `embleme()` n'en met qu'un.
+ *
+ * Rend `null` si le jeu n'a aucun logo, pour que l'appelant n'ait rien à
+ * vérifier.
+ */
+export function emblemePaire(code, taille = 34) {
+  const fichiers = LOGOS[code];
+  if (!fichiers) return null;
+  const boite = document.createElement("span");
+  boite.className = "sym-paire";
+  for (const f of fichiers) boite.appendChild(imageLogo(f, taille));
+  return boite;
+}
 
 /**
  * L'emblème d'un jeu : son logo quand il existe, le dessin sinon.
@@ -170,19 +205,7 @@ const LOGOS = {
  * coup, dont on ne voit que quelques-uns avant de faire défiler.
  */
 export function embleme(code, taille = 15) {
-  const fichier = LOGOS[code];
-  if (fichier) {
-    const img = document.createElement("img");
-    img.src = `assets/img/jeux/${fichier}.png`;
-    img.width = taille;
-    img.height = taille;
-    img.className = "sym-jeu sym-jeu--logo";
-    img.loading = "lazy";
-    img.decoding = "async";
-    // Décoratif : le nom du jeu est écrit juste à côté, le faire lire deux fois
-    // n'apprendrait rien.
-    img.alt = "";
-    return img;
-  }
+  const fichiers = LOGOS[code];
+  if (fichiers) return imageLogo(fichiers[0], taille);
   return symboleJeu(code, taille);
 }

@@ -8,10 +8,20 @@
 /* Deux lignes : le nom, puis les reglages. Sur une seule, la barre laterale
    de 268 px ne tenait pas trois boutons — le dernier sortait du conteneur et
    passait sous le panneau principal. */
-.brand { display: flex; flex-direction: column; gap: 9px; }
-.brand__ligne { display: flex; align-items: center; gap: 11px; }
-/* Alignes a gauche, sous le nom : c est la ou l oeil revient. */
-.brand__reglages { display: flex; align-items: center; gap: 8px; }
+.brand { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.brand__ligne { display: flex; align-items: center; justify-content: center; gap: 11px; position: relative; }
+/* Centres sous le nom, et chacun sous son mot : trois pastilles nues se
+   ressemblent trop pour qu on retienne laquelle fait quoi, et un titre ne se
+   lit qu au survol — ce qui n existe pas sur un telephone. */
+.brand__reglages { display: flex; align-items: flex-start; justify-content: center; gap: var(--sp-3); }
+.reglage { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.reglage__mot {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
 /* La Poké Ball du logo, en SVG. Elle portait un dégradé bicolore dessiné en
    CSS : une approximation, sans la bande noire ni le bouton central, là où le
    site a déjà son vrai logo — celui du favicon et de l'icône installée.
@@ -338,16 +348,34 @@
    n'est pas obtenue, en couleur ensuite — deux fichiers, on ne recolore pas
    du gris vers du magenta. La place est réservée même sans étoile, pour que
    la pastille reste au même endroit d'une vignette à l'autre. */
+/* L'emblème Gigamax, dans le coin de la vignette.
+
+   Un liseré noir le détache du fond. Il est rose vif sur un fond sombre teinté
+   par le type, et à quinze pixels il s'y fondait — surtout sur les types
+   rouges, roses et violets, où le contraste tombait presque à rien.
+
+   Quatre `drop-shadow` décalés d'un pixel plutôt qu'un `outline` : celui-ci
+   suivrait la BOÎTE carrée, alors qu'un `drop-shadow` suit la SILHOUETTE de
+   l'image. Le contour épouse donc le dessin, ce qui est le seul rendu qui ait
+   l'air voulu. */
 .card__gmax {
   position: absolute; top: 15px; right: 0;
   width: 15px; height: 15px;
   background: url("../img/gigamax-nb.png") center / contain no-repeat;
   opacity: .45;
+  filter:
+    drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000)
+    drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000);
 }
 .card__gmax--on {
   background-image: url("../img/gigamax.png");
   opacity: 1;
-  filter: drop-shadow(0 0 5px rgba(224, 21, 95, .5));
+  /* Le contour d'abord, la lueur ensuite : dans l'autre ordre, le halo rose
+     serait lui aussi cerné de noir. */
+  filter:
+    drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000)
+    drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000)
+    drop-shadow(0 0 5px rgba(224, 21, 95, .5));
 }
 
 .card__name {
@@ -2540,28 +2568,77 @@
    pas et encombrait une phrase. Un logo sert à dire de quel jeu il s'agit sans
    qu'on ait à le lire — encore faut-il lui en laisser la place. */
 .quest__logo {
-  margin-left: auto;
+  /* Pas de `margin-left: auto` : pousses tout au bord, les logos laissaient un
+     vide au milieu du bandeau. Ils suivent le texte, a une bonne distance. */
   flex: 0 0 auto;
-  width: 72px;
-  height: 72px;
-  border-radius: 10px;
+  align-self: center;
   /* Le bandeau est teinté par les types : un liseré clair détache le logo du
      fond sans l'assombrir, quelle que soit la couleur derrière. */
+}
+.quest__logo img {
+  border-radius: 10px;
+  /* Le bandeau est teinte par les types : un lisere clair detache les logos du
+     fond sans les assombrir, quelle que soit la couleur derriere. */
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .22), 0 4px 14px rgba(0, 0, 0, .3);
 }
 /* Sur téléphone la ligne passe en colonne : le logo garde sa place à droite
    plutôt que de partir seul sur une ligne à lui. */
 @media (max-width: 560px) {
-  .quest__logo { width: 52px; height: 52px; }
+  .quest__logo img { width: 44px; height: 44px; }
 }
 
 /* Le logo du jeu, au bout de la ligne du journal. Devant le nom, à seize
    pixels, il se confondait avec la ponctuation. */
 .log__logo {
   flex: 0 0 auto;
-  width: 34px;
-  height: 34px;
-  border-radius: 7px;
+  align-self: center;
   margin-left: 10px;
   opacity: .95;
+}
+.log__logo img { border-radius: 7px; }
+
+/* L'étiquette du filtre par jeu, et le logo du jeu choisi à côté d'elle.
+   Le logo ne peut pas aller DANS le menu — un `option` n'accepte ni image ni
+   SVG — et remplacer le `select` natif aurait coûté la navigation au clavier et
+   le sélecteur du téléphone. À côté, il dit la même chose sans rien coûter. */
+.field__tete {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 22px;
+}
+.field__logo {
+  display: inline-flex;
+  align-items: center;
+}
+.field__logo img { border-radius: 4px; }
+
+/* Les deux versions d'un couple, côte à côte et centrées. « Ultra-Soleil /
+   Ultra-Lune » est un couple : n'en montrer qu'un revenait à n'en nommer qu'un. */
+.sym-paire {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.sym-paire img { margin-right: 0; }
+
+/* Oublier une prise du journal. Discret au repos, franc au survol : c'est une
+   action rare, qui ne doit pas attirer l'œil à chaque ligne. */
+.log__oubli {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  margin-left: 6px;
+  padding: 2px 5px;
+  border: 0;
+  background: none;
+  color: var(--text-ghost);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: var(--r-sm, 6px);
+}
+@media (hover: hover) {
+  .log__oubli:hover { color: var(--danger); background: var(--bg-hover); }
 }

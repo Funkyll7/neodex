@@ -18,7 +18,7 @@ import { nomEspece, t, tn } from "../core/i18n.js";
 import { oddsValue } from "../domain/hunt.js";
 import { progressOf } from "../domain/progress.js";
 import { jouer } from "./sons.js";
-import { embleme } from "./symboles-jeux.js";
+import { embleme, emblemePaire } from "./symboles-jeux.js";
 import {
   chassesOuvertes,
   chanceCumulee,
@@ -183,6 +183,22 @@ export function createQuest(ctx) {
     if (note) note.textContent = m.note;
   }
 
+  /**
+   * Retire une entrée du journal.
+   *
+   * Le journal n'est qu'une trace : il ne coche rien, et l'oublier ne DÉCOCHE
+   * pas le chromatique — la case reste dans la collection, seule la ligne
+   * disparaît. C'est ce qui rend le geste sans danger, et ce que dit son
+   * libellé : « oublier », pas « supprimer ».
+   *
+   * L'index et non l'espèce : on peut avoir chassé deux fois le même Pokémon,
+   * et retirer la mauvaise ligne serait plus agaçant que de ne pas pouvoir.
+   */
+  function oublierDuJournal(index) {
+    ctx.store.set((s) => ({ questLog: s.questLog.filter((_, i) => i !== index) }));
+    jouer("annuler");
+  }
+
   /** Redessine la carte seule, sans toucher au reste de l'onglet. */
   function dessiner() {
     const { quest } = ctx.store.state;
@@ -199,7 +215,7 @@ export function createQuest(ctx) {
     render() {
       const state = ctx.store.state;
       renderStats(statsRoot, ctx);
-      renderLog(logRoot, state.questLog, ctx);
+      renderLog(logRoot, state.questLog, ctx, oublierDuJournal);
       dessiner();
     },
   };
@@ -359,7 +375,7 @@ function nomJournal(entree, ctx) {
 
 /* ------------------------------- journal --------------------------------- */
 
-function renderLog(root, entries, ctx) {
+function renderLog(root, entries, ctx, oublier) {
   if (!entries.length) {
     fill(
       root,
@@ -376,7 +392,7 @@ function renderLog(root, entries, ctx) {
     root,
     el(
       "div.log",
-      entries.map((entry) => {
+      entries.map((entry, index) => {
         // Par le code quand il est la, par le nom pour les entrees d avant.
         const jeu =
           (entry.code && ctx.dataset.gamesByCode.get(entry.code)) ||
@@ -393,10 +409,17 @@ function renderLog(root, entries, ctx) {
           // d'avant le compteur : on n'affiche alors rien plutôt qu'un zéro,
           // qui aurait laissé croire à une chance insolente.
           entry.rencontres ? el("span.log__n", String(entry.rencontres)) : null,
-          // Le logo à DROITE et plus grand, comme dans le bandeau de la quête.
-          // Devant le nom du jeu, à seize pixels, il se confondait avec la
-          // ponctuation de la ligne.
-          logoDuJournal(jeu)
+          // Les logos du jeu, à droite et en grand.
+          logoDuJournal(jeu),
+          // Oublier la ligne. Elle ne DÉCOCHE rien : le chromatique reste dans
+          // la collection, c'est la trace qui disparaît. D'où « oublier » et
+          // non « supprimer » — le mot dit ce que le geste fait vraiment.
+          el("button.log__oubli", {
+            type: "button",
+            title: t("Oublier cette prise du journal"),
+            "aria-label": `${t("Oublier cette prise du journal")} — ${nomJournal(entry, ctx)}`,
+            onclick: () => oublier(index),
+          }, "✕")
         );
       })
     )
@@ -516,23 +539,26 @@ function renderStats(root, ctx) {
 /**
  * Le logo d'un jeu, en grand, pour le bandeau de la quête.
  *
+ * LES DEUX versions du couple : « Ultra-Soleil / Ultra-Lune » est un couple, et
+ * n'en montrer qu'un revenait à n'en nommer qu'un. Ici la place le permet ;
+ * dans le tableau de disponibilité, à vingt pixels sur vingt-trois lignes, on
+ * n'en garde qu'un.
+ *
  * `null` quand le jeu n'a pas de logo : le bandeau se referme alors sur le
- * sprite et le nom, sans trou. `embleme()` retomberait sur le dessin, mais un
- * emblème monochrome de soixante-douze pixels sur un fond coloré ne dirait rien
- * — mieux vaut ne rien montrer.
+ * sprite et le nom, sans trou.
  */
 function logoDuJeu(game) {
-  const img = embleme(game.code, 72);
-  if (!img || img.tagName !== "IMG") return null;
-  img.classList.add("quest__logo");
-  return img;
+  const boite = emblemePaire(game.code, 60);
+  if (!boite) return null;
+  boite.classList.add("quest__logo");
+  return boite;
 }
 
-/** Le logo d'un jeu pour une ligne du journal. `null` s'il n'en a pas. */
+/** Les logos d'un jeu pour une ligne du journal. `null` s'il n'en a pas. */
 function logoDuJournal(jeu) {
   if (!jeu) return null;
-  const img = embleme(jeu.code, 34);
-  if (!img || img.tagName !== "IMG") return null;
-  img.classList.add("log__logo");
-  return img;
+  const boite = emblemePaire(jeu.code, 30);
+  if (!boite) return null;
+  boite.classList.add("log__logo");
+  return boite;
 }

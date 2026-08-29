@@ -10,6 +10,7 @@ import { STATUS_FILTERS, FORM_FILTERS, GO_FILTERS } from "../domain/filters.js";
 // l'import : les traduire la aurait fige la langue du premier chargement. On
 // les traduit donc a l'affichage, ou la langue courante est connue.
 import { t, nomType } from "../core/i18n.js";
+import { embleme } from "./symboles-jeux.js";
 
 export function createSidebar(ctx) {
   const { dataset, store } = ctx;
@@ -21,6 +22,7 @@ export function createSidebar(ctx) {
   const genSelect = document.getElementById("filter-gen");
   const formSelect = document.getElementById("filter-form");
   const gameSelect = document.getElementById("filter-game");
+  const gameLogo = document.getElementById("game-logo");
   const sortSelect = document.getElementById("filter-sort");
   const typeSelect = document.getElementById("filter-type");
   const searchInput = document.getElementById("search");
@@ -174,6 +176,25 @@ export function createSidebar(ctx) {
     out.resume.textContent = go ? "Détail" : "Détail par forme";
   }
 
+
+  /**
+   * Le logo du jeu choisi, à côté de l'étiquette du menu.
+   *
+   * Vide quand aucun jeu n'est filtré : une place réservée en permanence aurait
+   * décalé l'étiquette pour rien, et un logo générique n'aurait rien dit.
+   */
+  function peindreLogoDuJeu() {
+    if (!gameLogo) return;
+    const code = store.state.game;
+    if (!code || code === "all") {
+      gameLogo.replaceChildren();
+      return;
+    }
+    const img = embleme(code, 22);
+    if (img) fill(gameLogo, img);
+    else gameLogo.replaceChildren();
+  }
+
   /**
    * Remet les controles en accord avec l'etat, sans rien recalculer.
    *
@@ -187,6 +208,7 @@ export function createSidebar(ctx) {
     genSelect.value = surGo() ? store.state.goGen : store.state.gen;
     formSelect.value = store.state.form;
     gameSelect.value = store.state.game;
+    peindreLogoDuJeu();
     sortSelect.value = store.state.sort;
     typeSelect.value = store.state.type;
 
