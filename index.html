@@ -149,6 +149,16 @@
       <div class="bar" role="progressbar" aria-labelledby="stat-pct" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
         <div class="bar__fill" id="progress-fill"></div>
       </div>
+      <!-- La même progression, redécoupée : une tranche par génération, large
+           en proportion des cases qu'elle réclame. La surface remplie de la
+           bande vaut donc exactement le grand chiffre au-dessus — elle ne dit
+           rien de plus, elle dit la même chose répartie.
+
+           Posée SOUS la barre et non à sa place : `role="progressbar"` est
+           « children presentational » en ARIA, des boutons placés dedans
+           auraient été invisibles aux lecteurs d'écran. L'aria-label vient du
+           JavaScript, le conteneur étant dans ZONES_DYNAMIQUES. -->
+      <div id="progress-segments" class="segbar" role="group"></div>
       <!-- Repliable, et fermé par défaut : ces dix barres repoussaient
            « Statut » à 666 px du haut, soit hors de portée immédiate. L'état
            est retenu d'une visite à l'autre. -->

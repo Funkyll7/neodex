@@ -2251,3 +2251,52 @@
     to   { opacity: 1; transform: translate(-50%, 0); }
   }
 }
+
+/* ------------------ La progression, redécoupée par génération ------------- */
+/* Une bande de tranches sous la barre totale. Elles disent la même chose : la
+   surface remplie de la bande vaut exactement le pourcentage écrit au-dessus. */
+.segbar {
+  display: flex;
+  gap: 2px;
+  margin-top: 6px;
+}
+.segbar[hidden] { display: none; }
+.seg {
+  /* La largeur vient du POIDS de la génération en cases, posé par le JS. Les
+     tranches n'ont donc pas la même taille, et c'est exact : Kanto réclame
+     bien plus de cases que ses 151 espèces ne le laissent croire. */
+  flex: var(--poids, 1) 1 0;
+  min-width: 0;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: var(--bg-inset);
+  cursor: pointer;
+  overflow: hidden;
+  /* Une cible de 10 px de haut se rate au pouce. La zone tactile est étendue
+     au-dessus et en dessous sans toucher à la mise en page. */
+  position: relative;
+}
+.seg::after {
+  content: "";
+  position: absolute;
+  inset: -7px 0;
+}
+.seg__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+}
+.seg[aria-pressed="true"] {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+@media (hover: hover) {
+  .seg:hover { background: var(--bg-hover); }
+  .seg:hover .seg__fill { background: var(--gold); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .seg__fill { transition: width .25s ease-out, background .12s; }
+}
