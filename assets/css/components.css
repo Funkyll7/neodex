@@ -2521,3 +2521,10 @@
   gap: 2px;
   min-width: 0;
 }
+
+/* Le logo d'un jeu. Carré, contenu dans sa boîte, et jamais déformé : les
+   fichiers sont carrés mais un logo à venir pourrait ne pas l'être. */
+.sym-jeu--logo {
+  object-fit: contain;
+  border-radius: 3px;
+}

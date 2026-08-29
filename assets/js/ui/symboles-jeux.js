@@ -120,3 +120,73 @@ export function symboleJeu(code, taille = 14) {
 export function codesAvecSymbole() {
   return Object.keys(SYMBOLES);
 }
+
+/**
+ * Le logo officiel de chaque jeu, fourni par l'auteur du site.
+ *
+ * Une VERSION par jeu, la première du couple : « Rouge » pour Rouge / Bleu,
+ * « Épée » pour Épée / Bouclier. Montrer les deux aurait demandé deux fois la
+ * place, pour une différence qu'on ne distingue pas à quinze pixels.
+ *
+ * Les fichiers sont ramenés à 96 px de côté : ils faisaient 500 px et pesaient
+ * 2,8 Mo à eux tous, pour être affichés entre 16 et 26 px. À 96 ils couvrent
+ * encore le triple de la taille d'affichage, donc les écrans très denses, et le
+ * lot tient en 1,2 Mo.
+ *
+ * Ils ne sont PAS pré-cachés : le service worker ne précharge que la coquille,
+ * et un mégaoctet d'images à l'installation aurait coûté plus qu'il ne rapporte.
+ * Le gestionnaire `fetch` les range à la première visite qui les affiche.
+ */
+const LOGOS = {
+  rb: "pokemon-red",
+  y: "pokemon-yellow",
+  gs: "pokemon-gold",
+  c: "pokemon-crystal",
+  rs: "pokemon-rubis",
+  e: "pokemon-emerald",
+  frlg: "pokemon-fire-red",
+  col: "pokemon-colosseum",
+  dp: "pokemon-diamond",
+  pt: "pokemon-platinum",
+  hgss: "pokemon-heartgold",
+  bw: "pokemon-black",
+  b2w2: "pokemon-black2",
+  xy: "pokemon-x",
+  oras: "pokemon-omegarubis",
+  sm: "pokemon-sun",
+  usum: "pokemon-ultrasun",
+  lgpe: "pokemon-letsgopikachu",
+  swsh: "pokemon-sword",
+  bdsp: "pokemon-brilliantdiamond",
+  pla: "pokemon-arceus",
+  sv: "pokemon-scarlet",
+  za: "pokemon-za",
+};
+
+/**
+ * L'emblème d'un jeu : son logo quand il existe, le dessin sinon.
+ *
+ * Le repli n'est pas décoratif. Un jeu ajouté aux données sans son fichier
+ * garderait un emblème lisible au lieu d'un carré vide, et les vingt-trois
+ * dessins restent la seule chose qui suive la couleur du thème.
+ *
+ * `loading="lazy"` : le tableau de disponibilité en aligne vingt-trois d'un
+ * coup, dont on ne voit que quelques-uns avant de faire défiler.
+ */
+export function embleme(code, taille = 15) {
+  const fichier = LOGOS[code];
+  if (fichier) {
+    const img = document.createElement("img");
+    img.src = `assets/img/jeux/${fichier}.png`;
+    img.width = taille;
+    img.height = taille;
+    img.className = "sym-jeu sym-jeu--logo";
+    img.loading = "lazy";
+    img.decoding = "async";
+    // Décoratif : le nom du jeu est écrit juste à côté, le faire lire deux fois
+    // n'apprendrait rien.
+    img.alt = "";
+    return img;
+  }
+  return symboleJeu(code, taille);
+}

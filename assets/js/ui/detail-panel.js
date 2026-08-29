@@ -22,7 +22,7 @@ import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
 import { nomEspece, nomCategorie, nomForme, enAnglais, t, tn } from "../core/i18n.js";
-import { symboleJeu } from "./symboles-jeux.js";
+import { embleme } from "./symboles-jeux.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
@@ -1110,7 +1110,7 @@ function availabilitySection(species, { dataset }) {
             "div.games__ident",
             // L'emblème du jeu devant son nom : dans un tableau de vingt-trois
             // lignes, la forme se repère bien plus vite que le texte.
-            symboleJeu(row.game.code, 15),
+            embleme(row.game.code, 20),
             el(
               "div",
               el("div.games__name", t(row.game.name)),

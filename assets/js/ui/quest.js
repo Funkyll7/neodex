@@ -18,7 +18,7 @@ import { nomEspece, t, tn } from "../core/i18n.js";
 import { oddsValue } from "../domain/hunt.js";
 import { progressOf } from "../domain/progress.js";
 import { jouer } from "./sons.js";
-import { symboleJeu } from "./symboles-jeux.js";
+import { embleme } from "./symboles-jeux.js";
 import {
   chassesOuvertes,
   chanceCumulee,
@@ -235,7 +235,7 @@ function questBody(species, game, ctx, complete, chasse, compter) {
           // L'emblème du jeu avant son nom. `.filter(Boolean)` parce qu'un code
           // sans symbole rend `null` : le jeu s'affiche alors sans emblème au
           // lieu de casser la ligne.
-          [`${t("dans")} `, symboleJeu(game.code, 15), el("strong", t(game.name))].filter(Boolean)
+          [`${t("dans")} `, embleme(game.code, 26), el("strong", t(game.name))].filter(Boolean)
         ),
         el(
           "div.detail__chips",
@@ -389,7 +389,7 @@ function renderLog(root, entries, ctx) {
             el(
               "div.log__meta",
               [
-                jeu ? symboleJeu(jeu.code, 13) : null,
+                jeu ? embleme(jeu.code, 16) : null,
                 `${t(entry.game)} · ${entry.method}`,
               ].filter(Boolean)
             )
