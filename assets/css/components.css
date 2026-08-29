@@ -2357,8 +2357,7 @@
 /* Le bandeau de déverrouillage. Même place et même durée que celui d'« Annuler »,
    dont il reprend la logique : bas de l'écran, il s'efface tout seul. */
 /* ------------------------- Les bandeaux flottants ------------------------- */
-/* Un succès débloqué, un résumé de collection. Deux contenus, une seule mise
-   en forme.
+/* Un succès débloqué.
 
    Une CARTE et non une pastille. La pastille — `border-radius: pill` — allait
    pour une phrase d'une ligne, celle d'« Annuler ». Passé à quatre lignes elle
@@ -2369,8 +2368,7 @@
    d'un thème à l'autre : illisible chez certains, et impossible à garantir chez
    les trente-huit. La couleur du thème passe désormais par le seul filet de
    gauche, où elle ne gêne aucune lecture. */
-.succes-bandeau,
-.resume-bandeau {
+.succes-bandeau {
   position: fixed;
   left: 50%; bottom: 18px;
   transform: translateX(-50%);
@@ -2401,44 +2399,84 @@
   color: var(--text-faint);
 }
 
-/* Le résumé, en lignes étiquette / valeur.
-   Une grille à deux colonnes plutôt qu'un bloc de texte : les valeurs
-   s'alignent, et « 30 / 102 paires ♂ / ♀ » ne se coupe plus n'importe où —
-   c'était le cas dans le bloc, où la fin partait seule à la ligne suivante. */
-.resume__lignes {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 3px 12px;
-  font-size: 12.5px;
-}
-.resume__cle { color: var(--text-muted); }
-.resume__valeur {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  /* Les symboles ♂ / ♀ et les nombres ne se coupent pas en deux. */
-  white-space: nowrap;
-}
-/* Le grand chiffre, comme dans la barre latérale : c'est ce qu'on lit d'abord. */
-.resume__pct {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--gold);
-}
-.resume__pct span { font-size: 12px; margin-left: 2px; }
-.resume__reste {
-  font-size: 11.5px;
-  color: var(--text-soft);
-  /* Celle-ci a le droit de passer à la ligne : c'est une énumération. */
-  white-space: normal;
-}
 @media (prefers-reduced-motion: no-preference) {
-  .succes-bandeau,
-  .resume-bandeau { animation: bandeau-entree .35s ease-out 1; }
+  .succes-bandeau { animation: bandeau-entree .35s ease-out 1; }
   @keyframes bandeau-entree {
     from { opacity: 0; transform: translate(-50%, 12px); }
     to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+}
+
+/* ------------------------- La carte de collection ------------------------- */
+
+/* Le panneau qui montre la carte avant de la partager.
+
+   Le fond est OPAQUE à 82 % et flouté : la carte reprend les couleurs du thème,
+   donc elle se pose sur un fond qui lui ressemble. Sans cet écran, ses bords se
+   confondaient avec la page — on ne voyait plus où finissait l'image. */
+.carte-fond {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(0, 0, 0, .82);
+  backdrop-filter: blur(6px);
+}
+.carte-boite {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  align-items: center;
+  max-height: 100%;
+  /* La carte fait 1080 de large. On la borne à la place réellement disponible,
+     jamais à sa taille propre : sur un téléphone en portrait, c'est la HAUTEUR
+     qui manque en premier — d'où les deux bornes plutôt qu'une. */
+  max-width: min(100%, 460px);
+}
+/* Deux bornes, aucune taille imposée.
+
+   `width: 100%` était l'erreur : c'est une largeur DÉFINIE, que `max-height` ne
+   peut plus réduire. Sur une fenêtre basse, la boîte gardait ses 460 pixels de
+   large en n'en faisant plus que 175 de haut, et `object-fit: contain` rangeait
+   la carte au milieu entre deux bandes vides.
+
+   Avec `max-width` et `max-height` seuls, l'image part de sa taille propre —
+   1080 × 1350, portée par les attributs `width`/`height` du <img>, donc connue
+   avant même le décodage du blob — et se réduit jusqu'à tenir dans les deux.
+   Le rapport se conserve tout seul, et il n'y a plus rien à letterboxer. */
+.carte__image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 170px);
+  border-radius: var(--r-md);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .6);
+}
+.carte__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  justify-content: center;
+}
+.carte__actions .btn { min-width: 104px; }
+/* La ligne d'état : vide la plupart du temps, elle ne doit pas réserver de
+   place et faire sauter les boutons quand elle se remplit. */
+.carte__etat:empty { display: none; }
+.carte__etat {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-soft);
+  text-align: center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .carte-boite { animation: carte-entree .28s ease-out 1; }
+  @keyframes carte-entree {
+    from { opacity: 0; transform: scale(.96); }
+    to   { opacity: 1; transform: scale(1); }
   }
 }
 

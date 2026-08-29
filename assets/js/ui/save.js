@@ -10,10 +10,9 @@
 
 import { deuxPoints, t, tn } from "../core/i18n.js";
 import { resumeDuRapport } from "../domain/sync.js";
-import { progressOf } from "../domain/progress.js";
 import { downloadJson } from "./common.js";
-import { el } from "../core/dom.js";
 import { jouer } from "./sons.js";
+import { ouvrirCartePartage } from "./carte-partage.js";
 
 export function createSaveControls(ctx) {
   const note = document.getElementById("dirty-note");
@@ -26,10 +25,13 @@ export function createSaveControls(ctx) {
 
   document.getElementById("import-btn").addEventListener("click", () => fileInput.click());
 
-  // Le partage doit partir du geste lui-meme : `navigator.share` refuse tout
-  // appel qui ne descend pas directement d'un clic.
+  // Le partage ne part PLUS du geste lui-même, et c'est voulu. `navigator.share`
+  // refuse tout appel qui ne descend pas directement d'un clic — l'ancien code
+  // devait donc partager à l'aveugle, sans jamais montrer ce qu'il envoyait. Ce
+  // clic-ci ne fait qu'ouvrir le panneau ; le partage système est déclenché par
+  // le bouton qui s'y trouve, qui est lui aussi un vrai clic.
   document.getElementById("summary-btn").addEventListener("click", () => {
-    partagerResume(ctx);
+    ouvrirCartePartage(ctx);
   });
 
   fileInput.addEventListener("change", async () => {
@@ -240,110 +242,3 @@ function createSyncControls(ctx) {
   return { render };
 }
 
-/**
- * Le résumé : ce qu'on AFFICHE, et ce qu'on PARTAGE.
- *
- * Les deux ne peuvent pas être la même chose. Le texte partagé doit tenir dans
- * un message, donc être plat ; l'affichage doit se lire d'un coup d'œil, donc
- * être aligné. Un seul bloc de texte servant aux deux donnait ce qu'on a vu :
- * quatre lignes entassées, dont « 30 / 102 paires ♂ / ♀ » qui se coupait en
- * plein milieu du symbole.
- */
-function resumeDeLaCollection(ctx) {
-  const { dataset, collection } = ctx;
-  const p = progressOf(dataset.species, collection);
-
-  // Les générations les plus en retard, et non les premières par numéro : ce
-  // qu'on montre, c'est où l'on en est, et la ligne intéressante est celle qui
-  // traîne.
-  const retard = Object.entries(p.gens || {})
-    .filter(([, v]) => v.total)
-    .sort((a, b) => a[1].pct - b[1].pct)
-    .slice(0, 3)
-    .map(([numero, v]) => {
-      const meta = dataset.generations[numero];
-      const nom = meta && meta.region ? t(meta.region) : `${t("Génération")} ${numero}`;
-      return `${nom} ${v.pct} %`;
-    });
-
-  const lignes = [
-    { cle: t("Cases cochées"), valeur: `${p.all.done} / ${p.all.total}` },
-    { cle: t("Chromatiques"), valeur: String(p.shiny.done) },
-    { cle: t("Paires ♂ / ♀"), valeur: `${p.pairs.done} / ${p.pairs.total}` },
-  ];
-
-  const texte = [
-    `Funkylldex — ${t("ma collection")}`,
-    `${p.all.pct} % · ${p.all.done} / ${p.all.total} ${t("cases cochées")}`,
-    `${p.shiny.done} ${tn(p.shiny.done, t("chromatique"), t("chromatiques"))} · ` +
-      `${p.pairs.done} / ${p.pairs.total} ${tn(p.pairs.total, t("paire ♂ / ♀"), t("paires ♂ / ♀"))}`,
-    retard.length ? deuxPoints(t("Reste à faire"), retard.join(" · ")) : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  return { pct: p.all.pct, lignes, retard, texte };
-}
-
-/**
- * Partage le résumé, ou le copie à défaut.
- *
- * Le bandeau est posé AVANT toute tentative : « Copié » sans dire quoi oblige à
- * aller coller ailleurs pour savoir ce qu'on partage, et sur un ordinateur sans
- * `navigator.share` ni presse-papiers autorisé, le bouton n'avait aucun effet
- * visible du tout.
- *
- * `navigator.share` d'abord : sur téléphone il ouvre le menu du système, qui est
- * là où l'on partage vraiment. Il refuse tout appel qui ne descend pas d'un
- * geste de l'utilisateur, d'où l'appel sans `await` avant lui.
- */
-async function partagerResume(ctx) {
-  const resume = resumeDeLaCollection(ctx);
-  const suite = afficherResume(resume);
-  try {
-    if (navigator.share) {
-      await navigator.share({ text: resume.texte });
-      suite(t("Partagé."));
-      return;
-    }
-    await navigator.clipboard.writeText(resume.texte);
-    suite(t("Copié dans le presse-papiers."));
-  } catch (error) {
-    // Fermer le menu de partage lève un `AbortError` : ce n'est pas un échec,
-    // c'est un renoncement.
-    if (error && error.name === "AbortError") {
-      suite(t("Partage annulé."));
-      return;
-    }
-    suite(t("Sélectionnez le texte pour le copier."));
-  }
-}
-
-/** Pose le bandeau et rend de quoi en changer la dernière ligne. */
-function afficherResume(resume) {
-  document.querySelector(".resume-bandeau")?.remove();
-  const suite = el("span.bandeau__suite");
-
-  const bandeau = el(
-    "div.resume-bandeau",
-    { role: "status", "aria-live": "polite" },
-    el("span.bandeau__titre", t("Ma collection")),
-    el("p.resume__pct", String(resume.pct), el("span", "%")),
-    el(
-      "div.resume__lignes",
-      resume.lignes.flatMap((l) => [
-        el("span.resume__cle", l.cle),
-        el("span.resume__valeur", l.valeur),
-      ])
-    ),
-    resume.retard.length
-      ? el("p.resume__reste", `${t("Reste à faire")} : ${resume.retard.join(" · ")}`)
-      : null,
-    suite
-  );
-  document.body.append(bandeau);
-  setTimeout(() => bandeau.remove(), 12000);
-  return (message) => {
-    suite.textContent = message;
-  };
-}

@@ -12,6 +12,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "4173"],
       "port": 4173
+    },
+    {
+      "name": "funkylldex-libreoffice",
+      "runtimeExecutable": "C:\\Program Files (x86)\\LibreOffice\\program\\python.exe",
+      "runtimeArgs": ["-m", "http.server", "4173"],
+      "port": 4173
     }
   ]
 }
