@@ -90,7 +90,50 @@ export function createQuest(ctx) {
       part: carnet.parties[vue.cle],
       cles,
       total: cles.reduce((somme, c) => somme + totalPartie(carnet.parties[c]), 0),
+      // L'objectif le plus élevé des parties de la paire. Il vit sur la chasse
+      // désignée dans le cas normal, mais deux appareils ont pu en poser deux —
+      // la jointure garde alors le plus grand, et l'écran doit dire la même
+      // chose qu'elle.
+      objectif: cles.reduce((max, c) => Math.max(max, carnet.parties[c].o || 0), 0) || null,
     };
+  }
+
+  /**
+   * Fixer, changer ou retirer l'objectif de la chasse en cours.
+   *
+   * « 41 rencontres » ne dit rien tout seul. La probabilité cumulée aide, mais
+   * elle ne se termine jamais : elle approche 100 % sans l'atteindre, et une
+   * chasse n'a donc aucune ligne d'arrivée. Un objectif en donne une — « je
+   * m'arrête à 500 » — et transforme un compteur qui monte en une barre qui se
+   * remplit.
+   *
+   * `prompt` plutôt qu'un champ dans la carte : le geste est rare — une fois par
+   * chasse — et un champ permanent aurait pris la place des boutons qu'on presse
+   * des centaines de fois. Le site emploie déjà `confirm` et `alert` ailleurs.
+   *
+   * Vider le champ RETIRE l'objectif. Il faut pouvoir revenir en arrière, et un
+   * objectif qu'on ne peut plus enlever devient une dette.
+   */
+  function fixerObjectif() {
+    const chasse = chasseCourante();
+    if (!chasse) return;
+
+    const reponse = window.prompt(
+      t("Objectif de rencontres pour cette chasse ? Laisse vide pour l'enlever."),
+      chasse.objectif ? String(chasse.objectif) : ""
+    );
+    if (reponse === null) return;
+
+    const valeur = Math.floor(Number(reponse.trim()));
+    const part = ctx.collection.quetes.parties[chasse.cle];
+    const suivant = { ...part };
+    if (reponse.trim() === "" || !Number.isFinite(valeur) || valeur <= 0) delete suivant.o;
+    else suivant.o = Math.min(100000, valeur);
+
+    ctx.collection.majQuetes({ parties: { ...ctx.collection.quetes.parties, [chasse.cle]: suivant } });
+    ctx.sync.schedule(t("objectif de chasse"));
+    jouer("theme");
+    dessiner();
   }
 
   /**
@@ -315,7 +358,7 @@ export function createQuest(ctx) {
       fill(card, emptyQuest(ctx, complete));
       return;
     }
-    fill(card, questBody(species, game, ctx, complete, chasseCourante(), compter));
+    fill(card, questBody(species, game, ctx, complete, chasseCourante(), compter, fixerObjectif));
   }
 
   return {
@@ -331,7 +374,7 @@ export function createQuest(ctx) {
 
 /* ------------------------------ carte quete ------------------------------ */
 
-function questBody(species, game, ctx, complete, chasse, compter) {
+function questBody(species, game, ctx, complete, chasse, compter, objectif) {
   const { dataset, planner, store } = ctx;
   const method = planner.methodFor(game.code, species);
   const c1 = dataset.types[species.types[0]] || "#8b8b8b";
@@ -373,7 +416,7 @@ function questBody(species, game, ctx, complete, chasse, compter) {
 
   const body = el(
     "div.quest__body",
-    compteurDeChasse(method, chasse, compter),
+    compteurDeChasse(method, chasse, compter, objectif),
     el(
       "div.quest__facts",
       el(
@@ -602,7 +645,7 @@ function mesureChasse(method, chasse) {
   return { n, pct, chance, note: mediane ? `${chance} · ${t("médiane")} ${mediane}` : chance };
 }
 
-function compteurDeChasse(method, chasse, compter) {
+function compteurDeChasse(method, chasse, compter, objectif) {
   const m = mesureChasse(method, chasse);
 
   return el(
@@ -621,6 +664,35 @@ function compteurDeChasse(method, chasse, compter) {
       el("span.chasse__jauge-fill", { style: { width: `${Math.min(100, m.pct)}%` } })
     ),
     el("p.chasse__note", m.note),
+    // L'OBJECTIF, quand il y en a un. Une seconde barre et non un repère sur la
+    // première : celle du dessus dit une probabilité, celle-ci un décompte. Deux
+    // sens sur une même jauge se confondent.
+    chasse && chasse.objectif
+      ? el(
+          "div.chasse__objectif",
+          el(
+            "div.chasse__objectif-tete",
+            el("span", t("Objectif")),
+            el(
+              "span.chasse__objectif-n",
+              `${m.n} / ${chasse.objectif}`
+            )
+          ),
+          el(
+            "div.chasse__jauge.chasse__jauge--objectif",
+            { role: "img", "aria-label": `${m.n} ${t("sur")} ${chasse.objectif}` },
+            el("span.chasse__jauge-fill", {
+              style: { width: `${Math.min(100, Math.round((m.n / chasse.objectif) * 100))}%` },
+            })
+          ),
+          el(
+            "p.chasse__note",
+            m.n >= chasse.objectif
+              ? t("Objectif atteint.")
+              : `${t("Encore")} ${chasse.objectif - m.n}`
+          )
+        )
+      : null,
     el(
       "div.chasse__boutons",
       el(
@@ -633,6 +705,15 @@ function compteurDeChasse(method, chasse, compter) {
         "button.btn.btn--ghost",
         { type: "button", onclick: () => compter(-1), title: t("Corriger une frappe en trop") },
         "−1"
+      ),
+      el(
+        "button.btn.btn--ghost.chasse__cible",
+        {
+          type: "button",
+          onclick: objectif,
+          title: t("Se fixer un nombre de rencontres à atteindre"),
+        },
+        chasse && chasse.objectif ? `◎ ${chasse.objectif}` : "◎"
       )
     )
   );

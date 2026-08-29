@@ -123,9 +123,20 @@ export function sanitizeQuetes(brut) {
     const fin = Math.floor(Number(part.f));
     if (Number.isFinite(fin) && fin > 0) propre.f = fin;
 
-    // `f` compte comme une information : une partie vide QUI PORTE UNE FIN n'est
-    // pas vide. D'où ce test après la pose de `f`, et non avant.
-    if (vide && propre.f === undefined) continue;
+    // `o` : l'objectif que le chasseur s'est fixé. Même règle d'absence que `f`,
+    // et pour la même raison — un zéro stocké différerait d'un champ jamais posé,
+    // et l'export relu n'aurait plus la forme de l'état.
+    //
+    // Borné à 100 000 : au-delà, ce n'est plus un objectif mais une faute de
+    // frappe, et la barre de progression deviendrait invisible.
+    const objectif = Math.floor(Number(part.o));
+    if (Number.isFinite(objectif) && objectif > 0 && objectif <= 100000) propre.o = objectif;
+
+    // `f` et `o` comptent comme des informations : une partie vide QUI PORTE UNE
+    // FIN ou UN OBJECTIF n'est pas vide. D'où ce test après leur pose, et non
+    // avant — quelqu'un qui a fixé un objectif avant sa première rencontre a dit
+    // quelque chose, et le jeter le lui reprendrait.
+    if (vide && propre.f === undefined && propre.o === undefined) continue;
 
     parties[cle] = propre;
   }
@@ -169,6 +180,18 @@ function fusionnerPartie(a, b) {
   const fins = [a.f, b.f].filter((f) => Number.isFinite(f));
   if (fins.length) out.f = Math.min(...fins);
 
+  // L'objectif se fusionne par `max`, symétrique du `min` de la fin, et pour une
+  // raison symétrique. La FIN est un instant : deux appareils qui l'ont vue ont
+  // vu la même, et la première est la vraie. L'OBJECTIF est une intention : deux
+  // appareils qui en ont posé deux différents ont voulu deux choses, et garder
+  // le plus grand est le seul choix qui ne raccourcisse pas une chasse dans le
+  // dos de celui qui l'a allongée — on peut toujours redescendre à la main.
+  //
+  // `max` est idempotent, commutatif et associatif comme le reste de la
+  // jointure : rejouer une fusion ne change rien, et l'ordre n'importe pas.
+  const objectifs = [a.o, b.o].filter((o) => Number.isFinite(o));
+  if (objectifs.length) out.o = Math.max(...objectifs);
+
   return out;
 }
 
@@ -200,7 +223,7 @@ export function egalQuetes(a, b) {
     const x = gauche[cle];
     const y = droite[cle];
     if (!x || !y) return false;
-    if (x.e !== y.e || x.j !== y.j || x.s !== y.s || x.f !== y.f) return false;
+    if (x.e !== y.e || x.j !== y.j || x.s !== y.s || x.f !== y.f || x.o !== y.o) return false;
     const appareils = new Set([...Object.keys(x.r), ...Object.keys(y.r)]);
     for (const appareil of appareils) {
       if ((x.r[appareil] || 0) !== (y.r[appareil] || 0)) return false;
