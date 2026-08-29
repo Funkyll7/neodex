@@ -23,6 +23,20 @@
   --sidebar-w: 268px;
   --detail-w: 420px;
 
+  /* Le liseré noir des logos de forme et de l'emblème Gigamax.
+
+     Quatre `drop-shadow` décalés d'un pixel plutôt qu'un `outline` : celui-ci
+     suivrait la BOÎTE carrée de l'image, alors qu'un `drop-shadow` suit sa
+     SILHOUETTE. Le contour épouse donc le dessin, ce qui est le seul rendu qui
+     ait l'air voulu sur un logo détouré.
+
+     Nommé ici parce que quatre règles le recopiaient, et qu'elles avaient déjà
+     commencé à diverger. Il ne dépend d'aucune palette : c'est du noir, et son
+     rôle est justement d'être plus sombre que tous les fonds du site. */
+  --contour-noir:
+    drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000)
+    drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000);
+
   --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Baloo 2", var(--font-body);
 

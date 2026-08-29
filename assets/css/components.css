@@ -382,19 +382,14 @@
   width: 15px; height: 15px;
   background: url("../img/gigamax-nb.png") center / contain no-repeat;
   opacity: .45;
-  filter:
-    drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000)
-    drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000);
+  filter: var(--contour-noir);
 }
 .card__gmax--on {
   background-image: url("../img/gigamax.png");
   opacity: 1;
   /* Le contour d'abord, la lueur ensuite : dans l'autre ordre, le halo rose
      serait lui aussi cerné de noir. */
-  filter:
-    drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000)
-    drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000)
-    drop-shadow(0 0 5px rgba(224, 21, 95, .5));
+  filter: var(--contour-noir) drop-shadow(0 0 5px rgba(224, 21, 95, .5));
 }
 
 .card__name {
@@ -662,7 +657,9 @@
 .ftile__kind {
   position: absolute; top: 4px; left: 4px;
   opacity: .9;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .35));
+  /* Meme liseré que sur les boutons de la grille : la tuile de forme est
+     cliquable elle aussi, et son logo se pose sur un fond teinté par le type. */
+  filter: var(--contour-noir);
 }
 /* La pastille de repli, pour les familles sans logo officiel. En masque, donc
    elle prend le ton du texte de la tuile au lieu d'imposer une couleur. */
@@ -1150,7 +1147,7 @@
 .bars__label { flex: 1; min-width: 0; }
 
 /* ===================== Formes présentes pour l'information =============== */
-.forms__icon { flex: none; vertical-align: -3px; margin-right: 5px; }
+.forms__icon { flex: none; vertical-align: -3px; margin-right: 5px; filter: var(--contour-noir); }
 .forms__title { display: flex; align-items: center; gap: 0; }
 
 /* Ce qui ne se coche pas est mis a distance : un trait, un retrait de ton, et
@@ -1239,13 +1236,17 @@
   display: block;
   width: 13px;
   height: 13px;
-  filter:
-    drop-shadow(0 0 1.5px #fff)
-    drop-shadow(0 0 3px rgba(255, 255, 255, .8));
+  /* Un liseré NOIR, et non plus une aura blanche. Le bouton coché est un aplat
+     franc — vert, or, orange —, et un halo blanc sur du jaune vif ne détache
+     rien du tout : le logo s'y noyait exactement comme l'emblème Gigamax se
+     noyait sur les types rouges avant qu'on le cerne. Le noir est la seule
+     couleur plus sombre que tous les fonds de pastille à la fois. */
+  filter: var(--contour-noir);
 }
 
-/* Bouton non coché : le liseré s'éteint avec lui. Blanc sur un bouton sombre,
-   il criait plus fort que l'état qu'il décrit.
+/* Bouton non coché : le fond redevient sombre, et un contour noir sur du sombre
+   ne se voit pas. On rend alors au logo l'aura qui le détachait — dans la
+   couleur du bouton lui-même.
    `currentColor` est la couleur dont sont déjà faites les pastilles voisines du
    même bouton : le logo pèse ainsi exactement le même poids qu'elles. */
 .toggle[aria-pressed="false"] .toggle__fam {
