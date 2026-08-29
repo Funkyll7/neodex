@@ -2561,3 +2561,12 @@
   font-variant-numeric: tabular-nums;
   padding-left: 8px;
 }
+
+/* L'emblème et le nom du jeu, côte à côte dans le tableau de disponibilité.
+   Dans vingt-trois lignes, la forme se repère plus vite que le texte. */
+.games__ident {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}

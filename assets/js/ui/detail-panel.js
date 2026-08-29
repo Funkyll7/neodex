@@ -22,6 +22,7 @@ import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
 import { nomEspece, nomCategorie, nomForme, enAnglais, t, tn } from "../core/i18n.js";
+import { symboleJeu } from "./symboles-jeux.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
@@ -1106,9 +1107,15 @@ function availabilitySection(species, { dataset }) {
             "--c": row.color || "transparent",
           },
           el(
-            "div",
-            el("div.games__name", t(row.game.name)),
-            el("div.games__gen", `${t("Gén.")} ${row.game.gen}`)
+            "div.games__ident",
+            // L'emblème du jeu devant son nom : dans un tableau de vingt-trois
+            // lignes, la forme se repère bien plus vite que le texte.
+            symboleJeu(row.game.code, 15),
+            el(
+              "div",
+              el("div.games__name", t(row.game.name)),
+              el("div.games__gen", `${t("Gén.")} ${row.game.gen}`)
+            )
           ),
           // `presenceLabel` / `shinyLabel` viennent d'une table de module de
           // `availability.js`, figee a l'import : on les traduit ici, au point
