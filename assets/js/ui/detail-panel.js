@@ -21,7 +21,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
-import { nomEspece, nomCategorie, nomCosmetique, nomForme, texteChasse, enAnglais, t, tn } from "../core/i18n.js";
+import { nomEspece, nomCategorie, nomCosmetique, nomForme, lieuEspece, noteDonnees, texteChasse, enAnglais, t, tn } from "../core/i18n.js";
 import { embleme } from "./symboles-jeux.js";
 
 export function createDetailPanel(ctx) {
@@ -444,7 +444,9 @@ function collectionSection(species, ctx) {
 
 function noShinyReason(ctx) {
   const rule = ctx.dataset.locks.noShiny || {};
-  return rule.why || t("Aucun chromatique de cette espèce n'existe, dans aucun jeu ni aucune distribution.");
+  return rule.why
+    ? noteDonnees(rule.why)
+    : t("Aucun chromatique de cette espèce n'existe, dans aucun jeu ni aucune distribution.");
 }
 
 function slotButton(species, ctx, { slot, label, gold, female }) {
@@ -929,7 +931,7 @@ function formTile(form, species, ctx) {
           : t("Aucun jeu de la série principale ne la propose — transfert HOME uniquement.")
       ),
       shinyLine(form, huntable, games, species, ctx),
-      form.note ? el("p.form__note", form.note) : null,
+      form.note ? el("p.form__note", noteDonnees(form.note)) : null,
       el(
         "a.info__link",
         { href: pokepediaUrl(form.name), target: "_blank", rel: "noopener" },
@@ -1155,7 +1157,7 @@ function huntSection(species, ctx) {
     ? whyText(species, huntable, planner)
     : species.noShiny
       ? noShinyReason(ctx)
-      : species.note ||
+      : (species.note ? noteDonnees(species.note) : null) ||
         (species.curated
           ? t("Ce Pokémon est verrouillé chromatique dans tous les jeux où il apparaît, ou n'existe que dans la Gén. I, qui ne connaît pas les chromatiques. Son chromatique reste obtenable par distribution ou par HOME : la case compte donc dans le « tout obtenu ».")
           : t("Disponibilité pas encore renseignée : impossible de dire où le shiny est chassable."));
@@ -1172,7 +1174,10 @@ function huntSection(species, ctx) {
       locked.length
         ? el(
             "p.hunt__locked",
-            `${t("Verrouillé chromatique dans")} : ${locked.map((g) => t(g.name)).join(" · ")}. `,
+            // Les deux-points DANS la chaîne traduite : le français met une
+            // espace avant, l'anglais non, et « Shiny-locked in : » trahissait
+            // la traduction aussi sûrement qu'un mot resté en français.
+            `${t("Verrouillé chromatique dans :")} ${locked.map((g) => t(g.name)).join(" · ")}. `,
             lockReason(species, locked, dataset)
           )
         : null,
@@ -1225,9 +1230,9 @@ function whyText(species, huntable, planner) {
 
 function lockReason(species, locked, dataset) {
   const always = ((dataset.locks.always && dataset.locks.always.species) || []).includes(species.id);
-  if (always) return dataset.locks.always.why || "";
+  if (always) return dataset.locks.always.why ? noteDonnees(dataset.locks.always.why) : "";
   const first = dataset.locks.byGame && dataset.locks.byGame[locked[0].code];
-  return (first && first.why) || t("Le jeu ne génère jamais cette espèce en chromatique.");
+  return first && first.why ? noteDonnees(first.why) : t("Le jeu ne génère jamais cette espèce en chromatique.");
 }
 
 function oddsOf(odds) {
@@ -1254,7 +1259,7 @@ function infoSection(species, { dataset }) {
       el(
         "div",
         el("div.info__key", t("Emplacement d'origine")),
-        el("div.info__text", species.where || t("Non renseigné pour l'instant."))
+        el("div.info__text", species.where ? lieuEspece(species.where) : t("Non renseigné pour l'instant."))
       ),
       el(
         "div.info__links",

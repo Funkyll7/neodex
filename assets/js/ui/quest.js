@@ -14,7 +14,7 @@ import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
 import { spriteImg } from "../domain/sprites.js";
 import { dexNumber, typeChip } from "./common.js";
-import { nomEspece, t, tn } from "../core/i18n.js";
+import { lieuEspece, nomEspece, t, tn } from "../core/i18n.js";
 import { oddsValue } from "../domain/hunt.js";
 import { progressOf } from "../domain/progress.js";
 import { jouer } from "./sons.js";
@@ -347,7 +347,7 @@ function questBody(species, game, ctx, complete, chasse, compter) {
             ? t("Où le trouver dans ce jeu")
             : `${t("Repère général — vérifie la zone équivalente dans")} ${t(game.name)}`
         ),
-        el("div.info__text", species.where)
+        el("div.info__text", lieuEspece(species.where))
       )
       : null,
     el(

@@ -23,7 +23,7 @@
  * la composition a lieu.
  */
 
-import { nomEspece, texteChasse } from "../core/i18n.js";
+import { lieuEspece, nomEspece, texteChasse } from "../core/i18n.js";
 
 /**
  * Un bloc de hunt.json, traduit — nom, etapes, et les fragments des modeles.
@@ -163,7 +163,7 @@ export class HuntPlanner {
       steps: [
         fill(tpl.intro, { nom: nomEspece(species), cible }),
         ...base.steps,
-        `${fill(tpl.outro, { cible })} ${species.where || ""}`.trim(),
+        `${fill(tpl.outro, { cible })} ${species.where ? lieuEspece(species.where) : ""}`.trim(),
       ],
     };
   }

@@ -212,6 +212,38 @@ export function texteChasse(fr) {
 }
 
 /**
+ * Le « ou trouver » d'une espece, venu de `data/details/gen-*.json`.
+ *
+ * Clee par le francais, comme les cosmetiques : ces phrases n'ont pas
+ * d'identifiant propre dans les donnees, elles sont ecrites a la main espece
+ * par espece.
+ *
+ * Une table a part encore, et c'est la troisieme du meme genre. Le partage
+ * n'est pas gratuit : deux phrases identiques dans deux fichiers differents
+ * pourraient vouloir deux traductions, et les melanger dans une seule table
+ * rendrait ce conflit invisible. Chaque fichier de donnees garde donc la
+ * sienne.
+ */
+export function lieuEspece(fr) {
+  if (langue === "fr" || !table) return fr;
+  return (table.lieux || {})[fr] || fr;
+}
+
+/**
+ * Une note explicative des donnees : pourquoi un chromatique est verrouille
+ * dans tel jeu, ce qu'une forme a de particulier.
+ *
+ * Vient de `data/reference/shiny-locks.json` et des champs `note` de
+ * `data/details/`. Ce sont les seuls textes du site qui expliquent une ABSENCE —
+ * « aucun chromatique n'existe » —, et c'est pour cela qu'ils comptent : sans
+ * eux, une case barree n'a l'air que d'un bogue.
+ */
+export function noteDonnees(fr) {
+  if (langue === "fr" || !table) return fr;
+  return (table.notes || {})[fr] || fr;
+}
+
+/**
  * Le nom d'une boite du Pokedex GO.
  *
  * `entree.name` est calcule une fois pour toutes au chargement des donnees, et
