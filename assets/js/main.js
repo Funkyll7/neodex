@@ -551,7 +551,11 @@ function start(dataset) {
       // n'aurait jamais demarre.
       if (state.tab === "go") go.reveal();
     }
-    if (changed.has("quest") || changed.has("questDone")) {
+    // `questLog` compte ici, et pas seulement pour l'enregistrement plus bas :
+    // il ne bougeait jusqu'ici qu'en meme temps que `questDone`, quand une
+    // quete est validee. « Oublier » une prise le change SEUL — sans cette
+    // clause, la ligne restait a l'ecran jusqu'au prochain rendu.
+    if (changed.has("quest") || changed.has("questDone") || changed.has("questLog")) {
       quest.render();
       renderTabs();
     }
