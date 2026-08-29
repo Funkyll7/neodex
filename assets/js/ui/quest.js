@@ -99,6 +99,61 @@ export function createQuest(ctx) {
   }
 
   /**
+   * Le ruban des chasses ouvertes.
+   *
+   * Le carnet en gère autant qu'on veut — c'est même ce que sa fusion protège en
+   * priorité. L'écran, lui, n'en montrait qu'une : celle que le tirage venait de
+   * proposer. Reprendre l'autre demandait de passer des quêtes jusqu'à retomber
+   * dessus, ce qui n'arrive pas quand on en a trois en cours.
+   *
+   * INVISIBLE À UNE SEULE CHASSE. Un ruban d'un élément ne dit rien de plus que
+   * la carte qu'il surmonte, et prendrait la place du compteur.
+   *
+   * Basculer, c'est simplement reposer `quest` dans le store : la carte se
+   * redessine par le chemin habituel, et rien d'autre ne bouge.
+   */
+  function rubanDesChasses() {
+    const racine = document.getElementById("quest-hunts");
+    if (!racine) return;
+
+    const carnet = ctx.collection.quetes;
+    const ouvertes = [...chassesOuvertes(carnet).entries()];
+    racine.hidden = ouvertes.length < 2;
+    if (racine.hidden) {
+      racine.replaceChildren();
+      return;
+    }
+
+    const courante = ctx.store.state.quest;
+    fill(
+      racine,
+      ouvertes.map(([espece, vue]) => {
+        const sp = ctx.dataset.byId.get(espece);
+        const total = chassesDeLaPaire(carnet, espece, vue.jeu).reduce(
+          (somme, c) => somme + totalPartie(carnet.parties[c]),
+          0
+        );
+        const active = courante && courante.id === espece;
+        return el(
+          "button.chasses__item" + (active ? ".chasses__item--active" : ""),
+          {
+            type: "button",
+            "aria-pressed": String(Boolean(active)),
+            title: `${sp ? nomEspece(sp) : espece} — ${total} ${tn(total, "rencontre", "rencontres")}`,
+            onclick: () => {
+              if (active) return;
+              ctx.store.set({ quest: { id: espece, game: vue.jeu } });
+              jouer("onglet");
+            },
+          },
+          spriteImg(espece, { shiny: true, alt: "", className: "chasses__img" }),
+          el("span.chasses__n", String(total))
+        );
+      })
+    );
+  }
+
+  /**
    * Fixer, changer ou retirer l'objectif de la chasse en cours.
    *
    * « 41 rencontres » ne dit rien tout seul. La probabilité cumulée aide, mais
@@ -170,6 +225,7 @@ export function createQuest(ctx) {
     jouer("compteur");
     rafraichirCompteur();
     renderStats(statsRoot, ctx, remettreLeCompte);
+    rubanDesChasses();
   }
 
   /**
@@ -366,6 +422,7 @@ export function createQuest(ctx) {
       const state = ctx.store.state;
       renderStats(statsRoot, ctx, remettreLeCompte);
       renderLog(logRoot, state.questLog, ctx, oublierDuJournal);
+      rubanDesChasses();
       dessiner();
     },
   };

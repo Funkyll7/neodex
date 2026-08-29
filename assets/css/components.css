@@ -2894,3 +2894,42 @@
    remplies au meme endroit. */
 .chasse__jauge--objectif .chasse__jauge-fill { background: var(--gold); }
 .chasse__cible { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+
+/* Le ruban des chasses ouvertes, au-dessus de la carte.
+   Il defile lateralement plutot que de passer a la ligne : trois chasses
+   tiennent, huit ne tiendraient pas, et une rangee qui grandit repousserait la
+   carte hors de l ecran a chaque nouvelle chasse. */
+.chasses {
+  display: flex;
+  gap: var(--sp-2);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: var(--sp-1);
+  margin-bottom: var(--sp-3);
+}
+.chasses[hidden] { display: none; }
+.chasses__item {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px 5px 5px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.chasses__item:hover { border-color: var(--border-strong); color: var(--text); }
+/* La chasse affichee : bordure d accent et encre pleine. Elle reste cliquable
+   mais ne fait rien — un bouton mort qui garde l air vivant est pire, alors on
+   le laisse repondre et on l ignore cote code. */
+.chasses__item--active {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--text);
+}
+.chasses__img { width: 26px; height: 26px; object-fit: contain; }

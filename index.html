@@ -440,6 +440,11 @@
            les laisser en bas obligeait à faire défiler pour savoir où l'on en
            est. Le contenu est posé par ui/quest.js. -->
       <div id="quest-stats" class="qstats" aria-label="Compteurs de chasse"></div>
+      <!-- Les chasses ouvertes, quand il y en a plus d'une. Le carnet en gère
+           autant qu'on veut depuis toujours ; l'écran n'en montrait qu'une, et
+           reprendre l'autre demandait d'attendre que le tirage retombe dessus.
+           Vide et invisible tant qu'une seule est en cours — voir ui/quest.js. -->
+      <div id="quest-hunts" class="chasses" aria-label="Chasses en cours" hidden></div>
       <div class="quest-layout">
         <div id="quest-card" class="panel quest"></div>
         <div class="quest-side">
