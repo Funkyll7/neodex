@@ -21,7 +21,7 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
-import { nomEspece, nomCategorie, nomForme, enAnglais, t, tn } from "../core/i18n.js";
+import { nomEspece, nomCategorie, nomCosmetique, nomForme, enAnglais, t, tn } from "../core/i18n.js";
 import { embleme } from "./symboles-jeux.js";
 
 export function createDetailPanel(ctx) {
@@ -498,7 +498,7 @@ function cosmeticPicker(species, cosmetic, ctx) {
       "div.detail__row",
       el(
         "h3.panel__label",
-        cosmetic.coversBase ? `${t("Ma collection")} · ${cosmetic.title}` : cosmetic.title
+        cosmetic.coversBase ? `${t("Ma collection")} · ${nomCosmetique(cosmetic.title)}` : nomCosmetique(cosmetic.title)
       ),
       el("span.detail__note", { dataset: { role: "cosmetic-count" } }, cosmeticCount(species, cosmetic, ctx))
     ),
@@ -572,8 +572,8 @@ function pickerCell(species, variant, ctx) {
       "button.picker__btn",
       {
         type: "button",
-        title: `${variant.name} — ${t("normal")}`,
-        "aria-label": `${variant.name} — ${t("normal")}`,
+        title: `${nomCosmetique(variant.name)} — ${t("normal")}`,
+        "aria-label": `${nomCosmetique(variant.name)} — ${t("normal")}`,
         "aria-pressed": String(ctx.collection.has(species.id, variant.slot)),
         dataset: { slot: variant.slot, species: species.id },
       },
@@ -586,8 +586,8 @@ function pickerCell(species, variant, ctx) {
         "button.picker__btn.picker__btn--gold",
         {
           type: "button",
-          title: `${variant.name} — ${t("chromatique")}`,
-          "aria-label": `${variant.name} — ${t("chromatique")}`,
+          title: `${nomCosmetique(variant.name)} — ${t("chromatique")}`,
+          "aria-label": `${nomCosmetique(variant.name)} — ${t("chromatique")}`,
           "aria-pressed": String(ctx.collection.has(species.id, variant.shinySlot)),
           dataset: { slot: variant.shinySlot, species: species.id },
         },
@@ -617,7 +617,7 @@ function cosmeticNotes(species, ctx) {
   if (cosmetic.info) {
     return el(
       "section.detail__section",
-      el("h3.panel__label", cosmetic.title),
+      el("h3.panel__label", nomCosmetique(cosmetic.title)),
       el(
         "div.forms__list",
         cosmetic.variants.map((variant) =>
@@ -626,7 +626,7 @@ function cosmeticNotes(species, ctx) {
             el(
               "div.form__head",
               el("div.form__arts", el("span.form__art", cosmeticImg(variant, species.id, { className: "form__img" }))),
-              el("div.form__id", el("div.form__name", variant.name), el("div.form__label", cosmetic.title))
+              el("div.form__id", el("div.form__name", nomCosmetique(variant.name)), el("div.form__label", nomCosmetique(cosmetic.title)))
             ),
             cosmetic.where ? el("p.form__text", cosmetic.where) : null,
             cosmetic.note ? el("p.form__note", cosmetic.note) : null,
@@ -642,7 +642,7 @@ function cosmeticNotes(species, ctx) {
 
   return el(
     "section.detail__section",
-    el("h3.panel__label", `${cosmetic.title} — ${t("le détail")}`),
+    el("h3.panel__label", `${nomCosmetique(cosmetic.title)} — ${t("le détail")}`),
     el(
       "details.forms__group.forms__group--fold",
       { dataset: { key: `notes-${species.id}` } },
@@ -658,7 +658,7 @@ function cosmeticNotes(species, ctx) {
             cosmeticImg(variant, species.id, { className: "variants__img" }),
             el(
               "div",
-              el("div.variants__name", variant.name),
+              el("div.variants__name", nomCosmetique(variant.name)),
               el("div.variants__where", variant.where),
               variant.shinyEntry
                 ? null

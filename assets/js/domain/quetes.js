@@ -102,11 +102,30 @@ export function sanitizeQuetes(brut) {
 
     const propre = { e: espece, j: part.j, r: colonnes };
     propre.s = RANG[part.s] === undefined ? "encours" : part.s;
+
+    // Une partie VIDE de tout : aucune rencontre, aucun statut, aucune fin. Elle
+    // ne porte rien que la paire espèce-jeu, que la quête affichée dit déjà.
+    //
+    // Elle naissait d'un « −1 » posé avant le premier « +1 » (corrigé dans
+    // ui/quest.js) et se logeait ensuite dans le carnet pour toujours, une union
+    // ne supprimant rien. La jeter ici est sans danger, et c'est le seul endroit
+    // où c'est vrai : la jeter ne peut pas faire diverger deux appareils, parce
+    // qu'elle ne dit rien qu'un autre appareil pourrait contredire. Si l'un
+    // d'eux compte vraiment une rencontre sous cette clé, l'union la ramène avec
+    // sa colonne, et elle n'est alors plus vide.
+    //
+    // Le test est ÉTROIT à dessein. `{r:{}, s:"prise"}` — une chasse marquée
+    // attrapée sans compteur — porte, elle, une information : elle reste.
+    const vide = !Object.keys(colonnes).length && propre.s === "encours";
     // `f` reste ABSENT quand personne ne l'a posé. Absent, zéro et null sont
     // trois choses différentes, et les confondre casserait la loi : l'état
     // n'aurait pas la même forme que son export relu.
     const fin = Math.floor(Number(part.f));
     if (Number.isFinite(fin) && fin > 0) propre.f = fin;
+
+    // `f` compte comme une information : une partie vide QUI PORTE UNE FIN n'est
+    // pas vide. D'où ce test après la pose de `f`, et non avant.
+    if (vide && propre.f === undefined) continue;
 
     parties[cle] = propre;
   }

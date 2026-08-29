@@ -86,6 +86,12 @@ export function createQuest(ctx) {
 
     const carnet = ctx.collection.quetes;
     const ouverte = chassesOuvertes(carnet).get(quest.id);
+    // Rien à retirer d'une chasse qui n'existe pas encore. Sans ce garde-fou, un
+    // « −1 » posé avant le premier « +1 » ouvrait une partie à compteur vide :
+    // `chassesOuvertes` l'écarte ensuite, puisqu'elle n'a aucune rencontre, donc
+    // le « +1 » suivant en ouvrait une NOUVELLE — et l'ancienne restait dans le
+    // carnet pour toujours, une union ne supprimant rien.
+    if (!ouverte && delta <= 0) return;
     const cle = ouverte ? ouverte.cle : nouvelleCle();
     const part = carnet.parties[cle] || { e: quest.id, j: quest.game, r: {}, s: "encours" };
 
@@ -195,7 +201,20 @@ export function createQuest(ctx) {
    * et retirer la mauvaise ligne serait plus agaçant que de ne pas pouvoir.
    */
   function oublierDuJournal(index) {
-    ctx.store.set((s) => ({ questLog: s.questLog.filter((_, i) => i !== index) }));
+    ctx.store.set((s) => ({
+      questLog: s.questLog.filter((_, i) => i !== index),
+      // Le compteur suit la ligne. « Oublier » une prise, c'est dire qu'elle ne
+      // compte plus ; laisser le total derrière affichait « 12 quêtes
+      // accomplies » au-dessus d'un journal qui n'en montrait que onze, et
+      // l'écart ne se rattrapait plus jamais.
+      //
+      // `Math.max(0, …)` parce que les deux ne mesurent pas la même chose : le
+      // journal ne garde que les huit dernières lignes, le compteur garde tout.
+      // Rien n'interdit donc à un état venu d'ailleurs — un import, une reprise
+      // partielle — de porter plus de lignes que de quêtes comptées, et un
+      // compteur négatif n'aurait aucun sens.
+      questDone: Math.max(0, s.questDone - 1),
+    }));
     jouer("annuler");
   }
 

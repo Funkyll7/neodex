@@ -14,13 +14,25 @@
    ressemblent trop pour qu on retienne laquelle fait quoi, et un titre ne se
    lit qu au survol — ce qui n existe pas sur un telephone. */
 .brand__reglages { display: flex; align-items: flex-start; justify-content: center; gap: var(--sp-3); }
-.reglage { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+/* Les trois cellules ont la MÊME largeur, et c'est elle qui tient les pastilles
+   en place. Sans largeur imposée, chaque cellule prenait celle de son mot :
+   « Language » mesure 50 px là où « Langue » en fait 37, et les trois icônes
+   glissaient de six pixels à chaque changement de langue — le bouton bougeait
+   sous le doigt qui venait de le viser.
+
+   52 px, soit le plus long des six mots arrondi au pair. Les boutons font 32 px
+   et restent centrés ; l'ellipse n'est là que comme filet, pour qu'un mot plus
+   long dégrade proprement au lieu de rouvrir le décalage. */
+.reglage { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 52px; }
 .reglage__mot {
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .04em;
   color: var(--text-faint);
   white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 /* La Poké Ball du logo, en SVG. Elle portait un dégradé bicolore dessiné en
    CSS : une approximation, sans la bande noire ni le bouton central, là où le

@@ -178,6 +178,22 @@ export function nomForme(forme) {
 }
 
 /**
+ * Le nom d'une forme cosmetique — un Zarbi, un motif de Prismillon, une
+ * casquette de Pikachu.
+ *
+ * Clee par le nom FRANCAIS, et non par une cle PokeAPI comme les formes
+ * alternatives : ces variantes-la n'en ont pas. Elles sont fabriquees au
+ * chargement a partir de `data/details/cosmetic-forms.json`, et leur nom
+ * francais est ce qu'elles ont de stable. Meme convention que `t()`, donc, mais
+ * dans une table a part : 191 entrees qui n'ont rien a faire dans `ui`, et que
+ * `t()` n'a aucune raison de parcourir a chaque libelle d'interface.
+ */
+export function nomCosmetique(nom) {
+  if (langue === "fr" || !table) return nom;
+  return (table.cosmetics || {})[nom] || nom;
+}
+
+/**
  * Le nom d'une boite du Pokedex GO.
  *
  * `entree.name` est calcule une fois pour toutes au chargement des donnees, et

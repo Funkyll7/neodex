@@ -15,18 +15,29 @@
  *
  * Tout le reste est exigé, y compris les formes cosmétiques : les 28 Zarbi, les
  * 20 Prismillon, les 63 Charmilly. Un Pokémon « ★ Complet » l'est vraiment.
+ *
+ * Ce fichier vit dans `domain/` et importe pourtant `core/i18n.js` : c'est
+ * permis, i18n ne touche pas au DOM — c'est meme pour cela qu'il n'y touche
+ * pas. Les LIBELLES des cases sont du texte lu par quelqu'un, ils suivent donc
+ * la langue ; les SLOTS, eux, ne changent jamais.
  */
 
+import { langueCourante, nomCosmetique, nomForme, t } from "../core/i18n.js";
+
 /**
- * Les cases exigees par une espece ne dependent QUE du jeu de donnees : ni la
- * collection, ni les filtres, ni le theme n'y changent quoi que ce soit. Or on
- * les redemandait 2050 fois par case cochee — 1025 pour les compteurs de cases,
- * 1025 pour le « tout obtenu » des compteurs d'especes.
+ * Les cases exigees par une espece ne dependent que du jeu de donnees et de la
+ * langue : ni la collection, ni les filtres, ni le theme n'y changent quoi que
+ * ce soit. Or on les redemandait 2050 fois par case cochee — 1025 pour les
+ * compteurs de cases, 1025 pour le « tout obtenu » des compteurs d'especes.
  *
  * La cle est l'objet espece lui-meme : core/data.js le gele et n'en fabrique
  * qu'un exemplaire pour toute la vie de la page. Une WeakMap suffit donc, et le
  * jour ou un jeu de donnees serait recharge, l'ancien s'effacerait avec ses
  * entrees sans qu'on ait a y penser.
+ *
+ * Chaque entree retient la LANGUE dans laquelle elle a ete construite. Un cache
+ * qui l'ignorait aurait fige les libelles dans celle de la premiere visite —
+ * voir `requiredSlots`.
  *
  * Le tableau rendu est PARTAGE entre tous les appelants : il ne se modifie pas.
  * Aucun appelant ne le fait aujourd'hui — `completionOf` en tire un nouveau
@@ -39,11 +50,17 @@ const cache = new WeakMap();
  * @returns {{slot: string, label: string}[]}  tableau partagé, à ne pas modifier
  */
 export function requiredSlots(species) {
-  let slots = cache.get(species);
-  if (!slots) {
-    slots = buildSlots(species);
-    cache.set(species, slots);
-  }
+  // La LANGUE fait partie de la clé du cache. Les libellés sont traduits, et un
+  // cache qui ne retenait que l'espèce les figeait dans la langue de la
+  // première visite : l'infobulle d'une vignette déjà affichée serait restée en
+  // français après la bascule, celles des vignettes suivantes en anglais. Le
+  // WeakMap ne se vide pas, mais il n'a pas à l'être — on remplace l'entrée.
+  const langue = langueCourante();
+  const range = cache.get(species);
+  if (range && range.langue === langue) return range.slots;
+
+  const slots = buildSlots(species);
+  cache.set(species, { langue, slots });
   return slots;
 }
 
@@ -54,13 +71,15 @@ function buildSlots(species) {
   // Chez les espèces à formes cosmétiques, la case de base n'est pas
   // « Normal » : c'est le Zarbi A, la Prismillon Motif Floral, la Flabébé
   // Fleur Rouge. On la nomme pour que l'infobulle reste lisible.
-  const baseName = cos && cos.baseVariant ? cos.baseVariant.name : "";
+  const baseName = cos && cos.baseVariant ? nomCosmetique(cos.baseVariant.name) : "";
+  const normal = t("Normal");
+  const chromatique = t("Shiny");
 
-  slots.push({ slot: "om", label: baseName || (species.gd ? "Normal ♂" : "Normal") });
-  if (species.gd) slots.push({ slot: "of", label: "Normal ♀" });
+  slots.push({ slot: "om", label: baseName || (species.gd ? `${normal} ♂` : normal) });
+  if (species.gd) slots.push({ slot: "of", label: `${normal} ♀` });
   if (shiny) {
-    slots.push({ slot: "sm", label: baseName ? `${baseName} shiny` : species.gd ? "Shiny ♂" : "Shiny" });
-    if (species.gd) slots.push({ slot: "sf", label: "Shiny ♀" });
+    slots.push({ slot: "sm", label: baseName ? `${baseName} shiny` : species.gd ? `${chromatique} ♂` : chromatique });
+    if (species.gd) slots.push({ slot: "sf", label: `${chromatique} ♀` });
   }
 
   if (cos && !cos.info) {
@@ -68,18 +87,23 @@ function buildSlots(species) {
       // La base est deja comptee plus haut ; une variante qui ne monte pas dans
       // HOME ne peut pas etre cochee, donc pas exigee.
       if (variant.isBase || !variant.entry) continue;
-      slots.push({ slot: variant.slot, label: variant.name });
-      if (variant.shinyEntry) slots.push({ slot: variant.shinySlot, label: `${variant.name} shiny` });
+      const nom = nomCosmetique(variant.name);
+      slots.push({ slot: variant.slot, label: nom });
+      if (variant.shinyEntry) slots.push({ slot: variant.shinySlot, label: `${nom} shiny` });
     }
   }
 
   for (const form of species.forms) {
     if (!form.entry) continue;
-    slots.push({ slot: form.slot, label: form.gendered ? `${form.name} ♂` : form.name });
-    if (form.gendered) slots.push({ slot: form.slotF, label: `${form.name} ♀` });
+    // `nomForme` et non `form.name` : ces libelles finissent dans l'infobulle
+    // de chaque vignette, ou l'anglais lisait « Caninos de Hisui » au milieu
+    // d'une phrase anglaise. Les 304 traductions dorment deja dans en.json.
+    const nom = nomForme(form);
+    slots.push({ slot: form.slot, label: form.gendered ? `${nom} ♂` : nom });
+    if (form.gendered) slots.push({ slot: form.slotF, label: `${nom} ♀` });
     if (form.shinyEntry) {
-      slots.push({ slot: form.shinySlot, label: form.gendered ? `${form.name} shiny ♂` : `${form.name} shiny` });
-      if (form.gendered) slots.push({ slot: form.shinySlotF, label: `${form.name} shiny ♀` });
+      slots.push({ slot: form.shinySlot, label: form.gendered ? `${nom} shiny ♂` : `${nom} shiny` });
+      if (form.gendered) slots.push({ slot: form.shinySlotF, label: `${nom} shiny ♀` });
     }
   }
   return slots;

@@ -18,7 +18,7 @@ import { spriteImg, formImg } from "../domain/sprites.js";
 import { completionOf } from "../domain/completion.js";
 import { formeDeRepli } from "../domain/display.js";
 import { dexNumber, typeChip, typeInk } from "./common.js";
-import { nomEspece, t, tn } from "../core/i18n.js";
+import { nomCosmetique, nomEspece, nomForme, t, tn } from "../core/i18n.js";
 
 export function createGrid(ctx) {
   const grid = document.getElementById("grid");
@@ -487,7 +487,7 @@ function paint(node, species, ctx) {
 
   node.title = progress.complete
     ? `${t("Tout obtenu")} — ${progress.total} ${tn(progress.total, "case", "cases")}`
-    : (repli ? `${repli.form.name} ${t("obtenu, pas la forme de base.")} ` : "") +
+    : (repli ? `${nomForme(repli.form)} ${t("obtenu, pas la forme de base.")} ` : "") +
       `${progress.done} / ${progress.total} — ${t("reste :")} ${progress.missing.join(", ")}`;
 
   fill(
@@ -518,7 +518,7 @@ function paint(node, species, ctx) {
     fill(
       art,
       repli
-        ? formImg(repli.form, { shiny: repli.shiny, alt: repli.form.name, className: "card__img" })
+        ? formImg(repli.form, { shiny: repli.shiny, alt: nomForme(repli.form), className: "card__img" })
         : spriteImg(species.id, { shiny: showShiny, female: showFemale, alt: nomEspece(species), className: "card__img" }),
       showShiny
         ? el("span.card__spark", { title: t("Version chromatique affichée"), "aria-hidden": "true" })
@@ -561,8 +561,11 @@ function gmaxState(species, collection) {
 }
 
 function formTitle(species) {
-  const names = species.forms.map((f) => f.name);
-  if (species.cosmetic && !species.cosmetic.info) names.push(species.cosmetic.title);
+  // La pastille « ◈ 3 » liste ses formes en infobulle : elles se traduisent
+  // comme partout ailleurs — les alternatives par leur clé PokeAPI, les
+  // cosmétiques par leur nom français.
+  const names = species.forms.map(nomForme);
+  if (species.cosmetic && !species.cosmetic.info) names.push(nomCosmetique(species.cosmetic.title));
   return names.join(" · ");
 }
 
@@ -617,13 +620,17 @@ const icoFamille = (kind) =>
     : el("span.toggle__ico.toggle__ico--capture-forme", { "aria-hidden": "true" });
 
 function quickToggles(species, ctx, color) {
+  // Les NOMS des formes suivent la langue au meme titre que les suffixes qui
+  // les accompagnent. Sans cela le bouton disait « Dracaufeu Gigamax — normal »
+  // en anglais : moitie francais, moitie anglais, dans le meme libelle.
   const base = species.cosmetic && species.cosmetic.baseVariant;
+  const nomBase = base ? nomCosmetique(base.name) : "";
   const definitions = species.gd
     ? [
         ["om", [icoSexe("♂")], t("Mâle normal"), false],
         ["of", [icoSexe("♀")], t("Femelle normale"), false],
       ]
-    : [["om", [icoBase()], base ? `${base.name} — ${t("normal")}` : t("Marquer comme capturé"), false]];
+    : [["om", [icoBase()], base ? `${nomBase} — ${t("normal")}` : t("Marquer comme capturé"), false]];
 
   if (!species.noShiny) {
     if (species.gd) {
@@ -635,7 +642,7 @@ function quickToggles(species, ctx, color) {
       definitions.push([
         "sm",
         [icoShiny()],
-        base ? `${base.name} — ${t("shiny")}` : t("Marquer le shiny obtenu"),
+        base ? `${nomBase} — ${t("shiny")}` : t("Marquer le shiny obtenu"),
         true,
       ]);
     }
@@ -645,12 +652,13 @@ function quickToggles(species, ctx, color) {
   // dans la fiche, ou elles sont accompagnees de leur sprite et de leur texte.
   const primary = species.primaryForm;
   if (primary) {
-    definitions.push([primary.slot, [icoFamille(primary.kind)], `${primary.name} — ${t("forme normale")}`, false]);
+    const nomPrimaire = nomForme(primary);
+    definitions.push([primary.slot, [icoFamille(primary.kind)], `${nomPrimaire} — ${t("forme normale")}`, false]);
     if (primary.shinyEntry) {
       definitions.push([
         primary.shinySlot,
         [icoShiny(), icoFamille(primary.kind)],
-        `${primary.name} — ${t("shiny")}`,
+        `${nomPrimaire} — ${t("shiny")}`,
         true,
       ]);
     }

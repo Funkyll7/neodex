@@ -174,6 +174,16 @@ export function jouer(nom) {
 
   const ctx = audio();
   if (!ctx) return;
+  // Un contexte peut naître SUSPENDU. Il suffit que le premier son de la visite
+  // parte hors d'un geste — un retour de synchronisation, un succès qui
+  // s'annonce — et le navigateur refuse de l'ouvrir. Le navigateur en suspend
+  // aussi quand l'onglet passe longtemps à l'arrière-plan.
+  //
+  // Sans ce réveil, ce premier son manqué les rendait TOUS muets pour le reste
+  // de la visite : `audio()` rend le contexte déjà créé, et plus rien ne le
+  // relançait. `resume()` appelé hors d'un geste échoue simplement — d'où le
+  // `catch` vide, qui n'a rien à rattraper.
+  if (ctx.state === "suspended") ctx.resume().catch(() => {});
   // Au-delà de huit notes en vol, le mélange devient du bruit. On préfère en
   // sauter une plutôt que d'empiler.
   if (voix >= 8) return;

@@ -1687,6 +1687,12 @@
     "Pokémon Écarlate / Violet": "Pokémon Scarlet / Violet"
   },
   "ui": {
+    "Case cochée": "Box ticked",
+    "Case décochée": "Box unticked",
+    "GO — attrapé": "GO — caught",
+    "GO — chromatique": "GO — shiny",
+    " chromatique": " shiny",
+    "forme": "form",
     "Thème :": "Theme:",
     " — cliquer pour changer": " — click to change",
     "Sombre": "Dark",

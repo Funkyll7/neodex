@@ -33,7 +33,7 @@ import { createActiveFilters } from "./ui/active-filters.js";
 import { createUndo } from "./ui/undo.js";
 import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
 import { initLangue, initBoutonLangue } from "./ui/langue.js";
-import { t } from "./core/i18n.js";
+import { nomEspece, nomForme, t } from "./core/i18n.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
 /** Les filtres du Pokedex GO, qui ne pilotent que sa grille a lui. */
@@ -132,8 +132,12 @@ function start(dataset) {
       const etaitComplet = species ? complete(species) : false;
       collection.toggle(id, slot);
       sync.schedule(species ? species.name : `n° ${id}`);
+      // Le bandeau se traduit ; le message de commit juste au-dessus, NON. Ce
+      // dernier part dans l'historique du depot, qui est en francais de bout en
+      // bout : le faire suivre la langue de l'interface aurait melange les deux
+      // dans un journal qu'on relit des mois plus tard.
       undo.record(
-        `Case ${avant ? "décochée" : "cochée"} · ${species ? species.name : `n° ${id}`}` +
+        `${avant ? t("Case décochée") : t("Case cochée")} · ${species ? nomEspece(species) : `${t("n°")} ${id}`}` +
           ` — ${slotLabel(species, slot)}`,
         [{ id, slot, before: avant }]
       );
@@ -229,12 +233,27 @@ function start(dataset) {
       const avant = collection.has(id, slot);
       collection.toggle(id, slot);
       const species = dataset.byId.get(id);
+      // Deux noms, et c'est voulu : le francais pour le commit, la langue de
+      // l'interface pour le bandeau. Voir `onToggle`.
       const nom = species ? species.name : `n° ${id}`;
       sync.schedule(`${nom} (GO)`);
-      undo.record(`Case ${avant ? "décochée" : "cochée"} · ${nom} — ${slotLabel(species, slot)}`, [
-        { id, slot, before: avant },
-      ]);
+      const affiche = species ? nomEspece(species) : `${t("n°")} ${id}`;
+      undo.record(
+        `${avant ? t("Case décochée") : t("Case cochée")} · ${affiche} — ${slotLabel(species, slot)}`,
+        [{ id, slot, before: avant }]
+      );
       tapCase();
+      // Le son suit le geste, comme sur les cases de HOME. Le Pokédex GO était
+      // le seul endroit du site où cocher ne s'entendait pas — et le
+      // chromatique, qui est justement ce qu'on vient y chercher, passait sans
+      // un bruit. `estCaseChromatique` connaît déjà ses cases à lui : `gs` pour
+      // la forme de base, `gf<id>s` pour les formes régionales.
+      //
+      // Pas de son « complet » ici, contrairement à HOME : une entrée GO ne
+      // porte que deux cases, et l'événement qui mérite d'être entendu est le
+      // chromatique, pas le fait d'avoir coché les deux.
+      if (!avant && estCaseChromatique(slot)) jouer("shiny");
+      else jouer(avant ? "decase" : "case");
       go.refresh(id, slot);
       // La colonne de gauche affiche la progression GO tant qu'on est sur cet
       // onglet : elle doit suivre chaque case, comme elle suit celles de HOME.
@@ -651,15 +670,17 @@ const GO_LABELS = { gn: "GO — attrapé", gs: "GO — chromatique" };
  * vocabulaires pour la meme case seraient un piege a maintenance.
  */
 function slotLabel(species, slot) {
-  if (GO_LABELS[slot]) return GO_LABELS[slot];
+  // `t()` a l'USAGE et non a la definition : `GO_LABELS` est construit au
+  // chargement du module, bien avant que la table anglaise existe.
+  if (GO_LABELS[slot]) return t(GO_LABELS[slot]);
   if (!species) return slot;
   // Une forme regionale dans GO : `gf10091` / `gf10091s`. Son nom vient de la
   // forme elle-meme, `requiredSlots()` ne parle que des cases HOME.
   const go = /^gf(\d+)(s?)$/.exec(slot);
   if (go) {
     const forme = species.forms.find((f) => String(f.id) === go[1]);
-    const nom = forme ? forme.name : `forme ${go[1]}`;
-    return `GO — ${nom}${go[2] ? " chromatique" : ""}`;
+    const nom = forme ? nomForme(forme) : `${t("forme")} ${go[1]}`;
+    return `GO — ${nom}${go[2] ? t(" chromatique") : ""}`;
   }
   const entree = requiredSlots(species).find((e) => e.slot === slot);
   return entree ? entree.label : slot;
