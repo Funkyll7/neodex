@@ -24,6 +24,13 @@
    et restent centrés ; l'ellipse n'est là que comme filet, pour qu'un mot plus
    long dégrade proprement au lieu de rouvrir le décalage. */
 .reglage { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 52px; }
+/* `.icon-btn` porte `margin-left: auto` — un reste juste ailleurs : il plaque
+   la croix du tiroir et celle du lecteur de captures à droite de leur rangée.
+   Ici il mangeait tout l'espace libre à gauche et collait la pastille au bord
+   droit de sa cellule, dix pixels à côté du mot pourtant centré dessous.
+   `align-items: center` ne pouvait rien : une marge `auto` l'emporte toujours
+   sur l'alignement du conteneur. */
+.reglage .icon-btn { margin-inline: 0; }
 .reglage__mot {
   font-size: 10px;
   font-weight: 800;
