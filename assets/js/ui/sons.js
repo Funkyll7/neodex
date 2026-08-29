@@ -33,6 +33,7 @@
  */
 
 import { CONFIG } from "../config.js";
+import { t } from "../core/i18n.js";
 
 let contexte = null;
 let voix = 0;
@@ -216,9 +217,13 @@ export function initBoutonSons() {
     bouton.textContent = actifs ? "♪" : "♪̸";
     bouton.classList.toggle("icon-btn--muet", !actifs);
     bouton.setAttribute("aria-pressed", String(actifs));
+    // `t()` et non le texte brut : `ui/langue.js` traduit bien ce bouton au
+    // chargement, en relevant son libellé d'origine dans index.html — mais
+    // `peindre()` le réécrit à chaque clic, et l'écriture gagne. Le libellé
+    // revenait donc au français dès qu'on touchait au bouton.
     const titre = actifs
-      ? "Sons activés — cliquer pour les couper"
-      : "Sons coupés — cliquer pour les remettre";
+      ? t("Sons activés — cliquer pour les couper")
+      : t("Sons coupés — cliquer pour les remettre");
     bouton.title = titre;
     bouton.setAttribute("aria-label", titre);
   };

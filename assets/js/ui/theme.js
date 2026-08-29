@@ -48,6 +48,50 @@ export function initTheme() {
 
   buildPicker();
   initBouton();
+
+  // Le menu se redessine quand la langue change. Il fait partie des zones que
+  // `ui/langue.js` laisse tranquilles — au motif, juste, qu'elles passent déjà
+  // par `t()` à la source. Encore faut-il qu'elles se redessinent : sans cette
+  // ligne, les six familles et les trente-huit noms de palettes restaient en
+  // français jusqu'au rechargement.
+  document.addEventListener("funkylldex:langue", retraduirePalette);
+}
+
+/**
+ * Reconstruit la palette dans la langue courante.
+ *
+ * Il le faut à deux moments, et pour deux raisons distinctes.
+ *
+ * AU DÉMARRAGE. `initTheme()` s'exécute avant `boot()`, donc avant
+ * `await initLangue()` — et c'est voulu : c'est ce qui pose les couleurs sans
+ * attendre les données, et ce qui laisse un menu de thèmes utilisable même
+ * quand le chargement échoue. Mais passer à l'anglais demande un fichier ; à
+ * cet instant la table n'est pas là, et `t()` rend son argument français. La
+ * palette naissait donc en français même pour qui avait choisi l'anglais la
+ * fois d'avant — seules les cartes verrouillées y échappaient, parce que
+ * `redessinerRecompenses()` les repeint plus tard, une fois la table chargée.
+ *
+ * AU CHANGEMENT DE LANGUE, ensuite, par l'écouteur posé dans `initTheme()`.
+ *
+ * L'onglet ouvert est conservé : `syncPicker()` rouvre sinon la famille du
+ * thème actif, et basculer la langue en parcourant « Pixels » aurait ramené
+ * ailleurs sans qu'on l'ait demandé.
+ */
+export function retraduirePalette() {
+  // Le bouton D'ABORD, et hors de toute condition : il porte le nom du thème
+  // courant, il change donc de langue lui aussi, alors même que le thème n'a
+  // pas bougé — et il existe même quand la palette, elle, n'a pas pu se
+  // construire.
+  peindreBoutonTheme();
+
+  const root = document.getElementById("theme-picker");
+  if (!root || !root.querySelector(".themes__tab")) return;
+  const ouvert = [...root.querySelectorAll(".themes__tab")].find(
+    (onglet) => onglet.getAttribute("aria-selected") === "true"
+  );
+  const famille = ouvert && ouvert.dataset.famille;
+  buildPicker();
+  if (famille) montrerFamille(root, famille);
 }
 
 /**
@@ -145,7 +189,7 @@ function buildPicker() {
     familles.get(theme.groupe).push(theme);
   }
 
-  const onglets = el("div.themes__tabs", { role: "tablist", "aria-label": "Familles de thèmes" });
+  const onglets = el("div.themes__tabs", { role: "tablist", "aria-label": t("Familles de thèmes") });
   const panneaux = el("div.themes__panels");
 
   for (const [titre, liste] of familles) {
@@ -164,7 +208,13 @@ function buildPicker() {
           onclick: () => montrerFamille(root, cle),
           onkeydown: (event) => naviguerOnglets(root, event),
         },
-        titre
+        // Le TEXTE se traduit, la CLÉ non. `cle` vient de `idDeFamille(titre)`
+        // et sert d'identifiant DOM (`aria-controls`, `data-famille`) ; elle est
+        // aussi écrite en dur ailleurs — `redessinerRecompenses` cherche
+        // `[data-famille="recompenses"]`. Traduire le titre AVANT d'en dériver
+        // la clé aurait donné « rewards » en anglais, et ce sélecteur, muet,
+        // aurait cessé de repeindre les récompenses dans cette langue-là.
+        t(titre)
       )
     );
     panneaux.append(
@@ -218,15 +268,18 @@ function carte(theme) {
     {
       type: "button",
       dataset: { theme: theme.value },
-      title: theme.label,
-      "aria-label": `Thème ${theme.label}`,
+      title: t(theme.label),
+      "aria-label": `${t("Thème")} ${t(theme.label)}`,
       "aria-pressed": "false",
       "--sw-bg": theme.bandeau,
       "--sw-fg": theme.pastille,
       onclick: () => choisir(theme.value),
     },
     vignette(theme),
-    el("span.thopt__name", theme.label)
+    // Les noms de régions et « Émeraude » sortent déjà de la table `games`,
+    // que `t()` interroge après `ui` : dix libellés se traduisent sans qu'on
+    // ait à les redire ici.
+    el("span.thopt__name", t(theme.label))
   );
 }
 
@@ -450,9 +503,28 @@ function apply(theme) {
   // Le bouton porte le nom du theme courant : il dit ainsi ou l'on est, sans
   // avoir a ouvrir la palette. Le dessin, lui, ne change pas — c'est une roue
   // chromatique, et un quartier en prend l'accent tout seul, par le CSS.
+  peindreBoutonTheme();
+}
+
+/**
+ * Le libellé du bouton de thème.
+ *
+ * À part, parce qu'il se repeint à DEUX occasions sans rapport : quand le thème
+ * change — `apply()` — et quand la langue change, où le thème, lui, n'a pas
+ * bougé. Laissé dans `apply()`, il restait dans la langue du dernier
+ * changement de thème ; au démarrage, c'était toujours le français, puisque
+ * `initTheme()` s'exécute avant que la table anglaise soit chargée.
+ *
+ * Trois morceaux traduits séparément, et non une phrase entière : le nom du
+ * thème est l'un des trente-huit, une phrase complète en aurait donc demandé
+ * trente-huit. La ponctuation voyage AVEC les morceaux — le français met une
+ * espace avant les deux-points, l'anglais non, et « Theme : Dark » aurait trahi
+ * la traduction aussi sûrement qu'un mot resté en français.
+ */
+function peindreBoutonTheme() {
   const button = document.getElementById("theme-toggle");
-  if (button) {
-    button.title = `Thème : ${courant.label} — cliquer pour changer`;
-    button.setAttribute("aria-label", button.title);
-  }
+  if (!button) return;
+  const courant = PAR_VALEUR.get(document.documentElement.dataset.theme) || PAR_VALEUR.get("dark");
+  button.title = `${t("Thème :")} ${t(courant.label)}${t(" — cliquer pour changer")}`;
+  button.setAttribute("aria-label", button.title);
 }

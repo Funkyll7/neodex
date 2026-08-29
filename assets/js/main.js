@@ -16,7 +16,7 @@ import { HuntPlanner } from "./domain/hunt.js";
 import { applyFilters } from "./domain/filters.js";
 import { isComplete, requiredSlots } from "./domain/completion.js";
 import { progressOf, goProgressOf } from "./domain/progress.js";
-import { initTheme, majSucces } from "./ui/theme.js";
+import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
 import { initBoutonSons, jouer } from "./ui/sons.js";
 import { chassesOuvertes } from "./domain/quetes.js";
 import { estCaseChromatique } from "./domain/collection.js";
@@ -74,6 +74,11 @@ async function boot() {
     // a l'anglais demande un fichier, et sans cette attente la grille se
     // dessinerait en francais puis changerait sous les yeux.
     await initLangue();
+    // La palette des thèmes est née plus haut, dans `initTheme()`, avant que la
+    // table anglaise existe. C'est ici, et seulement ici, qu'on sait enfin dans
+    // quelle langue on est. L'événement `funkylldex:langue` ne sert à rien pour
+    // ce tour-ci : il n'est émis qu'au clic sur le bouton, pas au démarrage.
+    retraduirePalette();
     start(await loadDataset());
   } catch (error) {
     const box = document.getElementById("boot-error");

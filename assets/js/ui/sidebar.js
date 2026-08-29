@@ -172,8 +172,13 @@ export function createSidebar(ctx) {
     out.champs.game.hidden = go;
     out.champs.sort.hidden = go;
     out.legende.hidden = go;
-    out.titre.textContent = go ? "Progression Pokémon GO" : "Progression totale";
-    out.resume.textContent = go ? "Détail" : "Détail par forme";
+    // Ces deux libellés vivent HORS des zones dynamiques, donc `ui/langue.js`
+    // les traduit au chargement depuis index.html. Mais `poserContexte()` les
+    // réécrit à chaque passage entre le dex principal et celui de GO : sans
+    // `t()`, changer d'onglet ramenait le français au milieu d'une interface
+    // anglaise.
+    out.titre.textContent = go ? t("Progression Pokémon GO") : t("Progression totale");
+    out.resume.textContent = go ? t("Détail") : t("Détail par forme");
   }
 
 
