@@ -93,7 +93,12 @@ export const GO_FILTERS = [
  * jeu le range, pas par ordre alphabetique.
  */
 export function applyGoFilters(entries, state, collection) {
-  const query = (state.goSearch || "").trim().toLowerCase();
+  // Replie les accents comme le fait `applyFilters` : `species.search` est
+  // construit par core/data.js AVEC `sansAccents`, donc « melofee ». Sans ce
+  // repli ici, taper « Mélofée » ne pouvait rendre aucun resultat — et pas
+  // seulement pour les noms : « Pokémon Graine » et toutes les categories
+  // etaient dans le meme cas.
+  const query = sansAccents((state.goSearch || "").trim().toLowerCase());
   const number = numberQuery(query);
   const combinaison = combinaisonDeTypes(query, entries, (e) => e.species);
 

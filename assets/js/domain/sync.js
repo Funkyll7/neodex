@@ -150,7 +150,15 @@ export class GitHubSync {
     if (response.ok) return response.json();
 
     const detail = await response.json().catch(() => ({}));
-    throw new Error(describe(response.status, detail.message));
+    // Le STATUT voyage avec l'erreur, et c'est ce qui sert a decider plus loin.
+    // Le message, lui, passe par `t()` : le chemin de fusion apres conflit le
+    // testait avec /^Conflit/ et ne se declenchait donc jamais en anglais, ou
+    // GitHub repond « Conflict: the file changed in the repository. » — la
+    // protection contre la perte des cases d'un autre appareil etait
+    // inaccessible a la moitie des langues du site.
+    const erreur = new Error(describe(response.status, detail.message));
+    erreur.statut = response.status;
+    throw erreur;
   }
 
   /** Recupere le collection.json distant : son contenu et son sha. */
@@ -180,7 +188,7 @@ export class GitHubSync {
 
   async write(reason, retry = true, keepalive = false, marksImposees = null) {
     this.emit("busy", t("Enregistrement sur GitHub…"));
-    const payload = this.collection.toExport("site Funkylldex", marksImposees);
+    let payload = this.collection.toExport("site Funkylldex", marksImposees);
     const body = {
       message: `Collection : ${reason}`,
       content: encodeBase64(`${JSON.stringify(payload, null, 1)}\n`),
@@ -189,7 +197,27 @@ export class GitHubSync {
     };
 
     try {
-      if (!this.sha) await this.fetchRemote();
+      if (!this.sha) {
+        // On ne connait pas encore le sha : il faut lire le depot. Mais ce
+        // qu'on y lit N'EST PAS jetable — c'est peut-etre ce qu'un autre
+        // appareil a coche pendant que celui-ci etait ferme. On l'adopte avant
+        // d'ecrire, et on refait le contenu par-dessus la fusion.
+        //
+        // Sans cela, le PREMIER envoi de chaque chargement de page ecrasait
+        // silencieusement ces cases-la : on ne demandait au depot que son sha,
+        // et on lui renvoyait notre etat tel quel. Le chemin 409 protegeait les
+        // envois SUIVANTS, jamais le premier — celui-ci n'a pas de conflit a
+        // resoudre, puisqu'on vient tout juste de lire le sha exact.
+        //
+        // Sauf quand `marksImposees` est la : la fusion vient d'etre faite par
+        // le chemin de conflit, la refaire n'apporterait rien.
+        const distant = await this.fetchRemote();
+        if (!marksImposees) {
+          this.collection.adopterDistant(distant.marks);
+          payload = this.collection.toExport("site Funkylldex");
+          body.content = encodeBase64(`${JSON.stringify(payload, null, 1)}\n`);
+        }
+      }
       const text = JSON.stringify({ ...body, sha: this.sha });
       const data = await this.call(this.contentsUrl, {
         method: "PUT",
@@ -223,7 +251,7 @@ export class GitHubSync {
       // Reecrire l'etat local tel quel, comme on le faisait, effacait ce que
       // l'autre appareil venait d'ajouter : cocher sur le telephone puis laisser
       // le navigateur enregistrer suffisait a perdre la case.
-      if (retry && /^Conflit/.test(error.message)) {
+      if (retry && (error.statut === 409 || error.statut === 422)) {
         this.emit("busy", t("Fusion avec le dépôt…"));
         const distant = await this.fetchRemote();
         const fusionne = this.collection.fusionnerAvec(distant.marks);

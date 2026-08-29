@@ -2321,7 +2321,6 @@
     to   { opacity: 1; transform: translate(-50%, 0); }
   }
 }
-}
 
 /* ------------------ La progression, redécoupée par génération ------------- */
 /* Une bande de tranches sous la barre totale. Elles disent la même chose : la

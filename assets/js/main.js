@@ -295,8 +295,11 @@ function start(dataset) {
         .relire()
         .then((change) => {
           if (!change) return;
-          renderCounts();
-          renderList();
+          // Le chemin complet, et non « compteurs + grille » : une relecture peut
+          // rapporter n importe quelle case, y compris celle du Pokemon dont la
+          // fiche est ouverte, ou une boite du Pokedex GO. Les repeindre a moitie
+          // laissait la fiche affirmer le contraire de la grille, juste a cote.
+          onCollectionChange();
         })
         // Hors ligne, ou jeton absent : on garde ce qu'on affiche. Ce n'est
         // pas une erreur a montrer, juste une occasion manquee.
@@ -352,8 +355,8 @@ function start(dataset) {
       .reprendre()
       .then((change) => {
         if (!change) return;
-        renderCounts();
-        renderList();
+        // Meme raison qu au retour sur l onglet : la relecture touche tout.
+        onCollectionChange();
       })
       .catch(() => {});
   });

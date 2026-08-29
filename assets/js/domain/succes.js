@@ -59,10 +59,17 @@ export const SUCCES = [
     // une, et afficher « 8 / 9 générations » aurait décrit un autre défi.
     // L'avancement montre donc celle dont on est le plus près.
     mesure: (p) => {
-      const seaux = Object.values(p.gens || {});
+      const seaux = Object.values(p.gens || {}).filter((g) => g.total > 0);
       if (!seaux.length) return { fait: 0, total: 100 };
-      const meilleure = seaux.reduce((a, b) => (b.pct > a.pct ? b : a));
-      return { fait: meilleure.pct, total: 100 };
+      // Termine si une génération a TOUTES ses cases. On compare les COMPTES et
+      // non les pourcentages : `pct` est arrondi, et une génération à 99,6 %
+      // s'affichait donc à 100 — le thème se débloquait alors qu'il restait des
+      // cases à cocher.
+      if (seaux.some((g) => g.done === g.total)) return { fait: 100, total: 100 };
+      // Sinon on montre la plus avancée, plancher plutôt qu'arrondi et plafonnée
+      // à 99 : un cadenas au-dessus de « 100 / 100 » serait incompréhensible.
+      const meilleure = seaux.reduce((a, b) => (b.done / b.total > a.done / a.total ? b : a));
+      return { fait: Math.min(99, Math.floor((meilleure.done / meilleure.total) * 100)), total: 100 };
     },
   },
   {
