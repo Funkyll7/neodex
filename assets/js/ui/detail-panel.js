@@ -1060,11 +1060,10 @@ function shinyLine(form, huntable, games, species, ctx) {
   }
   return el(
     "p.form__shiny.form__shiny--ok",
-    `${t("✦ Chromatique chassable dans")} ${huntable.length} ${tn(
-      huntable.length,
-      "jeu",
-      "jeux"
-    )} : ${huntable.map((g) => t(g.name)).join(" · ")}.`
+    `${deuxPoints(
+      `${t("✦ Chromatique chassable dans")} ${huntable.length} ${tn(huntable.length, "jeu", "jeux")}`,
+      huntable.map((g) => t(g.name)).join(" · ")
+    )}.`
   );
 }
 
@@ -1223,7 +1222,10 @@ function whyText(species, huntable, planner) {
     .map((game) => ({ game, method: planner.methodFor(game.code, species) }))
     .sort((a, b) => oddsOf(a.method.odds) - oddsOf(b.method.odds))[0];
   return (
-    `${t("Le meilleur taux se trouve dans")} ${t(best.game.name)} : ${best.method.name}, ${best.method.odds}. ` +
+    `${deuxPoints(
+      `${t("Le meilleur taux se trouve dans")} ${t(best.game.name)}`,
+      `${best.method.name}, ${best.method.odds}`
+    )}. ` +
     t("Déplie un jeu ci-dessous pour la marche à suivre exacte ; les taux tiennent compte du Charme Chroma quand le jeu le propose.")
   );
 }
