@@ -200,11 +200,26 @@ export class HuntPlanner {
     return pool;
   }
 
-  /** Tire une quete au hasard, ou null si tout est fait. */
-  roll(collection) {
+  /**
+   * Tire une quete parmi les especes dont le chromatique manque.
+   *
+   * @param {object} collection
+   * @param {Map<number, {jeu: string}>} [ouvertes] chasses deja commencees,
+   *   indexees par espece. Voir `chassesOuvertes()` de domain/quetes.js.
+   */
+  roll(collection, ouvertes = null) {
     const pool = this.questPool(collection);
     if (!pool.length) return null;
     const pick = pool[Math.floor(Math.random() * pool.length)];
+
+    // Une chasse deja entamee sur cette espece impose SON jeu. `bestGame()`
+    // tire au sort entre jeux a taux egal : sans cette reprise, retomber sur la
+    // meme espece aurait pu designer un autre jeu, donc une autre chasse, et le
+    // compteur serait reparti de zero en laissant les rencontres deja comptees
+    // sous une entree qu'on ne retrouvait plus.
+    const dejaOuverte = ouvertes && ouvertes.get(pick.species.id);
+    if (dejaOuverte) return { id: pick.species.id, game: dejaOuverte.jeu };
+
     return { id: pick.species.id, game: pick.game.code };
   }
 }

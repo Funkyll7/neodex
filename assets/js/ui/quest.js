@@ -10,16 +10,95 @@
  * surprise quand un Pokemon ne sort jamais.
  */
 
+import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
 import { spriteImg } from "../domain/sprites.js";
 import { dexNumber, typeChip } from "./common.js";
 import { nomEspece, t, tn } from "../core/i18n.js";
+import { oddsValue } from "../domain/hunt.js";
+import {
+  chassesOuvertes,
+  chanceCumulee,
+  nouvelAppareil,
+  nouvelleCle,
+  totalPartie,
+} from "../domain/quetes.js";
+
+/**
+ * L'identifiant de CET appareil, six hexadécimaux tirés une fois.
+ *
+ * Le compteur de rencontres est rangé en une colonne par appareil — voir la
+ * démonstration en tête de `domain/quetes.js`. Cet identifiant n'est donc pas
+ * un traçage : c'est le nom de la colonne dans laquelle ce navigateur écrit, et
+ * la seule chose qui rende la fusion capable de ne rien perdre.
+ *
+ * Dans les préférences locales et non dans la collection : il décrit l'appareil,
+ * pas ce qu'on a attrapé.
+ */
+function idAppareil() {
+  try {
+    const cle = CONFIG.storage.prefs;
+    const prefs = JSON.parse(localStorage.getItem(cle) || "{}");
+    if (typeof prefs.appareil === "string" && /^[0-9a-f]{6}$/.test(prefs.appareil)) {
+      return prefs.appareil;
+    }
+    const neuf = nouvelAppareil();
+    localStorage.setItem(cle, JSON.stringify({ ...prefs, appareil: neuf }));
+    return neuf;
+  } catch {
+    // Stockage bloqué : un identifiant éphémère. Le compteur marchera pour la
+    // session et sa colonne repartira à zéro ensuite — ce qui vaut mieux que de
+    // refuser de compter.
+    return nouvelAppareil();
+  }
+}
 
 export function createQuest(ctx) {
   const card = document.getElementById("quest-card");
   const logRoot = document.getElementById("quest-log");
   const doneOut = document.getElementById("quest-done");
   const skippedOut = document.getElementById("quest-skipped");
+  const appareil = idAppareil();
+
+  /** Le tirage suivant, en reprenant le jeu d'une chasse déjà ouverte. */
+  function tirer() {
+    return ctx.planner.roll(ctx.collection, chassesOuvertes(ctx.collection.quetes));
+  }
+
+  /** La chasse en cours pour la quête affichée, ou `null` si aucune. */
+  function chasseCourante() {
+    const { quest } = ctx.store.state;
+    if (!quest) return null;
+    const vue = chassesOuvertes(ctx.collection.quetes).get(quest.id);
+    if (!vue) return null;
+    return { cle: vue.cle, part: ctx.collection.quetes.parties[vue.cle] };
+  }
+
+  /**
+   * Compte des rencontres. Crée la chasse au PREMIER appui, jamais au tirage :
+   * une chasse est un acte volontaire, une quête tirée n'est qu'une proposition.
+   */
+  function compter(delta) {
+    const { quest } = ctx.store.state;
+    if (!quest) return;
+
+    const carnet = ctx.collection.quetes;
+    const ouverte = chassesOuvertes(carnet).get(quest.id);
+    const cle = ouverte ? ouverte.cle : nouvelleCle();
+    const part = carnet.parties[cle] || { e: quest.id, j: quest.game, r: {}, s: "encours" };
+
+    const suivant = Math.max(0, (part.r[appareil] || 0) + delta);
+    const r = { ...part.r };
+    // Une colonne à zéro est RETIRÉE : la garder aurait laissé l'état différer
+    // de son export relu, et le nettoyeur écarte les valeurs nulles. Voir la loi
+    // en tête de domain/quetes.js.
+    if (suivant > 0) r[appareil] = suivant;
+    else delete r[appareil];
+
+    ctx.collection.majQuetes({ parties: { ...carnet.parties, [cle]: { ...part, r } } });
+    ctx.sync.schedule(t("compteur de chasse"));
+    dessiner();
+  }
 
   function complete(done) {
     const { quest } = ctx.store.state;
@@ -27,7 +106,23 @@ export function createQuest(ctx) {
       const species = ctx.dataset.byId.get(quest.id);
       const game = ctx.dataset.gamesByCode.get(quest.game);
       const method = ctx.planner.methodFor(quest.game, species);
+      const chasse = chasseCourante();
+      const rencontres = chasse ? totalPartie(chasse.part) : 0;
+
       ctx.collection.mark(species.id, "sm");
+
+      // La chasse passe à « prise » au lieu d'être supprimée : sous une fusion
+      // par union, une suppression est ressuscitée par l'appareil qui ne l'a pas
+      // vue. Le statut, lui, est un treillis — il ne redescend jamais.
+      if (chasse) {
+        ctx.collection.majQuetes({
+          parties: {
+            ...ctx.collection.quetes.parties,
+            [chasse.cle]: { ...chasse.part, s: "prise", f: Date.now() },
+          },
+        });
+      }
+
       // Valider une quete coche une case comme n'importe quel clic : elle doit
       // donc partir vers le depot. `onCollectionChange` ne fait que repeindre,
       // c'est `onToggle` qui programme l'ecriture — d'ou cet appel explicite.
@@ -35,7 +130,7 @@ export function createQuest(ctx) {
       ctx.store.set((s) => ({
         questDone: s.questDone + 1,
         questLog: [
-          { id: species.id, name: species.name, game: game.name, method: method.name },
+          { id: species.id, name: species.name, game: game.name, method: method.name, rencontres },
           ...s.questLog,
         ].slice(0, 8),
       }));
@@ -43,7 +138,19 @@ export function createQuest(ctx) {
     } else {
       ctx.store.set((s) => ({ questSkipped: s.questSkipped + 1 }));
     }
-    ctx.store.set({ quest: ctx.planner.roll(ctx.collection) });
+    ctx.store.set({ quest: tirer() });
+  }
+
+  /** Redessine la carte seule, sans toucher au reste de l'onglet. */
+  function dessiner() {
+    const { quest } = ctx.store.state;
+    const species = quest && ctx.dataset.byId.get(quest.id);
+    const game = quest && ctx.dataset.gamesByCode.get(quest.game);
+    if (!species || !game) {
+      fill(card, emptyQuest(ctx, complete));
+      return;
+    }
+    fill(card, questBody(species, game, ctx, complete, chasseCourante(), compter));
   }
 
   return {
@@ -52,26 +159,15 @@ export function createQuest(ctx) {
       doneOut.textContent = state.questDone;
       skippedOut.textContent = state.questSkipped;
       renderLog(logRoot, state.questLog, ctx);
-
-      const quest = state.quest;
-      if (!quest) {
-        fill(card, emptyQuest(ctx, complete));
-        return;
-      }
-      const species = ctx.dataset.byId.get(quest.id);
-      const game = ctx.dataset.gamesByCode.get(quest.game);
-      if (!species || !game) {
-        fill(card, emptyQuest(ctx, complete));
-        return;
-      }
-      fill(card, questBody(species, game, ctx, complete));
+      dessiner();
     },
   };
 }
 
+
 /* ------------------------------ carte quete ------------------------------ */
 
-function questBody(species, game, ctx, complete) {
+function questBody(species, game, ctx, complete, chasse, compter) {
   const { dataset, planner, store } = ctx;
   const method = planner.methodFor(game.code, species);
   const c1 = dataset.types[species.types[0]] || "#8b8b8b";
@@ -108,6 +204,7 @@ function questBody(species, game, ctx, complete) {
 
   const body = el(
     "div.quest__body",
+    compteurDeChasse(method, chasse, compter),
     el(
       "div.quest__facts",
       el(
@@ -243,6 +340,61 @@ function renderLog(root, entries, ctx) {
             el("div.log__meta", `${t(entry.game)} · ${entry.method}`)
           )
         )
+      )
+    )
+  );
+}
+
+/**
+ * Le compteur de rencontres — la pièce centrale de la carte.
+ *
+ * C'est le seul nombre de tout l'onglet qui bouge pendant qu'on joue ; tout le
+ * reste est un bilan. Il est donc grand, et les boutons sont larges : on appuie
+ * dessus des centaines de fois, souvent sans regarder.
+ *
+ * La barre dit la probabilité d'avoir DÉJÀ réussi après n essais, pas celle que
+ * le prochain soit le bon — celle-là ne bouge jamais, et les confondre est
+ * l'erreur classique du chasseur. Le libellé le dit en toutes lettres.
+ */
+function compteurDeChasse(method, chasse, compter) {
+  const n = chasse ? totalPartie(chasse.part) : 0;
+  const denominateur = oddsValue(method.odds);
+  const chance = chanceCumulee(n, denominateur);
+  const pct = Math.round(chance * 100);
+  // La médiane : le nombre d'essais après lequel une chasse sur deux a abouti.
+  // Plus parlant que la moyenne, qu'une longue traîne tire vers le haut.
+  const mediane = Number.isFinite(denominateur) ? Math.ceil(Math.log(0.5) / Math.log(1 - 1 / denominateur)) : null;
+
+  return el(
+    "section.chasse",
+    el(
+      "div.chasse__tete",
+      el("span.chasse__cle", t("Rencontres")),
+      el("span.chasse__n", String(n))
+    ),
+    el(
+      "div.chasse__jauge",
+      { role: "img", "aria-label": `${pct} % ${t("de chance d'avoir déjà réussi")}` },
+      el("span.chasse__jauge-fill", { style: { width: `${Math.min(100, pct)}%` } })
+    ),
+    el(
+      "p.chasse__note",
+      mediane
+        ? `${pct} % ${t("de chance d'avoir déjà réussi")} · ${t("médiane")} ${mediane}`
+        : `${pct} % ${t("de chance d'avoir déjà réussi")}`
+    ),
+    el(
+      "div.chasse__boutons",
+      el(
+        "button.btn.chasse__plus",
+        { type: "button", onclick: () => compter(1), title: t("Une rencontre de plus") },
+        "+1"
+      ),
+      el("button.btn.btn--ghost", { type: "button", onclick: () => compter(10) }, "+10"),
+      el(
+        "button.btn.btn--ghost",
+        { type: "button", onclick: () => compter(-1), title: t("Corriger une frappe en trop") },
+        "−1"
       )
     )
   );

@@ -17,6 +17,7 @@ import { applyFilters } from "./domain/filters.js";
 import { isComplete, requiredSlots } from "./domain/completion.js";
 import { progressOf, goProgressOf } from "./domain/progress.js";
 import { initTheme, majSucces } from "./ui/theme.js";
+import { chassesOuvertes } from "./domain/quetes.js";
 import { createSidebar } from "./ui/sidebar.js";
 import { createGrid } from "./ui/dex-grid.js";
 import { createGoDex } from "./ui/go-dex.js";
@@ -368,7 +369,7 @@ function start(dataset) {
     quest: document.getElementById("tab-quest"),
   };
 
-  if (!store.state.quest) store.set({ quest: planner.roll(collection) });
+  if (!store.state.quest) store.set({ quest: planner.roll(collection, chassesOuvertes(collection.quetes)) });
 
   /* ------------------------------- rendu ------------------------------- */
 

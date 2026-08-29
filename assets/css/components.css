@@ -2428,3 +2428,74 @@
   line-height: 1.25;
   color: var(--text);
 }
+
+/* --------------------------- Compteur de chasse --------------------------- */
+/* Le seul nombre de l'onglet qui bouge pendant qu'on joue — tout le reste est
+   un bilan. Il est donc grand, et ses boutons larges : on appuie dessus des
+   centaines de fois, souvent sans regarder l'écran. */
+.chasse {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 14px 16px 15px;
+  border-radius: var(--r-md);
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+}
+.chasse__tete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.chasse__cle {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.chasse__n {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.chasse__jauge {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+.chasse__jauge-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold), var(--accent));
+}
+.chasse__note {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.chasse__boutons {
+  display: flex;
+  gap: 8px;
+}
+/* Le « +1 » occupe la moitié de la rangée : c'est celui qu'on cherche du pouce
+   sans regarder, les deux autres sont des corrections occasionnelles. */
+.chasse__plus {
+  flex: 2 1 0;
+  font-size: 16px;
+  font-weight: 800;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
+.chasse__boutons .btn--ghost { flex: 1 1 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .chasse__jauge-fill { transition: width .3s ease-out; }
+}
