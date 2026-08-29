@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-08-29T06:56:21.613Z",
+ "updatedAt": "2026-08-29T15:32:06.365Z",
  "source": "site Funkylldex",
  "marks": {
   "1": {
@@ -3949,5 +3949,8 @@
   "1025": {
    "om": 1
   }
+ },
+ "quetes": {
+  "parties": {}
  }
 }
