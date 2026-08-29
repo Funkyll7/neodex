@@ -95,18 +95,34 @@
   --border: #222a40;
   --border-strong: #2a3350;
 
+  /* L'ÉCHELLE DE TEXTE, résolue sur les 130 surfaces réelles.
+   *
+   * Ces cinq tons ne servent pas que le thème sombre : vingt-six palettes en
+   * héritent sans les redéfinir, chacune avec ses propres fonds. Le relevé
+   * précédent avait mesuré sur le seul `--bg-raised` du thème sombre, et
+   * concluait que tout allait bien. Sur `--bg-hover` de Turquoise, le plus
+   * clair des fonds hérités, `--text-ghost` tombait à 2,71.
+   *
+   * `--bg-hover` n'est d'ailleurs pas un survol passager : `.card--selected`
+   * porte exactement ce fond, et une vignette reste sélectionnée tant qu'on ne
+   * change pas de fiche.
+   *
+   * Les valeurs ci-dessous sont le résultat d'une recherche numérique : le ton
+   * le plus sombre qui tienne encore sa cible sur la PIRE des 130 surfaces.
+   * L'échelle obtenue, en contraste minimal :
+   *
+   *     text 11,82  >  soft 7,92  >  muted 6,21  >  faint 5,31  >  ghost 4,53
+   *
+   * Strictement décroissante, et le dernier échelon passe AA. Elle l'était si
+   * peu avant que `--text-muted` (5,12) était plus SOMBRE que `--text-faint`
+   * (5,51) : le jeton censé dire « un peu moins important » criait plus fort
+   * que celui censé dire « beaucoup moins », et l'inversion s'héritait dans
+   * trente-trois palettes. */
   --text: #eef1f8;
-  --text-soft: #aeb8cf;
-  --text-muted: #8791ab;
-  /* Les deux derniers échelons portaient du VRAI texte — numéro national, nom
-     de jeu, libellés de formes, notes de bas de panneau — à 2,95 et 1,89 de
-     contraste sur le fond d'un panneau. Le seuil AA est à 4,5, et 1,89 sur du
-     12 px ne se lit tout simplement pas sur un téléphone.
-     Ils remontent à 4,5 et 3,5, mesurés sur `--bg-raised`. Pas au même niveau :
-     ces deux jetons existent pour dire deux poids différents, les confondre
-     aurait aplati la hiérarchie qu'ils servent à écrire. */
-  --text-faint: #8e97ad;
-  --text-ghost: #697085;
+  --text-soft: #bdc7e0;
+  --text-muted: #a4b1cf;
+  --text-faint: #9aa3bb;
+  --text-ghost: #8d96b2;
 
   --accent: var(--gold);
   --accent-ink: #3a2e00;
@@ -131,26 +147,47 @@
   --border: #dde2ee;
   --border-strong: #c6cede;
 
+  /* Même échelle que sur le sombre, atteinte en ASSOMBRISSANT — c'est le sens
+     inverse, le fond étant clair. Mesurée sur les cinq surfaces, pas sur une :
+     `--text-ghost` tenait 4,5 sur le fond enfoncé mais retombait à 3,16 sur
+     `--bg-hover`, celui d'une vignette sélectionnée.
+     6,87 / 5,62 / 5,02 / 4,55, strictement décroissante. `--text-muted` et
+     `--text-faint` étaient au passage collés à un centième l'un de l'autre
+     (4,62 et 4,63) : deux échelons indistinguables ne disent qu'une chose. */
   --text: #171d2b;
   --text-soft: #45506a;
-  --text-muted: #5f6a84;
-  /* Memes seuils que sur le sombre, atteints en assombrissant : le clair
-     etait devenu le maillon faible une fois l'autre corrige. Mesures prises
-     sur le fond enfonce, le plus clair des deux, donc le plus exigeant. */
-  --text-faint: #626a7c;
-  --text-ghost: #7e8595;
+  --text-muted: #535d74;
+  --text-faint: #5d6576;
+  --text-ghost: #656b78;
 
-  --accent: #c98f00;
-  /* Encre SOMBRE, comme dans tous les autres themes : cet accent-ci est un or
-     clair, et le blanc dessus ne donnait que 2,83 de contraste — mesure sur le
-     compteur du bouton « Filtres », seul element visible quand la colonne est
-     repliee. Les trente et un autres themes tiennent 5,7 ou mieux. */
-  --accent-ink: #2b1f00;
-  --accent-glow: rgba(201, 143, 0, .35);
-  --accent-wash: rgba(201, 143, 0, .12);
-  --accent-border: #e6d091;
+  /* UN OR ASSOMBRI, et c'est le seul thème qui en demande un.
+   *
+   * L'accent ne sert pas qu'à remplir : une cinquantaine de règles l'emploient
+   * comme COULEUR DE TEXTE — le grand pourcentage du Pokédex GO, l'état de
+   * synchronisation, « ★ Complet » sur une vignette terminée, les liens d'aide.
+   * À #c98f00 sur des fonds clairs, cela donnait 2,40 à 2,83 de contraste. Le
+   * seuil AA est à 4,5, et même celui du gros texte — 3:1 — n'était pas atteint
+   * par le pourcentage de 30 px.
+   *
+   * La correction précédente avait bien vu le 2,83, mais l'avait lu comme un
+   * problème d'ENCRE : elle a corrigé `--accent-ink`, c'est-à-dire ce qu'on
+   * écrit SUR l'accent. L'accent employé COMME texte, lui, n'a jamais été repris.
+   *
+   * #8d6400 tient 4,50 sur la plus exigeante des six surfaces claires — la
+   * tuile terminée, #f1ecdf — et monte à 5,31 sur le blanc des panneaux.
+   * L'encre repasse donc en blanc : 5,31 sur ce nouvel accent, là où l'encre
+   * sombre d'avant n'aurait plus donné que 1,7. */
+  --accent: #8d6400;
+  --accent-ink: #ffffff;
+  --accent-glow: rgba(141, 100, 0, .3);
+  --accent-wash: rgba(141, 100, 0, .1);
+  --accent-border: #c9a94e;
 
-  --gold: #c98f00;
+  /* Le même or assombri : `--gold` sert lui aussi de couleur de texte —
+     « ★ Complet » sur une vignette terminée, le nom d'une forme obtenue, le
+     grand chiffre des chromatiques. Le laisser clair aurait rouvert exactement
+     le trou qu'on vient de fermer sur `--accent`. */
+  --gold: #8d6400;
   /* --pair et --female ne sont PAS redefinis ici : ils sont figes pour tous
      les themes, juste apres ce bloc. Le glyphe ♂ / ♀ est peint en noir
      par-dessus, ces deux fonds doivent donc rester les memes tons moyens
@@ -386,6 +423,14 @@
    n'a pas de couleur à proprement parler. */
 :root[data-theme="sinnoh"] {
   color-scheme: dark;
+  /* Ses cinq surfaces sont les plus CLAIRES du fichier : le fond de survol
+     atteint #2f374a, là où les autres thèmes sombres plafonnent vers #182038.
+     L'échelle héritée du bloc sombre y retombait sous le seuil AA — mesuré,
+     `--text-ghost` à 2,41. Elle est donc relevée ici, comme le font déjà les
+     palettes de récompense. 6,31 / 5,42 / 4,64 sur la pire des cinq.
+     Assombrir les surfaces aurait été l'autre voie, mais elle aurait cassé
+     l'ordre des cinq : le survol serait passé sous `--bg-inset`. */
+  --text-muted: #afbddd; --text-faint: #a5afc8; --text-ghost: #98a1c0;
   --bg: #141822; --bg-raised: #222836; --bg-sunken: #191e29; --bg-inset: #272e3e; --bg-hover: #2f374a;
   --border: #3a4356; --border-strong: #505c76;
   --gold: #a9c9e8; --gold-soft: #e2eefa;
@@ -403,7 +448,7 @@
   --bg: #f6f2ea; --bg-raised: #fffdf9; --bg-sunken: #fbf8f2; --bg-inset: #efe9dd; --bg-hover: #eae2d3;
   --border: #e2dacb; --border-strong: #cabfa9;
 
-  --text: #221c14; --text-soft: #4d4234; --text-muted: #665b4a; --text-faint: #6c6253; --text-ghost: #8e8577;
+  --text: #221c14; --text-soft: #4d4234; --text-muted: #605646; --text-faint: #665d4f; --text-ghost: #6b6459;
 
   --gold: #a04516; --gold-soft: #e08a35;
   --accent: #a04516; --accent-ink: #fffaf3;
@@ -431,6 +476,9 @@
    c'est l'inverse exact de Turquoise, qui part de la même mer. */
 :root[data-theme="alola"] {
   color-scheme: dark;
+  /* Même cas que Sinnoh : surfaces claires, échelle héritée trop sombre.
+     Mesuré à 2,42 sur `--text-ghost` avant correction. 6,33 / 5,44 / 4,60. */
+  --text-muted: #afbddd; --text-faint: #a5afc8; --text-ghost: #97a0bf;
   --bg: #06181a; --bg-raised: #0f2a2c; --bg-sunken: #091f21; --bg-inset: #133134; --bg-hover: #193c3f;
   --border: #1d484a; --border-strong: #2a6163;
   --gold: #ffe7c2; --gold-soft: #ffab3d;
@@ -514,6 +562,8 @@
    bleu glacé de Tiplouf dans les bordures. */
 :root[data-theme="starters-sinnoh"] {
   color-scheme: dark;
+  /* Même cas que Sinnoh, dont il reprend les surfaces. 6,33 / 5,44 / 4,65. */
+  --text-muted: #aebcdc; --text-faint: #a5aec8; --text-ghost: #97a0bf;
   --bg: #121620; --bg-raised: #1f2534; --bg-sunken: #171b27; --bg-inset: #252c3d; --bg-hover: #2e364a;
   --border: #2b3f5c; --border-strong: #3c5678;
   --gold: #9fc46a; --gold-soft: #ffab5e;
@@ -555,7 +605,7 @@
   --bg: #eef5f4; --bg-raised: #ffffff; --bg-sunken: #f5faf9; --bg-inset: #e6eeee; --bg-hover: #dde8e9;
   --border: #cfdfe1; --border-strong: #a9c6cb;
 
-  --text: #10201f; --text-soft: #395051; --text-muted: #4f6668; --text-faint: #5b6d6f; --text-ghost: #78898a;
+  --text: #10201f; --text-soft: #395051; --text-muted: #485d5f; --text-faint: #536365; --text-ghost: #5c696a;
 
   --gold: #1c7049; --gold-soft: #cf7524;
   --accent: #1c7049; --accent-ink: #ffffff;
@@ -716,18 +766,29 @@
    la famille est le bout violet de Cartouche (#454259), et des tons qui passent
    sur celui-là passent sur les quatre autres. Mesuré, pas estimé.
 
-   `--text-faint` monte à 4,5 — le seuil AA plein. `--text-ghost` s'arrête à
-   3,76, soit exactement le niveau qu'il a partout ailleurs dans le site : le
-   pousser à 4,5 l'aurait rendu plus clair que `--text-faint`, donc aurait
-   inversé les deux poids que ces jetons servent justement à distinguer. */
+   QUATRE échelons et non trois. Le relevé précédent relevait `muted`, `faint`
+   et `ghost` en laissant `--text-soft` à sa valeur héritée : le jeton censé
+   dire « un peu moins important » se retrouvait plus CLAIR que celui juste
+   au-dessus de lui, dans les cinq palettes à la fois. L'inversion se voyait à
+   la mesure — muted 9,93 contre soft 8,04 sur Cartouche — sans se voir à l'œil,
+   ce qui est la pire espèce.
+
+   Il disait aussi que `--text-ghost` devait s'arrêter à 3,76 pour ne pas
+   dépasser `--text-faint`. C'était vrai à échelle figée ; en déplaçant les
+   quatre ensemble, les deux contraintes tiennent : l'ordre EST respecté et le
+   dernier échelon passe AA.
+
+   Résolu sur les 26 surfaces de la famille, tuile voilée comprise :
+   text 8,53 > soft 7,62 > muted 6,21 > faint 5,32 > ghost 4,53. */
 :root[data-theme="aube"],
 :root[data-theme="prisme"],
 :root[data-theme="cartouche"],
 :root[data-theme="duo"],
 :root[data-theme="couronne"] {
-  --text-muted: #c4ccdd;
-  --text-faint: #aab1c2;
-  --text-ghost: #9da1af;
+  --text-soft: #d9e5ff;
+  --text-muted: #c8d0e1;
+  --text-faint: #b9c0d3;
+  --text-ghost: #adb1c1;
 }
 
 /* Aube — la nuit indigo prise de biais par un lever orange. Deux couleurs qui
