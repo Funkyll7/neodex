@@ -16,6 +16,7 @@ import { spriteImg } from "../domain/sprites.js";
 import { dexNumber, typeChip } from "./common.js";
 import { nomEspece, t, tn } from "../core/i18n.js";
 import { oddsValue } from "../domain/hunt.js";
+import { progressOf } from "../domain/progress.js";
 import { symboleJeu } from "./symboles-jeux.js";
 import {
   chassesOuvertes,
@@ -57,8 +58,7 @@ function idAppareil() {
 export function createQuest(ctx) {
   const card = document.getElementById("quest-card");
   const logRoot = document.getElementById("quest-log");
-  const doneOut = document.getElementById("quest-done");
-  const skippedOut = document.getElementById("quest-skipped");
+  const statsRoot = document.getElementById("quest-stats");
   const appareil = idAppareil();
 
   /** Le tirage suivant, en reprenant le jeu d'une chasse déjà ouverte. */
@@ -99,6 +99,7 @@ export function createQuest(ctx) {
     ctx.collection.majQuetes({ parties: { ...carnet.parties, [cle]: { ...part, r } } });
     ctx.sync.schedule(t("compteur de chasse"));
     dessiner();
+    renderStats(statsRoot, ctx);
   }
 
   function complete(done) {
@@ -157,8 +158,7 @@ export function createQuest(ctx) {
   return {
     render() {
       const state = ctx.store.state;
-      doneOut.textContent = state.questDone;
-      skippedOut.textContent = state.questSkipped;
+      renderStats(statsRoot, ctx);
       renderLog(logRoot, state.questLog, ctx);
       dessiner();
     },
@@ -337,17 +337,28 @@ function renderLog(root, entries, ctx) {
     root,
     el(
       "div.log",
-      entries.map((entry) =>
-        el(
+      entries.map((entry) => {
+        const jeu = [...ctx.dataset.gamesByCode.values()].find((g) => g.name === entry.game);
+        return el(
           "div.log__item",
           spriteImg(entry.id, { shiny: true, alt: nomJournal(entry, ctx), className: "log__img" }),
           el(
-            "div",
+            "div.log__corps",
             el("div.log__name", `✦ ${nomJournal(entry, ctx)}`),
-            el("div.log__meta", `${t(entry.game)} · ${entry.method}`)
-          )
-        )
-      )
+            el(
+              "div.log__meta",
+              [
+                jeu ? symboleJeu(jeu.code, 13) : null,
+                `${t(entry.game)} · ${entry.method}`,
+              ].filter(Boolean)
+            )
+          ),
+          // Le nombre de rencontres qu'a pris la prise. Absent des entrées
+          // d'avant le compteur : on n'affiche alors rien plutôt qu'un zéro,
+          // qui aurait laissé croire à une chance insolente.
+          entry.rencontres ? el("span.log__n", String(entry.rencontres)) : null
+        );
+      })
     )
   );
 }
@@ -402,6 +413,49 @@ function compteurDeChasse(method, chasse, compter) {
         "button.btn.btn--ghost",
         { type: "button", onclick: () => compter(-1), title: t("Corriger une frappe en trop") },
         "−1"
+      )
+    )
+  );
+}
+
+/**
+ * Les quatre compteurs de tête.
+ *
+ * Trois viennent de la collection et se DÉDUISENT — chromatiques, chasses
+ * ouvertes, rencontres cumulées ; le quatrième, les quêtes accomplies, vient de
+ * la session. C'est volontaire : les trois premiers décrivent la collection et
+ * doivent être vrais partout, le dernier décrit ce qu'on a fait aujourd'hui.
+ *
+ * « Rencontres cumulées » compte TOUTES les colonnes de toutes les parties,
+ * celles des autres appareils comprises. C'est le seul chiffre du site qui dise
+ * le temps passé plutôt que le résultat obtenu, et c'est pour ça qu'il vaut la
+ * peine : une collection ne montre que ce qu'on a fini.
+ */
+function renderStats(root, ctx) {
+  if (!root) return;
+  const p = progressOf(ctx.dataset.species, ctx.collection);
+  const carnet = ctx.collection.quetes;
+  const ouvertes = chassesOuvertes(carnet).size;
+  const cumul = Object.values(carnet.parties || {}).reduce((s, part) => s + totalPartie(part), 0);
+
+  const cases = [
+    { cle: t("Chromatiques"), val: p.shiny.done, note: `/ ${p.shiny.total}`, fort: true },
+    { cle: t("Quêtes accomplies"), val: ctx.store.state.questDone },
+    { cle: t("Chasses en cours"), val: ouvertes },
+    { cle: t("Rencontres comptées"), val: cumul },
+  ];
+
+  fill(
+    root,
+    cases.map((c) =>
+      el(
+        "div.qstat" + (c.fort ? ".qstat--fort" : ""),
+        el("span.qstat__cle", c.cle),
+        el(
+          "span.qstat__val",
+          String(c.val),
+          c.note ? el("span.qstat__note", ` ${c.note}`) : null
+        )
       )
     )
   );

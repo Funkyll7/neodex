@@ -400,14 +400,14 @@
 
     <!-- ------------------------------- QUETES ------------------------------- -->
     <section id="tab-quest" class="tabpanel" aria-label="Quêtes de shiny hunt" hidden>
+      <!-- Les compteurs EN TÊTE, et non relégués sous la carte comme avant :
+           c'est la première chose qu'on vient regarder en ouvrant l'onglet, et
+           les laisser en bas obligeait à faire défiler pour savoir où l'on en
+           est. Le contenu est posé par ui/quest.js. -->
+      <div id="quest-stats" class="qstats" aria-label="Compteurs de chasse"></div>
       <div class="quest-layout">
         <div id="quest-card" class="panel quest"></div>
         <div class="quest-side">
-          <div class="panel stat-card">
-            <h2 class="panel__label">Quêtes accomplies</h2>
-            <p class="stat-card__value" id="quest-done">0</p>
-            <p class="stat-card__note"><span id="quest-skipped">0</span> quêtes passées</p>
-          </div>
           <div class="panel">
             <h2 class="panel__label">Journal de chasse</h2>
             <div id="quest-log"></div>

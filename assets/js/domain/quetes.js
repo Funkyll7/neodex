@@ -205,6 +205,11 @@ export function chassesOuvertes(carnet) {
   const ouvertes = new Map();
   for (const [cle, part] of Object.entries((carnet && carnet.parties) || {})) {
     if (part.s !== "encours") continue;
+    // Une chasse sans aucune rencontre n en est pas une : c est une entree
+    // laissee par un +1 aussitot repris. La compter aurait affiche « 1 chasse en
+    // cours » sous un compteur a zero. L entree reste dans le carnet — sous une
+    // union on ne supprime pas — mais elle ne se montre plus.
+    if (!Object.values(part.r).some((n) => n > 0)) continue;
     const vue = ouvertes.get(part.e);
     if (!vue || cle < vue.cle) ouvertes.set(part.e, { cle, jeu: part.j });
   }
