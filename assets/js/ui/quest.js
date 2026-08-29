@@ -16,6 +16,7 @@ import { spriteImg } from "../domain/sprites.js";
 import { dexNumber, typeChip } from "./common.js";
 import { nomEspece, t, tn } from "../core/i18n.js";
 import { oddsValue } from "../domain/hunt.js";
+import { symboleJeu } from "./symboles-jeux.js";
 import {
   chassesOuvertes,
   chanceCumulee,
@@ -191,7 +192,13 @@ function questBody(species, game, ctx, complete, chasse, compter) {
         "div.quest__id",
         el("div.quest__num", dexNumber(species.id)),
         el("h2.quest__name", `✦ ${nomEspece(species)}`),
-        el("p.quest__where", [`${t("dans")} `, el("strong", t(game.name))]),
+        el(
+          "p.quest__where",
+          // L'emblème du jeu avant son nom. `.filter(Boolean)` parce qu'un code
+          // sans symbole rend `null` : le jeu s'affiche alors sans emblème au
+          // lieu de casser la ligne.
+          [`${t("dans")} `, symboleJeu(game.code, 15), el("strong", t(game.name))].filter(Boolean)
+        ),
         el(
           "div.detail__chips",
           // `type` et non `t` : une variable nommee `t` masquerait la fonction
