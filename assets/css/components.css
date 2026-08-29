@@ -2942,3 +2942,32 @@
   color: var(--text);
 }
 .chasses__img { width: 26px; height: 26px; object-fit: contain; }
+
+/* La bande de disponibilite : vingt-trois emblemes, un par jeu, avant le
+   tableau. Vingt-trois lignes de texte etaient le bloc le plus long de la fiche
+   et le moins scannable — pour savoir « est-ce que je peux l attraper quelque
+   part ? », il fallait lire vingt-trois fois. */
+.avail-bande {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: var(--sp-3);
+}
+.avail-bande__jeu {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+  /* Absent : le jeu existe, il ne le contient pas. On l efface sans le retirer —
+     un trou dans la bande se compterait mal, et la position de chaque jeu est ce
+     qui la rend lisible d une fiche a l autre. */
+  opacity: .3;
+}
+.avail-bande__jeu--on {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--c) 60%, transparent);
+  background: color-mix(in srgb, var(--c) 20%, var(--bg-inset));
+}

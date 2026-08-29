@@ -560,7 +560,19 @@ function start(dataset) {
     // site pour continuer ce qu'on faisait, pas pour rechoisir son Pokedex.
     if (changed.has("tab") || GO_KEYS.some((key) => changed.has(key))) saveFilters(state);
 
-    if (GO_KEYS.some((key) => changed.has(key))) go.render();
+    if (GO_KEYS.some((key) => changed.has(key))) {
+      go.render();
+      // Les pastilles de statut DOIVENT suivre, et elles ne suivaient pas : ce
+      // bloc ne redessinait que la grille. Le filtre s'appliquait donc — la
+      // liste changeait bien — mais « Tous » restait allumé au-dessus d'une
+      // liste filtrée, et rien ne disait lequel des quatre était actif.
+      //
+      // `syncActive()` savait déjà lire `goStatus` plutôt que `status` selon
+      // l'onglet ; il n'était appelé que par le bloc des filtres HOME, quinze
+      // lignes plus haut.
+      sidebar.syncActive();
+      activeFilters.render();
+    }
 
     if (changed.has("tab")) {
       renderTabs();

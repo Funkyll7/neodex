@@ -209,7 +209,11 @@ export function createSidebar(ctx) {
    * par main.js quand un filtre bouge.
    */
   function syncActive() {
-    searchInput.value = store.state.search;
+    // Le champ de recherche appartient à l'onglet ouvert, comme la génération
+    // juste en dessous. Il lisait toujours `search`, celui du Pokédex HOME :
+    // maintenant que `syncActive()` s'exécute aussi sur les filtres de GO, ce
+    // raccourci aurait écrasé la recherche GO à chaque clic sur une pastille.
+    searchInput.value = surGo() ? store.state.goSearch : store.state.search;
     genSelect.value = surGo() ? store.state.goGen : store.state.gen;
     formSelect.value = store.state.form;
     gameSelect.value = store.state.game;

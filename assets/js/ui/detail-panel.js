@@ -1087,10 +1087,36 @@ function availabilitySection(species, { dataset }) {
     return section;
   }
 
+  const lignes = availabilityRows(species, dataset.games);
+
   section.append(
     el(
       "p.detail__help",
       t("Vert = capturable en jeu et shiny huntable · orange = capturable mais shiny impossible · violet = uniquement par événement, shiny possible · bleu = événement et shiny impossible.")
+    ),
+    // LA BANDE, avant le tableau.
+    //
+    // Vingt-trois lignes de texte, c'était le bloc le plus long de la fiche et
+    // le moins scannable : pour savoir « est-ce que je peux l'attraper quelque
+    // part ? », il fallait lire vingt-trois fois. La bande répond d'un coup
+    // d'œil — les couleurs disent l'état, les emblèmes disent lequel — et le
+    // tableau reste dessous pour qui veut le détail.
+    el(
+      "div.avail-bande",
+      { role: "img", "aria-label": resumeDisponibilite(lignes) },
+      lignes.map((row) =>
+        el(
+          "span",
+          {
+            class: row.present ? "avail-bande__jeu avail-bande__jeu--on" : "avail-bande__jeu",
+            "--c": row.color || "transparent",
+            title: `${t(row.game.name)} — ${t(row.presenceLabel)}${
+              row.present ? ` · ${t("Shiny")} ${t(row.shinyLabel)}` : ""
+            }`,
+          },
+          embleme(row.game.code, 18)
+        )
+      )
     ),
     el(
       "div.games",
@@ -1100,7 +1126,7 @@ function availabilitySection(species, { dataset }) {
         el("span", t("Présence")),
         el("span.games__cell--shiny", t("Shiny"))
       ),
-      availabilityRows(species, dataset.games).map((row) =>
+      lignes.map((row) =>
         el(
           "div",
           {
@@ -1132,6 +1158,19 @@ function availabilitySection(species, { dataset }) {
     )
   );
   return section;
+}
+
+/**
+ * Ce qu'un lecteur d'écran entend à la place de la bande.
+ *
+ * Vingt-trois emblèmes colorés ne disent rien à qui ne les voit pas, et les
+ * annoncer un par un ferait vingt-trois lignes avant d'arriver au tableau — qui
+ * les répète déjà, en mieux. Une phrase de synthèse, donc, et le tableau juste
+ * en dessous pour le détail.
+ */
+function resumeDisponibilite(lignes) {
+  const presents = lignes.filter((r) => r.present).length;
+  return `${presents} ${tn(presents, "jeu", "jeux")} ${t("sur")} ${lignes.length}`;
 }
 
 /* ------------------------------ shiny hunt ------------------------------- */
