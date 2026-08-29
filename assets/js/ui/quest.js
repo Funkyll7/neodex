@@ -132,7 +132,11 @@ export function createQuest(ctx) {
       ctx.store.set((s) => ({
         questDone: s.questDone + 1,
         questLog: [
-          { id: species.id, name: species.name, game: game.name, method: method.name, rencontres },
+          // `code` en plus du nom : le journal retrouvait le jeu en comparant son
+          // NOM, ce qui n a marche que par chance — le nom stocke est le francais
+          // brut des donnees, jamais la version traduite. Le code, lui, ne depend
+          // d aucune langue. Le nom reste pour les entrees deja ecrites.
+          { id: species.id, name: species.name, game: game.name, code: game.code, method: method.name, rencontres },
           ...s.questLog,
         ].slice(0, 8),
       }));
@@ -338,7 +342,10 @@ function renderLog(root, entries, ctx) {
     el(
       "div.log",
       entries.map((entry) => {
-        const jeu = [...ctx.dataset.gamesByCode.values()].find((g) => g.name === entry.game);
+        // Par le code quand il est la, par le nom pour les entrees d avant.
+        const jeu =
+          (entry.code && ctx.dataset.gamesByCode.get(entry.code)) ||
+          [...ctx.dataset.gamesByCode.values()].find((g) => g.name === entry.game);
         return el(
           "div.log__item",
           spriteImg(entry.id, { shiny: true, alt: nomJournal(entry, ctx), className: "log__img" }),
