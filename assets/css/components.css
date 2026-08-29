@@ -2692,3 +2692,91 @@
 @media (hover: hover) {
   .log__oubli:hover { color: var(--danger); background: var(--bg-hover); }
 }
+
+/* ============================= Paramètres ================================= */
+/* Le panneau s'ouvre sous l'en-tête, comme la palette de thèmes, et il en
+   reprend la mise en page : même retrait négatif pour se coller au bouton, même
+   `flex: none` — la barre latérale est une colonne flex dont le contenu déborde,
+   ses enfants se laissent donc écraser jusqu'à zéro s'ils ne s'y opposent pas. */
+.params {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: calc(-1 * var(--sp-2));
+  padding: var(--sp-3);
+  flex: none;
+  border-radius: var(--r-lg);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+}
+.params[hidden] { display: none; }
+
+/* Une ligne de réglage : la case, puis le titre et son explication.
+   `align-items: start` et non `center` : l'explication fait souvent deux lignes,
+   et centrer aurait fait descendre la case au milieu du paragraphe, loin du
+   titre auquel elle se rapporte. */
+.param {
+  display: flex;
+  align-items: start;
+  gap: var(--sp-2);
+}
+/* La case garde celle du navigateur, teintée à l'accent du thème. Une case
+   redessinée en CSS perd le style natif de la coche, l'état indéterminé et le
+   comportement au clavier — pour un gain purement décoratif. */
+.param__case {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+/* Tout le bloc de texte est le `<label>` : la zone tactile couvre alors le titre
+   ET l'explication, soit une cible de la largeur du panneau au lieu des 17 px
+   de la case. C'est ce qui rend le réglage utilisable au pouce. */
+.param__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  min-width: 0;
+}
+.param__titre {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.param__aide {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--text-faint);
+}
+.param__note {
+  margin: 0;
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--text-ghost);
+}
+
+/* ============================ Mode compact ================================
+   Le nom, les types et la ligne de disponibilité disparaissent ; restent le
+   sprite, le numéro, les pastilles d'état et les cases. C'est ce qu'on regarde
+   quand on balaie mille espèces à la recherche de ce qui manque — le nom, on le
+   lit sur le sprite.
+
+   Tout se joue sur un attribut de <html> : aucune vignette n'est reconstruite,
+   la bascule ne coûte qu'un repaint. C'est aussi ce qui la rend instantanée sur
+   1025 vignettes. */
+[data-compact] .card__name,
+[data-compact] .card__types,
+[data-compact] .card__foot { display: none; }
+
+[data-compact] .card__select { padding-bottom: var(--sp-1); }
+[data-compact] .card__art { min-height: 0; }
+/* Les colonnes rétrécissent avec les vignettes : sans cela on aurait gagné de
+   la hauteur sans gagner une seule colonne, et le mode compact n'aurait rien
+   montré de plus. */
+[data-compact] #grid { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+[data-compact] .card__img { max-width: 76px; }

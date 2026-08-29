@@ -52,6 +52,7 @@
 <link rel="modulepreload" href="assets/js/core/dom.js">
 <link rel="modulepreload" href="assets/js/core/store.js">
 <link rel="modulepreload" href="assets/js/core/i18n.js">
+<link rel="modulepreload" href="assets/js/core/prefs.js">
 <link rel="modulepreload" href="assets/js/domain/collection.js">
 <link rel="modulepreload" href="assets/js/domain/completion.js">
 <link rel="modulepreload" href="assets/js/domain/progress.js">
@@ -78,6 +79,7 @@
 <link rel="modulepreload" href="assets/js/domain/reco.js">
 <link rel="modulepreload" href="assets/js/ui/common.js">
 <link rel="modulepreload" href="assets/js/ui/langue.js">
+<link rel="modulepreload" href="assets/js/ui/parametres.js">
 <link rel="modulepreload" href="assets/js/domain/succes.js">
 <link rel="modulepreload" href="assets/js/domain/quetes.js">
 <link rel="modulepreload" href="assets/js/ui/symboles-jeux.js">
@@ -109,12 +111,12 @@
 
   <!-- ============================= BARRE LATERALE ============================= -->
   <aside id="sidebar" class="sidebar" aria-label="Filtres et progression">
-    <!-- Le nom sur une ligne, les trois réglages sur la suivante.
-         Ils étaient tous sur une seule ligne, et la barre latérale ne fait que
-         268 px : à trois boutons le dernier sortait du conteneur et passait
+    <!-- Le nom sur une ligne, les trois entrées sur la suivante.
+         Elles étaient toutes sur une seule ligne, et la barre latérale ne fait
+         que 268 px : à trois boutons le dernier sortait du conteneur et passait
          sous le panneau principal. Deux lignes leur donnent la place, et
-         rassemblent au même endroit ce qui règle l'apparence — le son, la
-         langue, le thème. -->
+         rassemblent au même endroit ce qui règle l'apparence — les paramètres,
+         la langue, le thème. -->
     <div class="brand">
       <div class="brand__ligne">
         <!-- Le logo du site lui-meme, et non plus une pastille bicolore dessinee
@@ -130,18 +132,22 @@
         <button type="button" id="nav-close" class="icon-btn nav-close"
                 title="Fermer les filtres" aria-label="Fermer les filtres" hidden>✕</button>
       </div>
-      <!-- Les trois réglages d'apparence, et ce sont les seuls. Chaque bouton
-           porte son état COURANT — « FR » quand on lit du français, « ♪ » quand
-           le son marche — et non ce qu'on obtiendrait en cliquant : un bouton
-           qui affiche l'action se lit dans les deux sens, et on ne sait plus
-           lequel est vrai. -->
+      <!-- Trois entrées, et ce sont les seules. Les deux dernières portent leur
+           état COURANT — « FR » quand on lit du français — et non ce qu'on
+           obtiendrait en cliquant : un bouton qui affiche l'action se lit dans
+           les deux sens, et on ne sait plus lequel est vrai.
+
+           Le son était le premier des trois ; il est descendu dans les
+           paramètres avec la densité de la grille. Ce sont des préférences
+           d'appareil, qu'on règle une fois et qu'on oublie — alors que la langue
+           et surtout le thème se changent souvent, et méritent de rester à un
+           seul appui. -->
       <div class="brand__reglages">
         <span class="reglage">
-          <button type="button" id="sound-toggle" class="icon-btn"
-                  title="Sons activés — cliquer pour les couper"
-                  aria-label="Sons activés — cliquer pour les couper"
-                  aria-pressed="true">♪</button>
-          <span class="reglage__mot" aria-hidden="true">Sons</span>
+          <button type="button" id="settings-toggle" class="icon-btn"
+                  aria-expanded="false" aria-controls="settings-panel"
+                  title="Paramètres" aria-label="Paramètres">⚙</button>
+          <span class="reglage__mot" aria-hidden="true">Paramètres</span>
         </span>
         <span class="reglage">
           <button type="button" id="lang-toggle" class="icon-btn icon-btn--lang"
@@ -161,6 +167,12 @@
     <!-- Le bouton de la marque est la seule entrée vers les thèmes : un repli
          « Thème » séparé faisait doublon avec lui. -->
     <div id="theme-picker" class="themes" role="group" aria-label="Choix du thème" hidden></div>
+
+    <!-- Rempli par ui/parametres.js, et vide dans le HTML livré : son contenu
+         dépend de préférences qu'on ne connaît qu'une fois le localStorage lu.
+         Le poser en dur ici aurait affiché des cases décochées avant de les
+         corriger, ce qui se voit. -->
+    <div id="settings-panel" class="params" role="group" aria-label="Paramètres" hidden></div>
 
     <!-- Un seul panneau pour toute la progression : le pourcentage global, puis
          le détail par famille de formes et les trois angles généraux. Les

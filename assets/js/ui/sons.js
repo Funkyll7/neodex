@@ -32,8 +32,7 @@
  * naît déjà actif.
  */
 
-import { CONFIG } from "../config.js";
-import { t } from "../core/i18n.js";
+import { reglage, poserReglage } from "../core/prefs.js";
 
 let contexte = null;
 let voix = 0;
@@ -53,27 +52,20 @@ function audio() {
   return contexte;
 }
 
-/** L'utilisateur veut-il des sons ? Oui par défaut. */
+/**
+ * L'utilisateur veut-il des sons ? OUI par défaut.
+ *
+ * C'est le seul réglage du site dont le défaut est « allumé », et c'est
+ * délibéré : personne ne va chercher dans les paramètres un retour sonore dont
+ * il ignore l'existence. On le donne, et on le coupe d'un clic.
+ */
 export function sonsActifs() {
-  try {
-    const prefs = JSON.parse(localStorage.getItem(CONFIG.storage.prefs) || "{}");
-    return prefs.sons !== false;
-  } catch {
-    return true;
-  }
+  return reglage("sons", true);
 }
 
 /** Bascule la préférence et rend son nouvel état. */
 export function basculerSons() {
-  const suivant = !sonsActifs();
-  try {
-    const cle = CONFIG.storage.prefs;
-    const prefs = JSON.parse(localStorage.getItem(cle) || "{}");
-    localStorage.setItem(cle, JSON.stringify({ ...prefs, sons: suivant }));
-  } catch {
-    /* stockage bloqué : la préférence ne survivra pas au rechargement */
-  }
-  return suivant;
+  return poserReglage("sons", !sonsActifs());
 }
 
 /**
@@ -201,47 +193,5 @@ export function jouer(nom) {
       volume: recette.volume,
       forme: recette.forme,
     });
-  });
-}
-
-/**
- * Câble le bouton de l'en-tête.
- *
- * Le bouton porte l'état COURANT — « ♪ » quand les sons marchent, barré quand
- * ils sont coupés — et non ce qu'on obtiendrait en cliquant : un bouton qui
- * montre l'action se lit dans les deux sens, et on ne sait plus lequel est vrai.
- * Même raisonnement que pour le bouton de langue, expliqué dans index.html.
- *
- * Un aperçu se joue à l'activation : sans lui, on coupe et on rallume sans
- * jamais savoir ce qu'on vient de choisir.
- */
-export function initBoutonSons() {
-  const bouton = document.getElementById("sound-toggle");
-  if (!bouton) return;
-
-  const peindre = (actifs) => {
-    // Le libelle porte l ETAT, jamais l action : « Sons » quand ils marchent,
-    // « Sons coupes » quand ils ne marchent pas. Un bouton qui annonce ce qu il
-    // ferait se lit dans les deux sens, et on ne sait plus lequel est vrai —
-    // meme raisonnement que pour le bouton de langue.
-    bouton.textContent = actifs ? "♪" : "♪̸";
-    bouton.classList.toggle("icon-btn--muet", !actifs);
-    bouton.setAttribute("aria-pressed", String(actifs));
-    // `t()` et non le texte brut : `ui/langue.js` traduit bien ce bouton au
-    // chargement, en relevant son libellé d'origine dans index.html — mais
-    // `peindre()` le réécrit à chaque clic, et l'écriture gagne. Le libellé
-    // revenait donc au français dès qu'on touchait au bouton.
-    const titre = actifs
-      ? t("Sons activés — cliquer pour les couper")
-      : t("Sons coupés — cliquer pour les remettre");
-    bouton.title = titre;
-    bouton.setAttribute("aria-label", titre);
-  };
-
-  peindre(sonsActifs());
-  bouton.addEventListener("click", () => {
-    const actifs = basculerSons();
-    peindre(actifs);
-    if (actifs) jouer("shiny");
   });
 }

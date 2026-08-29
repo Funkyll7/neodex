@@ -17,7 +17,8 @@ import { applyFilters } from "./domain/filters.js";
 import { isComplete, requiredSlots } from "./domain/completion.js";
 import { progressOf, goProgressOf } from "./domain/progress.js";
 import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
-import { initBoutonSons, jouer } from "./ui/sons.js";
+import { jouer } from "./ui/sons.js";
+import { initParametres, appliquerParametres } from "./ui/parametres.js";
 import { chassesOuvertes } from "./domain/quetes.js";
 import { estCaseChromatique } from "./domain/collection.js";
 
@@ -41,7 +42,11 @@ const GO_KEYS = ["goSearch", "goGen", "goStatus", "goType"];
 
 migrateStorage();
 initTheme();
-initBoutonSons();
+// Les réglages AVANT le premier rendu, et même avant les données : le mode
+// compact n'est qu'un attribut sur <html>, et le poser tôt évite que la grille
+// naisse en taille normale pour se contracter ensuite sous les yeux.
+appliquerParametres();
+initParametres();
 boot();
 
 /**
