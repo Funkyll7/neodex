@@ -12,6 +12,7 @@ import { setSpritesEnPixels } from "../domain/sprites.js";
 import { sansAccents } from "../core/data.js";
 import { evaluerSucces } from "../domain/succes.js";
 import { t } from "../core/i18n.js";
+import { jouer } from "./sons.js";
 
 const KEY = CONFIG.storage.prefs;
 
@@ -99,6 +100,7 @@ function choisir(theme) {
   apply(theme);
   writePrefs({ ...readPrefs(), theme });
   syncPicker();
+  jouer("theme");
 
   // Passer aux sprites en pixels change les ADRESSES des images, pas seulement
   // les couleurs : les <img> deja dans la page pointent encore vers les rendus
@@ -399,6 +401,7 @@ function annoncer(nouveaux) {
     el("span.bandeau__suite", t("Une nouvelle palette vous attend dans les thèmes."))
   );
   document.body.append(bandeau);
+  jouer("succes");
   setTimeout(() => bandeau.remove(), 7000);
 }
 

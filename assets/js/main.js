@@ -17,7 +17,7 @@ import { applyFilters } from "./domain/filters.js";
 import { isComplete, requiredSlots } from "./domain/completion.js";
 import { progressOf, goProgressOf } from "./domain/progress.js";
 import { initTheme, majSucces } from "./ui/theme.js";
-import { initBoutonSons, jouerShiny } from "./ui/sons.js";
+import { initBoutonSons, jouer } from "./ui/sons.js";
 import { chassesOuvertes } from "./domain/quetes.js";
 import { estCaseChromatique } from "./domain/collection.js";
 
@@ -132,17 +132,23 @@ function start(dataset) {
           ` — ${slotLabel(species, slot)}`,
         [{ id, slot, before: avant }]
       );
+      const finiMaintenant = Boolean(species && !etaitComplet && complete(species));
+
       // Deux impulsions quand le Pokemon vient de basculer sur « complet » :
       // c'est le seul evenement de la session qui merite d'etre remarque sans
       // regarder l'ecran.
-      if (species && !etaitComplet && complete(species)) tapComplet();
+      if (finiMaintenant) tapComplet();
       else tapCase();
-      // Le son ne se joue qu a la COCHE, jamais au decochage : une case retiree
-      // n est pas une reussite, et la recompenser aurait ete absurde. Il est
-      // reserve aux chromatiques — on coche des milliers de cases ordinaires, et
-      // leur donner un son aurait fait un crepitement qu on aurait coupe au bout
-      // d une minute.
-      if (!avant && estCaseChromatique(slot)) jouerShiny();
+
+      // Le son suit le geste, et un seul se joue : espece terminee, sinon
+      // chromatique coche, sinon la coche ou la decoche ordinaire. Les volumes
+      // sont doses par RARETE dans ui/sons.js — un tic de case y est deux fois
+      // et demie plus discret qu une quete reussie, et un limiteur empeche deux
+      // tics de se declencher a moins de 50 ms. Sans quoi cocher au pouce en
+      // rafale aurait fait une bouillie.
+      if (finiMaintenant) jouer("complet");
+      else if (!avant && estCaseChromatique(slot)) jouer("shiny");
+      else jouer(avant ? "decase" : "case");
       onCollectionChange(id);
     },
 
@@ -429,7 +435,10 @@ function start(dataset) {
             title: long,
             "aria-label": long,
             "aria-selected": String(store.state.tab === value),
-            onclick: () => store.set({ tab: value }),
+            onclick: () => {
+              jouer("onglet");
+              store.set({ tab: value });
+            },
           },
           logo ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" }) : null,
           el("span.tab__long", long),

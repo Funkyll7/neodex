@@ -13,6 +13,7 @@ import { resumeDuRapport } from "../domain/sync.js";
 import { progressOf } from "../domain/progress.js";
 import { downloadJson } from "./common.js";
 import { el } from "../core/dom.js";
+import { jouer } from "./sons.js";
 
 export function createSaveControls(ctx) {
   const note = document.getElementById("dirty-note");
@@ -159,7 +160,18 @@ function createSyncControls(ctx) {
     render();
   });
 
-  sync.subscribe(() => render());
+  // Un son sur l issue d une synchronisation, et sur elle seule : « busy » et
+  // « attente » passent en silence, sinon chaque enregistrement automatique se
+  // serait annonce deux fois.
+  let dernierStatut = null;
+  sync.subscribe((etat) => {
+    if (etat.status !== dernierStatut) {
+      if (etat.status === "ok") jouer("synchro");
+      else if (etat.status === "error") jouer("erreur");
+      dernierStatut = etat.status;
+    }
+    render();
+  });
 
   function render() {
     const { status, message } = sync.state;

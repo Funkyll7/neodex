@@ -21,6 +21,7 @@
 
 import { el } from "../core/dom.js";
 import { isTyping } from "./shortcuts.js";
+import { jouer } from "./sons.js";
 
 /** Le bandeau couvre le bas de l'ecran — la ou se trouvent les cases de la
     vignette suivante. Il se retire donc tout seul. */
@@ -56,6 +57,9 @@ export function createUndo(ctx) {
       return;
     }
     ctx.restoreMarks(pas.entries);
+    // Deux notes qui DESCENDENT, la ou tout le reste monte : un retour en
+    // arriere s entend alors sans qu on ait a le nommer.
+    jouer("annuler");
     // Le bandeau reste ouvert et vise desormais le pas d'avant : deux cases
     // ratees coup sur coup se defont en deux appuis au meme endroit, sans
     // avoir a rechercher le bouton.

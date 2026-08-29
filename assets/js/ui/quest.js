@@ -17,7 +17,7 @@ import { dexNumber, typeChip } from "./common.js";
 import { nomEspece, t, tn } from "../core/i18n.js";
 import { oddsValue } from "../domain/hunt.js";
 import { progressOf } from "../domain/progress.js";
-import { jouerQuete } from "./sons.js";
+import { jouer } from "./sons.js";
 import { symboleJeu } from "./symboles-jeux.js";
 import {
   chassesOuvertes,
@@ -99,6 +99,9 @@ export function createQuest(ctx) {
 
     ctx.collection.majQuetes({ parties: { ...carnet.parties, [cle]: { ...part, r } } });
     ctx.sync.schedule(t("compteur de chasse"));
+    // Tres discret, et fortement limite : ce bouton se presse des centaines de
+    // fois d affilee. Voir la regle des volumes en tete de ui/sons.js.
+    jouer("compteur");
     dessiner();
     renderStats(statsRoot, ctx);
   }
@@ -113,7 +116,7 @@ export function createQuest(ctx) {
       const rencontres = chasse ? totalPartie(chasse.part) : 0;
 
       ctx.collection.mark(species.id, "sm");
-      jouerQuete();
+      jouer("quete");
 
       // La chasse passe à « prise » au lieu d'être supprimée : sous une fusion
       // par union, une suppression est ressuscitée par l'appareil qui ne l'a pas
@@ -145,6 +148,7 @@ export function createQuest(ctx) {
       ctx.onCollectionChange(species.id);
     } else {
       ctx.store.set((s) => ({ questSkipped: s.questSkipped + 1 }));
+      jouer("passe");
     }
     ctx.store.set({ quest: tirer() });
   }
