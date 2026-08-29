@@ -151,6 +151,15 @@
   font-weight: 700;
   line-height: 1.45;
 }
+/* L'attente devient anormale : la note passe du doré au rouge d'alerte.
+   Elle n'est pas plus GROSSE, seulement d'une autre couleur — grossir aurait
+   décalé toute la colonne au moment précis où l'on veut être lu, pas dérangé.
+   `--danger` est déjà la couleur du reste du site pour ce registre. */
+.dirty-note--urgent {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+  color: var(--danger);
+}
 
 /* --------------------------- Synchronisation ----------------------------- */
 .sync__state {

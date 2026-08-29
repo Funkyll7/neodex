@@ -2244,6 +2244,9 @@
     "Selon le jeu, et les taux vont du simple au triple : chaînage à l'hameçon et Poké Radar (XY / ROSA / DEEPS) ~1/100, Poké Radar de DPPt 1/200, appels SOS (SL / USUL) ~1/315, apparitions massives + sandwich Aura Brillance (EV) ~1/512.": "It depends on the game, and the rates vary threefold: chain fishing and the Poké Radar (XY / ORAS / BDSP) about 1/100, the DPPt Poké Radar 1/200, SOS calls (SM / USUM) about 1/315, mass outbreaks plus a Sparkling Power sandwich (SV) about 1/512."
   },
   "ui": {
+    "En attente depuis": "Waiting for",
+    "minute": "minute",
+    "minutes": "minutes",
     "Objectif": "Target",
     "Objectif atteint.": "Target reached.",
     "Encore": "Still to go:",

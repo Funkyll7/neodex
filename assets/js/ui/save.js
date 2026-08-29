@@ -82,16 +82,56 @@ export function createSaveControls(ctx) {
               count,
               "espèce en attente d'envoi vers le dépôt.",
               "espèces en attente d'envoi vers le dépôt.",
-            )}`
+            )}${attenteEnClair(ctx.sync)}`
           : `${count} ${tn(
               count,
               "espèce modifiée dans ce navigateur.",
               "espèces modifiées dans ce navigateur.",
             )} ` + t("Exporte et remplace data/collection.json pour figer ces changements dans le dépôt.");
+
+        // LE TON MONTE quand l'attente devient anormale. La note est dorée par
+        // défaut, du même or que le reste du site : elle se lit comme une
+        // information, ce qu'elle est tant que l'envoi suit dans les secondes.
+        //
+        // Deux cas où ce n'en est plus une. SANS JETON, passé une trentaine
+        // d'espèces, tout ce travail ne vit que dans ce navigateur — un
+        // nettoyage de données, un autre appareil, et il n'existe plus.
+        // AVEC JETON, une attente de plus de cinq minutes veut dire que
+        // l'écriture ne passe pas : hors ligne, jeton périmé, dépôt renommé.
+        // Dans les deux cas le doré ne suffit plus.
+        const urgent = ctx.sync.configured
+          ? minutesDAttente(ctx.sync) >= 5
+          : count >= 30;
+        note.classList.toggle("dirty-note--urgent", urgent);
       }
       sync.render();
     },
   };
+}
+
+/**
+ * Depuis combien de minutes quelque chose attend d'être envoyé.
+ *
+ * `pendingSince` est posé au premier changement et remis à `null` dès qu'une
+ * écriture part. Zéro quand rien n'attend — l'appelant n'a donc pas à distinguer
+ * les deux cas.
+ */
+function minutesDAttente(sync) {
+  if (!sync.pendingSince) return 0;
+  return Math.floor((Date.now() - sync.pendingSince) / 60000);
+}
+
+/**
+ * « depuis 7 minutes », ou rien du tout.
+ *
+ * En dessous d'une minute on ne dit pas la durée : l'envoi part au bout de
+ * quelques secondes, et afficher « depuis 0 minute » ferait croire à un blocage
+ * là où tout se passe normalement.
+ */
+function attenteEnClair(sync) {
+  const minutes = minutesDAttente(sync);
+  if (minutes < 1) return "";
+  return ` ${t("En attente depuis")} ${minutes} ${tn(minutes, "minute", "minutes")}.`;
 }
 
 /* --------------------------- synchronisation ----------------------------- */
