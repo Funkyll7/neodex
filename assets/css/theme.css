@@ -770,6 +770,12 @@
    `crisp-edges` d'abord pour Firefox, `pixelated` ensuite pour les autres —
    l'ordre compte, chacun ignore le mot-clé qu'il ne connaît pas. */
 :root[data-sprites-pixel] .card__img,
+/* Ajoutes apres coup, et la liste explique pourquoi il faut y penser : le
+   portrait de l en-tete de fiche et le sprite du detail de synchronisation
+   sortaient lisses sous les palettes Pixels, seuls flous au milieu d un site
+   entierement en pixels. Une liste nommee se paie a chaque nouvelle image. */
+:root[data-sprites-pixel] .detail__portrait-img,
+:root[data-sprites-pixel] .chgt__img,
 :root[data-sprites-pixel] .gcard__img,
 :root[data-sprites-pixel] .form__img,
 :root[data-sprites-pixel] .ftile__img,

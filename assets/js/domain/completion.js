@@ -65,6 +65,12 @@ export function requiredSlots(species) {
 }
 
 function buildSlots(species) {
+  // `chromatique: true` marque les cases qui parlent d un chromatique. Il est
+  // pose ICI et nulle part ailleurs : la liste des cases chromatiques se
+  // deduit de la structure de l espece — cases de base, formes, variantes
+  // cosmetiques —, et la refaire chez un appelant aurait cree un second
+  // endroit a tenir d accord avec celui-ci. Le champ est additif : tous les
+  // appelants existants ne lisent que `slot` et `label`.
   const slots = [];
   const shiny = !species.noShiny;
   const cos = species.cosmetic;
@@ -78,8 +84,8 @@ function buildSlots(species) {
   slots.push({ slot: "om", label: baseName || (species.gd ? `${normal} ♂` : normal) });
   if (species.gd) slots.push({ slot: "of", label: `${normal} ♀` });
   if (shiny) {
-    slots.push({ slot: "sm", label: baseName ? `${baseName} shiny` : species.gd ? `${chromatique} ♂` : chromatique });
-    if (species.gd) slots.push({ slot: "sf", label: `${chromatique} ♀` });
+    slots.push({ slot: "sm", chromatique: true, label: baseName ? `${baseName} shiny` : species.gd ? `${chromatique} ♂` : chromatique });
+    if (species.gd) slots.push({ slot: "sf", chromatique: true, label: `${chromatique} ♀` });
   }
 
   if (cos && !cos.info) {
@@ -89,7 +95,7 @@ function buildSlots(species) {
       if (variant.isBase || !variant.entry) continue;
       const nom = nomCosmetique(variant.name);
       slots.push({ slot: variant.slot, label: nom });
-      if (variant.shinyEntry) slots.push({ slot: variant.shinySlot, label: `${nom} shiny` });
+      if (variant.shinyEntry) slots.push({ slot: variant.shinySlot, chromatique: true, label: `${nom} shiny` });
     }
   }
 
@@ -102,8 +108,8 @@ function buildSlots(species) {
     slots.push({ slot: form.slot, label: form.gendered ? `${nom} ♂` : nom });
     if (form.gendered) slots.push({ slot: form.slotF, label: `${nom} ♀` });
     if (form.shinyEntry) {
-      slots.push({ slot: form.shinySlot, label: form.gendered ? `${nom} shiny ♂` : `${nom} shiny` });
-      if (form.gendered) slots.push({ slot: form.shinySlotF, label: `${nom} shiny ♀` });
+      slots.push({ slot: form.shinySlot, chromatique: true, label: form.gendered ? `${nom} shiny ♂` : `${nom} shiny` });
+      if (form.gendered) slots.push({ slot: form.shinySlotF, chromatique: true, label: `${nom} shiny ♀` });
     }
   }
   return slots;
