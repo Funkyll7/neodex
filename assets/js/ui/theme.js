@@ -11,6 +11,7 @@ import { setSpritesEnPixels } from "../domain/sprites.js";
 // « Légendaires ». Le pliage existe deja, on ne le reecrit pas ici.
 import { sansAccents } from "../core/data.js";
 import { evaluerSucces } from "../domain/succes.js";
+import { majDecor } from "./decor-theme.js";
 import { t } from "../core/i18n.js";
 import { jouer } from "./sons.js";
 
@@ -537,6 +538,10 @@ function apply(theme) {
   // avoir a ouvrir la palette. Le dessin, lui, ne change pas — c'est une roue
   // chromatique, et un quartier en prend l'accent tout seul, par le CSS.
   peindreBoutonTheme();
+
+  // Le Pokemon du theme passe en fond de page. C est le meme champ `sprite` que
+  // la vignette du menu, lu ici pour une tout autre taille.
+  majDecor(courant);
 }
 
 /**

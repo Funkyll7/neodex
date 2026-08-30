@@ -3181,3 +3181,61 @@
 .succes[data-obtenu="true"] .succes__jauge i { background: var(--pastille); }
 .succes__jauge--globale { height: 7px; background: var(--bg-inset); }
 .succes__jauge--globale i { background: var(--accent); }
+
+/* ---------------------------- Le décor du thème --------------------------- */
+
+/* Le Pokémon qui donne son nom à la palette, en fond de page.
+
+   ENTRE LE FOND ET L'APPLICATION. `body` peint `--bg` ; le décor est le premier
+   enfant du corps, l'application vient après avec son propre plan. Les panneaux
+   ont chacun leur fond opaque, la figure ne se voit donc que dans les
+   intervalles — ce qui est exactement l'effet cherché : une présence, pas une
+   illustration.
+
+   Rien en dessous de 1100 px : sur un écran étroit la grille couvre toute la
+   page, la figure n'y ferait que du bruit sous les vignettes. Et rien du tout
+   sans Pokémon à montrer — « Base » et « Couleurs » n'en nomment aucun. */
+.decor {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  display: none;
+  align-items: flex-end;
+  pointer-events: none;
+  user-select: none;
+}
+.app { position: relative; z-index: 1; }
+
+@media (min-width: 1100px) {
+  .decor[data-n="1"],
+  .decor[data-n="3"] { display: flex; }
+}
+
+.decor__sprite {
+  display: block;
+  width: 300px;
+  height: auto;
+  /* Le fondu part du coin : la figure est franche là où elle touche l'angle et
+     s'efface vers le haut et vers la gauche. Sans lui, un rectangle d'image se
+     détachait nettement du fond, et on voyait la découpe plutôt que le dessin. */
+  -webkit-mask-image: linear-gradient(to top left, #000 12%, rgba(0, 0, 0, .35) 52%, transparent 82%);
+  mask-image: linear-gradient(to top left, #000 12%, rgba(0, 0, 0, .35) 52%, transparent 82%);
+  opacity: .16;
+  /* Une figure trop saturée tire l'œil hors de la grille. On la désature d'un
+     tiers et on la laisse s'accorder au fond plutôt que trancher dessus. */
+  filter: saturate(.72);
+}
+
+/* Un trio se lit comme un groupe : celui du milieu devant et plus grand, les
+   deux autres en retrait, décalés vers le bas pour que leurs pieds ne
+   s'alignent pas au cordeau. */
+.decor[data-n="3"] .decor__sprite { width: 210px; }
+.decor[data-n="3"] .decor__sprite:nth-child(1) { transform: translate(46px, 26px) scaleX(-1); opacity: .11; }
+.decor[data-n="3"] .decor__sprite:nth-child(2) { width: 268px; opacity: .17; }
+.decor[data-n="3"] .decor__sprite:nth-child(3) { transform: translate(-40px, 18px); opacity: .11; }
+
+/* Sur un thème clair, la même opacité donne un gris sale au lieu d'une figure :
+   le blanc du fond traverse le dessin. On la baisse, et on l'assombrit un peu
+   pour qu'il reste quelque chose à voir. */
+:root[data-theme="light"] .decor__sprite { opacity: .12; filter: saturate(.7) brightness(.86); }
