@@ -216,6 +216,24 @@ export class HuntPlanner {
     return games;
   }
 
+  /**
+   * Le meilleur taux atteignable sur cette espece, en denominateur.
+   *
+   * `bestGame` rend un JEU et tire au sort entre les ex aequo : parfait pour
+   * proposer une quete, inutilisable pour trier — un comparateur qui change
+   * d'avis entre deux appels donne un ordre different a chaque rendu, et
+   * `Array.prototype.sort` n'a alors plus aucune garantie.
+   *
+   * Celui-ci ne rend qu'un nombre, et le meme a chaque fois. `Infinity` quand
+   * aucune chasse n'est possible : la comparaison les range alors en fin de
+   * liste sans qu'on ait a les traiter a part.
+   */
+  meilleureCote(species) {
+    const games = this.questGames(species);
+    if (!games.length) return Infinity;
+    return Math.min(...games.map((g) => oddsValue(this.methodFor(g.code, species).odds)));
+  }
+
   /** Le jeu au meilleur taux (tirage au sort en cas d'egalite). */
   bestGame(species) {
     const games = this.questGames(species);

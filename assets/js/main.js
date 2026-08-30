@@ -524,7 +524,7 @@ function start(dataset) {
   }
 
   function renderList() {
-    visible = applyFilters(dataset.species, store.state, collection, complete);
+    visible = applyFilters(dataset.species, store.state, collection, complete, planner);
     grid.render(visible);
   }
 

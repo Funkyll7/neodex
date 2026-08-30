@@ -209,7 +209,41 @@ function almostSort(collection) {
   return (a, b) => reste(a) - reste(b) || a.id - b.id;
 }
 
-export function applyFilters(species, state, collection, isComplete = () => false) {
+/**
+ * « La chasse la plus courte d'abord. »
+ *
+ * `almostSort` répond déjà à « qu'est-ce qui se termine vite », mais en nombre
+ * de cases : il met devant un Pokémon à qui il manque une variante cosmétique,
+ * qui ne demande qu'un échange. Celui-ci répond à l'autre question, celle qui
+ * coûte des heures — parmi les chromatiques qui manquent, lequel a les
+ * meilleures chances.
+ *
+ * Trois rangs, dans cet ordre : les chromatiques manquants du plus facile au
+ * plus dur, puis ceux qu'aucune méthode ne permet, puis ceux qu'on a déjà. Un
+ * chromatique obtenu n'est pas « très difficile » — il est fini, et le ranger
+ * parmi les cotes l'aurait fait remonter ou descendre au hasard de son taux.
+ *
+ * Le cache n'est pas du confort : `meilleureCote` parcourt les jeux de l'espèce
+ * et calcule une méthode pour chacun, et un tri appelle son comparateur des
+ * milliers de fois.
+ */
+function chasseSort(planner, collection) {
+  const cache = new Map();
+  const cote = (p) => {
+    if (!cache.has(p.id)) {
+      cache.set(p.id, collection.isShiny(p.id) ? Number.MAX_SAFE_INTEGER : planner.meilleureCote(p));
+    }
+    return cache.get(p.id);
+  };
+  // `Infinity` et `MAX_SAFE_INTEGER` se comparent bien, mais leur soustraction
+  // donne `Infinity` ou `NaN` : on compare donc, on ne soustrait pas.
+  return (a, b) => {
+    const [x, y] = [cote(a), cote(b)];
+    return x === y ? a.id - b.id : x < y ? -1 : 1;
+  };
+}
+
+export function applyFilters(species, state, collection, isComplete = () => false, planner = null) {
   const query = sansAccents(state.search.trim().toLowerCase());
   const number = numberQuery(query);
   const combinaison = combinaisonDeTypes(query, species);
@@ -241,7 +275,19 @@ export function applyFilters(species, state, collection, isComplete = () => fals
     }
   });
 
-  list.sort(state.sort === "almost" ? almostSort(collection) : SORTS[state.sort] || SORTS.num);
+  // Le tri par cotes retombe sur le numéro national quand le planificateur
+  // n'est pas là : ce module est aussi appelé par des tests et par le compteur
+  // « toujours visible ? », qui n'en ont pas besoin. Mieux vaut un ordre par
+  // défaut qu'une exception à un endroit qui n'a rien demandé.
+  const tri =
+    state.sort === "almost"
+      ? almostSort(collection)
+      : state.sort === "chasse"
+        ? planner
+          ? chasseSort(planner, collection)
+          : SORTS.num
+        : SORTS[state.sort] || SORTS.num;
+  list.sort(tri);
 
   // Un numero tape en entier gagne la premiere place, quel que soit le tri :
   // qui tape « 0025 » cherche Pikachu, pas le premier de la liste par ordre
