@@ -4571,10 +4571,18 @@ body::before {
    numéro, sur les puces de type ou sur la pastille de complétion — il n'avait
    plus rien à décorer, il gênait.
 
-   Les deux dessins suivent les modèles fournis : une couronne héraldique à
-   flancs concaves et bandeau ondulé, une couronne de laurier en ANNEAU presque
-   fermé, ouverte en haut. Ils sont redessinés et non repris — les images
-   fournies sont des visuels de banque, filigranés et sous licence.
+   Les deux dessins suivent les modèles fournis, au trait près : la couronne
+   reprend la silhouette du logo — deux ailes effilées qui balaient depuis les
+   coins hauts, une flèche centrale évidée d'un losange, deux volutes sous elle,
+   deux perles sur les flancs et un bandeau ondulé — et le laurier son ANNEAU
+   presque fermé, ouvert en haut. Ils sont REDESSINÉS et non repris : les images
+   fournies sont des visuels de banque, filigranés et sous licence, et les
+   embarquer aurait mis un filigrane au coin de chaque vignette terminée.
+
+   La couronne a été mise au point en la rendant en CARTE DE CARACTÈRES à sa
+   taille d'usage — quarante-quatre pixels sur trente — puis relue jusqu'à ce
+   qu'elle se lise comme une couronne à cette taille-là. Un dessin qui tient à
+   deux cents pixels et se referme en bouillie à trente n'aurait servi à rien.
 
    MASQUE ET NON IMAGE, et c'est ce qui permet la couleur variable : un SVG en
    `background-image` fige sa teinte dans le fichier ; en `mask-image`, il ne
@@ -4607,8 +4615,8 @@ body::before {
      gauche et ses puces a droite, rien au centre. */
   top: -8px;
   left: 50%;
-  width: 42px;
-  height: 29px;
+  width: 44px;
+  height: 30px;
   transform: translateX(-50%);
   /* QUATRE COUCHES SOUS UN SEUL MASQUE. Le masque ne donne que la decoupe : ce
      qu'on peint dessous peut donc etre aussi detaille qu'on veut, sans
@@ -4618,9 +4626,9 @@ body::before {
      tiers, l'ombre en bas. C'est ce reflet a 64 % qui fait le metal ; sans
      lui, un degrade a trois arrets fait du plastique. */
   background-image:
-    radial-gradient(circle 3.4px at 29% 79%, #ffffff 0 26%, #e0553f 28% 100%, transparent 100%),
-    radial-gradient(circle 3.8px at 50% 83%, #ffffff 0 24%, #4a9be8 26% 100%, transparent 100%),
-    radial-gradient(circle 3.4px at 71% 79%, #ffffff 0 26%, #4fbf6a 28% 100%, transparent 100%),
+    radial-gradient(circle 3.2px at 28% 87%, #ffffff 0 26%, #e0553f 28% 100%, transparent 100%),
+    radial-gradient(circle 3.6px at 50% 90%, #ffffff 0 24%, #4a9be8 26% 100%, transparent 100%),
+    radial-gradient(circle 3.2px at 72% 87%, #ffffff 0 26%, #4fbf6a 28% 100%, transparent 100%),
     linear-gradient(180deg,
       #fff6cf 0%,
       var(--couronne-clair) 20%,
@@ -4628,8 +4636,8 @@ body::before {
       var(--couronne-ombre) 64%,
       var(--couronne) 78%,
       var(--couronne-ombre) 100%);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70'%3E%3Cg fill='black'%3E%3Cpath d='M5 13 C 17 29, 27 37, 35 39 L50 8 L65 39 C 73 37, 83 29, 95 13 L86 50 L14 50 Z'/%3E%3Ccircle cx='5' cy='11' r='5'/%3E%3Ccircle cx='50' cy='7' r='5.6'/%3E%3Ccircle cx='95' cy='11' r='5'/%3E%3Cpath d='M11 46 C 30 55, 70 55, 89 46 L87 63 C 68 70, 32 70, 13 63 Z'/%3E%3C/g%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70'%3E%3Cg fill='black'%3E%3Cpath d='M5 13 C 17 29, 27 37, 35 39 L50 8 L65 39 C 73 37, 83 29, 95 13 L86 50 L14 50 Z'/%3E%3Ccircle cx='5' cy='11' r='5'/%3E%3Ccircle cx='50' cy='7' r='5.6'/%3E%3Ccircle cx='95' cy='11' r='5'/%3E%3Cpath d='M11 46 C 30 55, 70 55, 89 46 L87 63 C 68 70, 32 70, 13 63 Z'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 4 100.4 68.4'%3E%3Cg fill='black'%3E%3Cpath d='M3 8 C 8 32, 24 50, 47 58 L45 49 C 26 41, 14 26, 11 9 C 9 5, 4 4, 3 8 Z'/%3E%3Cpath d='M97 8 C 92 32, 76 50, 53 58 L55 49 C 74 41, 86 26, 89 9 C 91 5, 96 4, 97 8 Z'/%3E%3Cpath d='M50 4 L69 31 L62 37 L50 20 L38 37 L31 31 Z'/%3E%3Cpath d='M34 34 C 30 45, 37 53, 45 50 C 50 48, 49 41, 44 41 C 41 41, 40 44, 42 45 C 44 46, 45 44, 44 43'/%3E%3Cpath d='M66 34 C 70 45, 63 53, 55 50 C 50 48, 51 41, 56 41 C 59 41, 60 44, 58 45 C 56 46, 55 44, 56 43'/%3E%3Ccircle cx='5' cy='26' r='5'/%3E%3Ccircle cx='95' cy='26' r='5'/%3E%3Cpath d='M8 51 C 30 61, 70 61, 92 51 L90 66 C 68 74, 32 74, 10 66 Z'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 4 100.4 68.4'%3E%3Cg fill='black'%3E%3Cpath d='M3 8 C 8 32, 24 50, 47 58 L45 49 C 26 41, 14 26, 11 9 C 9 5, 4 4, 3 8 Z'/%3E%3Cpath d='M97 8 C 92 32, 76 50, 53 58 L55 49 C 74 41, 86 26, 89 9 C 91 5, 96 4, 97 8 Z'/%3E%3Cpath d='M50 4 L69 31 L62 37 L50 20 L38 37 L31 31 Z'/%3E%3Cpath d='M34 34 C 30 45, 37 53, 45 50 C 50 48, 49 41, 44 41 C 41 41, 40 44, 42 45 C 44 46, 45 44, 44 43'/%3E%3Cpath d='M66 34 C 70 45, 63 53, 55 50 C 50 48, 51 41, 56 41 C 59 41, 60 44, 58 45 C 56 46, 55 44, 56 43'/%3E%3Ccircle cx='5' cy='26' r='5'/%3E%3Ccircle cx='95' cy='26' r='5'/%3E%3Cpath d='M8 51 C 30 61, 70 61, 92 51 L90 66 C 68 74, 32 74, 10 66 Z'/%3E%3C/g%3E%3C/svg%3E");
   /* Le contour noir DETACHE l'ornement du sprite qu'il touche. Sans lui, un
      or pose sur un Pokemon jaune — Pikachu, Leviator chromatique, Elektek —
      se fondait dedans et la couronne disparaissait. Le motif est celui des
