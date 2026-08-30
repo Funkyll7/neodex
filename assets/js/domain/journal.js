@@ -1,10 +1,15 @@
 /**
  * journal.js — l'historique des modifications de la collection.
  *
- * CE QU'IL GARDE, ET POURQUOI CES DEUX-LÀ. Deux évènements font bouger une
- * collection : ce qu'on envoie au dépôt depuis cet appareil, et ce qu'on en
- * reçoit parce qu'un autre appareil y a écrit. Le journal note les deux, avec
- * leur heure et le détail des cases.
+ * CE QU'IL GARDE. Deux évènements font bouger une collection : les cases qu'on
+ * coche sur CET appareil, et celles qui arrivent du dépôt parce qu'un autre y a
+ * écrit. Le journal note les deux, avec leur heure et le détail des cases.
+ *
+ * Les locales étaient d'abord relevées au moment de l'ENVOI vers le dépôt. Ça
+ * paraissait la bonne maille, et ça ne notait rien du tout pour qui n'a pas
+ * configuré la synchronisation : le journal restait vide à jamais alors que le
+ * site marche très bien sans dépôt. Elles sont donc relevées à la source, et le
+ * sens « envoi » ne subsiste que dans les entrées déjà écrites.
  *
  * CE QU'IL NE GARDE PAS : chaque case cochée, une par une. On en coche des
  * dizaines d'affilée en remontant une boîte de HOME, et un journal qui les
@@ -54,7 +59,9 @@ export function lireJournal() {
  * Silencieuse si le rapport est vide : `rapportDeChangement` rend `null` quand
  * rien n'a bougé, et une entrée « zéro case » n'apprendrait rien.
  *
- * @param {"envoi"|"reception"} sens  d'où vient le changement
+ * @param {"local"|"reception"|"envoi"} sens  d'où vient le changement. « envoi »
+ *        n'est plus produit : il reste lisible pour les entrées écrites par une
+ *        version antérieure, qui décrivaient la même chose que « local ».
  * @param {{especes: Array, gagnees: number, perdues: number}} rapport
  * @param {number} horodatage  passé par l'appelant — ce module ne lit pas
  *        l'heure lui-même, ce qui le rend testable sans horloge

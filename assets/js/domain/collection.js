@@ -364,34 +364,6 @@ export class Collection {
    * @param {object} distantMarks  les marques lues dans le depot
    * @returns {boolean} vrai si l'affichage doit etre refait
    */
-  /**
-   * Ce que la couche locale ajoute au depot : ce qu un envoi va y ecrire.
-   *
-   * Meme forme que le rapport d `adopterDistant`, et volontairement : le
-   * journal range les deux sens cote a cote, et deux formes differentes
-   * l auraient oblige a savoir de laquelle il parle.
-   *
-   * Rend `null` quand rien n est en attente.
-   */
-  /**
-   * Previent qu une couche locale vient d etre ecrite.
-   *
-   * UN SEUL ABONNE SUFFIT, et c est voulu : le seul interesse est le journal,
-   * et une liste d ecouteurs aurait fait croire a un bus d evenements qui n
-   * existe pas. `main.js` la pose, `domain/journal.js` la consomme.
-   *
-   * Elle se declenche pour TOUTE ecriture locale — coche, mise de cote, import
-   * d une sauvegarde, adoption d un etat distant. C est a l abonne de faire la
-   * part des choses, et il le fait par comparaison plutot qu en faisant
-   * confiance a l origine de l appel : il y a cinq points d ecriture, et un
-   * sixieme finira par exister.
-   */
-  surEcritureLocale = null;
-
-  rapportLocal() {
-    return rapportDeChangement(this.base, this.toExport("comparaison").marks, this.dataset);
-  }
-
   adopterDistant(distantMarks) {
     const fusionne = this.fusionnerAvec(distantMarks);
     const avant = this.toExport("comparaison").marks;

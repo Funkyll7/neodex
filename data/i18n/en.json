@@ -2276,7 +2276,7 @@
     "Hier": "Yesterday",
     "Envoyé au dépôt": "Sent to the repository",
     "Reçu d'un autre appareil": "Received from another device",
-    "Rien pour l'instant. Ce journal se remplit à chaque envoi vers le dépôt et à chaque changement venu d'un autre appareil.": "Nothing yet. This log fills up with every push to the repository and every change coming from another device.",
+    "Rien pour l'instant. Ce journal se remplit dès que tu coches une case, et à chaque changement venu d'un autre appareil.": "Nothing yet. This log fills up as soon as you check a box, and with every change coming from another device.",
     "modifications": "changes",
     "Vider": "Clear",
     "espèces non détaillées": "species not detailed",

@@ -7,10 +7,15 @@
  * envoi, mais il faut aller sur GitHub, et les messages y disent « Collection :
  * case cochée », jamais laquelle.
  *
- * DEUX SENS, ET LA DISTINCTION COMPTE. Un envoi, c'est ce que j'ai fait ici ;
- * une réception, c'est ce qu'un autre appareil a fait pendant ce temps. C'est
- * la seconde qui surprend, et c'est pour elle qu'on ouvre ce panneau — d'où la
- * flèche, la couleur et le libellé qui les séparent d'un coup d'œil.
+ * DEUX SENS, ET LA DISTINCTION COMPTE. Ce que j'ai coché ici, et ce qu'un autre
+ * appareil a fait pendant ce temps. C'est le second qui surprend, et c'est pour
+ * lui qu'on ouvre ce panneau — d'où la flèche, la couleur et le libellé qui les
+ * séparent d'un coup d'œil.
+ *
+ * Un troisième sens traîne, « envoi », et il n'est plus jamais produit : les
+ * entrées écrites par une version antérieure le portent, et elles décrivaient
+ * exactement ce que « local » décrit aujourd'hui. Elles se lisent donc comme du
+ * local, avec leur ancien libellé.
  *
  * LES JOURS PORTENT UN NOM tant qu'ils en ont un. « Aujourd'hui » et « Hier »
  * se lisent sans calcul ; au-delà, la date complète, dans la langue du site.
@@ -126,7 +131,11 @@ export function ouvrirJournal(dataset, maintenant = Date.now()) {
         corps,
         el(
           "p.jrn__vide",
-          t("Rien pour l'instant. Ce journal se remplit à chaque envoi vers le dépôt et à chaque changement venu d'un autre appareil.")
+          // Le texte disait « à chaque envoi vers le dépôt », ce qui était vrai
+          // une heure et faux ensuite : le journal se remplit maintenant dès
+          // qu'on coche, dépôt ou pas. Le laisser aurait promis le contraire de
+          // ce qui se passe à qui n'a pas configuré la synchronisation.
+          t("Rien pour l'instant. Ce journal se remplit dès que tu coches une case, et à chaque changement venu d'un autre appareil.")
         )
       );
       return;
