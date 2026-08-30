@@ -26,13 +26,30 @@
  *     prend toute la place et qu'une figure trop marquée passerait de fond à
  *     désordre.
  *
- * DEUX SURFACES, PAS UNE. La figure de fond était d'abord réservée aux écrans
- * de plus de 1100 px, au motif qu'en dessous la grille couvre tout. Résultat :
- * sur un écran normal elle ne s'affichait JAMAIS, et le thème n'avait toujours
- * pas de visage. Elle s'affiche donc partout, plus discrète quand la place
- * manque — et sur mobile elle gagne un second emplacement, une bande de
- * vignettes à droite de la barre « Filtres », qui est la seule chose toujours
- * visible en haut de l'écran.
+ * OÙ LES METTRE : DEUX ESSAIS RATÉS AVANT LE BON.
+ *
+ * Premier essai, une grande figure en fond de page, au coin bas droit, réservée
+ * aux écrans de plus de 1100 px — au motif qu'en dessous la grille couvre tout.
+ * Sur un écran normal elle ne s'affichait donc JAMAIS.
+ *
+ * Deuxième essai, la même figure à toutes les largeurs. Elle s'affichait bien,
+ * et on ne la voyait pas davantage : la colonne principale est une grille de
+ * vignettes opaques, du haut de la page au bas de la page, quelle que soit la
+ * taille de l'écran. Un fond n'existe que s'il reste du fond à voir.
+ *
+ * Troisième essai, celui-ci. On cherche les surfaces que RIEN ne recouvre :
+ *
+ *   - le pied de la barre latérale, qui a son propre fond opaque et reste
+ *     visible en permanence sur grand écran ;
+ *   - la barre « Filtres », qui la remplace en dessous de 860 px et qui est
+ *     alors la seule chose fixe en haut de l'écran.
+ *
+ * Les vignettes y sont en PLEINE COULEUR et non en filigrane : sur une surface
+ * qui leur appartient, une figure effacée n'aurait été qu'une tache.
+ *
+ * Du fond de page, il ne reste que le halo — une lueur de l'accent du thème au
+ * coin bas droit. Elle n'a rien à faire reconnaître, donc les vignettes qui la
+ * traversent ne la gênent pas ; elle donne juste au fond la couleur du thème.
  *
  * ON NE CHARGE RIEN QUAND IL N'Y A RIEN À MONTRER. Les palettes « Base » et
  * « Couleurs » ne nomment aucun Pokémon : le décor se vide, et pas une requête
@@ -79,21 +96,32 @@ export function majDecor(theme) {
       })
     );
 
-  const boite = conteneur();
-  boite.dataset.n = String(ids.length);
-  fill(boite, figures());
+  // Le halo seul : il ne porte plus de figure, seulement la couleur du thème.
+  conteneur().dataset.n = String(ids.length);
 
-  // La bande de la barre « Filtres ». Le bouton n'existe qu'en dessous de
-  // 860 px, mais il est TOUJOURS dans le document : on le remplit sans
-  // condition, et c'est le CSS qui décide de le montrer. Tester la largeur ici
-  // aurait demandé de réagir aussi au redimensionnement, pour un résultat que
-  // la feuille de style obtient seule.
-  const barre = document.getElementById("nav-toggle");
-  if (!barre) return;
-  let bande = barre.querySelector(".decor-barre");
+  // Les deux surfaces que rien ne recouvre. On les remplit toutes les deux sans
+  // condition, et c'est le CSS qui décide laquelle montrer : tester la largeur
+  // ici aurait demandé de réagir aussi au redimensionnement, pour un résultat
+  // que la feuille de style obtient seule. Les images étant les mêmes, le
+  // navigateur ne télécharge chaque artwork qu'une fois.
+  poser(document.getElementById("sidebar"), "decor-flanc", ids, figures);
+  poser(document.getElementById("nav-toggle"), "decor-barre", ids, figures);
+}
+
+/**
+ * Pose — ou remplit — une bande de vignettes à la fin d'un hôte.
+ *
+ * On réutilise la bande existante plutôt que d'en refaire une : elle est créée
+ * une fois pour la vie de la page, et changer de thème n'en remplace que le
+ * contenu. La recréer aurait aussi défait la place qu'elle occupe dans la
+ * colonne, ce qui se voit sur une barre latérale en `flex`.
+ */
+function poser(hote, classe, ids, figures) {
+  if (!hote) return;
+  let bande = hote.querySelector(`.${classe}`);
   if (!bande) {
-    bande = el("span.decor-barre", { "aria-hidden": "true" });
-    barre.append(bande);
+    bande = el(`span.${classe}`, { "aria-hidden": "true" });
+    hote.append(bande);
   }
   bande.dataset.n = String(ids.length);
   fill(bande, figures());

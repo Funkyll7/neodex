@@ -3194,112 +3194,101 @@
 
 /* ---------------------------- Le décor du thème --------------------------- */
 
-/* Le Pokémon qui donne son nom à la palette, en fond de page.
+/* Le Pokémon qui donne son nom à la palette.
 
-   ENTRE LE FOND ET L'APPLICATION. `body` peint `--bg` ; le décor est le premier
-   enfant du corps, l'application vient après avec son propre plan. La colonne
-   de gauche est opaque, la colonne principale ne l'est pas : la figure se voit
-   donc dans les intervalles de la grille, à droite. C'est l'effet cherché —
-   une présence, pas une illustration.
+   OÙ LE METTRE : deux essais ratés avant celui-ci. Une grande figure en fond de
+   page au coin bas droit, d'abord réservée aux écrans larges — elle ne
+   s'affichait alors jamais sur un écran normal. Puis la même à toutes les
+   largeurs — et on ne la voyait pas davantage : la colonne principale est une
+   grille de vignettes opaques du haut au bas de la page. Un fond n'existe que
+   s'il reste du fond à voir.
 
-   IL S'AFFICHE À TOUTES LES LARGEURS. Il était d'abord réservé aux écrans de
-   plus de 1100 px, au motif qu'en dessous la grille couvre tout. Sur un écran
-   normal il ne s'affichait donc jamais, et le thème n'avait toujours pas de
-   visage. Il rétrécit et s'efface quand la place manque, au lieu de disparaître.
+   On la pose donc là où RIEN ne passe devant : au pied de la barre latérale sur
+   grand écran, dans la barre « Filtres » en dessous de 860 px. En pleine
+   couleur — sur une surface qui leur appartient, des figures effacées
+   n'auraient été que des taches.
 
-   Rien du tout, en revanche, pour les palettes qui ne nomment aucun Pokémon :
-   « Base » et « Couleurs » laissent `data-n="0"`. */
+   Du fond de page il ne reste que le halo, ci-dessous. */
+
+/* Le halo. Une lueur de l'accent du thème au coin bas droit, fixe et sous tout
+   le reste. Il n'a rien à faire reconnaître : les vignettes qui le traversent ne
+   le gênent pas, il donne simplement au fond la couleur du thème. */
 .decor {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
-  display: none;
-  align-items: flex-end;
-  pointer-events: none;
-  user-select: none;
-}
-.decor[data-n="1"],
-.decor[data-n="3"] { display: flex; }
-.app { position: relative; z-index: 1; }
-
-/* Le halo qui rattache la figure au fond.
-
-   Sans lui, l'artwork flottait dans le coin comme une image collée sur la page.
-   Une lueur de l'accent du thème, très diluée et bien plus large que la figure,
-   fait qu'on lit d'abord une zone lumineuse et ensuite seulement le Pokémon qui
-   s'y tient. Elle est fixe et sous tout le reste, y compris sous la figure. */
-.decor::before {
-  content: "";
   position: fixed;
   right: -140px;
   bottom: -160px;
   width: 620px;
   height: 620px;
+  z-index: 0;
+  display: none;
   border-radius: 50%;
   background: radial-gradient(circle, var(--accent-wash) 0%, transparent 68%);
   pointer-events: none;
 }
+.decor[data-n="1"],
+.decor[data-n="3"] { display: block; }
+.app { position: relative; z-index: 1; }
+
+@media (max-width: 1099px) {
+  .decor { width: 420px; height: 420px; right: -100px; bottom: -110px; }
+}
+
+/* --------------------- La bande de la barre latérale --------------------- */
+
+/* Elle se colle au bas de la colonne et y reste pendant qu'on fait défiler les
+   filtres : c'est une signature, elle doit être là en permanence, pas seulement
+   quand on est descendu tout en bas.
+
+   Les marges négatives lui font retrouver les bords de la barre, dont elle est
+   séparée par le `padding` et le `gap` de la colonne — une bande qui s'arrête à
+   vingt pixels du bord aurait l'air posée de travers.
+
+   Le dégradé vers le fond de la barre est ce qui rend le collage acceptable :
+   sans lui, le contenu qui défile passait derrière les vignettes et on lisait
+   deux choses l'une sur l'autre. */
+.decor-flanc { display: none; }
+@media (min-width: 861px) {
+  .decor-flanc[data-n="1"],
+  .decor-flanc[data-n="3"] {
+    position: sticky;
+    bottom: calc(-1 * var(--sp-6));
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    /* `margin-top: auto` la pousse au bas de la colonne quand les filtres ne la
+       remplissent pas ; sans lui elle flottait juste sous le dernier panneau. */
+    margin: auto calc(-1 * var(--sp-5)) calc(-1 * var(--sp-6));
+    padding: 42px var(--sp-3) 8px;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--bg-raised) 0%, var(--bg-raised) 72%, transparent 100%);
+  }
+  .decor-flanc .decor__sprite { width: 68px; }
+  /* Le trio se chevauche : trois vignettes de 74 px espacées demanderaient
+     230 px, la barre en fait 228 une fois ses marges retirées. Celle du milieu
+     passe devant et un cran plus grande, comme dans un portrait de groupe. */
+  .decor-flanc[data-n="3"] .decor__sprite { width: 70px; margin-inline: -8px; }
+  .decor-flanc[data-n="3"] .decor__sprite:nth-child(2) { width: 84px; z-index: 1; }
+  .decor-flanc[data-n="3"] .decor__sprite:nth-child(1) { transform: scaleX(-1); }
+  .decor-flanc[data-n="1"] .decor__sprite { width: 100px; }
+}
 
 .decor__sprite {
   display: block;
-  width: 300px;
   height: auto;
-  /* Le fondu part du coin : la figure est franche là où elle touche l'angle et
-     s'efface vers le haut et vers la gauche. Sans lui, un rectangle d'image se
-     détachait nettement du fond, et on voyait la découpe plutôt que le dessin. */
-  -webkit-mask-image: linear-gradient(to top left, #000 12%, rgba(0, 0, 0, .35) 52%, transparent 82%);
-  mask-image: linear-gradient(to top left, #000 12%, rgba(0, 0, 0, .35) 52%, transparent 82%);
-  opacity: .16;
-  /* Une figure trop saturée tire l'œil hors de la grille. On la désature d'un
-     tiers et on la laisse s'accorder au fond plutôt que trancher dessus. */
-  filter: saturate(.72);
+  /* Un fondu du bas vers le haut : les vignettes sortent du bord au lieu d'y
+     être posées, et leur base ne dessine pas une ligne de découpe. */
+  -webkit-mask-image: linear-gradient(to top, #000 62%, rgba(0, 0, 0, .85) 88%, transparent);
+  mask-image: linear-gradient(to top, #000 62%, rgba(0, 0, 0, .85) 88%, transparent);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .45));
 }
-
-/* Un trio se lit comme un groupe : celui du milieu devant et plus grand, les
-   deux autres en retrait, décalés vers le bas pour que leurs pieds ne
-   s'alignent pas au cordeau. Le premier est retourné — deux figures tournées
-   du même côté regardent hors de la page, retournée elle rentre dans le
-   groupe. */
-.decor[data-n="3"] .decor__sprite { width: 210px; }
-.decor[data-n="3"] .decor__sprite:nth-child(1) { transform: translate(46px, 26px) scaleX(-1); opacity: .11; }
-.decor[data-n="3"] .decor__sprite:nth-child(2) { width: 268px; opacity: .17; }
-.decor[data-n="3"] .decor__sprite:nth-child(3) { transform: translate(-40px, 18px); opacity: .11; }
-
-/* Deux crans plus petit et plus discret quand la place manque : la grille
-   occupe alors toute la largeur, et la même figure au même contraste passerait
-   de fond à désordre. */
-@media (max-width: 1099px) {
-  .decor__sprite { width: 200px; opacity: .11; }
-  .decor[data-n="3"] .decor__sprite { width: 140px; }
-  .decor[data-n="3"] .decor__sprite:nth-child(1) { transform: translate(30px, 18px) scaleX(-1); opacity: .075; }
-  .decor[data-n="3"] .decor__sprite:nth-child(2) { width: 178px; opacity: .12; }
-  .decor[data-n="3"] .decor__sprite:nth-child(3) { transform: translate(-26px, 12px); opacity: .075; }
-  .decor::before { width: 420px; height: 420px; right: -100px; bottom: -110px; }
-}
-@media (max-width: 640px) {
-  .decor__sprite { width: 148px; opacity: .09; }
-  .decor[data-n="3"] .decor__sprite { width: 104px; }
-  .decor[data-n="3"] .decor__sprite:nth-child(2) { width: 132px; opacity: .10; }
-  .decor[data-n="3"] .decor__sprite:nth-child(1),
-  .decor[data-n="3"] .decor__sprite:nth-child(3) { opacity: .06; }
-}
-
-/* Sur un thème clair, la même opacité donne un gris sale au lieu d'une figure :
-   le blanc du fond traverse le dessin. On la baisse, et on l'assombrit un peu
-   pour qu'il reste quelque chose à voir. */
-:root[data-theme="light"] .decor__sprite { opacity: .12; filter: saturate(.7) brightness(.86); }
 
 /* ------------------- Le décor de la barre « Filtres » -------------------- */
 
-/* La barre « Filtres » n'existe qu'en dessous de 860 px, et c'est justement là
-   que le décor de fond a le moins de place. Elle est la seule chose toujours
-   visible en haut de l'écran : les trois vignettes s'y posent à droite, en
-   pleine couleur cette fois — à cette taille, une figure effacée ne serait
-   qu'une tache.
-
-   `margin-left: auto` les pousse à droite du bouton sans toucher au libellé,
-   qui garde sa place et son icône à gauche. */
+/* La barre « Filtres » remplace la colonne en dessous de 860 px, et elle est
+   alors la seule chose toujours visible en haut de l'écran. Les trois vignettes
+   s'y posent à droite ; `margin-left: auto` les y pousse sans toucher au
+   libellé, qui garde sa place et son icône à gauche. */
 .decor-barre { display: none; }
 @media (max-width: 860px) {
   .decor-barre[data-n="1"],
@@ -3312,12 +3301,10 @@
   }
   .decor-barre .decor__sprite {
     width: 34px;
-    /* Ni masque ni désaturation ici : le fondu du décor de fond n'a de sens que
-       sur une grande figure. À 34 px il n'aurait fait qu'effacer la moitié du
-       Pokémon. */
+    /* Ni masque ni ombre ici : le fondu n'a de sens que sur une grande figure.
+       À 34 px il n'aurait fait qu'effacer la moitié du Pokémon. */
     -webkit-mask-image: none;
     mask-image: none;
-    opacity: .9;
     filter: none;
   }
   /* Elles se chevauchent d'un tiers : trois vignettes espacées prendraient
