@@ -3869,3 +3869,103 @@ body::before {
    n est pas la cacher, et il faut pouvoir revenir dessus. */
 .card--hors { opacity: .5; filter: saturate(.35); }
 .card--hors .card__name { text-decoration: line-through; }
+
+/* ==================== La courbe de progression ========================== */
+
+/* Elle s'ouvre en surface, comme la page des succès et le menu de
+   customisation : c'est une chose qu'on regarde, pas un réglage qu'on
+   manipule, et la colonne de gauche ne fait que 268 px. */
+.progress-card__courbe {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.progress-card__courbe:hover { color: var(--accent); }
+.progress-card__courbe[hidden] { display: none; }
+
+.courbe-fond {
+  position: fixed;
+  inset: 0;
+  z-index: 92;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(0, 0, 0, .74);
+  backdrop-filter: blur(5px);
+}
+.courbe-boite {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  width: min(100%, 720px);
+  max-height: 100%;
+  padding: var(--sp-4);
+  overflow-y: auto;
+  border-radius: var(--r-lg);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .55);
+}
+.courbe__entete { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.courbe__fermer { margin-left: 0; }
+.courbe__corps { display: flex; flex-direction: column; gap: var(--sp-3); }
+.courbe__attente { margin: 0; padding: var(--sp-5) 0; text-align: center; color: var(--text-faint); font-size: 12px; }
+.courbe__erreur { color: var(--danger); }
+
+/* Le chiffre qu'on vient chercher : combien de cases depuis le début. Il est
+   au-dessus de la courbe et non dedans — on le lit d'abord, la courbe explique
+   ensuite comment on y est arrivé. */
+.courbe__bilan { display: flex; flex-direction: column; gap: 1px; }
+.courbe__gain {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+}
+.courbe__gain span { font-size: 14px; color: var(--text-faint); }
+.courbe__note { margin: 0; font-size: 11px; color: var(--text-ghost); }
+
+.courbe__svg { display: block; width: 100%; height: auto; overflow: visible; }
+.courbe__grille { stroke: var(--border); stroke-width: 1; }
+.courbe__axe { fill: var(--text-ghost); font-size: 10px; font-family: var(--font-body); text-anchor: end; }
+/* La date de gauche s'aligne à gauche : héritée de `.courbe__axe`, elle sortait
+   du cadre par la gauche. Celle de droite porte son propre `text-anchor`. */
+.courbe__svg > text.courbe__axe:nth-last-of-type(2) { text-anchor: start; }
+
+.courbe__aire { fill: var(--accent-wash); stroke: none; }
+.courbe__trait { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.courbe__trait--cases { stroke: var(--gold); }
+/* Les espèces en pointillé et dans l'autre bout du dégradé : deux traits pleins
+   de la même famille se suivraient sans qu'on sache lequel est lequel. */
+.courbe__trait--especes { stroke: var(--gold-soft); stroke-dasharray: 5 4; stroke-width: 2; }
+.courbe__point { fill: var(--gold); stroke: var(--bg-raised); stroke-width: 1.5; }
+
+.courbe__legende { display: flex; flex-wrap: wrap; gap: var(--sp-4); }
+.courbe__cle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.courbe__cle::before {
+  content: "";
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
+}
+.courbe__cle--cases::before { background: var(--gold); }
+.courbe__cle--especes::before { background: repeating-linear-gradient(90deg, var(--gold-soft) 0 5px, transparent 5px 9px); }

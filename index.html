@@ -91,6 +91,8 @@
 <link rel="modulepreload" href="assets/js/domain/recompenses.js">
 <link rel="modulepreload" href="assets/js/ui/recompenses.js">
 <link rel="modulepreload" href="assets/js/ui/retour.js">
+<link rel="modulepreload" href="assets/js/domain/historique.js">
+<link rel="modulepreload" href="assets/js/ui/courbe.js">
 
 <link rel="stylesheet" href="assets/css/theme.css">
 <link rel="stylesheet" href="assets/css/base.css">
@@ -213,6 +215,11 @@
         <summary class="bars-fold__summary" id="bars-summary">Détail par forme</summary>
         <div id="progress-bars" class="bars"></div>
       </details>
+      <!-- La courbe se lit dans l'historique du dépôt : chaque synchronisation
+           y a écrit la collection entière, donc les dates sont déjà là. Le
+           bouton reste caché tant qu'aucun jeton n'est configuré — sans dépôt,
+           il n'y a pas d'historique à lire. Voir ui/courbe.js. -->
+      <button type="button" id="courbe-btn" class="progress-card__courbe" hidden>Voir la courbe</button>
     </section>
 
     <!-- Les filtres passent AVANT les statistiques détaillées. On consulte sa

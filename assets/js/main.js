@@ -22,6 +22,7 @@ import { jouer } from "./ui/sons.js";
 import { initParametres, appliquerParametres } from "./ui/parametres.js";
 import { initPageSucces } from "./ui/page-succes.js";
 import { appliquerRecompenses } from "./ui/recompenses.js";
+import { initCourbe } from "./ui/courbe.js";
 import { chassesOuvertes } from "./domain/quetes.js";
 import { estCaseChromatique, CASE_HORS } from "./domain/collection.js";
 
@@ -332,6 +333,9 @@ function start(dataset) {
   const toTop = createToTop();
   const activeFilters = createActiveFilters(ctx);
   const undo = createUndo(ctx);
+  // La courbe ne charge rien tant qu'on ne l'ouvre pas : son bouton se contente
+  // d'apparaitre quand un depot est joignable. Voir ui/courbe.js.
+  initCourbe(ctx);
   // Le lecteur de captures pese 68 Ko a lui seul — `domain/reco.js` et son
   // interface — pour une fonction qu'on ouvre rarement. Il ne part donc plus
   // avec le reste : le module arrive au premier clic, ou a l'arrivee d'un
