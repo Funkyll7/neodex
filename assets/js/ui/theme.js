@@ -12,6 +12,8 @@ import { setSpritesEnPixels } from "../domain/sprites.js";
 import { sansAccents } from "../core/data.js";
 import { evaluerSucces } from "../domain/succes.js";
 import { majDecor } from "./decor-theme.js";
+import { TYPES } from "../domain/recompenses.js";
+import { optionsDuType, poserSourceDesSucces } from "./recompenses.js";
 import { t } from "../core/i18n.js";
 import { jouer } from "./sons.js";
 
@@ -233,8 +235,92 @@ function buildPicker() {
     );
   }
 
-  fill(root, onglets, panneaux);
+  // Le menu s'appelle « Customisation » et ne contient plus que des couleurs :
+  // les palettes sont son PREMIER onglet, les six autres types de cosmétiques
+  // ont chacun le leur. Les familles de palettes deviennent donc des
+  // SOUS-onglets, imbriqués dans le panneau « Thème ».
+  //
+  // La structure interne — `.themes__tabs`, `.themes__panel[data-famille]` —
+  // n'est pas touchée d'un caractère, et c'est délibéré : `syncPicker`,
+  // `montrerFamille`, `naviguerOnglets` et `redessinerRecompenses` la
+  // désignent tous par ces sélecteurs. La déplacer d'un cran dans l'arbre ne
+  // leur demande rien ; la renommer aurait demandé de tout relire.
+  fill(root, menuDeCustomisation(el("div.themes__interieur", onglets, panneaux)));
   syncPicker();
+}
+
+/**
+ * Le menu à onglets : les palettes, puis un onglet par type de cosmétique.
+ *
+ * Ils sont tous ici et non répartis entre deux panneaux, parce qu'ils font tous
+ * la même chose : changer l'apparence. Le choix des récompenses vivait dans la
+ * page des succès — à côté de la RAISON de les avoir, ce qui se défendait —,
+ * mais on n'y allait plus une fois gagnées, et il fallait ouvrir la page des
+ * trophées pour changer un cadre.
+ */
+function menuDeCustomisation(interieur) {
+  const onglets = el("div.custo__tabs", { role: "tablist", "aria-label": t("Customisation") });
+  const panneaux = el("div.custo__panels");
+
+  const ajouter = (cle, libelle, contenu) => {
+    onglets.append(
+      el(
+        "button.custo__tab",
+        {
+          type: "button",
+          role: "tab",
+          id: `custo-tab-${cle}`,
+          "aria-controls": `custo-panel-${cle}`,
+          "aria-selected": String(cle === "theme"),
+          tabindex: cle === "theme" ? "0" : "-1",
+          dataset: { custo: cle },
+          onclick: () => montrerCusto(cle),
+        },
+        libelle
+      )
+    );
+    panneaux.append(
+      el(
+        "div.custo__panel",
+        {
+          role: "tabpanel",
+          id: `custo-panel-${cle}`,
+          "aria-labelledby": `custo-tab-${cle}`,
+          dataset: { custo: cle },
+          hidden: cle !== "theme",
+        },
+        contenu
+      )
+    );
+  };
+
+  ajouter("theme", t("Thème"), interieur);
+  for (const type of TYPES) {
+    // `onglet` plutôt que `nom` : l'onglet est une pastille dans une rangée de
+    // huit, « Marque de complétion » y prenait à lui seul le quart de la
+    // largeur. Le nom entier reste dans le panneau, sous forme d'explication.
+    ajouter(
+      type.cle,
+      t(type.onglet || type.nom),
+      el("div.custo__corps", el("p.recomp__aide", t(type.aide)), optionsDuType(type))
+    );
+  }
+
+  return el("div.custo", onglets, panneaux);
+}
+
+/** Montre un onglet de customisation et un seul. */
+function montrerCusto(cle) {
+  const root = document.getElementById("theme-picker");
+  if (!root) return;
+  for (const onglet of root.querySelectorAll(".custo__tab")) {
+    const actif = onglet.dataset.custo === cle;
+    onglet.setAttribute("aria-selected", String(actif));
+    onglet.tabIndex = actif ? 0 : -1;
+  }
+  for (const panneau of root.querySelectorAll(".custo__panel")) {
+    panneau.hidden = panneau.dataset.custo !== cle;
+  }
 }
 
 /** « Légendaires » -> « legendaires » : un identifiant sur pour aria-controls. */
@@ -392,6 +478,8 @@ let etatSucces = [];
  * seraient deux vérités, capables de diverger d'une fraction de seconde entre
  * la tuile et le bandeau qui la félicite.
  */
+poserSourceDesSucces(() => etatSucces);
+
 export function succesCourants() {
   return etatSucces;
 }

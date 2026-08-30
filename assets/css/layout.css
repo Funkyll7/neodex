@@ -24,24 +24,22 @@
    sans bande noire ni bouton central, là où le vrai logo est déjà dans le dossier
    et déjà téléchargé comme favicon.
 
-   Il ne TOURNE plus, il respire. Une image détourée qui tourne sur elle-même
-   part de travers dès qu'elle n'est pas parfaitement symétrique — ce qui était
-   sans conséquence sur un disque bicolore et se voit tout de suite sur un logo.
-   Le battement dit la même chose : quelque chose travaille. */
+   IL TOURNE, comme la Poké Ball qu'il remplace. On avait essayé un battement,
+   au motif qu'une image détourée qui tourne part de travers dès qu'elle n'est
+   pas symétrique. L'objection ne vaut pas ici : ce logo EST un disque, son axe
+   est son centre, et la rotation est ce qu'on attend d'une Poké Ball qui
+   charge. */
 .boot__ball {
   width: 46px;
   height: 46px;
-  animation: boot-battement 1.4s ease-in-out infinite;
+  animation: boot-spin 1.1s linear infinite;
 }
-@keyframes boot-battement {
-  0%, 100% { transform: scale(1);    opacity: .82; }
-  50%      { transform: scale(1.09); opacity: 1; }
-}
-/* Un battement continu derrière un texte est fatigant pour qui y est sensible,
-   et le site respecte déjà ce réglage ailleurs. Sans animation, le logo reste
-   simplement posé — il n'y avait rien à comprendre dans la rotation. */
+@keyframes boot-spin { to { transform: rotate(360deg); } }
+/* Une rotation continue derrière un texte est pénible pour qui y est sensible,
+   et le site respecte déjà ce réglage ailleurs. Le logo reste alors posé : il
+   n'y avait rien à comprendre dans le mouvement, seulement à patienter. */
 @media (prefers-reduced-motion: reduce) {
-  .boot__ball { animation: none; opacity: 1; }
+  .boot__ball { animation: none; }
 }
 .boot__error {
   max-width: 46ch;

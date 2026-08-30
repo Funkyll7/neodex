@@ -99,10 +99,11 @@ export function initPageSucces() {
     return el(
       "div.succes-boite",
       entete(gagnes, succes.length),
-      // Les récompenses AVANT la liste des succès : c'est ce qu'on vient
-      // chercher une fois qu'on en a gagné quelques-uns, et la liste, elle, se
-      // consulte. Après quarante-trois tuiles, personne ne serait descendu.
-      sectionRecompenses(succes),
+      // Le choix des récompenses a vécu ici, juste au-dessus de la liste. Il est
+      // parti dans le menu « Customisation », avec les palettes : on n'ouvre
+      // plus la page des trophées une fois les succès gagnés, et il fallait
+      // pourtant y revenir pour changer un cadre. Cette page dit ce qu'on a
+      // fait ; le menu dit ce qu'on porte.
       [...parFamille].map(([nom, liste]) =>
         liste.length
           ? el(

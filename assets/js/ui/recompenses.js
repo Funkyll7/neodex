@@ -32,7 +32,7 @@ import { TYPES, RECOMPENSES, choixValide, evaluerRecompenses } from "../domain/r
 import { iconeSvg } from "./icones-succes.js";
 
 /** Les types posés en attribut sur `<html>`, et peints par le CSS seul. */
-const ATTRIBUTS = ["marque", "cadre", "motif"];
+const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes"];
 
 /**
  * Le choix courant, tous types confondus, déjà validé.
@@ -134,7 +134,6 @@ export function sectionRecompenses(succes) {
 }
 
 function famille(type, etat, choix) {
-  const options = etat.filter((r) => r.type === type.cle);
   return el(
     "div.recomp__famille",
     el(
@@ -142,13 +141,42 @@ function famille(type, etat, choix) {
       el("span.recomp__nom", t(type.nom)),
       el("span.recomp__aide", t(type.aide))
     ),
-    el(
-      "div.recomp__options",
-      { role: "group", "aria-label": t(type.nom) },
-      options.map((r) => option(type, r, choix[type.cle] === r.cle))
-    )
+    optionsDuType(type, etat, choix)
   );
 }
+
+/**
+ * Les options d'un seul type, sans son en-tête.
+ *
+ * Sortie à part parce que le menu de customisation en a besoin nue : là-bas
+ * chaque type a son ONGLET, dont le libellé dit déjà le nom, et répéter
+ * « Titre » sous un onglet « Titre » n'aurait rien appris à personne.
+ *
+ * @param {Array} [etat]  l'état déjà évalué ; recalculé si absent
+ */
+export function optionsDuType(type, etat, choix) {
+  const c = choix || choixCourant();
+  const liste = (etat || evaluerRecompenses(succesSource(), c)).filter((r) => r.type === type.cle);
+  return el(
+    "div.recomp__options",
+    { role: "group", "aria-label": t(type.nom) },
+    liste.map((r) => option(type, r, c[type.cle] === r.cle))
+  );
+}
+
+/**
+ * L'état des succès, quand l'appelant ne le fournit pas.
+ *
+ * Posé par `ui/theme.js` au lieu d'être importé : ce module est chargé AVANT lui
+ * — `main.js` applique les récompenses avant d'avoir des données — et un import
+ * croisé aurait fait un cycle. Vide tant que rien n'est calculé, ce qui rend
+ * simplement toutes les récompenses verrouillées sauf les défauts.
+ */
+let source = () => [];
+export function poserSourceDesSucces(fn) {
+  source = fn;
+}
+const succesSource = () => source();
 
 /**
  * Une option.

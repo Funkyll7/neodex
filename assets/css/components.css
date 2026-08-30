@@ -3536,3 +3536,59 @@ body::before {
 .recomp__apercu[data-banniere="tricolore"] { background: linear-gradient(90deg, #ff6b6b 0 33%, #ffd43b 33% 66%, #4dabf7 66%); }
 .recomp__apercu[data-banniere="prisme"]    { background: linear-gradient(90deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2); }
 .recomp__apercu[data-banniere="or"]        { background: linear-gradient(90deg, #8a6a00, #ffd76a, #8a6a00); }
+
+/* ====================== Le menu « Customisation » ======================== */
+
+/* Le menu ne contenait que des palettes ; il porte maintenant tous les
+   cosmétiques. Un onglet par type, et les palettes sont le premier — avec leurs
+   propres sous-onglets par famille, inchangés.
+
+   Deux niveaux d'onglets, donc, et ils ne se ressemblent pas exprès : ceux du
+   haut sont des pastilles pleines, ceux du dessous des libellés soulignés. Deux
+   rangées identiques l'une au-dessus de l'autre auraient été illisibles — on
+   n'aurait pas su laquelle commandait laquelle. */
+.custo { display: flex; flex-direction: column; gap: var(--sp-3); }
+.custo__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.custo__tab {
+  padding: 5px 11px;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.custo__tab:hover { color: var(--text); }
+.custo__tab[aria-selected="true"] {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.custo__panel[hidden] { display: none; }
+.custo__corps { display: flex; flex-direction: column; gap: 7px; }
+
+/* --------------------------- Les mascottes ------------------------------- */
+
+/* Les Pokémon du thème se coupent d'un choix, comme le reste. `display: none`
+   et non une opacité nulle : masquées, elles ne doivent pas non plus occuper la
+   place au pied de la colonne — sinon on garde la bande vide, ce qui est pire
+   que la bande pleine. */
+:root[data-mascottes="masquees"] .decor-flanc,
+:root[data-mascottes="masquees"] .decor-barre { display: none; }
+
+/* L'aperçu d'un choix de mascottes : deux points côte à côte quand elles sont
+   affichées, un rond barré quand elles ne le sont pas. Il n'y a rien d'autre à
+   figurer — l'option ne change pas une couleur, elle montre ou elle cache. */
+.recomp__apercu[data-mascottes="affichees"] {
+  background-image: radial-gradient(circle at 32% 55%, var(--accent) 0 3px, transparent 4px),
+                    radial-gradient(circle at 68% 55%, var(--text-faint) 0 3px, transparent 4px);
+}
+.recomp__apercu[data-mascottes="masquees"] {
+  background-image: linear-gradient(45deg, transparent 45%, var(--text-faint) 45% 55%, transparent 55%);
+}

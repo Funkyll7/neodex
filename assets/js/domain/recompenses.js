@@ -58,32 +58,48 @@ export const TYPES = [
   {
     cle: "marque",
     nom: "Marque de complétion",
+    onglet: "Marque",
     aide: "Le signe posé sur les Pokémon dont toutes les cases sont cochées.",
     defaut: "etoile",
   },
   {
     cle: "cadre",
     nom: "Cadre de vignette",
+    onglet: "Cadre",
     aide: "Le bord des vignettes terminées, dans la grille.",
     defaut: "aucun",
   },
   {
     cle: "motif",
     nom: "Fond de page",
+    onglet: "Fond",
     aide: "Une trame discrète derrière la grille.",
     defaut: "aucun",
   },
   {
     cle: "banniere",
     nom: "Bandeau de la carte",
+    onglet: "Bandeau",
     aide: "Le filet de tête de la carte de partage.",
     defaut: "uni",
   },
   {
     cle: "sons",
     nom: "Jeu de sons",
+    onglet: "Sons",
     aide: "Les notes jouées quand une case se coche.",
     defaut: "doux",
+  },
+  /* Les mascottes ne se GAGNENT pas : leurs deux options sont ouvertes dès la
+     première visite. Elles sont ici quand même, parce que c'est un choix
+     d'apparence exactement comme les six autres, et qu'un réglage rangé
+     ailleurs aurait été un réglage de plus à trouver. Le mécanisme est le
+     même — un attribut sur <html>, le CSS fait le reste. */
+  {
+    cle: "mascottes",
+    nom: "Mascottes",
+    aide: "Les Pokémon du thème, au pied de la colonne et dans la barre « Filtres ».",
+    defaut: "affichees",
   },
 ];
 
@@ -152,6 +168,10 @@ export const RECOMPENSES = [
   { cle: "tricolore", type: "banniere", nom: "Tricolore", succes: "trois-generations" },
   { cle: "prisme", type: "banniere", nom: "Prisme", succes: "mille-chromatiques" },
   { cle: "or", type: "banniere", nom: "Or", succes: "tous-complets" },
+
+  /* ------------------------------ Mascottes ------------------------------ */
+  { cle: "affichees", type: "mascottes", nom: "Affichées", succes: null },
+  { cle: "masquees", type: "mascottes", nom: "Masquées", succes: null },
 
   /* -------------------------------- Sons --------------------------------- */
   { cle: "doux", type: "sons", nom: "Doux", succes: null },
