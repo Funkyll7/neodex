@@ -15,7 +15,7 @@ import { downloadJson } from "./common.js";
 import { jouer } from "./sons.js";
 import { ouvrirCartePartage, dessinerCarte } from "./carte-partage.js";
 import { ouvrirChangements } from "./changements.js";
-import { ajouterAuJournal } from "../domain/journal.js";
+import { autourDUneAdoption } from "../domain/journal.js";
 import { poserApercuCarte } from "./recompenses.js";
 
 export function createSaveControls(ctx) {
@@ -205,16 +205,14 @@ function createSyncControls(ctx) {
       // d'a cote d'« Enregistrer », donc le reflexe juste apres un echec
       // d'envoi — c'est-a-dire exactement quand la couche locale porte tout ce
       // qui n'a pas pu partir. `sync.js` faisait deja le bon appel, ici seul.
-      const rapport = ctx.collection.adopterDistant((remote && remote.marks) || {});
+      const rapport = autourDUneAdoption(ctx.collection, () =>
+        ctx.collection.adopterDistant((remote && remote.marks) || {})
+      );
       ctx.onCollectionChange();
       // Le rapport dit CE QUI est arrive. « Collection rechargee » laissait
       // l'utilisateur verifier lui-meme si quelque chose avait bouge, ce qui
       // est exactement la question a laquelle le bouton devait repondre.
-      // Le rechargement manuel passe par `adopterDistant` sans passer par
-      // `relire`, qui est l'autre point ou le journal est nourri : sans cette
-      // ligne, un rechargement volontaire etait le seul changement a ne pas
-      // laisser de trace.
-      if (rapport) ajouterAuJournal("reception", rapport, Date.now());
+
       sync.emit("ok", rapport ? resumeDuRapport(rapport) : t("Collection déjà à jour."), rapport);
     } catch {
       /* idem */
@@ -268,7 +266,9 @@ function createSyncControls(ctx) {
       !document.querySelector(".verrou-fond")
     ) {
       dernierRapportVu = etat.at.getTime();
-      ouvrirChangements(rapport);
+      // Personne n a demande ce panneau : il ne prend pas le clavier. Voir
+      // `ui/popup.js`.
+      ouvrirChangements(rapport, { focus: false });
     }
   });
 

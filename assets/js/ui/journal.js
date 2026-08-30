@@ -52,6 +52,16 @@ function heure(at) {
 /** Une entrée : son heure, son sens, son compte, et le détail de ses espèces. */
 function bloc(entree, dataset) {
   const recu = entree.sens === "reception";
+  // Trois sens depuis que les modifications locales sont relevees a la source :
+  // ce que j ai coche ici, ce qui est arrive du depot. L ancien « envoi » ne
+  // sert plus qu aux entrees deja ecrites par une version precedente, et il se
+  // lit comme du local — c est bien ce qu il etait.
+  const fleche = recu ? "↓" : "✓";
+  const libelle = recu
+    ? t("Reçu d'un autre appareil")
+    : entree.sens === "envoi"
+      ? t("Envoyé au dépôt")
+      : t("Coché sur cet appareil");
   const comptes = [];
   if (entree.gagnees) comptes.push(`+${entree.gagnees}`);
   if (entree.perdues) comptes.push(`−${entree.perdues}`);
@@ -65,10 +75,10 @@ function bloc(entree, dataset) {
     { open: entree.especes.length <= 3 },
     el(
       "summary.jrn__somme",
-      el("span.jrn__fleche", { "aria-hidden": "true" }, recu ? "↓" : "↑"),
+      el("span.jrn__fleche", { "aria-hidden": "true" }, fleche),
       el(
         "span.jrn__quoi",
-        el("span.jrn__sens", recu ? t("Reçu d'un autre appareil") : t("Envoyé au dépôt")),
+        el("span.jrn__sens", libelle),
         el("span.jrn__heure", heure(entree.at))
       ),
       el(

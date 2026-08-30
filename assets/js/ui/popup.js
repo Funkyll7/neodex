@@ -32,9 +32,11 @@ import { retourFerme } from "./retour.js";
  * @param {boolean} [options.large]    plus large : pour ce qui se juge en grand
  * @param {() => void} [options.apres] appelé APRÈS insertion, pour ce qui a
  *        besoin de mesurer — une largeur n'existe pas hors du document
+ * @param {boolean} [options.focus] donner le clavier à la croix. Vrai par
+ *        défaut ; faux quand le panneau s'ouvre de lui-même
  * @returns {() => void} la fermeture, si l'appelant veut la déclencher lui-même
  */
-export function ouvrirPopup({ titre, sousTitre = "", icone = null, corps = [], large = false, apres = null }) {
+export function ouvrirPopup({ titre, sousTitre = "", icone = null, corps = [], large = false, apres = null, focus = true }) {
   document.querySelector(".verrou-fond")?.remove();
 
   const fond = el("div.verrou-fond", {
@@ -55,7 +57,7 @@ export function ouvrirPopup({ titre, sousTitre = "", icone = null, corps = [], l
   };
 
   const surTouche = (e) => {
-    if (e.key !== "Escape") return;
+    if (e.key !== "Escape" && e.key !== "Tab") return;
     // LE PANNEAU A PU DISPARAITRE AUTREMENT que par `fermer` — un rendu qui
     // vide son parent, un `remove()` venu d'ailleurs. L'ecouteur, lui, serait
     // reste sur `document`, et comme il coupe la propagation, il AVALAIT Echap
@@ -65,6 +67,10 @@ export function ouvrirPopup({ titre, sousTitre = "", icone = null, corps = [], l
       document.removeEventListener("keydown", surTouche, true);
       return;
     }
+    // La tabulation est traitee AVANT Echap, mais APRES ce controle : un
+    // ecouteur orphelin qui piegerait la tabulation enfermerait le clavier
+    // dans un panneau qui n existe plus.
+    if (e.key === "Tab") return piegerTabulation(e, fond);
     // EN CAPTURE, ET ON ARRÊTE TOUT. Le menu de customisation écoute Échap lui
     // aussi, sur `document` : sans cet arrêt, une seule pression fermait les
     // deux panneaux et renvoyait sur la grille, alors qu'on voulait revenir à
@@ -115,7 +121,58 @@ export function ouvrirPopup({ titre, sousTitre = "", icone = null, corps = [], l
   // n'a rien à mesurer tant que l'élément est hors du document.
   if (apres) apres(fond);
   liberer = retourFerme(fermer);
-  fond.querySelector(".verrou__fermer")?.focus();
+  // LE FOCUS NE SE PREND QUE SUR UNE OUVERTURE DEMANDEE.
+  //
+  // Sur un clic, le prendre est juste : on vient d ouvrir ce panneau, le
+  // clavier doit y etre. Sur une ouverture AUTOMATIQUE — le detail d une
+  // synchronisation qui arrive pendant qu on tape dans la recherche —, c est
+  // l inverse : le curseur saute hors du champ au milieu d un mot, et la
+  // frappe suivante part dans le vide. L appelant qui n a rien demande passe
+  // donc `focus: false`.
+  if (focus) fond.querySelector(".verrou__fermer")?.focus();
 
   return fermer;
+}
+
+/**
+ * Garde la tabulation DANS le panneau.
+ *
+ * Le voile annonce `aria-modal="true"` : un lecteur d'écran cesse alors
+ * d'annoncer ce qu'il y a derrière, et l'utilisateur est fondé à croire qu'il
+ * n'y a plus rien d'autre. Au clavier, pourtant, Tab sortait du panneau et
+ * continuait dans la grille — mille vignettes à traverser à l'aveugle avant de
+ * revenir. La promesse n'était pas tenue.
+ *
+ * Le cycle se ferme donc à la main : depuis le dernier élément, Tab revient au
+ * premier ; depuis le premier, Maj+Tab va au dernier. La liste est relue à
+ * CHAQUE pression et non retenue à l'ouverture — le journal ajoute des blocs
+ * dépliables, l'aperçu des sons deux boutons, et un panneau qui change de
+ * contenu invaliderait une liste figée.
+ *
+ * `:not([tabindex="-1"])` exclut ce qui a été volontairement retiré du cycle,
+ * comme les boutons de la vignette de démonstration.
+ */
+function piegerTabulation(e, fond) {
+  const boite = fond.querySelector(".verrou");
+  if (!boite) return;
+
+  const focalisables = [...boite.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]'
+  )].filter((n) => n.tabIndex !== -1 && n.offsetParent !== null);
+  if (!focalisables.length) return;
+
+  const premier = focalisables[0];
+  const dernier = focalisables[focalisables.length - 1];
+  // `document.activeElement` et non la cible de l'évènement : celle-ci est le
+  // document quand rien n'est encore focalisé — le cas d'une ouverture
+  // automatique, qui ne prend justement pas le clavier.
+  const courant = document.activeElement;
+
+  if (e.shiftKey && (courant === premier || !boite.contains(courant))) {
+    e.preventDefault();
+    dernier.focus();
+  } else if (!e.shiftKey && (courant === dernier || !boite.contains(courant))) {
+    e.preventDefault();
+    premier.focus();
+  }
 }

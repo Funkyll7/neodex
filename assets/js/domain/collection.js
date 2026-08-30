@@ -229,6 +229,7 @@ export class Collection {
     if (Object.keys(next).length) this.local[key] = next;
     else this.local[key] = {};
     writeLocal(this.local);
+    if (this.surEcritureLocale) this.surEcritureLocale();
     return next;
   }
 
@@ -372,9 +373,25 @@ export class Collection {
    *
    * Rend `null` quand rien n est en attente.
    */
+  /**
+   * Previent qu une couche locale vient d etre ecrite.
+   *
+   * UN SEUL ABONNE SUFFIT, et c est voulu : le seul interesse est le journal,
+   * et une liste d ecouteurs aurait fait croire a un bus d evenements qui n
+   * existe pas. `main.js` la pose, `domain/journal.js` la consomme.
+   *
+   * Elle se declenche pour TOUTE ecriture locale — coche, mise de cote, import
+   * d une sauvegarde, adoption d un etat distant. C est a l abonne de faire la
+   * part des choses, et il le fait par comparaison plutot qu en faisant
+   * confiance a l origine de l appel : il y a cinq points d ecriture, et un
+   * sixieme finira par exister.
+   */
+  surEcritureLocale = null;
+
   rapportLocal() {
     return rapportDeChangement(this.base, this.toExport("comparaison").marks, this.dataset);
   }
+
   adopterDistant(distantMarks) {
     const fusionne = this.fusionnerAvec(distantMarks);
     const avant = this.toExport("comparaison").marks;
@@ -390,6 +407,7 @@ export class Collection {
     }
     this.local = local;
     writeLocal(this.local);
+    if (this.surEcritureLocale) this.surEcritureLocale();
 
     // Un RAPPORT et non un booleen : « Mis a jour depuis le depot » ne disait
     // pas QUOI, et c est justement ce qu on veut savoir en rentrant chez soi.
@@ -473,6 +491,7 @@ export class Collection {
     // Le fichier importe peut dater d'avant la migration des cases heritees.
     if (this.dataset) migrateLayer(this.local, this.dataset);
     writeLocal(this.local);
+    if (this.surEcritureLocale) this.surEcritureLocale();
   }
 
   /**
@@ -487,6 +506,7 @@ export class Collection {
     if (this.dataset) migrateLayer(this.base, this.dataset);
     this.local = {};
     writeLocal(this.local);
+    if (this.surEcritureLocale) this.surEcritureLocale();
   }
 
   /** Oublie les modifications locales et revient au fichier de reference. */
@@ -595,7 +615,7 @@ function sameMarks(a = {}, b = {}) {
  * sur le téléphone est une décision comme une autre, et un message qui ne
  * parlerait que des arrivées aurait laissé croire à une perte silencieuse.
  */
-function rapportDeChangement(avant, apres, dataset) {
+export function rapportDeChangement(avant, apres, dataset) {
   const especes = [];
   let gagnees = 0;
   let perdues = 0;

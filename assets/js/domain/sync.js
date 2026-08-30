@@ -16,7 +16,7 @@
  */
 
 import { CONFIG } from "../config.js";
-import { ajouterAuJournal } from "./journal.js";
+import { autourDUneAdoption } from "./journal.js";
 // Les messages d'etat sont lus par l'utilisateur : ils suivent la langue. Les
 // `reason`, elles, restent en francais — ce sont des messages de commit git,
 // ecrits dans l'historique du depot, pas a l'ecran.
@@ -111,7 +111,7 @@ export class GitHubSync {
       // et le premier envoi apres la connexion ecrasait le depot — cases comme
       // carnet. On adopte ce qu on vient de lire.
       const distant = await this.fetchRemote();
-      this.collection.adopterDistant(distant.marks);
+      autourDUneAdoption(this.collection, () => this.collection.adopterDistant(distant.marks));
       this.collection.adopterQuetes(distant.quetes);
     } catch (error) {
       this.token = "";
@@ -225,7 +225,7 @@ export class GitHubSync {
         // le chemin de conflit, la refaire n'apporterait rien.
         const distant = await this.fetchRemote();
         if (!marksImposees) {
-          this.collection.adopterDistant(distant.marks);
+          autourDUneAdoption(this.collection, () => this.collection.adopterDistant(distant.marks));
           this.collection.adopterQuetes(distant.quetes);
           payload = this.collection.toExport("site Funkylldex");
           body.content = encodeBase64(`${JSON.stringify(payload, null, 1)}\n`);
@@ -250,13 +250,14 @@ export class GitHubSync {
       // ne garde en attente que ce qui l'en ecarte. Quand rien n'a bouge
       // pendant le vol, il ne reste rien : le comportement est exactement celui
       // de `commitLocal`, sans le trou.
-      // LE JOURNAL AVANT L ACQUITTEMENT. `adopterDistant` prend ce qu on vient
-      // d ecrire pour nouvel ancetre : apres lui, la couche locale est vide et
-      // il n y a plus rien a raconter. On releve donc ce qu on envoyait juste
-      // avant de l effacer.
-      const envoye = this.collection.rapportLocal();
+      // PAS DE JOURNAL ICI, et c est le deuxieme essai. Le premier relevait a
+      // cet endroit ce qu on envoyait, sous le nom d envoi. Ca ne notait rien
+      // pour qui n a pas configure la synchronisation — c est-a-dire que le
+      // journal restait vide a jamais alors que le site marche tres bien sans
+      // depot. Les modifications locales sont desormais relevees par
+      // `domain/journal.js`, a la source, salve par salve : ce qui passe ici
+      // est donc deja note, et le renoter ferait double emploi.
       this.collection.adopterDistant(payload.marks);
-      if (envoye) ajouterAuJournal("envoi", envoye, Date.now());
       // Le carnet suit le meme acquittement : ce qu on vient d ecrire devient ce
       // que le depot contient. La jointure etant idempotente, ceci ne peut pas
       // creer d ecart — c est ce qui garantit qu on ne replanifie pas sans fin.
@@ -349,12 +350,11 @@ export class GitHubSync {
 
     // `adopterDistant` et non `commitLocal` : le depot ne contient pas encore
     // ce qui est coche ici, vider la couche locale le perdrait.
-    const rapport = this.collection.adopterDistant(distant.marks);
+    const rapport = autourDUneAdoption(this.collection, () =>
+      this.collection.adopterDistant(distant.marks)
+    );
     this.collection.adopterQuetes(distant.quetes);
-    if (rapport) {
-      ajouterAuJournal("reception", rapport, Date.now());
-      this.emit("ok", resumeDuRapport(rapport), rapport);
-    }
+    if (rapport) this.emit("ok", resumeDuRapport(rapport), rapport);
     return rapport;
   }
 

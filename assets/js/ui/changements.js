@@ -113,7 +113,7 @@ export function ligneEspece(entree) {
  *
  * @param {{especes: Array, gagnees: number, perdues: number}} rapport
  */
-export function ouvrirChangements(rapport) {
+export function ouvrirChangements(rapport, { focus = true } = {}) {
   if (!rapport || !rapport.especes.length) return;
 
   const compte = [];
@@ -132,6 +132,7 @@ export function ouvrirChangements(rapport) {
       t("espèces")
     )}`,
     icone: "↻",
+    focus,
     corps: [
       // Les PERTES d'abord quand il y en a. Un rapport qui commence par ce
       // qu'on a gagné se lit comme une bonne nouvelle, et on ferme ; or c'est

@@ -95,6 +95,16 @@
   --pair: #6fb7ff;
   --female: #ff8fd0;
   --danger: #ff6b6b;
+  /* Le pendant vert de `--danger`, et il manquait. Deux endroits l employaient
+     avec une valeur de repli ecrite en dur — les pastilles « + » du detail de
+     synchronisation et du journal —, seules couleurs du site a ne pas suivre
+     les trente-huit palettes.
+
+     Comme `--danger`, il ne change PAS d une palette a l autre : ces deux-la
+     disent « gagne » et « perdu », un role et non une ambiance, et un vert qui
+     virerait au bleu sous Xerneas ne dirait plus rien. C est la meme regle que
+     l echelle de rarete des succes, juste au-dessus. */
+  --success: #4fbf6a;
 
   /* Le voile des tuiles : une couche posée PAR-DESSUS le fond des vignettes,
      du Pokédex comme du Pokédex GO. « none » par défaut — invisible, et

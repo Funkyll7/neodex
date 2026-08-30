@@ -29,6 +29,7 @@
  */
 
 import { lirePrefs, ecrirePrefs } from "../core/prefs.js";
+import { rapportDeChangement } from "./collection.js";
 
 const MAX_ENTREES = 150;
 const MAX_ESPECES = 60;
@@ -109,4 +110,91 @@ export function parJour(journal) {
     groupes.get(cle).entrees.push(entree);
   }
   return [...groupes.values()];
+}
+
+/* ------------------------ Les modifications locales ---------------------- */
+
+/**
+ * L etat au dernier enregistrement. Ce qui s en ecarte est ce qui reste a noter.
+ *
+ * UNE COMPARAISON ET NON UN COMPTE RENDU DES APPELS. La collection previent
+ * qu elle a ete ecrite, jamais ce qu elle a ecrit : il y a cinq points
+ * d ecriture, un sixieme finira par exister, et un journal qui ferait confiance
+ * a chacun d eux pour se decrire aurait un trou le jour ou l on en ajoute un.
+ * Comparer deux etats ne peut pas se tromper.
+ */
+let instantane = null;
+let minuteur = null;
+
+/**
+ * Le delai avant d enregistrer une salve.
+ *
+ * On coche par rafales — une boite de HOME, c est trente cases en deux
+ * minutes —, et une entree par case ferait un journal illisible. Quatre
+ * secondes de silence marquent la fin d une salve, comme le differe de la
+ * synchronisation marque la fin d une session d edition. Les deux valeurs sont
+ * proches, et ce n est pas un hasard : elles mesurent la meme chose.
+ */
+const DELAI = 4000;
+
+/**
+ * Commence a suivre une collection.
+ *
+ * Le premier instantane est pris SANS RIEN NOTER : au demarrage, tout l ecart
+ * entre un objet vide et la collection chargee serait attribue a cet instant,
+ * et le journal se serait ouvert sur une entree de mille cases datee du jour ou
+ * l on a ouvert le site.
+ */
+export function suivreCollection(collection) {
+  instantane = collection.toExport("journal").marks;
+  collection.surEcritureLocale = () => noterSalve(collection);
+}
+
+/**
+ * Note ce qui a bouge depuis le dernier enregistrement, une fois la salve finie.
+ *
+ * Repousse a chaque nouvelle ecriture : tant qu on coche, rien ne part.
+ */
+function noterSalve(collection) {
+  clearTimeout(minuteur);
+  minuteur = setTimeout(() => viderSalve(collection), DELAI);
+}
+
+/** Enregistre tout de suite ce qui attendait, s il y a quelque chose. */
+function viderSalve(collection) {
+  clearTimeout(minuteur);
+  minuteur = null;
+  if (!instantane) return;
+  const apres = collection.toExport("journal").marks;
+  const rapport = rapportDeChangement(instantane, apres, null);
+  instantane = apres;
+  if (rapport) ajouterAuJournal("local", rapport, Date.now());
+}
+
+/**
+ * Encadre une adoption d etat distant : avant, pendant, apres.
+ *
+ * UNE SEULE FONCTION POUR LES TROIS TEMPS, et c est le point. Chacun pris a
+ * part se serait oublie quelque part — il y a quatre endroits ou l on adopte du
+ * distant —, et un seul des trois manquant suffit a attribuer des cases au
+ * mauvais cote. Enveloppee, l operation ne peut pas etre faite a moitie.
+ *
+ * @param {Function} adopter  fait l adoption et rend son rapport, ou `null`
+ */
+export function autourDUneAdoption(collection, adopter) {
+  // 1. Ce qui attendait est BIEN A NOUS. Sans ce vidage, une salve en cours au
+  //    moment ou le depot repond serait comparee a un etat qui contient deja
+  //    les cases distantes, et nos propres coches auraient disparu du journal.
+  viderSalve(collection);
+
+  // 2. L adoption elle-meme, qui rend son rapport ou `null`.
+  const rapport = adopter();
+  if (rapport) ajouterAuJournal("reception", rapport, Date.now());
+
+  // 3. Le nouvel etat devient la reference. Sans cette reprise, la salve
+  //    suivante aurait note les cases distantes une seconde fois, comme si on
+  //    les avait cochees ici — apres une fusion a trois voies, rien dans les
+  //    marques ne dit d ou vient une case.
+  instantane = collection.toExport("journal").marks;
+  return rapport;
 }

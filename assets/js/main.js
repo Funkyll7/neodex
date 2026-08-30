@@ -20,6 +20,7 @@ import { bilanDesSucces } from "./domain/succes.js";
 import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
 import { jouer } from "./ui/sons.js";
 import { initParametres, appliquerParametres, poserContexteParametres } from "./ui/parametres.js";
+import { suivreCollection } from "./domain/journal.js";
 import { initPageSucces } from "./ui/page-succes.js";
 import { appliquerRecompenses } from "./ui/recompenses.js";
 import { initCourbe } from "./ui/courbe.js";
@@ -328,6 +329,12 @@ function start(dataset) {
   // parce que `initParametres` a deja tourne au demarrage, bien avant que les
   // donnees soient la.
   poserContexteParametres(ctx);
+
+  // Le journal se met a suivre la collection. Ici et pas plus tot : le premier
+  // instantane doit etre pris sur une collection DEJA CHARGEE, sans quoi l ecart
+  // entre un objet vide et mille cases serait note comme une modification faite
+  // a l instant.
+  suivreCollection(collection);
 
   const sidebar = createSidebar(ctx);
   const grid = createGrid(ctx);

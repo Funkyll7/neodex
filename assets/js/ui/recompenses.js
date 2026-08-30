@@ -568,7 +568,7 @@ function ajusterLoupe(racine) {
  * l'application, repeint par la palette prévisualisée.
  */
 function maquetteDePage() {
-  // LARGE OU ÉTROITE SELON LA FORME DU CADRE, et c'est le deuxième essai.
+  // LARGE OU ÉTROITE SELON LA FORME DU CADRE, et c'est le troisième essai.
   //
   // Le premier suivait l'appareil : téléphone → maquette téléphone. L'intention
   // était juste — montrer une maquette d'ordinateur à quelqu'un qui tient un
@@ -584,12 +584,18 @@ function maquetteDePage() {
   // maquette de téléphone — et comme la place disponible suit la fenêtre, un
   // vrai téléphone reçoit toujours sa maquette de téléphone.
   //
-  // Les nombres viennent de la feuille de styles : largeur du pop-up large,
-  // ses marges, et le plafond de hauteur de la loupe. Les recopier ici est le
-  // prix d'une décision qui doit être prise AVANT que l'élément existe.
-  const largeurCadre = Math.min(window.innerWidth - 32, 720) - 34;
-  const hauteurCadre = Math.min(window.innerHeight * 0.54, 520);
-  const etroit = largeurCadre <= hauteurCadre;
+  // LA MESURE VIENT DU DOCUMENT, PAS DE CONSTANTES RECOPIÉES. La version
+  // précédente reprenait dans le JavaScript la largeur du pop-up, ses marges et
+  // le plafond de la loupe — `Math.min(innerWidth - 32, 720) - 34`. Ça marchait
+  // et c'était une bombe à retardement : changer la largeur du pop-up dans la
+  // feuille de styles aurait fait choisir la mauvaise maquette, sans rien
+  // signaler.
+  //
+  // Le cadre est donc mesuré POUR DE VRAI, sur un pop-up vide monté hors écran
+  // le temps d'une lecture. Une reflow, une fois par ouverture : c'est le prix
+  // d'une mise en page qui reste dans la feuille de styles.
+  const { largeur, hauteur } = mesurerLeCadre();
+  const etroit = largeur <= hauteur;
 
   const stat = (nom, pct) =>
     el(
@@ -645,6 +651,37 @@ function maquetteDePage() {
   );
 }
 
+
+/**
+ * Mesure la place qu'aura la maquette, avant de la construire.
+ *
+ * LE PROBLÈME EST UN ŒUF ET UNE POULE : la forme de la maquette dépend du
+ * cadre, et le cadre n'existe qu'une fois le pop-up ouvert — donc une fois la
+ * maquette construite. On monte donc un pop-up VIDE, hors écran, on lit les
+ * deux dimensions, et on le jette. Le vrai s'ouvre ensuite avec la bonne
+ * maquette du premier coup.
+ *
+ * Deux versions ont précédé celle-ci. La première recopiait les nombres du CSS
+ * dans le JS ; la seconde les recopiait mieux. Toutes deux mentaient dès qu'on
+ * touchait à la feuille de styles. Mesurer ne ment pas.
+ *
+ * `visibility: hidden` et non `display: none` : un élément non affiché n'a
+ * aucune dimension à donner. Il est hors flux et invisible, mais mesurable.
+ */
+function mesurerLeCadre() {
+  const sonde = el(
+    "div.verrou-fond",
+    { style: { visibility: "hidden", pointerEvents: "none" }, "aria-hidden": "true" },
+    el("div.verrou.verrou--large", el("div.verrou__corps", el("div.verrou__scene.verrou__scene--theme", el("div.verrou__loupe"))))
+  );
+  document.body.append(sonde);
+  const scene = sonde.querySelector(".verrou__scene");
+  const loupe = sonde.querySelector(".verrou__loupe");
+  const largeur = scene.clientWidth;
+  const hauteur = parseFloat(getComputedStyle(loupe).maxHeight) || scene.clientHeight;
+  sonde.remove();
+  return { largeur, hauteur };
+}
 /**
  * Une tranche de l'application : marque, barre de progression, deux vignettes.
  *
