@@ -148,7 +148,12 @@ export const RECOMPENSES = [
 
   /* ------------------------------- Cadres -------------------------------- */
   { cle: "aucun", type: "cadre", nom: "Aucun", succes: null },
-  { cle: "or", type: "cadre", nom: "Or", succes: "mille-cases" },
+  // La CLÉ reste « or » alors que le nom ne l'est plus : elle est écrite dans
+  // les préférences de quiconque a déjà choisi ce cadre, et la renommer aurait
+  // remis tout le monde sur « Aucun ». Le nom, lui, était faux — ce cadre est
+  // peint en `--gold`, donc il prend la couleur de la palette et n'est doré que
+  // sur celles qui le sont.
+  { cle: "or", type: "cadre", nom: "Classique", succes: "mille-cases" },
   { cle: "laurier", type: "cadre", nom: "Laurier", succes: "trois-generations" },
   { cle: "prisme", type: "cadre", nom: "Prisme", succes: "cinq-cents-chromatiques" },
   { cle: "neon", type: "cadre", nom: "Néon", succes: "cinq-cents-go" },

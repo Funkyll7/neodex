@@ -3403,11 +3403,23 @@
   border-color: #7bbf72;
   box-shadow: inset 0 0 0 2px color-mix(in srgb, #7bbf72 24%, transparent);
 }
-/* Le prisme passe par `border-image` : c'est le seul moyen d'obtenir un dégradé
-   SUR le trait de bordure sans ajouter d'élément. Le « 1 » final signifie « la
-   bordure entière », sans découpe en neuf zones. */
+/* Le prisme : un dégradé SUR le trait de bordure, et qui suit les coins ronds.
+
+   `border-image` était le chemin court, et il a un défaut rédhibitoire ici : il
+   ANNULE `border-radius`. La vignette gardait ses coins arrondis, son cadre
+   irisé sortait carré, et les quatre angles dépassaient.
+
+   D'où le montage à deux plans. La bordure est transparente ; le dégradé est
+   peint en `border-box`, donc jusqu'au bord extérieur, et le fond de la
+   vignette par-dessus en `padding-box`, donc jusqu'au bord INTÉRIEUR. Il ne
+   reste visible du dégradé que l'épaisseur du trait — et les deux plans sont
+   découpés par le même `border-radius`. */
 :root[data-cadre="prisme"] .card--complete {
-  border-image: conic-gradient(from 210deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2, #ff6b6b) 1;
+  border-color: transparent;
+  background:
+    linear-gradient(160deg, var(--gold-wash), transparent 62%) padding-box,
+    linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
+    conic-gradient(from 210deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2, #ff6b6b) border-box;
   box-shadow: none;
 }
 :root[data-cadre="neon"] .card--complete {
@@ -3539,7 +3551,14 @@ body::before {
 /* Les aperçus de cadre reprennent le traitement réel, en réduction. */
 .recomp__apercu[data-cadre="or"]       { border-color: var(--gold); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--gold) 26%, transparent); }
 .recomp__apercu[data-cadre="laurier"]  { border-color: #7bbf72; box-shadow: inset 0 0 0 2px color-mix(in srgb, #7bbf72 24%, transparent); }
-.recomp__apercu[data-cadre="prisme"]   { border-image: conic-gradient(from 210deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2, #ff6b6b) 1; }
+/* Même montage à deux plans que la vignette, pour la même raison : l'aperçu a
+   ses coins arrondis, `border-image` les aurait carrés. */
+.recomp__apercu[data-cadre="prisme"] {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
+    conic-gradient(from 210deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2, #ff6b6b) border-box;
+}
 .recomp__apercu[data-cadre="neon"]     { border-color: var(--accent); box-shadow: 0 0 7px var(--accent-glow); }
 .recomp__apercu[data-cadre="couronne"] { border-color: var(--gold); box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--gold) 34%, transparent); }
 
@@ -3729,7 +3748,13 @@ body::before {
 .custo__compte { margin-left: auto; }
 /* Le sous-titre d une famille de palettes : un cran plus bas que le titre de
    section, puisqu il est DANS une section et non a cote. */
+/* `flex`, et pas seulement pour la forme : le compte porte `margin-left: auto`
+   pour se ranger à droite, ce qui ne veut rien dire dans un bloc. Il se collait
+   donc au titre — « BASE3 », « COULEURS6 ». */
 .custo__sous-titre {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
   margin: 10px 0 0;
   font-size: 10.5px;
   font-weight: 800;
