@@ -202,6 +202,13 @@ export const RECOMPENSES = [
   { cle: "vagues", type: "motif", nom: "Vagues", succes: "toutes-alola" },
   { cle: "poussiere", type: "motif", nom: "Poussière", succes: "mille-rencontres" },
   { cle: "aurore", type: "motif", nom: "Aurore", succes: "mille-chromatiques" },
+  /* LES DEUX PREMIERS FONDS QUI BOUGENT. Les cinq autres sont des trames
+     fixes ; ceux-ci tombent. Hoenn est la région de l'eau et de Kyogre, Sinnoh
+     celle du Mont Couronné et de sa neige — la météo de chacune, en somme.
+     Elles s'arrêtent sous `prefers-reduced-motion`, comme les six autres
+     animations du site. */
+  { cle: "pluie", type: "motif", nom: "Pluie", succes: "fanatique-3" },
+  { cle: "neige", type: "motif", nom: "Neige", succes: "fanatique-4" },
 
   /* ------------------------------ Bandeaux ------------------------------- */
   { cle: "uni", type: "banniere", nom: "Uni", succes: null },

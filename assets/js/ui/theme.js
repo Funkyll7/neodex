@@ -355,6 +355,16 @@ const ALLURE = {
   motif: { icone: "grille", teinte: "#ff9f43" },
   banniere: { icone: "drapeau", teinte: "#f783ac" },
   sons: { icone: "note", teinte: "#7ee7ff" },
+  /* Deux familles arrivees avec les succes « Fanatique ». Sans entree ici,
+     elles retombaient sur `ALLURE.theme` et portaient donc la palette — trois
+     categories avec la meme icone, ce qui est exactement ce qu'un menu a
+     onglets ne doit pas faire.
+     Les teintes sont choisies dans les TROUS du cercle chromatique deja
+     occupe : les huit autres couvrent le violet, l'ambre, le bleu, la menthe,
+     l'orange, le rose, le cyan et le vert-jaune. Restaient le rouge — celui de
+     la Poke Ball, ce qui tombe bien — et le vert franc. */
+  ball: { icone: "ball", teinte: "#ff6b6b" },
+  sprites: { icone: "pixel", teinte: "#51cf66" },
   mascottes: { icone: "duo", teinte: "#a9e34b" },
 };
 

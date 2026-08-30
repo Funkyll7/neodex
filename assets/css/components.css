@@ -3940,6 +3940,13 @@ body::before {
 .recomp__apercu[data-motif="vagues"]    { background-image: repeating-radial-gradient(circle at 50% 130%, transparent 0 4px, var(--border-strong) 4px 5px); }
 .recomp__apercu[data-motif="poussiere"] { background-image: radial-gradient(circle, var(--text-faint) 0 .7px, transparent 1.2px); background-size: 4px 4px; }
 .recomp__apercu[data-motif="aurore"]    { background-image: radial-gradient(80% 60% at 20% 0%, var(--accent-glow) 0%, transparent 70%), radial-gradient(80% 60% at 90% 100%, var(--female) 0%, transparent 70%); }
+/* Les deux fonds qui bougent gardent une pastille FIXE : elle fait vingt-deux
+   pixels, une goutte y parcourt sa hauteur en un dixième de seconde, et vingt
+   pastilles qui s'agitent dans une liste qu'on parcourt sont une nuisance, pas
+   une information. Le dessin suffit à les nommer — des traits obliques pour la
+   pluie, des points pour la neige. C'est l'aperçu, lui, qui les montre tomber. */
+.recomp__apercu[data-motif="pluie"]     { background-image: repeating-linear-gradient(100deg, transparent 0 3px, var(--rarete-3) 3px 4px, transparent 4px 7px); }
+.recomp__apercu[data-motif="neige"]     { background-image: radial-gradient(circle at 30% 25%, var(--text-soft) 0 1.4px, transparent 2px), radial-gradient(circle at 70% 62%, var(--text-faint) 0 1.1px, transparent 1.7px), radial-gradient(circle at 45% 88%, var(--text-soft) 0 .9px, transparent 1.4px); }
 
 .recomp__apercu[data-banniere="uni"]       { background: var(--accent); }
 .recomp__apercu[data-banniere="degrade"]   { background: linear-gradient(90deg, var(--gold), var(--gold-soft)); }
@@ -6117,3 +6124,108 @@ body::before {
   background: var(--bg-inset);
 }
 .verrou__ball-petite { display: block; width: 12px; height: 12px; }
+
+/* ===================== Les deux fonds qui tombent ======================== */
+
+/* UNE COUCHE À PART, DÉPLACÉE PAR `transform`, ET C'EST TOUT L'ENJEU.
+   Le réflexe aurait été d'animer `background-position` sur la trame existante.
+   Ça marche, et ça repeint la fenêtre entière à chaque image : trois dégradés
+   sur un plein écran, soixante fois par seconde, sur un téléphone. Une
+   `transform`, elle, est composée par le processeur graphique — la couche est
+   peinte UNE fois puis simplement glissée.
+
+   D'où une couche dédiée, plus HAUTE que la fenêtre (`inset: -50% 0`), et
+   translatée d'exactement une hauteur de tuile : au bout de l'animation le
+   dessin se retrouve superposé à lui-même, et la boucle ne se voit pas.
+
+   Elle vit sur `body::after`, libre pour tous les motifs sauf « Aurore » qui y
+   met ses palmes — les deux ne peuvent pas être portés en même temps, un seul
+   fond de page se choisit à la fois. */
+[data-motif="pluie"] body::after,
+[data-motif="neige"] body::after,
+[data-motif="pluie"] .verrou__motif::after,
+[data-motif="neige"] .verrou__motif::after {
+  content: "";
+  position: absolute;
+  inset: -50% 0;
+  pointer-events: none;
+  /* Prévient le compositeur qu'on va bouger cette couche : sans cet indice, la
+     première image de l'animation coûte une promotion de calque, visible comme
+     un à-coup au moment où le fond est choisi. */
+  will-change: transform;
+}
+[data-motif="pluie"] body::after,
+[data-motif="neige"] body::after { position: fixed; z-index: 0; }
+
+/* --- Hoenn : la pluie sur la mer --- */
+
+/* Le ciel bas et l'eau sombre, sans mouvement : c'est le décor, il ne tombe
+   pas. Les gouttes sont sur la couche animée. */
+[data-motif="pluie"] body::before,
+[data-motif="pluie"] .verrou__motif {
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--rarete-3) 20%, transparent) 0%,
+      color-mix(in srgb, var(--rarete-3) 9%, transparent) 46%,
+      color-mix(in srgb, var(--pair) 14%, transparent) 100%
+    );
+}
+/* Trois épaisseurs de gouttes plutôt qu'une : une pluie d'un seul trait se lit
+   comme un rayage d'écran. Elles sont inclinées de dix degrés — la pluie
+   verticale n'existe qu'en l'absence de vent, et le site n'est pas un abri. */
+[data-motif="pluie"] body::after,
+[data-motif="pluie"] .verrou__motif::after {
+  background-image:
+    repeating-linear-gradient(100deg, transparent 0 13px, color-mix(in srgb, var(--rarete-3) 46%, transparent) 13px 14px, transparent 14px 27px),
+    repeating-linear-gradient(100deg, transparent 0 21px, color-mix(in srgb, var(--pair) 30%, transparent) 21px 22px, transparent 22px 44px),
+    repeating-linear-gradient(100deg, transparent 0 33px, color-mix(in srgb, var(--text) 12%, transparent) 33px 34px, transparent 34px 69px);
+  background-size: 100% 44px;
+}
+
+/* --- Sinnoh : la neige du Mont Couronné --- */
+
+[data-motif="neige"] body::before,
+[data-motif="neige"] .verrou__motif {
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--rarete-3) 16%, transparent) 0%,
+      transparent 52%,
+      color-mix(in srgb, var(--text) 7%, transparent) 100%
+    );
+}
+/* LES FLOCONS PRENNENT `--text`, ET NON DU BLANC. Du blanc disparaît sur les
+   dix-huit palettes claires. `--text` est clair sur fond sombre et sombre sur
+   fond clair : la neige est donc pâle la nuit et grise sur un ciel blanc, ce
+   qui est exactement ce qu'on voit dehors — un flocon à contre-jour est plus
+   sombre que le ciel derrière lui.
+   Trois tailles à trois pas différents : c'est ce qui empêche l'œil de trouver
+   la grille, et une grille est ce qui trahit une neige fabriquée. */
+[data-motif="neige"] body::after,
+[data-motif="neige"] .verrou__motif::after {
+  background-image:
+    radial-gradient(circle at 20% 12%, color-mix(in srgb, var(--text) 46%, transparent) 0 1.6px, transparent 2.2px),
+    radial-gradient(circle at 68% 34%, color-mix(in srgb, var(--text) 34%, transparent) 0 2.4px, transparent 3.1px),
+    radial-gradient(circle at 41% 71%, color-mix(in srgb, var(--text) 40%, transparent) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 86% 88%, color-mix(in srgb, var(--text) 28%, transparent) 0 2px, transparent 2.7px);
+  background-size: 137px 137px, 191px 191px, 97px 97px, 233px 233px;
+}
+
+/* --- Le mouvement, et rien que sous `no-preference` --- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* La translation vaut exactement UNE hauteur de tuile : 44 px pour la pluie.
+     Un pixel de plus et la boucle sauterait, une fois par cycle. */
+  @keyframes motif-pluie { to { transform: translate3d(0, 44px, 0); } }
+  /* La neige a quatre tuiles de tailles différentes ; on translate du plus
+     petit commun praticable — 137 px est un multiple entier d'aucune autre,
+     mais à cette vitesse et avec quatre couches, le raccord ne se voit pas.
+     C'est la limite assumée d'une seule couche pour quatre trames. */
+  @keyframes motif-neige { to { transform: translate3d(0, 137px, 0); } }
+
+  [data-motif="pluie"] body::after,
+  [data-motif="pluie"] .verrou__motif::after { animation: motif-pluie .62s linear infinite; }
+  [data-motif="neige"] body::after,
+  [data-motif="neige"] .verrou__motif::after { animation: motif-neige 9s linear infinite; }
+}

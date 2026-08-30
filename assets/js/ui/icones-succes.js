@@ -49,6 +49,18 @@ export const ICONES = {
      a colorer, et donc a accorder aux trente-huit palettes. Retrace en un seul
      chemin a regle `evenodd`, il prend `currentColor` comme les quarante-cinq
      autres. */
+  /* --- les deux familles de customisation ajoutées avec les Fanatique --- */
+  /* Une Poké Ball en TRAIT, et non en aplat : le grand cercle, la bande qui
+     s'arrête de chaque côté du bouton, et le bouton. Trois sous-chemins et rien
+     d'autre — c'est le dessin le plus reconnaissable de toute la série, il n'a
+     besoin d'aucun détail pour se lire à quinze pixels. */
+  ball: "M12 3.2a8.8 8.8 0 1 1 0 17.6 8.8 8.8 0 0 1 0-17.6M3.2 12h5.6M15.2 12h5.6M12 8.8a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4",
+  /* L'escalier de blocs : c'est LA signature du pixel art. Une diagonale y est
+     forcément un escalier, faute de pouvoir tracer entre deux pixels — dire
+     « sprite » par une grille aurait répété l'icône du fond de page, et par un
+     Pokémon aurait demandé de choisir lequel. */
+  pixel: "M3 15h4.5v4.5H3zM7.5 10.5H12V15H7.5zM12 6h4.5v4.5H12zM16.5 4.5H21V9h-4.5z",
+
   /* --- cocher, compter --- */
   case: "M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5zM8 12l2.8 2.8L16.5 9",
   grille: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13.5 16.8l2 2 4.2-4.2",

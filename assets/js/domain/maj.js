@@ -53,6 +53,7 @@ export const VERSIONS = [
       ["ajout", "Neuf succès « Fanatique » : boucler une région nommément, et non plus une région au choix."],
       ["ajout", "Le style de sprite se choisit à part du thème : le pixel art devient portable sur les trente-huit palettes."],
       ["ajout", "Trois Balls à gagner : elles remplacent la Poké Ball du bouton « capturé », et le curseur sur ordinateur."],
+      ["ajout", "Deux fonds de page qui bougent : la pluie de Hoenn et la neige de Sinnoh."],
     ],
   },
   {
