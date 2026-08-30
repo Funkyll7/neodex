@@ -3910,8 +3910,19 @@ body::before {
 /* Une option verrouillee reste cliquable — son clic dit ce qu il manque — donc
    `aria-disabled` et non `disabled`. Le curseur doit dire les deux choses a la
    fois : ce n est pas un choix, mais il se passe quelque chose. */
-.recomp__opt[aria-disabled="true"] { opacity: .45; cursor: help; }
-.recomp__opt[aria-disabled="true"]:hover { opacity: .62; }
+/* VERROUILLEE, MAIS L APERCU RESTE PLEIN. L option entiere passait a 45 %
+   d opacite, pastille comprise : la couronne y sortait terne et bleutee alors
+   qu elle est doree sur la vignette, et l apercu montrait donc autre chose que
+   ce qu on allait gagner. Or c est exactement ce qu on vient regarder — la
+   pastille EST la recompense.
+
+   Ce qui est grise, c est le NOM et le cadenas : de quoi lire  pas encore  sans
+   abimer la seule chose qui donne envie. */
+.recomp__opt[aria-disabled="true"] { cursor: help; }
+.recomp__opt[aria-disabled="true"] .recomp__label,
+.recomp__opt[aria-disabled="true"] .recomp__cadenas { opacity: .5; }
+.recomp__opt[aria-disabled="true"]:hover .recomp__label,
+.recomp__opt[aria-disabled="true"]:hover .recomp__cadenas { opacity: .72; }
 
 /* Le bandeau du cadenas reprend celui du deverrouillage, au filet pres : le
    premier annonce une reussite, le second une condition. Meme forme, autre
@@ -5416,16 +5427,26 @@ body::before {
 /* Gemme — cinq cents Pokémon terminés. Un saphir taillé : l'anneau fait les
    facettes en tournant, le centre est la table de la pierre. */
 [data-marque="gemme"] {
-  --marque-fond: radial-gradient(circle at 50% 36%, #ddf3ff, #9ed6ff 54%, #74c2ff);
+  --marque-fond: radial-gradient(circle at 50% 36%, #cfeaff, #7cc4fb 52%, #5aa9f0);
   --marque-anneau: conic-gradient(from 140deg, #d6f4ff, #4aa8ff 25%, #1747c4 50%, #4aa8ff 75%, #d6f4ff);
   --marque-encre: #04205e;
   --marque-halo: rgba(23, 71, 196, .5);
 }
 
 /* Couronne — le Pokédex entier, et la seule qui porte PLUSIEURS couleurs à la
-   fois. L'or tourne sur l'anneau comme un métal poli, et trois pierres — rubis,
-   saphir, émeraude — y sont serties, là où le bandeau d'une vraie couronne les
-   porte.
+   fois.
+
+   ELLE PREND LES COULEURS DE ZACIAN CHROMATIQUE, comme la palette du même nom :
+   le cyan glacé de son pelage au centre, l'azur profond de ses ombres sur
+   l'anneau, et trois pierres serties dans le bandeau — l'or de sa forme
+   couronnée, l'ivoire de sa crinière, la glace de ses reflets. Un or générique
+   aurait été le choix évident et le mauvais : la récompense du Pokédex entier
+   et la palette du Pokédex entier doivent parler du même Pokémon.
+
+   LE CŒUR EST IVOIRE ET NON GLACÉ, et c'est un ajustement d'après coup : un
+   centre entièrement cyan la rendait presque identique à la gemme, qui est un
+   saphir. L'ivoire de la crinière est tout aussi vrai que la glace du pelage,
+   et il sépare les deux d'un coup d'œil — chaud au cœur, froid au bord.
 
    ELLES SONT SUR L'ANNEAU, PAS SOUS LE SIGNE, et c'est ce qui permet de les
    garder franches. Deux versions les ont posées au centre : elles y ramenaient
@@ -5433,18 +5454,18 @@ body::before {
    jusqu'à ce qu'elles ne soient plus des pierres. Serties dans le bandeau,
    elles ne passent sous rien et peuvent être aussi vives qu'une vraie. */
 [data-marque="couronne"] {
-  --marque-fond: radial-gradient(circle at 50% 36%, #fff4cf, #ffdf8a 54%, #ffcf57);
+  --marque-fond: radial-gradient(circle at 50% 34%, #fffaf0, #ffedd0 44%, #b9e7f5);
   /* Les trois pierres sont peintes SUR L ANNEAU, donc rognees par lui : elles
      ne mordent sur le centre a aucun moment. Un premier essai les posait dans
      le fond, et celle de gauche tombait sous le glyphe — contraste ramene a
      3,55. Serties dans le bandeau, elles peuvent rester franches. */
   --marque-anneau:
-    radial-gradient(circle 2.6px at 50% 98%, #ffffff 0 20%, #4a9be8 22% 100%, transparent 100%),
-    radial-gradient(circle 2.3px at 9% 72%, #ffffff 0 22%, #e0553f 24% 100%, transparent 100%),
-    radial-gradient(circle 2.3px at 91% 72%, #ffffff 0 22%, #4fbf6a 24% 100%, transparent 100%),
-    conic-gradient(from 200deg, #fff3c4, #f5b921 22%, #c47f12 44%, #ffe07a 62%, #f5b921 80%, #c47f12);
-  --marque-encre: #43290a;
-  --marque-halo: rgba(245, 185, 33, .55);
+    radial-gradient(circle 2.6px at 50% 98%, #ffffff 0 20%, #ffcf4d 22% 100%, transparent 100%),
+    radial-gradient(circle 2.3px at 9% 72%, #ffffff 0 22%, #ffead0 24% 100%, transparent 100%),
+    radial-gradient(circle 2.3px at 91% 72%, #ffffff 0 22%, #9ceaff 24% 100%, transparent 100%),
+    conic-gradient(from 200deg, #9ceaff, #68d0ea 22%, #0082b6 46%, #004e82 62%, #68d0ea 82%, #9ceaff);
+  --marque-encre: #032a44;
+  --marque-halo: rgba(0, 130, 182, .55);
 }
 
 /* --- Les deux endroits où ces variables se posent --- */
