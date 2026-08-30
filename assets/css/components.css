@@ -1313,6 +1313,13 @@
    `hidden` et l'onglet caché resterait visible. */
 .toolbar { margin-bottom: var(--sp-4); }
 
+/* Et le même écart au-dessus, dans l'onglet GO. Le bandeau de progression y
+   précède la barre d'outils, avec exactement le même défaut : `#tab-go` est en
+   `display: block`, le panneau n'a pas de marge basse, le champ de recherche
+   venait donc se coller contre lui. La valeur est celle de la règle ci-dessus,
+   et pas une autre : les deux écarts se voient l'un au-dessus de l'autre. */
+.go-head { margin-bottom: var(--sp-4); }
+
 /* Pastilles du coin de la vignette : alignées sur la même colonne et
    légèrement réduites, pour cesser de mordre sur l'illustration. */
 .card__spark { top: 3px; right: 3px; width: 13px; height: 13px; }
@@ -3124,18 +3131,26 @@
   border-color: color-mix(in srgb, var(--pastille) 38%, transparent);
   background: color-mix(in srgb, var(--pastille) 9%, var(--bg-inset));
 }
+/* La rareté se voit AUSSI sur un succès verrouillé, et c'est le but : savoir
+   qu'un objectif est légendaire avant de l'atteindre est une bonne moitié de
+   l'intérêt de la couleur. L'icône était grise tant que le succès n'était pas
+   gagné, ce qui rendait la rampe invisible là où elle servait le plus.
+
+   Verrouillé, la teinte est donc mêlée au gris plutôt qu'éteinte : elle reste
+   reconnaissable sans venir au premier plan, et le contraste tient — une simple
+   opacité l'aurait fait tomber sous le seuil sur les palettes claires. */
 .succes__icone {
   display: grid;
   place-items: center;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  color: var(--text-ghost);
+  color: color-mix(in srgb, var(--pastille) 52%, var(--text-ghost));
   background: var(--bg-sunken);
 }
 .succes[data-obtenu="true"] .succes__icone {
   color: var(--pastille);
-  background: color-mix(in srgb, var(--pastille) 16%, var(--bg-sunken));
+  background: color-mix(in srgb, var(--pastille) 10%, var(--bg-sunken));
 }
 .succes__corps { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .succes__nom {
@@ -3225,9 +3240,12 @@
    séparée par le `padding` et le `gap` de la colonne — une bande qui s'arrête à
    vingt pixels du bord aurait l'air posée de travers.
 
-   Le dégradé vers le fond de la barre est ce qui rend le collage acceptable :
-   sans lui, le contenu qui défile passait derrière les vignettes et on lisait
-   deux choses l'une sur l'autre. */
+   LA BANDE EST PLEINE, ET LE FONDU EST AU-DESSUS D'ELLE. Le dégradé était
+   d'abord le fond de la bande elle-même, opaque en bas et transparent en haut.
+   Le contenu qui défilait derrière traversait alors la partie claire du
+   dégradé, et on lisait du texte blanc au milieu des vignettes. Ici la bande
+   est un aplat que rien ne traverse, et c'est un `::before` posé JUSTE
+   AU-DESSUS d'elle qui adoucit la transition. */
 .decor-flanc { display: none; }
 @media (min-width: 861px) {
   .decor-flanc[data-n="1"],
@@ -3241,9 +3259,19 @@
     /* `margin-top: auto` la pousse au bas de la colonne quand les filtres ne la
        remplissent pas ; sans lui elle flottait juste sous le dernier panneau. */
     margin: auto calc(-1 * var(--sp-5)) calc(-1 * var(--sp-6));
-    padding: 42px var(--sp-3) 8px;
+    padding: 12px var(--sp-3) 14px;
     pointer-events: none;
-    background: linear-gradient(to top, var(--bg-raised) 0%, var(--bg-raised) 72%, transparent 100%);
+    background: var(--bg-raised);
+  }
+  .decor-flanc[data-n="1"]::before,
+  .decor-flanc[data-n="3"]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 34px;
+    background: linear-gradient(to top, var(--bg-raised), transparent);
   }
   .decor-flanc .decor__sprite { width: 68px; }
   /* Le trio se chevauche : trois vignettes de 74 px espacées demanderaient
@@ -3255,13 +3283,13 @@
   .decor-flanc[data-n="1"] .decor__sprite { width: 100px; }
 }
 
+/* Aucun masque : la bande est un aplat, les vignettes s'y posent entières. Le
+   masque servait quand elles flottaient sur le fond de page — il effaçait alors
+   leurs bords pour qu'elles s'y fondent. Sur une surface qui leur appartient il
+   ne faisait que leur manger la tête. */
 .decor__sprite {
   display: block;
   height: auto;
-  /* Un fondu du bas vers le haut : les vignettes sortent du bord au lieu d'y
-     être posées, et leur base ne dessine pas une ligne de découpe. */
-  -webkit-mask-image: linear-gradient(to top, #000 62%, rgba(0, 0, 0, .85) 88%, transparent);
-  mask-image: linear-gradient(to top, #000 62%, rgba(0, 0, 0, .85) 88%, transparent);
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .45));
 }
 
@@ -3293,4 +3321,28 @@
      130 px sur une barre qui porte déjà son libellé. */
   .decor-barre .decor__sprite + .decor__sprite { margin-left: -11px; }
   .decor-barre[data-n="1"] .decor__sprite { width: 40px; }
+}
+
+/* La légende des cinq crans de rareté, sous le score. Deux lignes de points
+   plutôt qu'un pari sur l'ordre : la rampe acier → vert → bleu → violet → or se
+   lit partout ailleurs, mais rien ne dit qu'elle se lit ici. */
+.succes__rarete-legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 2px;
+}
+.succes__rarete {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-ghost);
+}
+.succes__rarete i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pastille);
 }

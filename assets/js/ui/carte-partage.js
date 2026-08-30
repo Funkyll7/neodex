@@ -44,7 +44,6 @@ import { progressOf, goProgressOf } from "../domain/progress.js";
 import { chassesOuvertes, totalPartie } from "../domain/quetes.js";
 import { countComplete } from "../domain/completion.js";
 import { bilanDesSucces, evaluerSucces } from "../domain/succes.js";
-import { THEMES } from "./themes-list.js";
 import { dessinerIcone } from "./icones-succes.js";
 
 const LARGEUR = 1080;
@@ -93,6 +92,10 @@ function palette() {
     discret: lire("--text-muted", "#a4b1cf"),
     fantome: lire("--text-ghost", "#8d96b2"),
     accent: lire("--accent", "#ffcb05"),
+    // Les cinq crans de rareté, résolus ici. Ils sont écrits en `color-mix`
+    // dans la feuille de style : `getComputedStyle` en rend la couleur finale,
+    // que le canvas comprend, là où la déclaration elle-même ne lui dirait rien.
+    raretes: [1, 2, 3, 4, 5].map((n) => lire(`--rarete-${n}`, "#8b95a8")),
     corps: lire("--font-body", "system-ui, sans-serif"),
     titre: lire("--font-display", "system-ui, sans-serif"),
   };
@@ -399,10 +402,10 @@ function panneauDesSucces(c, p, y, succes) {
   const pas = zone.l / rares.length;
   rares.forEach((s, i) => {
     const cx = zone.x + pas * i + pas / 2;
-    // La couleur du thème pour les cinq succès qui en ouvrent un, l'accent pour
-    // les autres : c'est ce qui distingue une récompense d'une simple étape.
-    const theme = THEMES.find((th) => th.verrou === s.cle);
-    dessinerIcone(c, s.icone, cx, y + 98, 34, (theme && theme.pastille) || p.accent);
+    // La couleur de RARETÉ, la même que dans la page des succès et la même sur
+    // les trente-huit palettes. C'est ce qui rend la carte lisible par quelqu'un
+    // d'autre : l'or dit « très loin » sans qu'on ait à connaître le Pokédex.
+    dessinerIcone(c, s.icone, cx, y + 98, 34, p.raretes[(s.rang || 1) - 1]);
     // La colonne fait 176 px, « Collectionneur de motifs » en fait 200 à cette
     // taille : sans l'ajustement, le nom sortait par-dessus ses voisins.
     ecrireAjuste(c, p, t(s.titre), cx, y + 144, pas - 12, {

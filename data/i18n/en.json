@@ -2246,6 +2246,11 @@
   "ui": {
     "Pokémon capturés par région — une case par espèce": "Pokémon caught per region — one box per species",
     "Cases à cocher": "Boxes to tick",
+    "Commun": "Common",
+    "Peu commun": "Uncommon",
+    "Rare": "Rare",
+    "Très rare": "Very rare",
+    "Légendaire": "Legendary",
     "100 cases": "100 boxes",
     "500 cases": "500 boxes",
     "1 000 cases": "1,000 boxes",

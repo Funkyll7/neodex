@@ -47,6 +47,29 @@
   --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Baloo 2", var(--font-body);
 
+  /* --- L'echelle de rarete des succes ---
+     Cinq crans, du plus courant au plus lointain, et les MEMES sur les
+     trente-huit palettes. C'est tout l'interet : une couleur de rarete ne veut
+     dire quelque chose que si elle ne bouge pas. Un succes bleu doit etre rare
+     sous Boussole comme sous Couronne, sinon il faut relire le chiffre a chaque
+     fois et la couleur n'aura servi a rien.
+
+     La teinte est donc fixe ; seule sa CLARTE suit le theme, par un melange avec
+     `--text`. Sans ce melange, un gris acier a 4:1 sur un fond sombre tombe a
+     2:1 sur un fond clair, et le premier cran deviendrait illisible sur les
+     quatre palettes a surfaces claires. Le melange est faible — la teinte reste
+     largement dominante — et il se fait tout seul, sans une exception a ecrire
+     par palette.
+
+     La rampe est celle qu'on lit partout ailleurs : acier, vert, bleu, violet,
+     or. On ne l'a pas inventee, et c'est exactement pour ca qu'elle se lit sans
+     legende. */
+  --rarete-1: color-mix(in srgb, #737f96 74%, var(--text));
+  --rarete-2: color-mix(in srgb, #2f9e44 74%, var(--text));
+  --rarete-3: color-mix(in srgb, #4180ef 74%, var(--text));
+  --rarete-4: color-mix(in srgb, #9560f0 74%, var(--text));
+  --rarete-5: color-mix(in srgb, #c98500 74%, var(--text));
+
   /* --- Couleurs semantiques communes aux deux themes --- */
   --gold: #ffcb05;
   --gold-soft: #ff9c3d;

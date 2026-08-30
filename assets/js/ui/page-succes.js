@@ -25,7 +25,7 @@
 
 import { el, fill } from "../core/dom.js";
 import { t } from "../core/i18n.js";
-import { FAMILLES } from "../domain/succes.js";
+import { FAMILLES, RARETES } from "../domain/succes.js";
 import { iconeSvg } from "./icones-succes.js";
 import { succesCourants } from "./theme.js";
 import { THEMES } from "./themes-list.js";
@@ -129,6 +129,21 @@ export function initPageSucces() {
         },
         el("i", { style: { width: `${pct}%` } })
       ),
+      // La légende des cinq crans. Une couleur de rareté sans légende oblige à
+      // deviner l'ordre : le bleu est-il au-dessus ou en dessous du vert ? La
+      // rampe est celle qu'on lit partout ailleurs, mais deux lignes de points
+      // valent mieux qu'un pari.
+      el(
+        "div.succes__rarete-legende",
+        RARETES.map((nom, i) =>
+          el(
+            "span.succes__rarete",
+            { "--pastille": `var(--rarete-${i + 1})` },
+            el("i"),
+            t(nom)
+          )
+        )
+      ),
       el(
         "p.succes__note",
         t("Les succès se déduisent de la collection : rien n'est stocké, rien ne peut se perdre.")
@@ -143,9 +158,13 @@ export function initPageSucces() {
    * sans jauge et une tuile avec ne s'alignaient pas, et la liste sautait d'une
    * hauteur à l'autre selon ce qui était acquis.
    *
-   * `--pastille` porte la couleur du thème pour les cinq qui en ouvrent un,
-   * l'accent pour les autres. C'est une variable et non une classe parce que la
-   * valeur vient des données, pas d'un cas prévu à l'avance.
+   * `--pastille` porte la couleur de RARETÉ, et non celle du thème. Elle la
+   * portait au début — la pastille de la palette pour les cinq succès qui en
+   * ouvrent une, l'accent pour les trente-huit autres. Deux défauts : la
+   * couleur changeait d'un thème à l'autre, donc elle ne pouvait rien dire ; et
+   * elle disait la même chose de « Cocher cent cases » et de « Cocher toutes
+   * les cases du Pokédex ». Les cinq crans de `--rarete-*` disent enfin quelque
+   * chose, et le disent partout pareil.
    */
   function carte(s) {
     const theme = themeDe(s.cle);
@@ -154,8 +173,9 @@ export function initPageSucces() {
     return el(
       "div.succes",
       {
-        dataset: { obtenu: String(s.obtenu) },
-        "--pastille": (theme && theme.pastille) || "var(--accent)",
+        dataset: { obtenu: String(s.obtenu), rang: String(s.rang || 1) },
+        "--pastille": `var(--rarete-${s.rang || 1})`,
+        title: `${t(RARETES[(s.rang || 1) - 1])} · ${t(s.titre)}`,
       },
       el("span.succes__icone", iconeSvg(s.icone, 26)),
       el(

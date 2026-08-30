@@ -608,6 +608,15 @@ export const SUCCES = [
   },
 ];
 
+/**
+ * Les cinq crans de rareté, indexés par `rang - 1`.
+ *
+ * Ils ne servent qu'à nommer une couleur — `--rarete-1` à `--rarete-5`, définies
+ * une fois pour toutes dans `theme.css` et identiques sur les trente-huit
+ * palettes. Un cran n'a de sens que s'il ne bouge pas d'un thème à l'autre.
+ */
+export const RARETES = ["Commun", "Peu commun", "Rare", "Très rare", "Légendaire"];
+
 /** Les familles, dans l'ordre où la page les présente. */
 export const FAMILLES = ["Collection", "Chromatiques", "Paires", "Régions", "Formes", "Pokémon GO", "Chasses"];
 
