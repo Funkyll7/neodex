@@ -378,8 +378,7 @@
   },
   "zygarde-50-power-construct": {
    "where": "Assembler 50 % des Cellules Zygarde à la Machine d'Assemblage.",
-   "hidden": 1,
-   "_why": "doublon : c'est la forme 50 % de base, deja cochee sur l'espece"
+   "_why": "visible depuis le 2026-08-30. Elle etait masquee comme doublon de l'espece — meme silhouette, meme 50 % — mais le talent n'est pas le meme et il ne s'obtient pas de la meme facon : celle de l'espece a Predateur, celle-ci a Systeme Alpha et sort de la Machine d'Assemblage. Deux Pokemon a collectionner, donc deux cases. Meme raisonnement que pour la paire des 10 %."
   },
   "zygarde-complete": {
    "where": "Forme Parfaite déclenchée en combat par le talent Puissance Alpha, sous 50 % de PV."

@@ -51,6 +51,7 @@ export const VERSIONS = [
     titre: "Deux talents qui font une forme",
     notes: [
       ["ajout", "Zygarde Forme 10 % ordinaire : seule celle au Système Alpha était recensée, et rien ne le disait."],
+      ["ajout", "Zygarde Forme 50 % Système Alpha devient cochable : elle était écartée comme doublon de l'espèce, mais son talent n'est pas le même."],
       ["amelioration", "Les formes qui ne se distinguent que par leur talent le disent enfin : Système Alpha chez Zygarde, Tempo Perso chez Rocabot."],
     ],
   },
