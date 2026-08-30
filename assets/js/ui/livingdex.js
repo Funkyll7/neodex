@@ -146,6 +146,23 @@ function caseOuVide(k, pris, surChoix) {
       onclick: () => surChoix && surChoix(k.espece.id, k.slot),
     },
     imageDe(k),
+    // LE SEXE À GAUCHE, LA TEINTE À DROITE, et seulement quand ils distinguent
+    // quelque chose. Les cent deux espèces à dimorphisme occupent quatre cases
+    // au lieu de deux ; sans le ♂ et le ♀, quatre Florizarre à la file ne se
+    // distinguaient que par une nuance de sprite qu'on ne voit pas à cette
+    // taille. Les 923 autres espèces n'ont pas de marque : une pastille qui ne
+    // dit rien est du bruit.
+    //
+    // Les deux couleurs sont celles que le site emploie déjà pour le sexe —
+    // `--pair` et `--female`, celles des boutons de la fiche. On les LIT, on ne
+    // les redéfinit pas : elles sont un repère appris, pas une décoration.
+    k.genre
+      ? el(
+          `span.ldx__sexe${k.genre === "f" ? ".ldx__sexe--f" : ""}`,
+          { "aria-hidden": "true" },
+          k.genre === "f" ? "♀" : "♂"
+        )
+      : null,
     k.chromatique ? el("span.ldx__marque", { "aria-hidden": "true" }, "✦") : null
   );
 }

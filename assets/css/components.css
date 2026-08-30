@@ -6406,6 +6406,30 @@ body::before {
    bord, il paraissait tombe la ; rentre et pose sur un rond, il se lit comme
    une marque volontaire — et il reste lisible sur un sprite clair, ce que le
    glyphe nu ne faisait pas. */
+/* La pastille de sexe est la jumelle du ✦, a gauche : meme taille, meme fond,
+   meme retrait. Deux marques de geometrie differente sur une case de 83 px
+   auraient fait deux bruits au lieu d une paire.
+
+   Les couleurs sont LUES depuis `--pair` et `--female` — celles des boutons de
+   la fiche. Ce sont des reperes appris, pas une decoration : les redefinir ici
+   aurait cree un second bleu et un second rose a tenir d accord avec les
+   premiers. */
+.ldx__sexe {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  display: grid;
+  place-items: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg-inset) 82%, transparent);
+  font-size: 9px;
+  line-height: 1;
+  color: var(--pair);
+}
+.ldx__sexe--f { color: var(--female); }
+
 .ldx__marque {
   position: absolute;
   top: 4px;
