@@ -3396,27 +3396,37 @@
 /* Ils ne touchent QUE les vignettes terminées. Un cadre sur les 1025 aurait
    fait un damier, et surtout n'aurait plus rien récompensé : c'est la
    complétion qu'on décore, pas la grille. */
-/* « Classique » prend les COULEURS SIGNATURE du thème, et non son accent.
+/* « Classique » prend l'AUTRE BOUT DU DÉGRADÉ DE PROGRESSION.
 
    Il était peint en `--gold`, c'est-à-dire la même couleur que la pastille de
    complétion posée dans son coin : deux éléments voisins, deux rôles
-   différents, une seule couleur — le cadre n'ajoutait rien qu'un trait plus
-   épais autour de ce qu'on voyait déjà.
+   différents, une seule couleur.
 
-   Il pioche donc dans les trois teintes que chaque palette porte depuis la
-   refonte : le trait extérieur dans la troisième, la ligne intérieure dans la
-   première. Deux couleurs qui ne sont ni l'une ni l'autre celle de la marque,
-   et qui viennent pourtant du même Pokémon.
+   Premier essai de correction : les trois teintes signature du thème. C'était
+   une couleur de plus, prise hors de ce que la palette montre déjà — sur
+   Xerneas, dont la barre de progression va de l'or au bleu, le cadre sortait
+   rose. Juste vis-à-vis du Pokémon, faux vis-à-vis de l'écran.
 
-   Le mélange avec `--text` n'est pas une coquetterie : la troisième teinte est
-   par construction la plus CLAIRE des trois, donc invisible en bordure sur les
-   cinq palettes à surfaces claires. Mêlée à l'encre du thème, elle s'assombrit
-   là et s'éclaircit ailleurs, sans qu'on ait une exception à écrire. */
+   La bonne source était sous la main : chaque thème porte déjà un dégradé à
+   deux couleurs, celui de la barre de progression, `--gold` → `--gold-soft`.
+   La marque est peinte au premier bout ; le cadre prend le second. Deux
+   couleurs que le thème assume déjà côte à côte, et qui diffèrent par
+   construction — mesuré sur les trente-huit palettes, l'écart n'est nul que
+   pour Boussole, traitée juste en dessous. */
 :root[data-cadre="or"] .card--complete {
-  border-color: color-mix(in srgb, var(--teinte-3) 72%, var(--text));
+  border-color: var(--gold-soft);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--teinte-3) 72%, var(--text)),
-    inset 0 0 0 2px color-mix(in srgb, var(--teinte-1) 34%, transparent);
+    0 0 0 1px var(--gold-soft),
+    inset 0 0 0 2px color-mix(in srgb, var(--gold) 28%, transparent);
+}
+/* Boussole est la seule palette dont le dégradé finit sur son propre accent :
+   il va du sable au rose, et le rose est déjà la marque. Les deux bouts sont
+   donc échangés — le cadre prend le sable, la marque garde le rose. */
+:root[data-theme="boussole"][data-cadre="or"] .card--complete {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 0 1px var(--gold),
+    inset 0 0 0 2px color-mix(in srgb, var(--gold-soft) 28%, transparent);
 }
 :root[data-cadre="laurier"] .card--complete {
   border-color: #7bbf72;
@@ -3568,7 +3578,7 @@ body::before {
 .recomp__apercu--marque[data-marque="couronne"]::before { content: "\265B"; }
 
 /* Les aperçus de cadre reprennent le traitement réel, en réduction. */
-.recomp__apercu[data-cadre="or"]       { border-color: color-mix(in srgb, var(--teinte-3) 72%, var(--text)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--teinte-1) 34%, transparent); }
+.recomp__apercu[data-cadre="or"]       { border-color: var(--gold-soft); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--gold) 28%, transparent); }
 .recomp__apercu[data-cadre="laurier"]  { border-color: #7bbf72; box-shadow: inset 0 0 0 2px color-mix(in srgb, #7bbf72 24%, transparent); }
 /* Même montage à deux plans que la vignette, pour la même raison : l'aperçu a
    ses coins arrondis, `border-image` les aurait carrés. */
@@ -3653,10 +3663,15 @@ body::before {
    onglet. Les regles d onglets ci-dessus n ont plus de cible. */
 .custo { display: flex; flex-direction: column; gap: var(--sp-4); }
 .custo__section { display: flex; flex-direction: column; gap: 6px; }
+/* PAS de `justify-content: space-between`. Il datait d'un titre à deux enfants
+   — le libellé et son compte — où il rangeait le second à droite. Le titre en a
+   trois depuis qu'il porte une icône, et « space-between » les écartait tous :
+   l'icône restait à gauche, le libellé partait à droite, et sept sections sur
+   huit avaient leur nom au mauvais bout. C'est `margin-left: auto` sur le seul
+   compte qui range ce qui doit l'être. */
 .custo__titre {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
   gap: var(--sp-2);
   margin: 0;
   font-family: var(--font-display);

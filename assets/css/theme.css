@@ -406,14 +406,38 @@
 /* Kanto — Mewtwo : le laboratoire, pas la gemme. Béton froid et neutre,
    surfaces presque plates, bordures d'acier — et la seule couleur de l'écran
    est cette lavande psychique. */
+/* Kanto — Mewtwo : le laboratoire, pas la gemme. Béton froid et neutre,
+   surfaces presque plates, bordures d'acier — et la seule couleur de l'écran
+   est ce rose pâle.
+
+   ROSE, ET NON LAVANDE. L'accent était #c3aef2, à quoi il n'y avait rien à
+   reprocher sinon qu'Améthyste est à #a97dff : deux violets clairs, deux
+   thèmes qu'on ne distinguait plus une fois la palette refermée. Les fonds,
+   eux, ne se ressemblaient déjà pas — le gris de béton d'ici contre le noir
+   violacé de là — mais c'est l'accent qu'on regarde.
+
+   Le rose n'est pas un pis-aller pour s'éloigner : c'est la couleur de la
+   queue et du ventre de Mewtwo, la seule chose colorée sur une créature grise.
+   L'écarter du violet la rend plus juste, pas moins.
+
+   DEUX COULEURS, PAS UNE. Mewtwo est rose ET violet, et le thème s'en sert
+   comme les autres se servent des leurs : le dégradé de progression part du
+   rose de la queue et finit sur le violet du corps. C'est aussi ce qui donne
+   au cadre « Classique » sa couleur — il prend le second bout du dégradé, là
+   où la marque de complétion prend le premier.
+
+   Le `--gold-soft` était d'abord un rose encore plus pâle. Les deux bouts du
+   dégradé se ressemblaient alors à quarante-six unités près : une barre de
+   progression d'une seule couleur, et un cadre qu'on ne distinguait pas de la
+   pastille qu'il entoure. */
 :root[data-theme="kanto"] {
   color-scheme: dark;
   --bg: #0f1015; --bg-raised: #191a20; --bg-sunken: #131419; --bg-inset: #1d1e25; --bg-hover: #23242c;
-  --border: #2c2e39; --border-strong: #3d404e;
-  --gold: #c3aef2; --gold-soft: #e6d8ff;
-  --accent: #c3aef2; --accent-ink: #1c0d3a;
-  --accent-glow: rgba(195, 174, 242, .42); --accent-wash: rgba(195, 174, 242, .12); --accent-border: #3a3159;
-  --teinte-1: #d3cbdf; --teinte-2: #8f74d8; --teinte-3: #e468c6;
+  --border: #322c35; --border-strong: #4a4050;
+  --gold: #f2b3d6; --gold-soft: #b49bea;
+  --accent: #f2b3d6; --accent-ink: #3a0d29;
+  --accent-glow: rgba(242, 179, 214, .42); --accent-wash: rgba(242, 179, 214, .12); --accent-border: #4d2440;
+  --teinte-1: #f2b3d6; --teinte-2: #b49bea; --teinte-3: #dcd6e6;
 }
 
 /* Johto — Ho-Oh : le sépia des plumes brûlées, l'or de la queue, et des

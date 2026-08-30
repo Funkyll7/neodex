@@ -52,7 +52,7 @@ export const THEMES = [
   { value: "amethyste", label: "Améthyste", groupe: "Couleurs", bandeau: "#100b1a", pastille: "#a97dff" },
 
   // --- Legendaires : une region, son legendaire -----------------------------
-  { value: "kanto", label: "Mewtwo", groupe: "Légendaires", bandeau: "#0f1015", pastille: "#c3aef2", sprite: 150 },
+  { value: "kanto", label: "Mewtwo", groupe: "Légendaires", bandeau: "#0f1015", pastille: "#f2b3d6", sprite: 150 },
   { value: "johto", label: "Ho-Oh", groupe: "Légendaires", bandeau: "#140f09", pastille: "#ff7f3a", sprite: 250 },
   { value: "hoenn", label: "Kyogre", groupe: "Légendaires", bandeau: "#030913", pastille: "#2ea8ff", sprite: 382 },
   { value: "sinnoh", label: "Dialga", groupe: "Légendaires", bandeau: "#141822", pastille: "#a9c9e8", sprite: 483 },
