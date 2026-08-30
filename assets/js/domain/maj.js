@@ -46,6 +46,15 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "4.6",
+    date: "2026-08-30",
+    titre: "Neuf régions, neuf fanatiques",
+    notes: [
+      ["ajout", "Neuf succès « Fanatique » : boucler une région nommément, et non plus une région au choix."],
+      ["ajout", "Le style de sprite se choisit à part du thème : le pixel art devient portable sur les trente-huit palettes."],
+    ],
+  },
+  {
     version: "4.5",
     date: "2026-08-30",
     titre: "Deux talents qui font une forme",

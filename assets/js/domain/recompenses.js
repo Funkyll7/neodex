@@ -90,6 +90,22 @@ export const TYPES = [
     aide: "Les notes jouées quand une case se coche.",
     defaut: "doux",
   },
+  /* LE STYLE DE SPRITE ÉTAIT PRISONNIER DE SA PALETTE. Les images en pixels
+     n'existaient qu'à travers les six thèmes « Pixels » : les vouloir obligeait
+     à prendre leurs couleurs, et aimer les couleurs d'un autre thème obligeait
+     à renoncer aux pixels. Deux goûts sans rapport, liés par un accident
+     d'implémentation — le thème était le seul endroit qui savait basculer les
+     sprites.
+     C'est maintenant un choix à part, valable sur les trente-huit palettes.
+     Il se gagne, parce que c'est le changement d'apparence le plus profond du
+     site : il ne repeint pas l'interface, il remplace mille images. */
+  {
+    cle: "sprites",
+    nom: "Style de sprite",
+    onglet: "Sprites",
+    aide: "Les images des Pokémon : le rendu 3D de HOME, ou le pixel art.",
+    defaut: "3d",
+  },
   /* Les mascottes ne se GAGNENT pas : leurs deux options sont ouvertes dès la
      première visite. Elles sont ici quand même, parce que c'est un choix
      d'apparence exactement comme les six autres, et qu'un réglage rangé
@@ -182,6 +198,15 @@ export const RECOMPENSES = [
   /* ------------------------------ Mascottes ------------------------------ */
   { cle: "affichees", type: "mascottes", nom: "Affichées", succes: null },
   { cle: "masquees", type: "mascottes", nom: "Masquées", succes: null },
+
+  /* ------------------------------- Sprites --------------------------------
+     UNYS, ET CE N'EST PAS UN TIRAGE AU SORT. Les images en pixels que le site
+     affiche viennent du dossier `generation-v/black-white` de PokeAPI — ce sont
+     littéralement les sprites de Pokémon Noir et Blanc, les derniers que la
+     série ait dessinés à la main avant de passer à la 3D. La récompense et la
+     région qui l'ouvre disent donc la même chose. */
+  { cle: "3d", type: "sprites", nom: "3D (HOME)", succes: null },
+  { cle: "pixels", type: "sprites", nom: "Pixel art", succes: "fanatique-5" },
 
   /* -------------------------------- Sons --------------------------------- */
   { cle: "doux", type: "sons", nom: "Doux", succes: null },

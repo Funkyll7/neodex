@@ -24,8 +24,43 @@ import { CONFIG } from "../config.js";
  */
 let enPixels = false;
 
+/**
+ * DEUX SOURCES, UN SEUL ETAT.
+ *
+ * Les pixels venaient du theme, et de lui seul : les six themes « Pixels »
+ * changeaient les images en meme temps que les couleurs. C'etait un accident
+ * d'implementation devenu une regle — vouloir le pixel art obligeait a prendre
+ * la palette qui allait avec, et aimer une autre palette obligeait a renoncer
+ * aux pixels. Deux gouts sans rapport, lies par un seul drapeau.
+ *
+ * Le style est maintenant AUSSI une recompense, choisie a part et valable sur
+ * les trente-huit palettes. Les deux sources sont donc retenues separement et
+ * combinees par un OU : un theme « Pixels » donne des pixels comme avant, et le
+ * choix explicite les donne partout ailleurs. Aucune des deux ne peut effacer
+ * l'autre — c'est ce qu'un drapeau unique faisait, et c'est ce qui rendait
+ * l'ordre des appels significatif.
+ *
+ * Les deux poseurs rendent l'etat EFFECTIF, pour que l'appelant sache quoi
+ * poser sur `<html>` sans refaire le calcul de son cote.
+ */
+let themeEnPixels = false;
+let choixEnPixels = false;
+
+function recalculer() {
+  enPixels = themeEnPixels || choixEnPixels;
+  return enPixels;
+}
+
+/** Le theme courant demande-t-il des pixels ? Rend l'etat effectif. */
 export function setSpritesEnPixels(actif) {
-  enPixels = Boolean(actif);
+  themeEnPixels = Boolean(actif);
+  return recalculer();
+}
+
+/** La recompense « Style de sprite ». Rend l'etat effectif. */
+export function setStyleDeSprite(cle) {
+  choixEnPixels = cle === "pixels";
+  return recalculer();
 }
 
 export function spritesEnPixels() {

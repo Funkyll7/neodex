@@ -671,8 +671,10 @@ function apply(theme) {
   // Le theme « Pixels » remplace les images, pas seulement les couleurs. Le
   // drapeau part vers `domain/sprites.js`, qui fabrique toutes les adresses, et
   // l'attribut sur <html> laisse le CSS couper le lissage.
-  const pixels = courant.sprites === "pixel";
-  setSpritesEnPixels(pixels);
+  // L'etat EFFECTIF, et non celui du theme seul : depuis que le style de sprite
+  // est aussi une recompense, quitter un theme « Pixels » ne doit pas ramener la
+  // 3D a quelqu'un qui a choisi le pixel art pour toutes ses palettes.
+  const pixels = setSpritesEnPixels(courant.sprites === "pixel");
   document.documentElement.toggleAttribute("data-sprites-pixel", pixels);
 
   // Le bandeau du navigateur — et, une fois l'application installee, la barre

@@ -130,6 +130,78 @@ const detailRegion = (g) => ({
 });
 
 /**
+ * Les neuf « Fanatique » — une région bouclée, nommément.
+ *
+ * POURQUOI NEUF SUCCÈS ET NON UN SEUL. « Région bouclée » existe déjà et
+ * demande d'en finir UNE, n'importe laquelle : c'est un défi qu'on relève une
+ * fois, et l'avancement affiché est celui de la région dont on est le plus
+ * près. Ces neuf-là posent la question région par région, ce qui est une tout
+ * autre chose : ils donnent neuf objectifs distincts, et chacun ouvre sa propre
+ * récompense.
+ *
+ * INDEXÉS PAR NUMÉRO DE GÉNÉRATION, PAS PAR NOM DE RÉGION. La clé d'un succès
+ * voyage dans les préférences et ne doit jamais bouger ; le nom d'une région,
+ * lui, se traduit — « Unys » est « Unova » en anglais. Le numéro est le seul
+ * identifiant stable. Le nom reste écrit ici parce qu'il faut bien un titre,
+ * mais il ne sert qu'à l'affichage et passe par `t()` comme le reste.
+ *
+ * TOUS AU RANG 4, ET AUCUN AU RANG 5. Boucler une région entière — formes,
+ * chromatiques et variantes comprises — est un long travail quelle que soit la
+ * région : les faire varier aurait laissé croire que Kanto est facile, ce qui
+ * est faux, il porte les Pikachu à casquette et les Métamorphes. Le rang 5
+ * reste à « Tour du monde », qui les demande toutes les neuf.
+ */
+const REGIONS_FANATIQUE = [
+  [1, "Kanto"],
+  [2, "Johto"],
+  [3, "Hoenn"],
+  [4, "Sinnoh"],
+  [5, "Unys"],
+  [6, "Kalos"],
+  [7, "Alola"],
+  [8, "Galar"],
+  [9, "Paldea"],
+];
+
+/**
+ * « de Kanto », mais « d'Unys ».
+ *
+ * Deux des neuf régions commencent par une voyelle, et « Fanatique de Unys »
+ * se lit comme une faute parce que c'en est une. La règle est mécanique et
+ * tient en une ligne ; l'écrire vaut mieux que recopier neuf titres entiers,
+ * qu'il aurait fallu tenir d'accord avec neuf résumés.
+ *
+ * Le H de Hoenn est ASPIRÉ dans l'usage français de la série — « de Hoenn »,
+ * jamais « d'Hoenn » —, il n'entre donc pas dans la liste.
+ */
+const de = (region) => (/^[AEIOUY]/.test(region) ? `d'${region}` : `de ${region}`);
+
+const FANATIQUES = REGIONS_FANATIQUE.map(([gen, region]) => ({
+  cle: `fanatique-${gen}`,
+  rang: 4,
+  titre: `Fanatique ${de(region)}`,
+  court: region,
+  resume: `Cocher toutes les cases ${de(region)} — chromatiques et formes comprises.`,
+  famille: "Régions",
+  icone: "drapeau",
+  mesure: (b) => {
+    const seau = (b.p.gens || {})[gen];
+    // Une generation absente du jeu de donnees rend un succes NON obtenu, et
+    // non un succes gratuit : meme regle que `complet()` juste au-dessus.
+    if (!seau || !seau.total) return { fait: 0, total: 1 };
+    return {
+      fait: seau.done,
+      total: seau.total,
+      // La ligne de precision de « Region bouclee » vaut ici aussi : elle dit
+      // ce qu'il reste, et c'est le nombre qu'on cherche devant un succes a
+      // finir. Le nom vient du jeu de donnees quand il est la, du tableau
+      // ci-dessus sinon — l'un est traduit, l'autre est un repli.
+      detail: detailRegion({ ...seau, gen, region: (b.regions || {})[gen] || region }),
+    };
+  },
+}));
+
+/**
  * Un palier : « en avoir N ».
  *
  * La forme la plus courante, et celle qui se trompait le plus facilement à la
@@ -402,6 +474,7 @@ export const SUCCES = [
     icone: "carte",
     mesure: (b) => ({ fait: generations(b).filter((g) => g.done === g.total).length, total: 3 }),
   },
+  ...FANATIQUES,
   {
     cle: "toutes-generations",
     rang: 5,

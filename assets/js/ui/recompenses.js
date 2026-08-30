@@ -34,6 +34,8 @@ import { RARETES } from "../domain/succes.js";
 import { jouerAvec } from "./sons.js";
 import { ouvrirPopup } from "./popup.js";
 import { precisionDuSucces } from "./succes-detail.js";
+import { setStyleDeSprite } from "../domain/sprites.js";
+import { CONFIG } from "../config.js";
 
 /** Les types posés en attribut sur `<html>`, et peints par le CSS seul. */
 const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes"];
@@ -100,6 +102,17 @@ export function bannierePortee() {
 export function appliquerRecompenses() {
   const choix = choixCourant();
   for (const type of ATTRIBUTS) document.documentElement.dataset[type] = choix[type];
+
+  // LE STYLE DE SPRITE N'EST PAS UN ATTRIBUT COMME LES AUTRES. Les cinq autres
+  // se contentent d'une classe et le CSS fait le reste ; celui-ci change les
+  // ADRESSES de mille images, et les <img> deja posees pointent encore vers
+  // l'ancienne source. Il faut donc prevenir la grille — par un evenement,
+  // comme le fait deja le changement de theme, plutot qu'en appelant main.js :
+  // ce module n'a pas a connaitre les trois onglets qu'il faut refaire.
+  const avant = document.documentElement.hasAttribute("data-sprites-pixel");
+  const pixels = setStyleDeSprite(choix.sprites);
+  document.documentElement.toggleAttribute("data-sprites-pixel", pixels);
+  if (pixels !== avant) document.dispatchEvent(new CustomEvent("funkylldex:sprites"));
 
   // Le titre est du texte : il remplace la ligne sous le nom du site. Le défaut
   // y réécrit « Collection perso », donc sans récompense choisie rien ne change.
@@ -389,6 +402,29 @@ function sceneDe(type, r) {
         "div.verrou__marque",
         el("span.verrou__marque-nom", "Funkylldex"),
         el("span.verrou__marque-sous", t(r.texte || r.nom))
+      )
+    );
+  }
+
+  if (type === "sprites") {
+    // LES MEMES POKEMON DANS LES DEUX STYLES, cote a cote. Montrer seulement le
+    // pixel art aurait laisse la question ouverte — « plus gros ? plus net ? » —
+    // alors que la difference est justement une COMPARAISON. Les quatre
+    // starters de Kanto plus Pikachu : ce sont ceux dont chacun connait par
+    // coeur les deux versions, donc ceux ou l'ecart se lit sans effort.
+    //
+    // Les adresses sont fabriquees ici plutot que par `spriteImg`, qui suit le
+    // drapeau du module : l'apercu doit montrer un style qu'on ne PORTE pas
+    // encore, et c'est exactement ce que ce drapeau interdit.
+    const base = r.cle === "pixels" ? CONFIG.spritePixelBase : CONFIG.spriteBase;
+    return el(
+      "div.verrou__scene.verrou__scene--sprites",
+      el(
+        "div.verrou__bande-sprites",
+        { dataset: { style: r.cle } },
+        [1, 4, 7, 25].map((id) =>
+          el("img.verrou__sprite-demo", { src: `${base}${id}.png`, alt: "", loading: "eager" })
+        )
       )
     );
   }
@@ -886,5 +922,17 @@ function apercu(type, r) {
     return el("span.recomp__apercu.recomp__apercu--marque", { dataset: { marque: r.cle } });
   }
   if (type === "sons") return iconeSvg("etincelle", 16);
+  // Le style de sprite se montre par un SPRITE, pas par un aplat : c'est la
+  // seule option dont l'aperçu peut être la chose elle-même. Pikachu parce
+  // qu'il est le seul que tout le monde reconnaît à seize pixels.
+  if (type === "sprites") {
+    const base = r.cle === "pixels" ? CONFIG.spritePixelBase : CONFIG.spriteBase;
+    return el("img.recomp__apercu.recomp__apercu--sprite", {
+      src: `${base}25.png`,
+      alt: "",
+      loading: "lazy",
+      dataset: { style: r.cle },
+    });
+  }
   return el("span.recomp__apercu", { dataset: { [type]: r.cle } });
 }

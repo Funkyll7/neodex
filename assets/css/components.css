@@ -6002,3 +6002,45 @@ body::before {
 
 /* Dans le pop-up d'un cosmétique verrouillé, la même ligne sous le résumé. */
 .verrou__succes-texte .succes__precision { margin-top: 4px; }
+
+/* ============== Le style de sprite : sa pastille et son aperçu ============= */
+
+/* La pastille du menu EST un sprite, à la taille des autres pastilles. Les six
+   autres types montrent un aplat ou une forme ; celui-ci n'a rien à figurer —
+   il montre la chose. */
+.recomp__apercu--sprite {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  border: none;
+  background: none;
+}
+/* Le lissage du navigateur trahirait le pixel art : un sprite de 96 px agrandi
+   à 22 devient une bouillie grise, exactement ce que le style prétend éviter.
+   Même règle que `[data-sprites-pixel]` pose sur la grille. */
+[data-style="pixels"] { image-rendering: pixelated; }
+
+/* L'aperçu : quatre Pokémon en ligne, dans le style qu'on regarde. Une bande
+   plutôt qu'une grille — on compare deux styles, et l'œil compare mieux ce qui
+   est aligné sur une seule rangée. */
+.verrou__scene--sprites { padding: var(--sp-4); }
+.verrou__bande-sprites {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.verrou__sprite-demo {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+}
+/* Les sprites en pixels font 96 px de côté et les rendus HOME 512 : affichés à
+   la même taille, les premiers sont agrandis et les seconds réduits. Seuls les
+   premiers demandent qu'on coupe le lissage. */
+.verrou__bande-sprites[data-style="pixels"] .verrou__sprite-demo { image-rendering: pixelated; }
+
+@media (max-width: 420px) {
+  .verrou__sprite-demo { width: 62px; height: 62px; }
+}
