@@ -5534,3 +5534,143 @@ body::before {
 /* Maître du Pokédex — le dernier. Or, ivoire, or : un titre gravé. */
 .brand__sub[data-titre="maitre"],
 .recomp__opt[data-valeur="maitre"] .recomp__label { --titre-degrade: linear-gradient(90deg, #c47f12, #fff3c4 42%, #f5b921 68%, #d4574e); }
+
+/* ===================== L'onglet des mises à jour ========================== */
+
+/* L'ICÔNE PREND LA TEINTE DE L'ACCENT dans une pastille, comme les boutons de
+   l'en-tête. Les trois autres onglets portent un logotype en couleur — HOME,
+   GO, la Poké Ball des quêtes —, et un quatrième dessin monochrome à côté
+   aurait fait tache. La pastille lui rend le poids visuel que le logo lui
+   donne, sans faire croire à un quatrième Pokédex. */
+.tab__ico {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+.tab[aria-selected="true"] .tab__ico { background: color-mix(in srgb, var(--accent) 24%, transparent); }
+
+.maj { display: flex; flex-direction: column; gap: var(--sp-4); max-width: 760px; }
+.maj__chapeau { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--text-faint); }
+
+.maj__version {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  /* Le filet de gauche est le seul marqueur de rang sur une version mineure :
+     discret, il laisse les majeures ressortir. */
+  border-left: 3px solid var(--border-strong);
+  background: var(--bg-sunken);
+}
+/* Une version MAJEURE change de nature, pas seulement de numéro : elle prend
+   l'accent sur son filet, un fond légèrement relevé et son numéro en grand. */
+.maj__version--majeure {
+  border-left-color: var(--accent);
+  background: linear-gradient(100deg, var(--accent-wash), transparent 44%), var(--bg-sunken);
+}
+
+.maj__entete { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.maj__numero {
+  flex: 0 0 auto;
+  min-width: 46px;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+.maj__version--majeure .maj__numero {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.maj__identite { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.maj__titre {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+}
+.maj__date { font-size: 11px; font-weight: 700; color: var(--text-ghost); }
+.maj__jalon {
+  flex: 0 0 auto;
+  padding: 2px 9px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.maj__notes { display: flex; flex-direction: column; gap: 7px; margin: 0; padding: 0; list-style: none; }
+/* La nature en pastille À GAUCHE, à largeur fixe : les quatre mots alignés
+   forment une colonne qu'on peut sauter du regard quand on ne cherche que les
+   nouveautés. Ils se dérobent en dessous de 480 px, où cette colonne coûterait
+   la moitié de la largeur du texte. */
+.maj__note { display: flex; align-items: flex-start; gap: 9px; }
+.maj__nature {
+  flex: 0 0 auto;
+  width: 74px;
+  padding: 2px 0;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--teinte) 16%, transparent);
+  color: color-mix(in srgb, var(--teinte) 72%, var(--text));
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.maj__texte { font-size: 12.5px; line-height: 1.5; color: var(--text-soft); }
+
+@media (max-width: 480px) {
+  .maj__version { padding: var(--sp-3); padding-left: 13px; }
+  .maj__note { flex-direction: column; gap: 3px; }
+  .maj__nature { width: auto; padding: 2px 8px; align-self: flex-start; }
+}
+
+/* --------- Quatre onglets sur un écran de téléphone : deux par deux -------- */
+
+/* QUATRE ONGLETS NE TIENNENT PLUS SUR UNE LIGNE. À 375 px, les trois premiers
+   remplissaient déjà la largeur ; le quatrième les aurait tous écrasés ou
+   poussés dans un défilement horizontal, qui est le pire des deux — on ne voit
+   pas qu'il y a autre chose.
+
+   Ils passent donc en grille deux par deux, dans l'ordre demandé : les deux
+   Pokédex en haut, puisque c'est ce qu'on vient faire, les quêtes et les mises
+   à jour en dessous. Le soulignement de l'onglet actif devient un fond, un
+   trait sous une case de grille se lisant comme une séparation plutôt que
+   comme une sélection. */
+@media (max-width: 560px) {
+  .tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    border-bottom: none;
+    padding-bottom: var(--sp-2);
+  }
+  .tab {
+    justify-content: center;
+    padding: 9px 6px;
+    margin-bottom: 0;
+    border-bottom: none;
+    border-radius: var(--r-md);
+    background: var(--bg-sunken);
+    border: 1px solid var(--border);
+  }
+  .tab[aria-selected="true"] {
+    background: var(--accent-wash);
+    border-color: var(--accent);
+  }
+}

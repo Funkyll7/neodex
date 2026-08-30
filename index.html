@@ -95,6 +95,8 @@
 <link rel="modulepreload" href="assets/js/ui/changements.js">
 <link rel="modulepreload" href="assets/js/domain/journal.js">
 <link rel="modulepreload" href="assets/js/ui/journal.js">
+<link rel="modulepreload" href="assets/js/domain/maj.js">
+<link rel="modulepreload" href="assets/js/ui/maj.js">
 <link rel="modulepreload" href="assets/js/domain/historique.js">
 <link rel="modulepreload" href="assets/js/ui/courbe.js">
 
@@ -489,6 +491,12 @@
         </div>
       </div>
     </section>
+
+    <!-- ------------------------- MISES A JOUR ------------------------------ -->
+    <!-- Rempli par ui/maj.js : les notes vivent dans domain/maj.js, ecrites a
+         la main a partir de l historique du depot. Vide dans le HTML livre,
+         comme les autres panneaux construits en JavaScript. -->
+    <section id="tab-maj" class="tabpanel" aria-label="Mises à jour" hidden></section>
   </main>
 
   <!-- Les quarante-trois succès, remplis par ui/page-succes.js.

@@ -21,6 +21,9 @@ import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
 import { jouer } from "./ui/sons.js";
 import { initParametres, appliquerParametres, poserContexteParametres } from "./ui/parametres.js";
 import { suivreCollection } from "./domain/journal.js";
+import { versionCourante } from "./domain/maj.js";
+import { renderMaj } from "./ui/maj.js";
+import { iconeSvg } from "./ui/icones-succes.js";
 import { initPageSucces } from "./ui/page-succes.js";
 import { appliquerRecompenses } from "./ui/recompenses.js";
 import { initCourbe } from "./ui/courbe.js";
@@ -467,6 +470,7 @@ function start(dataset) {
     dex: document.getElementById("tab-dex"),
     go: document.getElementById("tab-go"),
     quest: document.getElementById("tab-quest"),
+    maj: document.getElementById("tab-maj"),
   };
 
   if (!store.state.quest) store.set({ quest: planner.roll(collection, chassesOuvertes(collection.quetes)) });
@@ -512,6 +516,13 @@ function start(dataset) {
         // monochrome : le ✦ qu'elle remplace faisait tache a cote de deux
         // logotypes en couleur.
         ["quest", "assets/img/logo-quete.svg", t("Quêtes"), t("Quêtes"), String(store.state.questDone)],
+        // Le quatrieme onglet ne porte pas de logo : les trois autres en ont un
+        // parce qu ils designent un jeu ou une activite, celui-ci designe le
+        // site lui-meme. Une icone tracee, teintee comme les boutons de
+        // l en-tete, dit  ici on parle de l application  sans faire croire a un
+        // quatrieme Pokedex. Sa pastille porte le numero de version : c est ce
+        // qu on vient verifier.
+        ["maj", null, t("Mises à jour"), t("Maj"), versionCourante()],
       ].map(([value, logo, long, court, badge]) =>
         el(
           "button.tab",
@@ -526,7 +537,9 @@ function start(dataset) {
               store.set({ tab: value });
             },
           },
-          logo ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" }) : null,
+          logo
+            ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" })
+            : el("span.tab__ico", { "aria-hidden": "true" }, iconeSvg("maj", 18)),
           el("span.tab__long", long),
           el("span.tab__court", court),
           el("span.tab__badge", badge)
@@ -534,6 +547,10 @@ function start(dataset) {
       )
     );
     for (const [nom, panneau] of Object.entries(panels)) panneau.hidden = store.state.tab !== nom;
+    // Le panneau des mises a jour se remplit a l ouverture, et seulement la :
+    // ses libelles passent par `t()`, et le construire au demarrage l aurait
+    // fige dans la langue du premier chargement.
+    if (store.state.tab === "maj") renderMaj(panels.maj);
   }
 
   function renderList() {

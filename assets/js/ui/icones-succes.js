@@ -43,6 +43,13 @@
  * dessin qu'il aurait fallu inventer différent pour rien.
  */
 export const ICONES = {
+  /* Mise a jour — redessinee d apres le logo fourni par l auteur : un disque
+     plein, une fleche vers le haut et un trait evides dedans. Le fichier
+     d origine est un PNG noir sur blanc opaque, sans transparence : impossible
+     a colorer, et donc a accorder aux trente-huit palettes. Retrace en un seul
+     chemin a regle `evenodd`, il prend `currentColor` comme les quarante-cinq
+     autres. */
+  maj: "M12 1.6a10.4 10.4 0 1 0 0 20.8 10.4 10.4 0 0 0 0-20.8Zm0 3.9 5.1 5.6h-3v3.6h-4.2v-3.6h-3L12 5.5Zm-4.4 11.2h8.8v2.1H7.6v-2.1Z",
   /* --- cocher, compter --- */
   case: "M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5zM8 12l2.8 2.8L16.5 9",
   grille: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13.5 16.8l2 2 4.2-4.2",
@@ -124,7 +131,13 @@ export const ICONES = {
  * trait est un anneau minuscule qui se bouche à l'affichage. Ces trois-là sont
  * donc peintes, et c'est la seule exception à la règle du trait.
  */
-export const PLEINES = new Set(["coeur", "etoile", "eclair"]);
+export const PLEINES = new Set(["coeur", "etoile", "eclair", "maj"]);
+
+/* Les traces qui EVIDENT une forme dans une autre. Sans `evenodd`, la fleche et
+   le trait de la mise a jour se rempliraient comme le disque et l icone serait
+   une pastille noire. Une seule pour l instant, mais nommee plutot que traitee
+   au cas par cas : la prochaine se contentera d entrer dans cet ensemble. */
+export const EVIDEES = new Set(["maj"]);
 
 const REPLI = "etoile";
 
@@ -158,6 +171,7 @@ export function iconeSvg(cle, taille = 24) {
   path.setAttribute("d", traceIcone(cle));
   if (PLEINES.has(cle)) {
     path.setAttribute("fill", "currentColor");
+    if (EVIDEES.has(cle)) path.setAttribute("fill-rule", "evenodd");
   } else {
     path.setAttribute("fill", "none");
     path.setAttribute("stroke", "currentColor");
