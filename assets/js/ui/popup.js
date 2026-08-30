@@ -99,7 +99,12 @@ export function ouvrirPopup({ titre, sousTitre = "", icone = null, corps = [], l
           onclick: fermer,
         })
       ),
-      ...corps
+      // LE CORPS EST UNE ZONE A PART, et c'est ce qui permet a l'en-tete de
+      // rester en place. Avant, `.verrou` defilait en entier : sur un long
+      // panneau — le detail d'une synchronisation en compte parfois trente —,
+      // le titre et la croix partaient vers le haut, et il fallait remonter
+      // pour fermer. La boite ne defile plus, le corps si.
+      el("div.verrou__corps", ...corps)
     )
   );
 

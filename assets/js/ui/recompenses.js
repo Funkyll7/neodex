@@ -515,10 +515,23 @@ function ajusterLoupe(racine) {
   const loupe = racine.querySelector(".verrou__loupe");
   const ecran = racine.querySelector(".verrou__ecran");
   if (!loupe || !ecran) return;
-  // La maquette étroite est déjà proche de la largeur du pop-up : on la laisse
-  // grandir un peu plutôt que de la borner à 1, sans quoi une maquette de
-  // 420 px flotterait au milieu d'un cadre de 680.
-  const rapport = loupe.clientWidth / ecran.offsetWidth;
+  // DEUX CONTRAINTES, ET C'EST LA PLUS SERREE QUI GAGNE. La largeur seule ne
+  // suffisait pas : la maquette téléphone fait 420 px de large mais près de
+  // 900 de haut, et mise à l'échelle de la largeur elle sortait à mille pixels
+  // dans une boîte qui en fait sept cents. Il fallait faire défiler pour voir
+  // le bas — or c'est justement « voir l'écran entier » qu'on est venu faire.
+  //
+  // Le plafond de hauteur vit dans le CSS, sur `.verrou__loupe` : la mise en
+  // page appartient à la feuille de styles, ce calcul ne fait que le lire.
+  //
+  // Pas de borne à 1 vers le haut : une maquette de 420 px flotterait au
+  // milieu d'un cadre de 680, et l'agrandir reste net puisque tout y est du
+  // DOM, sauf les sprites.
+  const plafond = parseFloat(getComputedStyle(loupe).maxHeight);
+  const rapport = Math.min(
+    loupe.clientWidth / ecran.offsetWidth,
+    (Number.isFinite(plafond) ? plafond : Infinity) / ecran.offsetHeight
+  );
   ecran.style.transform = `scale(${rapport})`;
   loupe.style.height = `${Math.round(ecran.offsetHeight * rapport)}px`;
 }
@@ -585,10 +598,16 @@ function maquetteDePage() {
     ),
     el(
       "div.verrou__grille",
-      // Six vignettes en étroit, douze en large : dans les deux cas de quoi
+      // Quatre vignettes en étroit, douze en large : dans les deux cas de quoi
       // remplir l'écran et le faire déborder d'une rangée, ce qui est ce qui
       // fait qu'une grille ressemble à une grille.
-      ...(etroit ? [0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).map((i) =>
+      //
+      // Quatre et non six, parce que la maquette entière doit tenir SANS
+      // DÉFILEMENT : chaque rangée de plus la rallonge de deux cent cinquante
+      // pixels, que le facteur d'échelle paie ensuite en lisibilité. Six
+      // rangeaient l'écran à 46 % ; quatre le rendent à 64 %, et une grille
+      // coupée par le bas se lit aussi bien avec deux rangées qu'avec trois.
+      ...(etroit ? [0, 1, 2, 3] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).map((i) =>
         tuileDemo(i)
       )
     )

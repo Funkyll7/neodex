@@ -4159,6 +4159,8 @@ body::before {
 
    Il monte au-dessus du menu de customisation, d'où on l'ouvre — 96 contre 92.
    Sans ça, il se serait affiché DERRIÈRE la liste qu'on vient de toucher. */
+/* Le voile. Un noir plat aplatissait tout ; une tache sombre au centre, plus
+   claire aux bords, recreuse la profondeur et fait avancer la boite. */
 .verrou-fond {
   position: fixed;
   inset: 0;
@@ -4167,45 +4169,116 @@ body::before {
   align-items: center;
   justify-content: center;
   padding: var(--sp-4);
-  background: rgba(0, 0, 0, .76);
-  backdrop-filter: blur(5px);
+  background:
+    radial-gradient(120% 90% at 50% 45%, rgba(0, 0, 0, .62), rgba(0, 0, 0, .84));
+  backdrop-filter: blur(6px);
 }
+
+/* LA BOITE NE DEFILE PLUS, SON CORPS SI. Elle etait un seul bloc en
+   `overflow-y: auto` : sur un long panneau — le detail d'une synchronisation
+   en compte parfois trente lignes —, le titre et la croix partaient vers le
+   haut avec le reste, et il fallait remonter pour fermer. En-tete fixe, corps
+   defilant : deux zones, et le rembourrage passe de la boite a chacune d'elles.
+
+   Le filet du haut prend les deux couleurs de progression du theme. C'est la
+   meme signature que la carte de partage, et elle suffit a rattacher ces
+   panneaux au reste du site quel que soit leur contenu. */
 .verrou {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-3);
   width: min(100%, 380px);
-  max-height: 100%;
-  padding: var(--sp-4);
-  overflow-y: auto;
+  max-height: 92vh;
+  overflow: hidden;
   border-radius: var(--r-lg);
-  background: var(--bg-raised);
+  background:
+    linear-gradient(90deg, var(--gold), var(--gold-soft)) top / 100% 3px no-repeat,
+    var(--bg-raised);
   border: 1px solid var(--border-strong);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, .55);
+  box-shadow: 0 24px 74px rgba(0, 0, 0, .6), 0 2px 8px rgba(0, 0, 0, .4);
 }
 
-.verrou__tete { display: flex; align-items: flex-start; gap: var(--sp-2); }
-.verrou__cadenas { font-size: 18px; line-height: 1.2; }
-.verrou__identite { flex: 1 1 auto; min-width: 0; }
+/* Une ouverture, pas une apparition. Dix-huit centiemes de seconde et un
+   soupcon d'echelle : assez pour dire d'ou vient la boite, trop court pour
+   qu'on attende. Sous `no-preference` seulement, comme les cinq autres
+   animations du fichier. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes verrou-entree {
+    from { opacity: 0; transform: translateY(8px) scale(.985); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes verrou-voile {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .verrou-fond { animation: verrou-voile .16s ease-out; }
+  .verrou { animation: verrou-entree .18s cubic-bezier(.2, .8, .3, 1); }
+}
+
+.verrou__tete {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+  padding: var(--sp-4) var(--sp-4) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+}
+.verrou__corps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  overflow-y: auto;
+  /* Arrive en bas de la liste, la molette ne doit pas se mettre a faire
+     defiler la grille derriere le voile. */
+  overscroll-behavior: contain;
+}
+
+.verrou__cadenas {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--bg-inset);
+  font-size: 15px;
+  line-height: 1;
+}
+.verrou__identite { flex: 1 1 auto; min-width: 0; padding-top: 1px; }
 .verrou__nom {
   margin: 0;
   font-family: var(--font-display);
   font-size: 17px;
   font-weight: 800;
+  line-height: 1.2;
   color: var(--text);
 }
-.verrou__type { margin: 0; font-size: 11px; color: var(--text-faint); }
+.verrou__type {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  color: var(--text-faint);
+}
 .verrou__fermer {
   flex: 0 0 auto;
-  width: 28px; height: 28px;
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
   border: 1px solid var(--border);
   border-radius: 50%;
   background: var(--bg-sunken);
   color: var(--text-faint);
   font-size: 13px;
+  line-height: 1;
   cursor: pointer;
+  transition: color .12s, border-color .12s, background .12s, transform .12s;
 }
-.verrou__fermer:hover { color: var(--text); border-color: var(--border-strong); }
+.verrou__fermer:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+.verrou__fermer:active { transform: scale(.92); }
 
 /* ------------------------------- la scène -------------------------------- */
 
@@ -4368,11 +4441,27 @@ body::before {
 /* Sur un écran étroit la boîte prend toute la largeur, et la scène rétrécit :
    c'est là qu'on parcourt la liste au doigt, et une vignette de 172 px tenait
    mal à côté de ses marges. */
+/* Sur un ecran etroit le panneau devient une FEUILLE qui monte du bas : c'est
+   le geste attendu sur telephone, et surtout la croix retombe a portee du
+   pouce au lieu de rester en haut d'un ecran de six pouces. */
 @media (max-width: 420px) {
-  .verrou-fond { padding: var(--sp-3); align-items: flex-end; }
-  .verrou { max-height: 92vh; }
+  .verrou-fond { padding: 0; align-items: flex-end; }
+  .verrou {
+    max-height: 88vh;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    border-bottom: none;
+  }
+  .verrou__tete { padding: var(--sp-3) var(--sp-3) var(--sp-2); }
+  .verrou__corps { padding: var(--sp-3); }
   .verrou__scene { min-height: 168px; padding: var(--sp-3); }
   .verrou__tuile { width: 148px; }
+}
+@media (max-width: 420px) and (prefers-reduced-motion: no-preference) {
+  @keyframes verrou-feuille {
+    from { transform: translateY(14px); opacity: .4; }
+    to   { transform: none; opacity: 1; }
+  }
+  .verrou { animation: verrou-feuille .2s cubic-bezier(.2, .8, .3, 1); }
 }
 
 /* La carte de partage, dessinee en vrai puis reduite.
@@ -4752,6 +4841,10 @@ body::before {
   width: 100%;
   overflow: hidden;
   border-radius: var(--r-md);
+  /* Le plafond que `ajusterLoupe` lit pour choisir son echelle : au-dela, la
+     maquette ne tiendrait plus dans la boite et il faudrait faire defiler pour
+     voir le bas de l ecran qu on est venu regarder. */
+  max-height: min(54vh, 520px);
 }
 /* La largeur est posée par le JS — 860 px pour un écran d'ordinateur, 420 pour
    un téléphone —, parce que c'est elle qui décide de la mise en page à
@@ -4857,16 +4950,22 @@ body::before {
 }
 .sync__detail:hover { color: var(--accent); }
 
-.chgt { display: flex; flex-direction: column; gap: var(--sp-3); }
+/* Les lignes se touchent, separees par un filet plutot que par un ecart : une
+   liste de trente especes avec douze pixels entre chacune fait un ruban qu'on
+   ne parcourt plus. Serrees, elles se lisent en colonne. */
+.chgt { display: flex; flex-direction: column; gap: 0; }
 
 /* L'avertissement des pertes, en tête. Une case décochée ailleurs est la seule
    chose de ce panneau qui puisse demander une action. */
 .chgt__alerte {
-  margin: 0;
+  margin: 0 0 var(--sp-2);
   padding: 8px 11px;
-  border-radius: var(--r-md);
-  border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
-  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  /* Une barre a gauche et non un encadre : un rectangle rouge complet criait
+     plus fort que la chose qu il annonce, et on le lisait comme une erreur du
+     site plutot que comme une remarque sur la collection. */
+  border-left: 3px solid var(--danger);
+  background: color-mix(in srgb, var(--danger) 11%, transparent);
   color: var(--text);
   font-size: 11.5px;
   line-height: 1.45;
@@ -4877,12 +4976,18 @@ body::before {
    qui a bougé ? » d'un coup d'œil. */
 .chgt__espece {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
-  padding-bottom: var(--sp-2);
+  padding: 7px;
+  margin: 0 -7px;
+  border-radius: var(--r-md);
   border-bottom: 1px solid var(--border);
+  transition: background .12s;
 }
-.chgt__espece:last-child { border-bottom: none; padding-bottom: 0; }
+.chgt__espece:last-child { border-bottom: none; }
+@media (hover: hover) {
+  .chgt__espece:hover { background: var(--bg-inset); }
+}
 .chgt__corps { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 auto; }
 
 /* Une case fixe, quel que soit le sprite : les rendus HOME sont carrés, les
@@ -4890,20 +4995,26 @@ body::before {
    décalaient les unes par rapport aux autres. */
 .chgt__sprite {
   flex: 0 0 auto;
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
-  border-radius: var(--r-md);
-  background: var(--bg-inset);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  /* Une lueur au centre plutot qu un aplat : elle detache le sprite du cadre
+     sans ajouter de trait, et suit la palette par `--accent-wash`. */
+  background: radial-gradient(circle at 50% 42%, var(--accent-wash), transparent 72%), var(--bg-sunken);
 }
-.chgt__img { width: 100%; height: 100%; object-fit: contain; }
+.chgt__img {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .4));
+}
 /* Le lissage est coupé sous les palettes Pixels par une liste NOMMÉE dans
    `theme.css` : `.chgt__img` y a été ajoutée, sans quoi ce sprite serait sorti
    flou au milieu d'un site entièrement en pixels. */
 .chgt__tete { display: flex; align-items: baseline; gap: 7px; }
 .chgt__num { font-family: var(--font-display); font-size: 10.5px; font-weight: 800; color: var(--text-ghost); }
-.chgt__nom { font-size: 13px; font-weight: 800; color: var(--text); }
+.chgt__nom { font-size: 13.5px; font-weight: 800; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .chgt__cases { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .chgt__case {
