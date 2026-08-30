@@ -1,139 +1,156 @@
 /**
- * livingdex.js — le Pokédex rangé comme les boîtes de HOME.
+ * livingdex.js — le Pokédex rangé comme on le range vraiment.
  *
- * POURQUOI UNE VUE DE PLUS, ALORS QUE LA GRILLE MONTRE DÉJÀ TOUT.
+ * POURQUOI DEUX VUES DE PLUS, ALORS QUE LA GRILLE MONTRE DÉJÀ TOUT.
  *
- * La grille est une liste : elle répond à « où est Machin » et à « qu'est-ce
- * qui correspond à ce filtre ». Elle répond mal à la seule question qu'on se
- * pose quand on approche de la fin — « où sont mes trous ». Sur mille vingt-cinq
- * vignettes de cent cinquante pixels, un manque est un espace vide qu'il faut
- * chercher en faisant défiler quatre mille pixels.
+ * La grille est une liste : elle répond à « où est Machin » et à « qu'est-ce qui
+ * correspond à ce filtre ». Elle répond mal à la seule question qu'on se pose en
+ * approchant de la fin — « où sont mes trous ». Sur mille vignettes de cent
+ * cinquante pixels, un manque est un espace vide qu'il faut chercher.
  *
- * Une boîte de HOME tient trente Pokémon sur un seul écran. Trente-cinq boîtes
- * couvrent le Pokédex national, et un trou s'y voit sans qu'on le cherche :
- * c'est une case grise au milieu de vingt-neuf autres. C'est la même donnée,
- * rangée de la façon dont on la range VRAIMENT dans le jeu.
+ * UNE PLACE POUR LE NORMAL, UNE POUR LE CHROMATIQUE, CÔTE À CÔTE. C'est ainsi
+ * qu'on range un living dex : le shiny ne remplace pas le normal, il se garde à
+ * côté. Une seule case par espèce aurait forcé à choisir lequel des deux elle
+ * représente, et rendu invisible la moitié du travail.
  *
- * DEUX RANGEMENTS, ET ILS NE RÉPONDENT PAS À LA MÊME QUESTION.
+ * TOUTES LES CASES COCHABLES, FORMES COMPRISES. Se limiter au normal et au
+ * chromatique de base aurait montré mille cases quand la collection en compte
+ * deux mille huit cents : le Miaouss d'Alola, le Motisma Lavage et les
+ * vingt-huit Zarbi sont des cases comme les autres, et ils se rangent aussi.
+ * Chaque case de la vue est donc une case de la collection — ni plus, ni
+ * moins —, et cliquer dessus la coche.
  *
- *   « Par numéro »  reproduit HOME à l'identique — c'est le rangement qu'on
- *                   aura sous les yeux dans le jeu, donc celui qui permet de
- *                   comparer boîte par boîte avec sa vraie collection.
- *   « Par famille » range par lignée d'évolution. Un trou y devient
- *                   ACTIONNABLE : voir Herbizarre manquant entre Bulbizarre et
- *                   Florizarre dit quoi faire, là où le voir entre Papilusion
- *                   et Dardargnan ne dit rien.
+ * DEUX RANGEMENTS, ET DEUX FORMES DIFFÉRENTES.
  *
- * UNE LIGNÉE N'EST JAMAIS COUPÉE EN DEUX. C'est la règle qui fait tout
- * l'intérêt du second rangement : si la famille en cours ne tient pas dans la
- * place restante, la boîte est close et la famille commence la suivante. Les
- * cases perdues sont le prix — une trentaine sur mille — et elles sont laissées
- * VIDES plutôt que comblées, parce qu'une case vide se lit comme une fin de
- * boîte alors qu'un intrus se lirait comme un trou.
+ *   BOÎTES    six colonnes sur cinq rangées, comme HOME. C'est le rangement
+ *             qu'on aura sous les yeux dans le jeu, donc le seul qui permette
+ *             de comparer boîte par boîte avec sa vraie collection.
+ *   FAMILLES  une LIGNÉE PAR LIGNE, et pas des boîtes du tout. Rangées en
+ *             boîtes, les familles ne se voyaient pas : rien ne disait où l'une
+ *             finissait et où l'autre commençait. Une ligne par lignée le dit
+ *             sans un mot — c'est la disposition du Pokédex d'Ultra-Soleil.
  *
  * Ce module ne touche pas au DOM et ne connaît aucune image.
  */
 
-/** Une boîte de HOME : cinq colonnes, six rangées. */
+/** Une boîte de HOME : six colonnes, cinq rangées. */
 export const PAR_BOITE = 30;
+/** Les colonnes d'une boîte. Six, et c'est pair — voir l'en-tête. */
+export const COLONNES = 6;
 
 /**
- * Range les espèces en boîtes.
+ * TOUTES les cases cochables d'une espèce, dans l'ordre où on les remplit.
  *
- * @param {Array}  especes   la liste complète, dans n'importe quel ordre
- * @param {Object} options
- * @param {string} options.ordre     « numero » ou « famille »
- * @param {Array}  [options.chaines] les lignées, pour l'ordre « famille »
- * @returns {Array<{numero: number, cases: Array}>} les cases valent `null` quand
- *   la boîte a été close avant d'être pleine.
+ * PAS SEULEMENT LE NORMAL ET LE CHROMATIQUE DE BASE. Un living dex range aussi
+ * les formes : le Miaouss d'Alola, le Motisma Lavage, les vingt-huit Zarbi. Se
+ * limiter à la base aurait montré mille cases quand la collection en compte
+ * deux mille huit cents — un Pokédex à moitié affiché.
+ *
+ * L'ORDRE FAIT LES PAIRES TOUT SEUL. `base normal, base shiny`, puis pour
+ * chaque forme `normal, shiny` : les deux teintes d'un même Pokémon sont donc
+ * toujours voisines, sans qu'on ait à les grouper à la main.
+ *
+ * `sujet` dit quelle image dessiner — l'espèce, une variante cosmétique ou une
+ * forme —, et c'est la seule chose que `requiredSlots` ne donne pas. On refait
+ * donc ici le même parcours que `domain/completion.js`, pour cette raison-là et
+ * pas une autre.
  */
-export function rangerEnBoites(especes, { ordre = "numero", chaines = [] } = {}) {
-  const parId = new Map(especes.map((e) => [e.id, e]));
-  return ordre === "famille"
-    ? parFamille(parId, chaines)
-    : parNumero([...especes].sort((a, b) => a.id - b.id));
+export function casesDe(espece) {
+  const cases = [];
+  const pousser = (slot, chromatique, sujet, extra, genre) =>
+    cases.push({ espece, slot, chromatique, sujet, genre: genre || null, ...extra });
+
+  const cos = espece.cosmetic;
+  // LE SEXE PASSE AVANT LA TEINTE. `requiredSlots` range ♂ normal, ♀ normal,
+  // ♂ shiny, ♀ shiny — l'ordre dans lequel on remplit une fiche. Ici on range
+  // en PAIRES, et la paire est « ce Pokémon-là, ses deux teintes » : un
+  // Florizarre mâle et son chromatique côte à côte, puis la femelle et le sien.
+  // Suivre l'autre ordre aurait mis chaque normal à côté d'un normal.
+  pousser("om", false, "espece", {}, espece.gd ? "m" : null);
+  if (!espece.noShiny) pousser("sm", true, "espece", {}, espece.gd ? "m" : null);
+  if (espece.gd) {
+    pousser("of", false, "espece", {}, "f");
+    if (!espece.noShiny) pousser("sf", true, "espece", {}, "f");
+  }
+
+  if (cos && !cos.info) {
+    for (const variant of cos.variants) {
+      if (variant.isBase || !variant.entry) continue;
+      pousser(variant.slot, false, "cosmetique", { variant });
+      if (variant.shinyEntry) pousser(variant.shinySlot, true, "cosmetique", { variant });
+    }
+  }
+
+  for (const forme of espece.forms) {
+    if (!forme.entry) continue;
+    // Même règle que pour la base : le sexe avant la teinte, pour que la paire
+    // reste « un Pokémon, ses deux teintes ».
+    pousser(forme.slot, false, "forme", { forme }, forme.gendered ? "m" : null);
+    if (forme.shinyEntry) pousser(forme.shinySlot, true, "forme", { forme }, forme.gendered ? "m" : null);
+    if (forme.gendered) {
+      pousser(forme.slotF, false, "forme", { forme }, "f");
+      if (forme.shinyEntry) pousser(forme.shinySlotF, true, "forme", { forme }, "f");
+    }
+  }
+
+  return cases;
 }
 
-/** Le rangement de HOME : le Pokédex national, trente par trente. */
-function parNumero(triees) {
+/**
+ * Le rangement de HOME : le Pokédex national, trente cases par boîte.
+ *
+ * Pas de regroupement par famille ici, et c'est voulu — cette vue existe pour
+ * ressembler à HOME, où l'ordre est celui du Pokédex national et rien d'autre.
+ */
+export function rangerEnBoites(especes) {
+  const cases = [...especes].sort((a, b) => a.id - b.id).flatMap(casesDe);
   const boites = [];
-  for (let i = 0; i < triees.length; i += PAR_BOITE) {
-    boites.push({ numero: boites.length + 1, cases: triees.slice(i, i + PAR_BOITE) });
+  for (let i = 0; i < cases.length; i += PAR_BOITE) {
+    const lot = cases.slice(i, i + PAR_BOITE);
+    while (lot.length < PAR_BOITE) lot.push(null);
+    boites.push({ numero: boites.length + 1, cases: lot });
   }
   return boites;
 }
 
 /**
- * Le rangement par lignée, sans jamais couper une famille.
+ * Une lignée par ligne, dans l'ordre du Pokédex national.
  *
  * Les espèces qu'aucune chaîne ne nomme — un jeu de données amputé, une
- * référence qui vieillit — sont ajoutées à la fin, chacune seule. On préfère
- * une boîte de rab à une espèce qui disparaît de sa propre collection.
+ * référence qui vieillit — forment chacune leur propre ligne. On préfère une
+ * ligne d'un seul membre à une espèce qui disparaît de sa collection.
  */
-function parFamille(parId, chaines) {
+export function rangerEnFamilles(especes, chaines) {
+  const parId = new Map(especes.map((e) => [e.id, e]));
   const placees = new Set();
-  const groupes = [];
+  const lignes = [];
 
   for (const chaine of chaines) {
     const membres = chaine.map((id) => parId.get(id)).filter(Boolean);
     if (!membres.length) continue;
-    groupes.push(membres);
     for (const m of membres) placees.add(m.id);
+    lignes.push({ membres, cases: membres.flatMap(casesDe) });
   }
   for (const espece of parId.values()) {
-    if (!placees.has(espece.id)) groupes.push([espece]);
+    if (placees.has(espece.id)) continue;
+    lignes.push({ membres: [espece], cases: casesDe(espece) });
   }
-
-  const boites = [];
-  let courante = [];
-  const clore = () => {
-    if (!courante.length) return;
-    // Complétée à trente avec des cases vides : c'est ce qui garde la grille
-    // rectangulaire, et une case vide dit « fin de boîte » sans ambiguïté.
-    while (courante.length < PAR_BOITE) courante.push(null);
-    boites.push({ numero: boites.length + 1, cases: courante });
-    courante = [];
-  };
-
-  for (const groupe of groupes) {
-    // Une lignée plus longue qu'une boîte n'existe pas aujourd'hui — la plus
-    // fournie est celle d'Évoli, neuf membres — mais la borne est écrite : sans
-    // elle, une famille de trente et un aurait bouclé sans fin.
-    if (groupe.length > PAR_BOITE) {
-      clore();
-      for (let i = 0; i < groupe.length; i += PAR_BOITE) {
-        courante = groupe.slice(i, i + PAR_BOITE);
-        clore();
-      }
-      continue;
-    }
-    if (courante.length + groupe.length > PAR_BOITE) clore();
-    courante.push(...groupe);
-  }
-  clore();
-  return boites;
+  // Rangées par le premier numéro : la liste se parcourt comme le Pokédex.
+  return lignes.sort((a, b) => a.membres[0].id - b.membres[0].id);
 }
 
 /**
- * Le compte d'une boîte : combien de cases pleines, combien de terminées.
+ * Le compte d'un lot de cases.
  *
- * DEUX NOMBRES ET NON UN, parce que « je l'ai » et « je l'ai fini » sont deux
- * états distincts dans ce Pokédex : une espèce peut être cochée en normal et
- * pas en chromatique. La boîte affiche le premier — c'est celui qui correspond
- * à HOME, où un Pokémon est là ou n'y est pas.
- *
- * @param {Function} possede   (espece) => bool
- * @param {Function} terminee  (espece) => bool
+ * @param {Function} pris  (case) => bool
  */
-export function compterBoite(boite, possede, terminee) {
-  let cases = 0;
-  let pleines = 0;
-  let finies = 0;
-  for (const espece of boite.cases) {
-    if (!espece) continue;
-    cases += 1;
-    if (possede(espece)) pleines += 1;
-    if (terminee(espece)) finies += 1;
+export function compter(cases, pris) {
+  let total = 0;
+  let faites = 0;
+  for (const c of cases) {
+    if (!c) continue;
+    total += 1;
+    if (pris(c)) faites += 1;
   }
-  return { cases, pleines, finies, manquantes: cases - pleines };
+  return { total, faites, manquantes: total - faites };
 }

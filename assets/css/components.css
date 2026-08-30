@@ -6288,17 +6288,11 @@ body::before {
 
 /* ============================ Le Living Dex ============================== */
 
-/* UNE BOÎTE TIENT SUR UN ÉCRAN, et c'est toute la raison d'être de la vue. Cinq
-   colonnes et six rangées, comme HOME : trente cases qu'on embrasse d'un regard,
-   là où la grille demande de faire défiler quatre mille pixels pour trouver un
-   trou. La largeur est donc FIXE — cinq colonnes, jamais quatre ni six — parce
-   qu'une boîte de HOME a cinq colonnes et que la comparer à la sienne est
-   exactement ce qu'on vient faire. */
-.livingdex {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-}
+/* SIX COLONNES SUR CINQ RANGÉES, comme une boîte de HOME — et six, c'est PAIR.
+   Chaque Pokémon occupe deux cases, normal et chromatique : avec cinq colonnes
+   les paires auraient été à cheval sur deux rangées, ce qui aurait détruit la
+   lecture. Trois paires par rangée, quinze par boîte. */
+.livingdex { display: flex; flex-direction: column; gap: var(--sp-4); }
 .livingdex[hidden] { display: none; }
 
 .boite {
@@ -6314,33 +6308,88 @@ body::before {
   gap: var(--sp-2);
   margin-bottom: var(--sp-3);
 }
-.boite__nom {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--text-soft);
-}
+.boite__nom { margin: 0; font-family: var(--font-display); font-size: 14px; font-weight: 800; color: var(--text-soft); }
 .boite__compte { font-size: 12px; font-weight: 800; color: var(--text-faint); }
-/* Une boîte pleine s'annonce : c'est la seule récompense de la vue, et elle
-   arrive trente-cinq fois au maximum. */
 .boite__compte--pleine { color: var(--accent); }
 
+/* GOUTTIÈRE UNIFORME, et c'est la correction d'un défaut. La première version
+   alternait — serrée entre les deux teintes d'un Pokémon, large entre deux
+   Pokémon — au moyen d'une `margin-right` sur une case sur deux. Or une marge
+   sur un élément de grille se prend SUR SA CASE, dont la largeur est fixée par
+   `1fr` : une vignette sur deux était donc plus étroite que sa voisine, et la
+   boîte entière paraissait de travers.
+
+   Le regroupement par paire ne se perd pas pour autant : la case chromatique
+   porte son ✦ et le sprite de sa teinte. C'était de toute façon ce qui la
+   distinguait — la gouttière n'y ajoutait rien qu'un désalignement. */
+/* `minmax(0, 1fr)` ET NON `1fr`, et c'est la seconde moitié du même défaut.
+   `1fr` vaut `minmax(auto, 1fr)` : une piste ne peut alors pas descendre sous
+   la largeur minimale de son contenu. Les sprites n'ayant pas tous la même
+   largeur intrinsèque, les pistes s'écartaient — mesuré : 83 px et 89 px en
+   alternance, sur six colonnes pourtant exactes. Le plancher à zéro rend les
+   six pistes rigoureusement égales. */
 .boite__grille {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 6px;
 }
 
-/* TROIS ÉTATS, TROIS TRAITEMENTS. « Vide » et « commencée » se distinguent par
-   le sprite — éteint ou en couleur —, « commencée » et « terminée » par le fond.
-   Trois nuances d'une même chose auraient demandé de les apprendre ; là, chaque
-   état se lit sans légende. */
+/* ------------------------- Une lignée par ligne ------------------------- */
+
+/* RANGÉES EN BOÎTES, LES FAMILLES NE SE VOYAIENT PAS : rien ne disait où l'une
+   finissait. Une ligne par lignée le dit sans un mot — c'est la disposition du
+   Pokédex d'Ultra-Soleil, et elle rend le trou ACTIONNABLE : un manque entre
+   Bulbizarre et Florizarre dit quoi faire. */
+.livingdex[data-ordre="famille"] { gap: 4px; }
+.lignee {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 6px var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-raised);
+}
+/* Une lignée complète s'éteint doucement : elle n'a plus rien à dire, et ce
+   sont les autres qu'on parcourt. */
+.lignee--faite { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.lignee__tete { flex: 0 0 auto; width: 128px; min-width: 0; }
+.lignee__nom {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lignee__compte { font-size: 10.5px; font-weight: 700; color: var(--text-ghost); }
+.lignee--faite .lignee__compte { color: var(--accent); }
+
+.lignee__membres { display: flex; flex-wrap: wrap; gap: 4px 14px; min-width: 0; }
+.lignee__membre { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.lignee__paire { display: flex; gap: 3px; }
+.lignee__nom-membre {
+  max-width: 92px;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--text-ghost);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------- Une case ------------------------------- */
+
 .ldx {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  min-width: 0;
   aspect-ratio: 1;
   padding: 0;
   border: 1px solid var(--border);
@@ -6348,46 +6397,67 @@ body::before {
   background: var(--bg-inset);
   cursor: pointer;
 }
-.ldx__img { width: 82%; height: 82%; object-fit: contain; }
-/* Le numéro n'apparaît qu'au survol : à quarante-six pixels il ne tiendrait pas
-   sous le sprite, et c'est le sprite qu'on reconnaît, pas le nombre. Sur
-   téléphone il ne se voit jamais — et n'y sert à rien non plus. */
-.ldx__num {
+.lignee .ldx { width: 42px; }
+.ldx__img { width: 84%; height: 84%; object-fit: contain; }
+/* Le ✦ dit « c'est la case du chromatique » même quand elle est vide : sans lui
+   les deux cases d'un Pokémon qu'on n'a pas seraient deux silhouettes grises
+   identiques. */
+/* LE ✦ EST UNE PASTILLE, PAS UN EXPOSANT. Colle dans l angle a un pixel du
+   bord, il paraissait tombe la ; rentre et pose sur un rond, il se lit comme
+   une marque volontaire — et il reste lisible sur un sprite clair, ce que le
+   glyphe nu ne faisait pas. */
+.ldx__marque {
   position: absolute;
-  inset: auto 0 2px 0;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg-inset) 82%, transparent);
   font-size: 8.5px;
-  font-weight: 800;
-  color: var(--text-ghost);
-  opacity: 0;
+  line-height: 1;
+  color: var(--accent);
 }
-@media (hover: hover) {
-  .ldx:hover { border-color: var(--accent); }
-  .ldx:hover .ldx__num { opacity: 1; }
-}
+@media (hover: hover) { .ldx:hover { border-color: var(--accent); } }
 .ldx:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.ldx--vide .ldx__img { filter: var(--sprite-dim); }
-.ldx--entame { border-color: var(--border-strong); }
-.ldx--fini {
+.ldx--manque .ldx__img { filter: var(--sprite-dim); }
+.ldx--pris {
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   background: color-mix(in srgb, var(--accent) 11%, var(--bg-inset));
 }
-/* Une case sans Pokémon : elle n'existe que dans le rangement par famille,
-   quand une lignée n'a pas tenu dans la place restante. Un pointillé dit
-   « rien ici » là où un fond plein aurait dit « trou ». */
+.ldx--pris.ldx--shiny { border-color: color-mix(in srgb, var(--accent) 80%, transparent); }
+.ldx--pris.ldx--shiny .ldx__img { filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 45%, transparent)); }
+
+/* PAS DE CHROMATIQUE POSSIBLE : ce n'est pas un trou. Une case barrée en
+   pointillé le dit ; un fond plein l'aurait fait compter comme un manque, et le
+   Pokédex aurait porté une centaine de cases impossibles à remplir. */
+.ldx--impossible,
 .ldx--absente {
   border-style: dashed;
   border-color: color-mix(in srgb, var(--border) 70%, transparent);
   background: none;
   cursor: default;
 }
+.ldx--impossible::after {
+  content: "";
+  position: absolute;
+  inset: 32%;
+  border-top: 1px solid color-mix(in srgb, var(--text-ghost) 45%, transparent);
+  transform: rotate(-45deg);
+}
 
-/* Sous 560 px, cinq colonnes donnent des cases de quarante pixels : c'est petit
-   mais lisible, et surtout c'est LA boîte de HOME. La réduire à quatre colonnes
-   aurait cassé la correspondance, qui est le seul intérêt de la vue. */
+@media (max-width: 700px) {
+  .lignee { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .lignee__tete { width: auto; display: flex; align-items: baseline; gap: var(--sp-2); }
+}
 @media (max-width: 560px) {
   .boite { padding: var(--sp-2); }
-  .boite__grille { gap: 4px; }
+  .boite__grille { column-gap: 2px; row-gap: 5px; }
+  .boite__grille > .ldx:nth-child(2n) { margin-right: 6px; }
+  .lignee .ldx { width: 36px; }
 }
 
 /* ======================= Le mur des chromatiques ========================= */
@@ -6462,4 +6532,79 @@ body::before {
 @media (max-width: 480px) {
   .mur__grille { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--sp-2); }
   .mur__nom { font-size: 10.5px; }
+}
+
+/* ========================= Ce qu'il me reste ============================= */
+
+.reste { display: flex; flex-direction: column; gap: var(--sp-3); }
+.reste__chapeau { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--text-faint); }
+.reste__liste { display: flex; flex-direction: column; gap: 3px; margin: 0; padding: 0; list-style: none; }
+
+.reste__entete {
+  display: grid;
+  grid-template-columns: minmax(96px, 1.1fr) minmax(70px, 2fr) 34px 14px;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: 8px var(--sp-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--text-soft);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.reste__entete:hover { background: var(--bg-inset); }
+.reste__jeu--ouvert .reste__entete { background: var(--bg-inset); border-color: var(--border); }
+/* Un jeu qui n'apporte rien reste dans la liste — le retirer aurait laissé
+   croire à un trou de données —, mais il s'efface : un zéro est une réponse,
+   pas une proposition. */
+.reste__jeu--vide { opacity: .45; }
+
+.reste__nom { font-size: 12.5px; font-weight: 800; }
+.reste__total { font-size: 12px; font-weight: 800; text-align: right; color: var(--accent); }
+.reste__chevron { font-size: 10px; color: var(--text-ghost); }
+
+/* DEUX BARRES ACCOLÉES, PAS UNE. Le sauvage et le reste sont deux efforts
+   différents : une soirée de jeu contre vingt échanges. Une seule barre les
+   aurait additionnés, ce qui est exactement l'erreur qu'on veut éviter. */
+.reste__barres { display: flex; height: 8px; border-radius: var(--r-pill); background: var(--bg-inset); overflow: hidden; }
+.reste__barre { height: 100%; }
+.reste__barre--sauvage { background: var(--accent); }
+.reste__barre--autre { background: color-mix(in srgb, var(--accent) 32%, transparent); }
+
+.reste__detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-2) var(--sp-3) var(--sp-3);
+  border-left: 2px solid var(--accent-border);
+  margin: 4px 0 6px var(--sp-2);
+}
+.reste__paquet-tete { display: flex; align-items: baseline; gap: var(--sp-2); }
+.reste__paquet-titre { margin: 0; font-size: 12px; font-weight: 800; color: var(--text); }
+.reste__paquet-compte { font-size: 11px; font-weight: 800; color: var(--accent); }
+.reste__paquet-aide { margin: 1px 0 7px; font-size: 11px; color: var(--text-ghost); }
+
+.reste__especes { display: flex; flex-wrap: wrap; gap: 5px; }
+.reste__espece {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px 3px 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--bg-raised);
+}
+.reste__img { width: 26px; height: 26px; object-fit: contain; }
+.reste__espece-nom { font-size: 11px; font-weight: 700; color: var(--text-soft); }
+/* Le sauvage est mis en avant jusque dans la pastille : c'est la liste sur
+   laquelle on agit ce soir. */
+.reste__especes[data-genre="sauvage"] .reste__espece { border-color: var(--accent-border); }
+
+@media (max-width: 480px) {
+  .reste__entete { grid-template-columns: minmax(72px, 1fr) minmax(48px, 1.4fr) 28px 12px; }
+  .reste__espece-nom { display: none; }
+  .reste__espece { padding: 3px; }
 }

@@ -24,7 +24,7 @@
  *
  * `mesure` reçoit un BILAN et non les seuls compteurs du Pokédex national.
  * Tant qu'il n'y avait que cinq succès, `progressOf()` suffisait ; les
- * quarante-trois d'aujourd'hui parlent aussi du Pokédex GO, du carnet de
+ * cinquante-deux d'aujourd'hui parlent aussi du Pokédex GO, du carnet de
  * chasse et du nombre d'espèces entièrement obtenues. Le bilan rassemble ces
  * quatre sources, et `ui/` le fabrique une fois par rendu — au même endroit et
  * au même instant que les compteurs de la barre latérale, pour qu'un succès ne
@@ -43,9 +43,11 @@
  * mêmes clés. Les renommer aurait rejoué trente-huit bandeaux d'un coup et
  * reverrouillé cinq thèmes déjà gagnés.
  *
- * Les trente-huit autres ne donnent rien de plus qu'eux-mêmes. C'est assumé :
- * une récompense par succès aurait demandé trente-huit palettes, dont trente
- * seraient nées d'un besoin de remplir une case plutôt que d'une idée.
+  * Les autres ouvrent l'un des cent quatorze cosmétiques — titres, marques,
+ * cadres, motifs, bandeaux, sons, Balls, compagnons, écrans de chargement,
+ * style de sprite, habillage de carte. Quelques-uns ne donnent rien de plus
+ * qu'eux-mêmes, et c'est assumé : une récompense par succès aurait demandé
+ * d'en inventer pour remplir des cases plutôt que par idée.
  *
  * Ce module ne touche pas au DOM : `domain/` n'en a pas le droit.
  */
@@ -220,7 +222,7 @@ const complet = (lire) => (b) => {
 };
 
 /**
- * Les quarante-trois succès, groupés par famille.
+ * Les cinquante-deux succès, groupés par famille.
  *
  * `famille` ne sert qu'à la page des succès, qui en fait ses sections. Elle ne
  * change rien au calcul.
@@ -741,7 +743,7 @@ export const FAMILLES = ["Collection", "Chromatiques", "Paires", "Régions", "Fo
  * Complète un bilan partiel.
  *
  * Chaque `mesure` lit `b.p.all.done` ou `b.go.owned` sans se demander si la
- * source existe. Plutôt que quarante-trois gardes recopiées, une seule
+ * source existe. Plutôt que cinquante-deux gardes recopiées, une seule
  * normalisation à l'entrée : un appelant qui ne fournit que les compteurs du
  * Pokédex national obtient des zéros ailleurs, jamais une exception.
  */
@@ -782,7 +784,7 @@ export function evaluerSucces(bilan) {
       ...succes,
       fait: Math.min(fait, total),
       total,
-      // Absent chez quarante-deux succes sur quarante-trois : seul « Region
+      // Absent chez cinquante et un succes sur cinquante-deux : seul « Region
       // bouclee » a quelque chose de plus a dire que son compte.
       detail: detail || null,
       obtenu: total > 0 && fait >= total,

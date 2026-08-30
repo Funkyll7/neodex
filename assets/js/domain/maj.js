@@ -51,8 +51,10 @@ export const VERSIONS = [
     titre: "Les boîtes de HOME",
     notes: [
       ["ajout", "Une vue « Boîtes » : le Pokédex rangé trente par trente comme dans HOME, où un trou se voit sans le chercher."],
-      ["ajout", "Un second rangement, « Familles », qui suit les lignées d'évolution et n'en coupe jamais une en deux."],
+      ["ajout", "Un second rangement, « Familles » : une lignée par ligne, comme le Pokédex d'Ultra-Soleil."],
       ["ajout", "Un mur des chromatiques : tout ce que tu as en shiny, en grand, groupé par région — et rien qui manque."],
+      ["ajout", "« Ce qu'il me reste » : les vingt-trois jeux classés par ce qu'ils boucheraient, le sauvage d'abord."],
+      ["amelioration", "Les boîtes portent toutes les cases cochables, formes comprises, et un clic en coche une."],
     ],
   },
   {

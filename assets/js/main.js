@@ -591,7 +591,9 @@ function start(dataset) {
       chaines: dataset.chaines,
       collection,
       ordre: mode === "familles" ? "famille" : "numero",
-      surChoix: (id) => store.set({ selectedId: id }),
+      // Le clic COCHE. Il passe par `ctx.onToggle`, le meme chemin que les
+      // boutons de la grille : de quoi annuler, la note, la synchronisation.
+      surChoix: (id, slot) => ctx.onToggle(id, slot),
     });
   }
 

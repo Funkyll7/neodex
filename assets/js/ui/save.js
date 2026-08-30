@@ -15,6 +15,7 @@ import { downloadJson } from "./common.js";
 import { jouer } from "./sons.js";
 import { ouvrirCartePartage, dessinerCarte } from "./carte-partage.js";
 import { ouvrirMur } from "./mur.js";
+import { ouvrirReste } from "./reste.js";
 import { ouvrirChangements } from "./changements.js";
 import { autourDUneAdoption } from "../domain/journal.js";
 import { poserApercuCarte } from "./recompenses.js";
@@ -52,6 +53,10 @@ export function createSaveControls(ctx) {
   // collection.
   const boutonMur = document.getElementById("mur-btn");
   if (boutonMur) boutonMur.addEventListener("click", () => ouvrirMur(ctx));
+
+  // « Ce qu il me reste » : le meme genre de panneau, ouvert du meme endroit.
+  const boutonReste = document.getElementById("reste-btn");
+  if (boutonReste) boutonReste.addEventListener("click", () => ouvrirReste(ctx));
 
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files && fileInput.files[0];

@@ -1,11 +1,11 @@
 /**
- * page-succes.js — les quarante-trois succès, à regarder.
+ * page-succes.js — les cinquante-deux succès, à regarder.
  *
  * POURQUOI UNE PAGE À EUX.
  *
  * Tant qu'il y en avait cinq, ils vivaient très bien dans le menu des thèmes :
  * cinq cadenas au-dessus de cinq palettes, on comprenait tout de suite. À
- * quarante-trois, ce n'est plus tenable — trente-huit d'entre eux n'ouvrent
+ * cinquante-deux, ce n'est plus tenable — beaucoup d'entre eux n'ouvrent
  * aucune palette et n'auraient rien eu à faire dans un sélecteur de couleurs.
  *
  * IL S'OUVRE COMME LES DEUX AUTRES, exprès : même bouton à bascule avec
@@ -86,7 +86,7 @@ export function initPageSucces() {
   function boite(succes, gagnes) {
 
     // Regrouper par famille en UNE passe plutôt qu'un `filter` par section :
-    // sept filtres sur quarante-trois entrées, c'est gratuit, mais l'ordre des
+    // sept filtres sur cinquante-deux entrées, c'est gratuit, mais l'ordre des
     // familles serait alors celui de `FAMILLES` et une famille oubliée dans
     // cette constante disparaîtrait sans bruit. Ici, une famille inconnue
     // atterrit à la fin plutôt que dans le vide.
