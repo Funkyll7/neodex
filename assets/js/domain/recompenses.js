@@ -90,6 +90,21 @@ export const TYPES = [
     aide: "Les notes jouées quand une case se coche.",
     defaut: "doux",
   },
+  /* LA BALL EST LE SEUL COSMÉTIQUE QU'ON VOIT MILLE FOIS PAR SESSION : c'est
+     le bouton qu'on presse pour cocher, et il est sur chaque vignette. Il
+     portait une Poké Ball, la même pour tout le monde.
+
+     Elle se DÉCLINE plutôt qu'elle ne se remplace : la Ball choisie sert à la
+     fois de pastille sur le bouton « capturé » et de curseur sur ordinateur.
+     C'était deux récompenses dans la première esquisse — « une Ball » et « un
+     curseur » — et c'était la même question posée deux fois. */
+  {
+    cle: "ball",
+    nom: "Ball",
+    onglet: "Ball",
+    aide: "La Ball du bouton « capturé », et le curseur sur ordinateur.",
+    defaut: "poke",
+  },
   /* LE STYLE DE SPRITE ÉTAIT PRISONNIER DE SA PALETTE. Les images en pixels
      n'existaient qu'à travers les six thèmes « Pixels » : les vouloir obligeait
      à prendre leurs couleurs, et aimer les couleurs d'un autre thème obligeait
@@ -207,6 +222,27 @@ export const RECOMPENSES = [
      région qui l'ouvre disent donc la même chose. */
   { cle: "3d", type: "sprites", nom: "3D (HOME)", succes: null },
   { cle: "pixels", type: "sprites", nom: "Pixel art", succes: "fanatique-5" },
+
+  /* --------------------------------- Balls ---------------------------------
+     LE DÉFAUT RESTE MONOCHROME, ET LES TROIS AUTRES SONT EN COULEUR. Ce n'est
+     pas une inconséquence : la Poké Ball du bouton est un MASQUE peint par
+     `currentColor`, donc elle suit l'état coché et les trente-huit palettes
+     sans qu'on ait à en dessiner une variante. C'est une bonne solution, et
+     personne qui n'a rien gagné ne doit voir son site changer.
+     Mais le bouton fait douze pixels de côté, et à cette taille une silhouette
+     de Ball ne se distingue pas d'une autre — seule la COULEUR se lit. Un
+     masque aurait donc donné trois récompenses identiques. Les trois gagnées
+     passent en image : c'est précisément ce que la récompense offre, la vraie
+     Ball plutôt que son ombre.
+
+     Kanto l'Hyper Ball parce que c'est là qu'elle est née ; Johto la Lune Ball
+     parce que Johto est la région des Balls d'Apricot ; Paldea la Master Ball
+     parce que c'est la dernière région, la plus grosse, et qu'on ne gaspille
+     pas une Master Ball. */
+  { cle: "poke", type: "ball", nom: "Poké Ball", succes: null },
+  { cle: "hyper", type: "ball", nom: "Hyper Ball", succes: "fanatique-1" },
+  { cle: "lune", type: "ball", nom: "Lune Ball", succes: "fanatique-2" },
+  { cle: "master", type: "ball", nom: "Master Ball", succes: "fanatique-9" },
 
   /* -------------------------------- Sons --------------------------------- */
   { cle: "doux", type: "sons", nom: "Doux", succes: null },

@@ -6044,3 +6044,76 @@ body::before {
 @media (max-width: 420px) {
   .verrou__sprite-demo { width: 62px; height: 62px; }
 }
+
+/* ========================= La Ball du bouton « capturé » ================== */
+
+/* LE DÉFAUT N'EST PAS TOUCHÉ. Sans récompense portée, `.toggle__ico--capture`
+   garde son masque et sa couleur héritée : le site est exactement celui d'avant.
+   Les trois Balls gagnées remplacent le masque par une VRAIE image — le bouton
+   fait douze pixels, et à cette taille une silhouette ne distingue rien alors
+   qu'une couleur se lit d'un coup d'œil.
+
+   Le masque doit être ANNULÉ explicitement : `background-image` seul se serait
+   peint sous un masque encore actif, qui l'aurait découpé à la forme de la Poké
+   Ball d'origine — une Master Ball rognée par une Poké Ball.
+
+   Seul `--capture` change, jamais `--capture-forme` : celui-là ne dit pas
+   « attrapé » mais « attrapé sous une autre forme », et son losange est un
+   signe de lecture, pas une Ball qu'on collectionne. */
+[data-ball="hyper"] .toggle__ico--capture,
+[data-ball="lune"] .toggle__ico--capture,
+[data-ball="master"] .toggle__ico--capture {
+  -webkit-mask-image: none; mask-image: none;
+  background-color: transparent;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+[data-ball="hyper"]  .toggle__ico--capture { background-image: url("../img/balls/hyper.svg"); }
+[data-ball="lune"]   .toggle__ico--capture { background-image: url("../img/balls/lune.svg"); }
+[data-ball="master"] .toggle__ico--capture { background-image: url("../img/balls/master.svg"); }
+
+/* LE CURSEUR SUIT LA BALL, SUR ORDINATEUR SEULEMENT — un téléphone n'a pas de
+   curseur, et c'est pour ça que la Ball du bouton reste l'effet principal.
+
+   Le point chaud est au CENTRE (16 16 sur 32) et non en haut à gauche : une
+   Ball est ronde, on vise avec son milieu. Le repli `auto` est indispensable —
+   Safari ignore les curseurs SVG, et sans lui la page n'aurait plus de curseur
+   du tout au lieu d'en avoir un ordinaire.
+
+   Posé sur `body` et non sur `:root` : la règle doit pouvoir être annulée sur
+   les zones qui ont leur propre curseur — un champ de texte garde son I. */
+@media (hover: hover) and (pointer: fine) {
+  [data-ball="hyper"] body  { cursor: url("../img/balls/hyper.svg") 16 16, auto; }
+  [data-ball="lune"] body   { cursor: url("../img/balls/lune.svg") 16 16, auto; }
+  [data-ball="master"] body { cursor: url("../img/balls/master.svg") 16 16, auto; }
+  /* Ce qui s'écrit garde son curseur de texte, ce qui se clique son pointeur :
+     une Ball partout aurait fait perdre l'information que porte le curseur. */
+  [data-ball] input, [data-ball] textarea, [data-ball] [contenteditable] { cursor: text; }
+  [data-ball] button, [data-ball] a, [data-ball] summary, [data-ball] label,
+  [data-ball] [role="button"], [data-ball] [role="tab"] { cursor: pointer; }
+  [data-ball] button:disabled, [data-ball] [aria-disabled="true"] { cursor: default; }
+}
+
+/* La pastille du menu et l'aperçu : la Ball en grand, telle qu'elle est. */
+.recomp__apercu--ball {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  border: none;
+  background: none;
+}
+.verrou__scene--ball { display: grid; place-items: center; gap: var(--sp-4); padding: var(--sp-4); }
+/* En grand : le dessin qu`on vient regarder. */
+.verrou__ball-grande { width: 132px; height: 132px; }
+/* Et a la taille reelle, sur deux boutons comme dans la grille : douze pixels,
+   c`est la seule taille a laquelle on la verra pour de bon. */
+.verrou__ball-vraie-taille {
+  display: flex;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+}
+.verrou__ball-petite { display: block; width: 12px; height: 12px; }

@@ -38,7 +38,7 @@ import { setStyleDeSprite } from "../domain/sprites.js";
 import { CONFIG } from "../config.js";
 
 /** Les types posés en attribut sur `<html>`, et peints par le CSS seul. */
-const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes"];
+const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes", "ball"];
 
 /**
  * Le choix courant, tous types confondus, déjà validé.
@@ -403,6 +403,30 @@ function sceneDe(type, r) {
         el("span.verrou__marque-nom", "Funkylldex"),
         el("span.verrou__marque-sous", t(r.texte || r.nom))
       )
+    );
+  }
+
+  if (type === "ball") {
+    // LA BALL EN GRAND, ET SUR SON BOUTON. En grand parce que c'est le dessin
+    // qu'on vient regarder ; sur son bouton parce que douze pixels est la taille
+    // à laquelle on la verra vraiment — ne montrer que l'un des deux aurait
+    // menti dans un sens ou dans l'autre.
+    const dessin = (classe) =>
+      r.cle === "poke"
+        ? el(`span.${classe}.toggle__ico.toggle__ico--capture`, { "aria-hidden": "true" })
+        : el(`span.${classe}`, {
+            "aria-hidden": "true",
+            style: {
+              backgroundImage: `url(assets/img/balls/${r.cle}.svg)`,
+              backgroundSize: "contain",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            },
+          });
+    return el(
+      "div.verrou__scene.verrou__scene--ball",
+      dessin("verrou__ball-grande"),
+      el("div.verrou__ball-vraie-taille", dessin("verrou__ball-petite"), dessin("verrou__ball-petite"))
     );
   }
 
@@ -922,6 +946,22 @@ function apercu(type, r) {
     return el("span.recomp__apercu.recomp__apercu--marque", { dataset: { marque: r.cle } });
   }
   if (type === "sons") return iconeSvg("etincelle", 16);
+  // La Poké Ball par défaut n'a pas de fichier : elle est le masque du bouton,
+  // peint par `currentColor`. On lui rend donc la pastille du bouton lui-même,
+  // ce qui la montre exactement telle qu'elle sera.
+  if (type === "ball") {
+    if (r.cle === "poke") {
+      return el("span.recomp__apercu.toggle__ico.toggle__ico--capture", {
+        "aria-hidden": "true",
+        style: { width: "20px", height: "20px" },
+      });
+    }
+    return el("img.recomp__apercu.recomp__apercu--ball", {
+      src: `assets/img/balls/${r.cle}.svg`,
+      alt: "",
+      loading: "lazy",
+    });
+  }
   // Le style de sprite se montre par un SPRITE, pas par un aplat : c'est la
   // seule option dont l'aperçu peut être la chose elle-même. Pikachu parce
   // qu'il est le seul que tout le monde reconnaît à seize pixels.
