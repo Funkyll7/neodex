@@ -14,6 +14,7 @@ import { evaluerSucces } from "../domain/succes.js";
 import { majDecor } from "./decor-theme.js";
 import { TYPES } from "../domain/recompenses.js";
 import { optionsDuType, poserSourceDesSucces } from "./recompenses.js";
+import { retourFerme } from "./retour.js";
 import { t } from "../core/i18n.js";
 import { jouer } from "./sons.js";
 
@@ -110,24 +111,39 @@ function initBouton() {
   const picker = document.getElementById("theme-picker");
   if (!button || !picker) return;
 
+  // Le balayage Retour d'un telephone doit refermer le menu, pas quitter le
+  // site — voir ui/retour.js.
+  let liberer = null;
+
   const ouvrir = (etat) => {
+    if (etat === !picker.hidden) return;
     picker.hidden = !etat;
     button.setAttribute("aria-expanded", String(etat));
-    // La palette s'ouvre sur l'onglet de la famille courante : sinon elle
-    // s'ouvrait toujours sur « Base », et retrouver ou l'on etait demandait de
-    // rouvrir les cinq onglets un a un.
-    if (etat) syncPicker();
+    if (etat) {
+      // La palette s'ouvre sur l'onglet de la famille courante : sinon elle
+      // s'ouvrait toujours sur « Base », et retrouver ou l'on etait demandait
+      // de rouvrir les cinq onglets un a un.
+      syncPicker();
+      picker.scrollTop = 0;
+      liberer = retourFerme(() => ouvrir(false));
+    } else if (liberer) {
+      const f = liberer;
+      liberer = null;
+      f();
+    }
   };
+  fermerLeMenu = () => ouvrir(false);
 
   button.addEventListener("click", (event) => {
     event.stopPropagation();
     ouvrir(picker.hidden);
   });
 
-  // Cliquer ailleurs referme : un panneau qui reste ouvert derriere soi est
-  // une gene, pas une aide.
-  document.addEventListener("click", (event) => {
-    if (!picker.hidden && !picker.contains(event.target)) ouvrir(false);
+  // Le VOILE ferme, la boite non. Le test « en dehors du panneau » d'avant ne
+  // vaut plus rien depuis que le menu occupe tout l'ecran : plus aucun clic
+  // n'etait en dehors, et il ne se serait ferme qu'a Echap.
+  picker.addEventListener("click", (event) => {
+    if (event.target === picker) ouvrir(false);
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !picker.hidden) {
@@ -136,10 +152,23 @@ function initBouton() {
     }
   });
 
+  // Choisir une palette referme : c'est le seul des huit onglets ou le choix
+  // est un but en soi. Sur les sept autres on essaie plusieurs options a la
+  // suite, et refermer a chaque essai rendrait le menu inutilisable.
   picker.addEventListener("click", (event) => {
     if (event.target.closest(".thopt")) ouvrir(false);
   });
 }
+
+/**
+ * De quoi refermer le menu depuis son propre bouton de fermeture.
+ *
+ * Celui-ci est reconstruit a chaque `buildPicker()`, donc apres `initBouton()`
+ * qui detient la fermeture : il ne peut pas la capturer dans sa portee. Une
+ * variable de module est le chemin le plus court, et le seul qui ne demande pas
+ * de faire redescendre la fonction a travers quatre appels.
+ */
+let fermerLeMenu = () => {};
 
 /** Applique un theme, le retient, et remet le selecteur d'accord. */
 function choisir(theme) {
@@ -261,6 +290,15 @@ function buildPicker() {
 function menuDeCustomisation(interieur) {
   const onglets = el("div.custo__tabs", { role: "tablist", "aria-label": t("Customisation") });
   const panneaux = el("div.custo__panels");
+  const entete = el(
+    "div.custo__entete",
+    el("h3.panel__label", t("Customisation")),
+    el(
+      "button.icon-btn.custo__fermer",
+      { type: "button", title: t("Fermer"), "aria-label": t("Fermer"), onclick: () => fermerLeMenu() },
+      "✕"
+    )
+  );
 
   const ajouter = (cle, libelle, contenu) => {
     onglets.append(
@@ -306,7 +344,7 @@ function menuDeCustomisation(interieur) {
     );
   }
 
-  return el("div.custo", onglets, panneaux);
+  return el("div.custo-boite", entete, el("div.custo", onglets, panneaux));
 }
 
 /** Montre un onglet de customisation et un seul. */

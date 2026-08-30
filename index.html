@@ -184,9 +184,6 @@
       </div>
     </div>
 
-    <!-- Le bouton de la marque est la seule entrée vers les thèmes : un repli
-         « Thème » séparé faisait doublon avec lui. -->
-    <div id="theme-picker" class="themes" role="group" aria-label="Customisation" hidden></div>
 
     <!-- Rempli par ui/parametres.js, et vide dans le HTML livré : son contenu
          dépend de préférences qu'on ne connaît qu'une fois le localStorage lu.
@@ -492,6 +489,16 @@
        aurait montré quarante-trois cadenas avant de les corriger. -->
   <div id="succes-panel" class="succes-fond" role="dialog" aria-modal="true"
        aria-label="Succès" hidden></div>
+
+  <!-- Le menu de customisation, rempli par ui/theme.js.
+
+       HORS de la barre latérale, comme la page des succès et pour la même
+       raison : il se dépliait sous son bouton, dans une colonne de 268 px, et
+       il porte maintenant huit onglets, trente-huit palettes et quarante et une
+       options de cosmétiques. Aucune de ces trois choses ne tient dans une
+       colonne. -->
+  <div id="theme-picker" class="custo-fond" role="dialog" aria-modal="true"
+       aria-label="Customisation" hidden></div>
 </div>
 
 <script type="module" src="assets/js/main.js"></script>
