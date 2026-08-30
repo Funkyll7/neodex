@@ -3658,8 +3658,16 @@
    défile pas — un motif qui bougerait avec la grille se lirait comme une
    texture qui glisse, ce qui donne le mal de mer sur mille vignettes.
 
-   `.app` remonte donc d'un plan. C'est la seule ligne qui rende les cinq motifs
-   visibles, et son absence les rendrait tous invisibles d'un coup. */
+   TOUT CE QUI DOIT PASSER DEVANT LA TRAME DOIT ÊTRE POSITIONNÉ. Un élément
+   positionné, fût-il en `z-index: 0`, se peint APRÈS le contenu resté dans le
+   flux : la trame ne se glisse pas d'elle-même sous la page, elle lui passe
+   dessus. Les deux blocs de premier niveau remontent donc d'un plan — `.app`
+   ici, et `.boot` dans layout.css, oublié jusqu'au 2026-08-30 : le coucher de
+   soleil d'« Aurore » se peignait sur son message d'erreur.
+
+   Retirer l'une de ces deux lignes ne rendrait pas les motifs invisibles, ce
+   que disait la version précédente de ce commentaire ; elle les ferait passer
+   DEVANT l'interface. C'est le symptôme à chercher si le site vire au rose. */
 .app { position: relative; z-index: 1; }
 body::before {
   content: "";
