@@ -14,6 +14,7 @@ import { resumeDuRapport } from "../domain/sync.js";
 import { downloadJson } from "./common.js";
 import { jouer } from "./sons.js";
 import { ouvrirCartePartage, dessinerCarte } from "./carte-partage.js";
+import { ouvrirMur } from "./mur.js";
 import { ouvrirChangements } from "./changements.js";
 import { autourDUneAdoption } from "../domain/journal.js";
 import { poserApercuCarte } from "./recompenses.js";
@@ -44,6 +45,13 @@ export function createSaveControls(ctx) {
   document.getElementById("summary-btn").addEventListener("click", () => {
     ouvrirCartePartage(ctx);
   });
+
+  // Le mur des chromatiques. Il vit ici parce que `save.js` est deja le module
+  // qui cable les boutons de la colonne ; il ne partage rien avec la
+  // sauvegarde, et le pop-up qu il ouvre ne connait que le jeu de donnees et la
+  // collection.
+  const boutonMur = document.getElementById("mur-btn");
+  if (boutonMur) boutonMur.addEventListener("click", () => ouvrirMur(ctx));
 
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files && fileInput.files[0];

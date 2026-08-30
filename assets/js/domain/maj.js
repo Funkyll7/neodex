@@ -52,6 +52,7 @@ export const VERSIONS = [
     notes: [
       ["ajout", "Une vue « Boîtes » : le Pokédex rangé trente par trente comme dans HOME, où un trou se voit sans le chercher."],
       ["ajout", "Un second rangement, « Familles », qui suit les lignées d'évolution et n'en coupe jamais une en deux."],
+      ["ajout", "Un mur des chromatiques : tout ce que tu as en shiny, en grand, groupé par région — et rien qui manque."],
     ],
   },
   {

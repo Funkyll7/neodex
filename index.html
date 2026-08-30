@@ -96,6 +96,8 @@
 <link rel="modulepreload" href="assets/js/domain/journal.js">
 <link rel="modulepreload" href="assets/js/ui/livingdex.js">
 <link rel="modulepreload" href="assets/js/domain/livingdex.js">
+<link rel="modulepreload" href="assets/js/ui/mur.js">
+<link rel="modulepreload" href="assets/js/domain/mur.js">
 <link rel="modulepreload" href="assets/js/ui/succes-detail.js">
 <link rel="modulepreload" href="assets/js/ui/journal.js">
 <link rel="modulepreload" href="assets/js/domain/maj.js">
@@ -344,6 +346,21 @@
         <button type="button" id="sync-now" class="btn btn--ghost">Enregistrer</button>
         <button type="button" id="sync-pull" class="btn btn--ghost">Recharger</button>
         <button type="button" id="sync-forget" class="btn btn--ghost btn--danger">Oublier</button>
+      </div>
+    </section>
+
+    <!-- La vitrine a sa propre section, et non un bouton glissé sous
+         « Fichier ». Exporter, importer et réinitialiser sont des gestes de
+         gestion ; le mur ne gère rien, il se regarde. Les ranger ensemble
+         aurait rendu le mur invisible, parce qu'on ne va pas chercher un
+         plaisir dans un menu de sauvegarde. -->
+    <section class="field" aria-label="Vitrine">
+      <h3 class="field__label">Vitrine</h3>
+      <div class="btn-row">
+        <button type="button" id="mur-btn" class="btn btn--ghost"
+                title="Tous tes chromatiques, en grand, et rien d'autre">
+          <span class="mur__btn-ico" aria-hidden="true">✦</span> Mur des chromatiques
+        </button>
       </div>
     </section>
 
