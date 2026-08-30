@@ -3844,8 +3844,13 @@ body::before {
 /* Le bouton « Hors d atteinte », dans l en-tete de la fiche. Discret quand il
    ne sert pas — un lien de plus qu un bouton —, franc quand l espece est mise
    de cote : c est alors une information sur la fiche, pas une action. */
+/* Poussé au bord droit de l'en-tête. `align-self` n'y pouvait rien —
+   `.detail__head` est un bloc, pas un conteneur flex, et la propriété y est
+   simplement ignorée. Un bouton est `inline-block` par défaut, donc une marge
+   automatique ne le déplace pas non plus : il faut d'abord en faire un bloc. */
 .detail__hors {
-  align-self: flex-start;
+  display: block;
+  margin-left: auto;
   margin-top: 6px;
   padding: 3px 9px;
   border: 1px solid var(--border-strong);
