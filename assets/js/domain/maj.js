@@ -46,16 +46,18 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
-    version: "4.6",
+    version: "5.0",
     date: "2026-08-30",
     titre: "Neuf régions, neuf fanatiques",
+    majeure: true,
     notes: [
       ["ajout", "Neuf succès « Fanatique » : boucler une région nommément, et non plus une région au choix."],
       ["ajout", "Le style de sprite se choisit à part du thème : le pixel art devient portable sur les trente-huit palettes."],
       ["ajout", "Trois Balls à gagner : elles remplacent la Poké Ball du bouton « capturé », et le curseur sur ordinateur."],
       ["ajout", "Deux fonds de page qui bougent : la pluie de Hoenn et la neige de Sinnoh."],
       ["ajout", "Un écran de chargement « Dynamax » : trois ondes rouges partent du logo pendant que le Pokédex arrive."],
-      ["ajout", "Un compagnon à choisir : dix-neuf Pokémon des palettes, plus le troisième légendaire de chaque région bouclée."],
+      ["ajout", "Un compagnon à choisir : dix-neuf Pokémon des palettes, plus un légendaire exclusif par région bouclée."],
+      ["ajout", "Un habillage « Carte postale » pour la carte de partage : carton crème, ombre portée, timbre dentelé et cachet."],
     ],
   },
   {

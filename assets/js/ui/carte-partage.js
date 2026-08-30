@@ -45,7 +45,7 @@ import { chassesOuvertes, totalPartie } from "../domain/quetes.js";
 import { countComplete } from "../domain/completion.js";
 import { bilanDesSucces, evaluerSucces } from "../domain/succes.js";
 import { dessinerIcone } from "./icones-succes.js";
-import { bannierePortee, titrePorte } from "./recompenses.js";
+import { bannierePortee, cartePortee, titrePorte } from "./recompenses.js";
 import { retourFerme } from "./retour.js";
 
 const LARGEUR = 1080;
@@ -53,6 +53,21 @@ const HAUTEUR = 1350;
 const MARGE = 64;
 /** Largeur utile d'un panneau, bornes comprises. */
 const UTILE = LARGEUR - MARGE * 2;
+
+/**
+ * La géométrie de l'habillage « Carte postale ».
+ *
+ * LA BANDE DU HAUT EST LARGE, ET C'EST LA CORRECTION D'UN DÉFAUT. Le timbre
+ * était d'abord posé dans le coin haut droit du canvas, par-dessus la carte :
+ * il recouvrait l'en-tête, c'est-à-dire le nom et le pourcentage — exactement
+ * ce qu'on partage. Une vraie carte postale ne colle pas son timbre sur le
+ * texte, elle lui réserve une bande. Celle-ci fait cent soixante pixels, la
+ * carte est repoussée d'autant, et plus rien ne se recouvre.
+ *
+ * Le prix est une carte 12 % plus petite, donc un texte 12 % plus petit. C'est
+ * le prix de l'habillage, il est payé par qui le choisit, et le défaut n'y
+ * touche pas. */
+const POSTALE = { cote: 38, haut: 160, bas: 38 };
 
 /**
  * Neuf teintes pour neuf générations.
@@ -507,6 +522,33 @@ export function dessinerCarte(ctx, options = {}) {
   canvas.height = HAUTEUR;
   const c = canvas.getContext("2d");
 
+  /* --- l'habillage, s'il y en a un ---
+     LA CARTE ENTIÈRE EST REDESSINÉE PLUS PETITE, ET PAS UNE COORDONNÉE NE
+     BOUGE. Le dessin qui suit compte en 1080 × 1350 depuis le premier jour, sur
+     six cents lignes ; le rentrer dans un cadre aurait voulu dire relire chaque
+     `x` et chaque `y`. Une translation et une échelle posées AVANT font le même
+     travail en trois lignes, et — c'est le point — laissent le reste du fichier
+     ignorer qu'il existe un habillage.
+
+     Le corollaire compte autant : les panneaux, où vit tout le texte, gardent
+     leurs couleurs de thème. Le contraste mesuré sur les trente-huit palettes
+     reste donc exactement celui d'avant. L'habillage n'est qu'un cadre. */
+  const habillage = options.carte || cartePortee();
+  const postale = habillage === "postale";
+  if (postale) {
+    papierDeCartePostale(c, p);
+    c.save();
+    c.translate(POSTALE.cote, POSTALE.haut);
+    c.scale(
+      (LARGEUR - 2 * POSTALE.cote) / LARGEUR,
+      (HAUTEUR - POSTALE.haut - POSTALE.bas) / HAUTEUR
+    );
+    // Les angles arrondis se posent en découpe : sans elle, le dégradé de fond
+    // remplirait les coins carrés et l'effet de photo collée disparaîtrait.
+    boite(c, 0, 0, LARGEUR, HAUTEUR, 26);
+    c.clip();
+  }
+
   /* --- le fond --- */
   const degrade = c.createLinearGradient(0, 0, 0, HAUTEUR);
   degrade.addColorStop(0, p.fond);
@@ -598,6 +640,14 @@ export function dessinerCarte(ctx, options = {}) {
   // à quelqu'un — on partage ce qu'on a, pas ce qu'on n'a pas. La place rendue
   // sert aux libellés courts des succès, qui eux disent quelque chose.
 
+  // L'habillage se referme ICI, après tout le contenu : le timbre et le cachet
+  // se posent SUR le papier, hors de la découpe, sinon les angles arrondis
+  // rogneraient le timbre du coin.
+  if (postale) {
+    c.restore();
+    timbreEtCachet(c, p);
+  }
+
   const texte = [
     `Funkylldex — ${t("ma collection")}`,
     `${prog.all.pct} % · ${nombre.format(prog.all.done)} / ${nombre.format(prog.all.total)} ${t("cases cochées")}`,
@@ -615,6 +665,165 @@ export function dessinerCarte(ctx, options = {}) {
   return { canvas, texte };
 }
 
+
+/* --------------------------- La carte postale ---------------------------- */
+
+/**
+ * Le papier : la couleur du carton, et l'ombre portée de la photo.
+ *
+ * UN CRÈME FIXE, ET NON L'ACCENT DU THÈME. Un tirage papier est crème parce que
+ * le papier est crème ; le teinter en vert sur une palette verte aurait donné
+ * une carte verte à bord vert, c'est-à-dire pas de bord du tout. C'est le même
+ * raisonnement que pour le rouge du Dynamax : quand une couleur EST l'objet, la
+ * palette ne s'en mêle pas.
+ *
+ * Le grain est fait de traits très pâles, pas d'un bruit aléatoire : le dessin
+ * doit être le même à chaque export, sinon deux cartes de la même collection
+ * différeraient d'un pixel sans raison.
+ */
+function papierDeCartePostale(c, p) {
+  const degrade = c.createLinearGradient(0, 0, LARGEUR, HAUTEUR);
+  degrade.addColorStop(0, "#fbf3e4");
+  degrade.addColorStop(0.5, "#f4e7d1");
+  degrade.addColorStop(1, "#ecd9bd");
+  c.fillStyle = degrade;
+  c.fillRect(0, 0, LARGEUR, HAUTEUR);
+
+  c.save();
+  c.strokeStyle = "rgba(120, 92, 52, .05)";
+  c.lineWidth = 1;
+  for (let y = 14; y < HAUTEUR; y += 9) {
+    c.beginPath();
+    c.moveTo(0, y);
+    c.lineTo(LARGEUR, y);
+    c.stroke();
+  }
+  c.restore();
+
+  // L'ombre de la photo sur le carton. Elle est portée par le rectangle qu'on
+  // s'apprête à découper, donc dessinée avant lui — une ombre posée après
+  // aurait été rognée par la découpe qu'elle doit justement déborder.
+  c.save();
+  c.shadowColor = "rgba(74, 52, 24, .34)";
+  c.shadowBlur = 26;
+  c.shadowOffsetY = 8;
+  c.fillStyle = "#000";
+  boite(c, POSTALE.cote, POSTALE.haut, LARGEUR - 2 * POSTALE.cote, HAUTEUR - POSTALE.haut - POSTALE.bas, 26);
+  c.fill();
+  c.restore();
+}
+
+/**
+ * Le timbre et son cachet, dans le coin haut droit.
+ *
+ * DENTELÉ PAR SOUSTRACTION. Les dents d'un timbre sont des demi-cercles retirés
+ * du bord ; on peint donc le rectangle, puis on repose la couleur du papier en
+ * ronds le long des quatre côtés. `destination-out` aurait creusé jusqu'au
+ * carton et laissé passer l'ombre de la photo.
+ *
+ * Le timbre porte l'accent du THÈME, lui : c'est la vignette du site sur la
+ * carte, pas un objet du monde réel. Le carton reste crème, le timbre reste à
+ * toi.
+ */
+function timbreEtCachet(c, p) {
+  // DANS LA BANDE, ET JAMAIS SUR LA CARTE. Les quatre nombres se déduisent de
+  // `POSTALE` plutôt que d'être posés à la main : c'est ce qui garantit que le
+  // timbre ne peut pas redescendre sur l'en-tête si la bande change un jour de
+  // hauteur. Il occupe la bande moins six pixels de jeu en haut et en bas.
+  const h = POSTALE.haut - 2 * 14;
+  const l = Math.round(h * 0.82);
+  const x = LARGEUR - POSTALE.cote - l - 10;
+  const y = 14;
+  const pas = 22;
+
+  c.save();
+  c.fillStyle = "#fffaf0";
+  c.fillRect(x, y, l, h);
+
+  // Les dents : la couleur du papier reposée en ronds sur chaque bord.
+  c.fillStyle = "#f4e7d1";
+  const dent = (cx, cy) => {
+    c.beginPath();
+    c.arc(cx, cy, 7, 0, Math.PI * 2);
+    c.fill();
+  };
+  for (let i = pas / 2; i < l; i += pas) {
+    dent(x + i, y);
+    dent(x + i, y + h);
+  }
+  for (let i = pas / 2; i < h; i += pas) {
+    dent(x, y + i);
+    dent(x + l, y + i);
+  }
+
+  // Le dessin du timbre : un dégradé d'accent, une Poké Ball en réserve, et la
+  // valeur faciale — le pourcentage n'aurait pas tenu, un timbre ne porte qu'un
+  // chiffre.
+  // TOUT EST PROPORTIONNEL À LA VIGNETTE, sans un seul nombre absolu. Le
+  // timbre a déjà changé de taille une fois — il descendait sur l'en-tête — et
+  // les rayons écrits en dur avaient alors débordé de leur cadre : une Poké
+  // Ball de quarante pixels dans une réserve de soixante-seize.
+  const m = Math.round(l * 0.13);
+  const bandeau = Math.round(h * 0.2);
+  const util = { x: x + m, y: y + m, l: l - 2 * m, h: h - 2 * m - bandeau };
+  const g = c.createLinearGradient(x, y, x + l, y + h);
+  g.addColorStop(0, p.accent);
+  g.addColorStop(1, p.raretes[4] || p.accent);
+  c.fillStyle = g;
+  c.fillRect(util.x, util.y, util.l, util.h);
+
+  const cx = x + l / 2;
+  const cy = util.y + util.h / 2;
+  const r = Math.min(util.l, util.h) * 0.38;
+  c.fillStyle = "rgba(255, 250, 240, .92)";
+  c.beginPath();
+  c.arc(cx, cy, r, 0, Math.PI * 2);
+  c.fill();
+  c.fillStyle = g;
+  c.fillRect(cx - r, cy - r * 0.13, r * 2, r * 0.26);
+  c.beginPath();
+  c.arc(cx, cy, r * 0.35, 0, Math.PI * 2);
+  c.fill();
+  c.fillStyle = "rgba(255, 250, 240, .92)";
+  c.beginPath();
+  c.arc(cx, cy, r * 0.2, 0, Math.PI * 2);
+  c.fill();
+
+  c.fillStyle = "#5a4526";
+  c.font = `700 ${Math.round(l * 0.17)}px ${p.corps}`;
+  c.textAlign = "center";
+  c.textBaseline = "middle";
+  c.fillText("ALOLA", cx, y + h - m - bandeau / 2 + 2);
+
+  // Le cachet : deux arcs, quelques barres et le nom, posés de travers et à
+  // cheval sur le timbre — un cachet d'oblitération ne vise jamais juste. Il
+  // reste DANS la bande : son centre est à mi-hauteur du timbre, et son plus
+  // grand rayon tient dans la moitié de la bande.
+  const rc = Math.min(h * 0.42, POSTALE.haut * 0.4);
+  c.translate(x - rc * 0.42, y + h * 0.5);
+  c.rotate(-0.22);
+  c.strokeStyle = "rgba(90, 69, 38, .5)";
+  c.fillStyle = "rgba(90, 69, 38, .5)";
+  c.lineWidth = 3;
+  for (const r of [rc, rc * 0.86]) {
+    c.beginPath();
+    c.arc(0, 0, r, 0, Math.PI * 2);
+    c.stroke();
+  }
+  // Les barres d'oblitération partent du cachet vers la gauche, dans le vide de
+  // la bande. Proportionnelles elles aussi : écrites en dur, elles sortaient du
+  // papier dès que le cachet rétrécissait.
+  for (let i = 0; i < 5; i++) {
+    const dy = (i - 2) * rc * 0.18;
+    c.beginPath();
+    c.moveTo(-rc * 1.75, dy);
+    c.lineTo(-rc * 1.15, dy);
+    c.stroke();
+  }
+  c.font = `700 ${Math.round(rc * 0.3)}px ${p.corps}`;
+  c.fillText("FUNKYLLDEX", 0, 0);
+  c.restore();
+}
 /* ------------------------------ le panneau ------------------------------- */
 
 /** Le canvas en PNG, en promesse — `toBlob` n'a pas de version qui en rend une. */

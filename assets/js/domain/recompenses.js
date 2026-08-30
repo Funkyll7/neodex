@@ -90,6 +90,22 @@ export const TYPES = [
     aide: "Les notes jouées quand une case se coche.",
     defaut: "doux",
   },
+  /* L'HABILLAGE DE LA CARTE, ET NON SON BANDEAU. Les deux se ressemblent et
+     ne font pas la même chose : le bandeau est le filet de six pixels en tête
+     de la carte, l'habillage est ce qu'on fait du RESTE. « Carte postale »
+     rentre toute la carte dans un carton crème, lui met une ombre portée, un
+     timbre dentelé et un cachet d'oblitération.
+
+     Alola, parce qu'une carte postale vient d'un endroit où l'on a envie
+     d'être — et parce que la carte est la seule chose du site qui parte
+     vraiment ailleurs. */
+  {
+    cle: "carte",
+    nom: "Habillage de la carte",
+    onglet: "Carte",
+    aide: "Ce qu'il y a autour de la carte de partage.",
+    defaut: "classique",
+  },
   /* LE COMPAGNON REMPLACE LA FIGURE DU THÈME, il ne s'ajoute pas à elle.
      Le site montre déjà le Pokémon de la palette au pied de la colonne et dans
      la barre « Filtres » — voir `ui/decor-theme.js`. Poser un second sprite
@@ -282,36 +298,65 @@ export const RECOMPENSES = [
      parce que Johto est la région des Balls d'Apricot ; Paldea la Master Ball
      parce que c'est la dernière région, la plus grosse, et qu'on ne gaspille
      pas une Master Ball. */
+  /* --------------------------- Habillage de carte ------------------------- */
+  { cle: "classique", type: "carte", nom: "Classique", succes: null },
+  { cle: "postale", type: "carte", nom: "Carte postale", succes: "fanatique-7" },
+
   /* ------------------------------ Compagnons -------------------------------
-     LES DIX-HUIT LIBRES SONT LES POKEMON QUE LES PALETTES PORTAIENT DEJA.
-     Ils sont dans le site depuis toujours, chacun comme figure d'un thème :
-     les rendre choisissables ne coûte donc aucune image de plus, et ouvre le
-     menu à tout le monde dès la première visite.
+     LES CINQUANTE ET UN LIBRES SONT TOUS LES POKEMON QUE LES PALETTES
+     PORTAIENT DEJA — les dix-huit figures uniques ET les onze trios de
+     starters, qui en font trente-trois à eux seuls. Ils sont dans le site
+     depuis toujours : les rendre choisissables ne coûte aucune image de plus,
+     et ouvre le menu à tout le monde dès la première visite.
+
+     LA LISTE EST ECRITE ET NON DEDUITE, et c'est un choix de couches : la
+     déduire demanderait d'importer `ui/themes-list.js` ici, c'est-à-dire de
+     faire dépendre le domaine de l'interface. Elle a été relevée sur cette
+     liste et vérifiée contre elle — aucune des neuf récompenses ci-dessous
+     n'est une figure de palette, et les cinquante et une ci-dessus le sont
+     toutes.
 
      Les six « pierres » — Rubis, Ambre, Émeraude, Turquoise, Saphir,
      Améthyste — n'y sont pas : leurs figures sont des noyaux de Météno, donc
      des FORMES, et la table des espèces ne les connaît pas par leur numéro.
      Elles se dessineraient sans problème mais n'auraient pas de nom.
 
-     LES NEUF QUI SE GAGNENT SONT LE TROISIEME LEGENDAIRE DE CHAQUE REGION :
-     celui de la troisième version, celle qui arrive après les deux jeux —
-     Suicune pour Cristal, Rayquaza pour Émeraude, Giratina pour Platine,
-     Kyurem, Zygarde, Necrozma, Eternatus, Terapagos. Kanto n'en a pas, sa
-     troisième version étant Jaune : il donne Mew, le fabuleux qui EST son
-     secret. Aucun n'est la figure d'une palette, ils n'existaient donc nulle
-     part sur le site avant. */
+     LES NEUF QUI SE GAGNENT SONT LE LEGENDAIRE DE LA TROISIEME VERSION,
+     celle qui arrive après les deux jeux : Suicune pour Cristal, Rayquaza pour
+     Émeraude, Giratina pour Platine, puis Kyurem, Zygarde, Eternatus,
+     Terapagos.
+
+     DEUX EXCEPTIONS, ET LA MEME RAISON POUR LES DEUX. Un compagnon qu'on peut
+     déjà avoir autrement n'est pas une récompense — et deux des légendaires
+     attendus sont justement des figures de palette : Mew porte « Néon » et
+     Necrozma porte « Prisme ». Ils rejoignent donc les libres, où ils étaient
+     de fait, et leurs régions prennent un autre exclusif :
+
+       - Kanto n'a de toute façon pas de troisième légendaire, sa troisième
+         version étant Jaune, dont la mascotte est Pikachu. Il donne Melmetal,
+         le fabuleux apparu avec Let's Go — le troisième jeu de Kanto. La règle
+         tient, elle passe seulement par le remake.
+       - Alola donne Magearna, le fabuleux de Soleil et Lune.
+
+     Aucun des neuf n'est la figure d'une palette. C'est la règle, et elle a
+     été vérifiée espèce par espèce contre `ui/themes-list.js`. */
   { cle: "theme", type: "compagnon", nom: "Celui du thème", succes: null },
-  ...[4, 6, 25, 130, 131, 137, 150, 250, 382, 483, 491, 493, 637, 643, 716, 791, 888, 1007].map(
+  ...[
+    1, 4, 6, 7, 25, 54, 130, 131, 137, 150, 151, 152, 155, 158, 250, 252, 255,
+    258, 382, 387, 390, 393, 405, 483, 491, 493, 495, 498, 501, 637, 643, 650,
+    653, 656, 716, 722, 725, 728, 760, 791, 800, 810, 813, 816, 888, 906, 909,
+    912, 924, 925, 1007,
+  ].map(
     (espece) => ({ cle: "e" + espece, type: "compagnon", espece, succes: null })
   ),
   ...[
-    [151, 1],
+    [809, 1],
     [245, 2],
     [384, 3],
     [487, 4],
     [646, 5],
     [718, 6],
-    [800, 7],
+    [801, 7],
     [890, 8],
     [1024, 9],
   ].map(([espece, gen]) => ({

@@ -28,7 +28,7 @@ export function createSaveControls(ctx) {
   // en meme temps que le dessinateur. On le pose donc ici plutot que d'ajouter
   // une dependance a `ui/recompenses.js`, qui est justement importe PAR
   // `ui/carte-partage.js` — l'importer en retour aurait fait un cycle.
-  poserApercuCarte((banniere) => dessinerCarte(ctx, { banniere }).canvas);
+  poserApercuCarte((options) => dessinerCarte(ctx, options).canvas);
 
   document.getElementById("export-btn").addEventListener("click", () => {
     downloadJson("collection.json", ctx.collection.toExport("export navigateur"));

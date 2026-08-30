@@ -124,6 +124,11 @@ export function jeuDeSons() {
   return choixCourant().sons;
 }
 
+/** L habillage choisi, lu par la carte de partage. */
+export function cartePortee() {
+  return choixCourant().carte;
+}
+
 /** Le bandeau choisi, lu par la carte de partage. */
 export function bannierePortee() {
   return choixCourant().banniere;
@@ -571,7 +576,11 @@ function sceneDe(type, r) {
       )
     );
   }
-  if (type === "banniere") return sceneCarte(r);
+  if (type === "banniere") return sceneCarte({ banniere: r.cle }, r);
+  // L habillage se montre comme le bandeau : sur la VRAIE carte, dessinee avec
+  // les vrais compteurs. Une vignette de carton avec un faux timbre aurait
+  // demande un second dessin a tenir d accord avec le premier.
+  if (type === "carte") return sceneCarte({ carte: r.cle }, r);
 
   if (type === "sons") return sceneSonore(r);
 
@@ -599,12 +608,17 @@ function sceneDe(type, r) {
  * contexte ; si ce chemin n'a pas encore tourné, ou si le dessin échoue, on
  * retombe sur la bande large. Un aperçu dégradé vaut mieux qu'une scène vide.
  */
-function sceneCarte(r) {
-  const canvas = dessinerLaCarte(r.cle);
+function sceneCarte(options, r) {
+  const canvas = dessinerLaCarte(options);
   if (!canvas) {
+    // Le repli montre la bande large du bandeau. Pour un habillage, il n'y a
+    // pas de bande à montrer : on rend celle du bandeau PORTÉ, qui est au moins
+    // la vraie couleur de la carte qu'on essaie de décrire.
     return el(
       "div.verrou__scene.verrou__scene--plein",
-      el("span.recomp__apercu.verrou__bande", { dataset: { banniere: r.cle } })
+      el("span.recomp__apercu.verrou__bande", {
+        dataset: { banniere: options.banniere || bannierePortee() },
+      })
     );
   }
   canvas.className = "verrou__carte";
@@ -626,10 +640,10 @@ let peintre = null;
 export function poserApercuCarte(fn) {
   peintre = fn;
 }
-function dessinerLaCarte(banniere) {
+function dessinerLaCarte(options) {
   if (!peintre) return null;
   try {
-    return peintre(banniere);
+    return peintre(options);
   } catch {
     // La carte lit une douzaine de compteurs : si l'un manque au moment où on
     // ouvre l'aperçu, on préfère la bande large à un pop-up qui ne s'ouvre pas.
