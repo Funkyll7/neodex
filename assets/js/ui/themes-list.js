@@ -128,6 +128,9 @@ export const THEMES = [
   { value: "cartouche", label: "Cartouche", groupe: "Récompenses", bandeau: "#15151b", pastille: "#9ef01a", verrou: "une-generation", sprite: 137, degrade: ["#9ef01a", "#c8b6ff"] },
   // Compagnol et Famignol : le Pokémon Couple et sa famille. Deux sprites et
   // non un, comme les starters — c'est un thème de paires.
-  { value: "duo", label: "Duo", groupe: "Récompenses", bandeau: "#17131c", pastille: "#f5e3c0", verrou: "toutes-les-paires", sprite: [924, 925], degrade: ["#d9a066", "#f2b8c6"] },
-  { value: "couronne", label: "Couronne", groupe: "Récompenses", bandeau: "#12100c", pastille: "#ffcf4d", verrou: "pokedex-entier", sprite: 889, degrade: ["#ffcf4d", "#d4574e"] },
+  { value: "duo", label: "Duo", groupe: "Récompenses", bandeau: "#17131c", pastille: "#ffffff", verrou: "toutes-les-paires", sprite: [924, 925], degrade: ["#ffffff", "#cfcad6"] },
+  // Zacian CHROMATIQUE, d'ou le `shiny` : la palette est relevee sur son
+  // artwork chromatique, pas sur le normal, et montrer le normal aurait
+  // annonce des couleurs que le theme ne porte pas.
+  { value: "couronne", label: "Couronne", groupe: "Récompenses", bandeau: "#061626", pastille: "#68d0ea", verrou: "pokedex-entier", sprite: 888, shiny: true, degrade: ["#68d0ea", "#ffead0"] },
 ];

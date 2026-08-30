@@ -74,7 +74,10 @@ export function majDecor(theme) {
   const figures = () =>
     ids.map((id) =>
       el("img.decor__sprite", {
-        src: artworkUrl(id),
+        // Couronne vient du Zacian CHROMATIQUE : sans ce drapeau, le décor
+        // affichait le bleu terne du normal sous une palette relevée sur le
+        // cyan du chromatique — deux couleurs qui ne se répondaient pas.
+        src: artworkUrl(id, { shiny: Boolean(theme && theme.shiny) }),
         alt: "",
         // `lazy` serait un contresens : l'élément est en bas de l'écran, donc
         // toujours dans le champ, et le navigateur le chargerait tout de suite

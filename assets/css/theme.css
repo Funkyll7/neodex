@@ -991,39 +991,58 @@
   color-scheme: dark;
   --bg: #17131c; --bg-raised: #241e2d; --bg-sunken: #1b1621; --bg-inset: #2d2637; --bg-hover: #382f44;
   --border: #362d42; --border-strong: #4d4160;
-  --gold: #d9a066; --gold-soft: #f2b8c6;
+  --gold: #ffffff; --gold-soft: #d8d4dc;
   --accent: #f5e3c0; --accent-ink: #2a1f0d;
   --accent-glow: rgba(245, 227, 192, .38); --accent-wash: rgba(245, 227, 192, .11); --accent-border: #5a4c33;
-  --gold-wash: rgba(217, 160, 102, .13); --gold-glow: rgba(217, 160, 102, .40);
-  --gold-border: #6b4a29; --gold-ink: #2a1a08;
+  --gold-wash: rgba(255, 255, 255, .11); --gold-glow: rgba(255, 255, 255, .32);
+  --gold-border: #4a4453; --gold-ink: #17131c;
   --tuile-voile: linear-gradient(135deg, rgba(245, 227, 192, .18) 10%, rgba(217, 160, 102, .17) 48%, rgba(242, 184, 198, .19) 88%);
   --fond-halo:
     radial-gradient(70% 50% at 6% 6%, rgba(245, 227, 192, .13), transparent 70%),
     radial-gradient(72% 50% at 96% 30%, rgba(242, 184, 198, .16), transparent 72%),
     radial-gradient(80% 54% at 40% 106%, rgba(217, 160, 102, .15), transparent 72%);
 }
-/* Couronne — la dernière, celle du Pokédex entier.
+/* Couronne — Zacian chromatique, et rien d'autre.
 
-   Or, ivoire et rouge profond, et la seule palette du site dont le fond est
-   franchement brun plutôt que noir teinté. Le brun a été poussé vers l'acajou,
-   et un violet impérial est venu tenir le haut : trois couleurs qui se
-   partagent une salle du trône plutôt qu'un seul or qui l'occupe entière. */
+   La derniere recompense, celle du Pokedex entier, portait un or et un brun
+   inventes. Le Pokemon existe pourtant, et c'est le bon : Zacian a une forme
+   Epee Supreme, litteralement couronnee, et son chromatique est l'un des plus
+   beaux du jeu. Les couleurs qui suivent ne sont pas choisies, elles sont
+   RELEVEES sur son artwork officiel — echantillonnees teinte par teinte, et
+   comparees a celles du normal pour ne garder que ce qui change :
+
+     #68d0ea  27 %  le cyan glace du pelage        (le normal : bleu acier)
+     #004e82  10 %  l'azur profond des ombres      (le normal : ardoise)
+     #0082b6   5 %  le cerulean franc des flancs
+     #9ceaff   3 %  la glace des reflets
+     #ffead0   5 %  l'ivoire de la criniere        (commun aux deux)
+     #9c8282   5 %  le gris chaud de la lame       (commun aux deux)
+
+   Le normal est bleu terne avec du rouge brique ; le chromatique est cyan
+   electrique avec de l'ivoire. C'est ce contraste-la qu'on prend.
+
+   LE FOND EST UN VRAI BLEU, pas un noir teinte : #061626 vient du #004e82
+   assombri, ce qui donne une nuit d'azur plutot qu'une nuit neutre. Aucune
+   autre palette du site ne fait ca, et c'est bien le but pour la derniere. */
 :root[data-theme="couronne"], [data-theme-apercu="couronne"] {
   color-scheme: dark;
-  --bg: #16110d; --bg-raised: #241d15; --bg-sunken: #1a1510; --bg-inset: #2c241b; --bg-hover: #362c21;
-  --border: #362d22; --border-strong: #524634;
-  --gold: #e8e2d0; --gold-soft: #d4574e;
-  --accent: #ffcf4d; --accent-ink: #2a1e00;
-  --accent-glow: rgba(255, 207, 77, .42); --accent-wash: rgba(255, 207, 77, .12); --accent-border: #5c4a18;
-  --gold-wash: rgba(232, 226, 208, .12); --gold-glow: rgba(232, 226, 208, .38);
-  --gold-border: #5a5344; --gold-ink: #1a1610;
-  --tuile-voile: linear-gradient(135deg, rgba(255, 207, 77, .20) 22%, rgba(232, 226, 208, .16) 55%, rgba(212, 87, 78, .20) 82%);
+  --bg: #061626; --bg-raised: #0e2740; --bg-sunken: #0a1e33; --bg-inset: #143252; --bg-hover: #1a3e63;
+  --border: #1a3a5c; --border-strong: #2b5686;
+  /* L'ivoire de la criniere vers la glace des reflets : deux teintes bien
+     distinctes, la ou l'ancienne version allait d'un or a un rouge. */
+  --gold: #ffead0; --gold-soft: #9ceaff;
+  --accent: #68d0ea; --accent-ink: #032430;
+  --accent-glow: rgba(104, 208, 234, .42); --accent-wash: rgba(104, 208, 234, .12); --accent-border: #1e5670;
+  --gold-wash: rgba(255, 234, 208, .12); --gold-glow: rgba(255, 234, 208, .38);
+  --gold-border: #5e5548; --gold-ink: #1a1408;
+  --tuile-voile: linear-gradient(135deg, rgba(156, 234, 255, .20) 14%, rgba(104, 208, 234, .18) 50%, rgba(255, 234, 208, .17) 88%);
+  /* Le cerulean au zenith, la glace a gauche, l'ivoire en bas : l'ordre des
+     valeurs sur l'artwork, du plus sature en haut au plus chaud en bas. */
   --fond-halo:
-    radial-gradient(78% 52% at 50% -8%, rgba(255, 207, 77, .17), transparent 70%),
-    radial-gradient(66% 48% at 4% 88%, rgba(212, 87, 78, .16), transparent 72%),
-    radial-gradient(66% 48% at 100% 76%, rgba(150, 106, 214, .12), transparent 74%);
+    radial-gradient(76% 52% at 50% -8%, rgba(0, 130, 182, .26), transparent 72%),
+    radial-gradient(64% 46% at 2% 44%, rgba(156, 234, 255, .15), transparent 72%),
+    radial-gradient(72% 50% at 96% 96%, rgba(255, 234, 208, .13), transparent 74%);
 }
-
 /* =================== Les trois couleurs des vingt autres ================== */
 
 /* Les dix-huit palettes de Légendaires et de Starters portent chacune ses trois
@@ -1073,9 +1092,9 @@
 /* Duo : toutes les paires ♂ / ♀. Le bleu et le rose sont ceux des boutons de
    genre, aux valeurs exactes — ce sont les seules couleurs du site qu'on ne
    touche pas, et une palette qui en célèbre l'usage ne va pas les approcher. */
-:root[data-theme="duo"], [data-theme-apercu="duo"]       { --teinte-1: #f5e3c0; --teinte-2: #d9a066; --teinte-3: #f2b8c6; }
+:root[data-theme="duo"], [data-theme-apercu="duo"]       { --teinte-1: #ffffff; --teinte-2: #cfcad6; --teinte-3: #f0aebd; }
 /* Couronne : le Pokédex entier. De l'or, son creux, et son éclat. */
-:root[data-theme="couronne"], [data-theme-apercu="couronne"]  { --teinte-1: #ffcf4d; --teinte-2: #a5751a; --teinte-3: #fff0b8; }
+:root[data-theme="couronne"], [data-theme-apercu="couronne"]  { --teinte-1: #68d0ea; --teinte-2: #004e82; --teinte-3: #ffead0; }
 
 /* --- Pixels : la rampe de l'écran imité --- */
 :root[data-theme="pixels"], [data-theme-apercu="pixels"]         { --teinte-1: #9bbc0f; --teinte-2: #306230; --teinte-3: #e0f8d0; }

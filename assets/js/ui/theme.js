@@ -492,7 +492,9 @@ function vignette(theme) {
     classe,
     ids.map((id) =>
       el("img.thopt__sprite", {
-        src: `${CONFIG.spritePixelBase}${id}.png`,
+        // `shiny` sur l'entree du theme : Couronne vient du Zacian
+        // chromatique, et sa vignette doit montrer celui-la.
+        src: `${CONFIG.spritePixelBase}${theme.shiny ? "shiny/" : ""}${id}.png`,
         // Vide et non le nom du Pokemon : le bouton porte deja son `aria-label`,
         // et « Mewtwo » lu deux fois de suite n'apprend rien.
         alt: "",

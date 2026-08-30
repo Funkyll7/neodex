@@ -4482,8 +4482,15 @@ body::before {
    au-dessus du portrait. Le bouton aussi, pour la meme raison en dessous. */
 .detail__name,
 .detail__sub,
-.detail__chips,
-.detail__progress { padding-right: calc(34% + 10px); }
+.detail__chips { padding-right: calc(34% + 10px); }
+
+/* La ligne d''avancement, elle, est une PASTILLE : elle a son propre fond, et
+   du rembourrage a droite l''aurait etiree de trente-quatre pour cent — le
+   fond jaune de  Tout obtenu  partait alors jusque sous le portrait, deux fois
+   plus long que la version grise. Un plafond de largeur donne le meme
+   resultat sans toucher a la pastille : elle continue de se serrer autour de
+   son texte, et se coupe avant le portrait quand le texte est long. */
+.detail__progress { max-width: calc(66% - 12px); }
 
 /* Sous 400 px, le nom d'un Pokémon long — « Ectoplasma », « Motisma-Lavage » —
    passe sur deux lignes et vient chercher la colonne de droite. Le portrait
@@ -4514,16 +4521,37 @@ body::before {
    `-webkit-mask` en plus de `mask` : Safari a demandé le préfixe jusqu'à la
    version 15.4, et une couronne qui ne s'affiche pas est pire qu'un liseré. */
 :root {
-  /* L'or d'une couronne et le vert d'un laurier ne suivent pas la palette, pas
-     plus que le vert du laurier ne la suivait avant : ce sont des objets, pas
-     des accents d'interface. Ils sont écrits ici plutôt qu'en dur pour qu'une
-     palette puisse les reprendre à son compte — voir les familles Pixels, où
-     un or franc aurait crevé le monochrome. */
-  --couronne: #f5c542;
-  --couronne-ombre: #a5751a;
-  --laurier: #7bbf72;
+  /* L'or d'une couronne et le vert d'un laurier ne suivent pas la palette : ce
+     sont des objets, pas des accents d'interface. Ils sont écrits ici plutôt
+     qu'en dur pour qu'une palette puisse les reprendre à son compte — voir les
+     familles Pixels, où un or franc crèverait le monochrome.
+
+     TROIS TONS CHACUN. Un aplat de vert sur une feuille, c'est un autocollant ;
+     un dégradé du clair au sombre, c'est du feuillage qui prend la lumière par
+     le haut. Le masque ne donne que la découpe, la couleur vient d'un
+     dégradé — ça ne coûte donc rien de plus qu'un aplat. */
+  --couronne-clair: #ffe07a;
+  --couronne: #f5b921;
+  --couronne-ombre: #c47f12;
+
+  --laurier-clair: #a8e05f;
+  --laurier: #4fae57;
+  --laurier-ombre: #2b7a45;
 }
 
+/* L'ornement vit DANS `.card__art`, la boîte du sprite : c'est le Pokémon
+   qu'on couronne, pas la vignette. Posé sur celle-ci, il tombait sur le
+   numéro, sur les puces de type ou sur la pastille de complétion — il n'avait
+   plus rien à décorer, il gênait.
+
+   Les deux dessins suivent les modèles fournis : une couronne héraldique à
+   flancs concaves et bandeau ondulé, une couronne de laurier en ANNEAU presque
+   fermé, ouverte en haut. Ils sont redessinés et non repris — les images
+   fournies sont des visuels de banque, filigranés et sous licence.
+
+   MASQUE ET NON IMAGE, et c'est ce qui permet la couleur variable : un SVG en
+   `background-image` fige sa teinte dans le fichier ; en `mask-image`, il ne
+   donne que la découpe, et la couleur vient du dégradé dessous. */
 .card__ornement {
   display: none;
   position: absolute;
@@ -4537,45 +4565,62 @@ body::before {
   -webkit-mask-size: contain;
 }
 
-/* La couronne se pose SUR l'arête du haut, à cheval sur le bord, comme une
-   couronne sur une tête. Décalée à gauche du centre : le coin haut-droit porte
-   déjà la pastille de complétion, et les deux se seraient touchées. */
+/* La couronne se pose SUR LA TÊTE. Centrée sur la boîte du sprite, elle
+   déborde de quatre pixels vers le haut, dans l'interligne : elle ne touche
+   donc ni la rangée du numéro au-dessus, ni l'étoile chromatique et l'emblème
+   Gigamax, tous deux collés au bord DROIT. */
 [data-cadre="couronne"] .card--complete .card__ornement {
   display: block;
-  top: -11px;
+  top: -4px;
   left: 50%;
-  width: 46px;
-  height: 26px;
-  transform: translateX(-64%);
-  background-color: var(--couronne);
-  /* Trois pointes, trois perles, un bandeau : la silhouette la plus courte qui
-     se lise encore comme une couronne à vingt-six pixels de haut. */
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 26'%3E%3Cpath fill='black' d='M3 24 L3 8 L11.5 15 L23 3 L34.5 15 L43 8 L43 24 Z'/%3E%3Ccircle fill='black' cx='3' cy='6' r='3'/%3E%3Ccircle fill='black' cx='23' cy='2' r='3.4'/%3E%3Ccircle fill='black' cx='43' cy='6' r='3'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 26'%3E%3Cpath fill='black' d='M3 24 L3 8 L11.5 15 L23 3 L34.5 15 L43 8 L43 24 Z'/%3E%3Ccircle fill='black' cx='3' cy='6' r='3'/%3E%3Ccircle fill='black' cx='23' cy='2' r='3.4'/%3E%3Ccircle fill='black' cx='43' cy='6' r='3'/%3E%3C/svg%3E");
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .55));
+  width: 42px;
+  height: 29px;
+  transform: translateX(-50%);
+  background-image: linear-gradient(180deg, var(--couronne-clair) 0%, var(--couronne) 55%, var(--couronne-ombre) 100%);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70'%3E%3Cg fill='black'%3E%3Cpath d='M5 13 C 17 29, 27 37, 35 39 L50 8 L65 39 C 73 37, 83 29, 95 13 L86 50 L14 50 Z'/%3E%3Ccircle cx='5' cy='11' r='5'/%3E%3Ccircle cx='50' cy='7' r='5.6'/%3E%3Ccircle cx='95' cy='11' r='5'/%3E%3Cpath d='M11 46 C 30 55, 70 55, 89 46 L87 63 C 68 70, 32 70, 13 63 Z'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70'%3E%3Cg fill='black'%3E%3Cpath d='M5 13 C 17 29, 27 37, 35 39 L50 8 L65 39 C 73 37, 83 29, 95 13 L86 50 L14 50 Z'/%3E%3Ccircle cx='5' cy='11' r='5'/%3E%3Ccircle cx='50' cy='7' r='5.6'/%3E%3Ccircle cx='95' cy='11' r='5'/%3E%3Cpath d='M11 46 C 30 55, 70 55, 89 46 L87 63 C 68 70, 32 70, 13 63 Z'/%3E%3C/g%3E%3C/svg%3E");
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .5));
 }
 
-/* Le laurier encadre la vignette : deux branches qui montent des coins du bas
-   et s'ouvrent en haut, exactement comme la couronne de laurier que le cadre
-   dessinait déjà en dégradé conique. Les deux se répondent — le trait donne
-   l'anneau, l'ornement donne les feuilles. */
+/* Le laurier ENTOURE le Pokémon : un anneau presque fermé, ouvert en haut,
+   dix-huit feuilles réparties sur deux arcs.
+
+   ET LE SPRITE RÉTRÉCIT DE SOIXANTE-DIX À CINQUANTE-HUIT PIXELS. C'est le seul
+   point du montage qui touche à autre chose que l'ornement, et il est
+   nécessaire : la boîte du sprite fait 152 sur 78, donc un anneau qui tiendrait
+   dedans mesure au plus 70 pixels — exactement la taille du sprite. Les
+   feuilles se seraient posées dessus.
+
+   Trois issues étaient possibles : laisser l'anneau déborder sur le numéro et
+   le nom, ce que la consigne exclut ; l'agrandir en rallongeant la vignette,
+   ce qui aurait fait une grille irrégulière puisque seules les terminées ont
+   un cadre ; ou reculer le Pokémon de six pixels. La troisième ne coûte rien à
+   la mise en page, et le résultat se lit comme une médaille — un sujet un peu
+   plus petit au centre d'une couronne, ce qui est exactement le geste. */
+[data-cadre="laurier"] .card--complete .card__img {
+  width: 58px;
+  height: 58px;
+}
 [data-cadre="laurier"] .card--complete .card__ornement {
   display: block;
-  inset: -4px;
-  background-color: var(--laurier);
-  opacity: .85;
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 116' preserveAspectRatio='none'%3E%3Cg fill='black'%3E%3Cpath d='M22 108 C 9 92, 7 58, 21 26' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(13,92) rotate(-52)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(9,74) rotate(-64)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(8,56) rotate(-74)'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(11,39) rotate(-86)'/%3E%3Cellipse cx='0' cy='0' rx='8' ry='3.6' transform='translate(17,25) rotate(-100)'/%3E%3C/g%3E%3Cg fill='black' transform='translate(100,0) scale(-1,1)'%3E%3Cpath d='M22 108 C 9 92, 7 58, 21 26' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(13,92) rotate(-52)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(9,74) rotate(-64)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(8,56) rotate(-74)'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(11,39) rotate(-86)'/%3E%3Cellipse cx='0' cy='0' rx='8' ry='3.6' transform='translate(17,25) rotate(-100)'/%3E%3C/g%3E%3Cpath fill='black' d='M42 110 h16 v3 h-16 z M46 104 h8 v3 h-8 z'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 116' preserveAspectRatio='none'%3E%3Cg fill='black'%3E%3Cpath d='M22 108 C 9 92, 7 58, 21 26' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(13,92) rotate(-52)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(9,74) rotate(-64)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(8,56) rotate(-74)'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(11,39) rotate(-86)'/%3E%3Cellipse cx='0' cy='0' rx='8' ry='3.6' transform='translate(17,25) rotate(-100)'/%3E%3C/g%3E%3Cg fill='black' transform='translate(100,0) scale(-1,1)'%3E%3Cpath d='M22 108 C 9 92, 7 58, 21 26' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(13,92) rotate(-52)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(9,74) rotate(-64)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(8,56) rotate(-74)'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(11,39) rotate(-86)'/%3E%3Cellipse cx='0' cy='0' rx='8' ry='3.6' transform='translate(17,25) rotate(-100)'/%3E%3C/g%3E%3Cpath fill='black' d='M42 110 h16 v3 h-16 z M46 104 h8 v3 h-8 z'/%3E%3C/svg%3E");
+  inset: -2px 22px;
+  background-image: linear-gradient(180deg, var(--laurier-clair) 0%, var(--laurier) 58%, var(--laurier-ombre) 100%);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 3 110 95'%3E%3Cg fill='black'%3E%3Cpath d='M46.8 87.9 A37 37 0 0 1 38.6 15.8' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M53.2 87.9 A37 37 0 0 0 61.4 15.8' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(43.7,86.5) rotate(154) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(33.8,83.2) rotate(171) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(25.3,77.2) rotate(187) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(18.8,68.9) rotate(204) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(15.0,59.2) rotate(221) scale(1.00)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(14.1,48.8) rotate(238) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(16.2,38.6) rotate(254) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(21.2,29.4) rotate(271) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(28.6,22.0) rotate(288) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(56.3,86.5) rotate(26) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(66.2,83.2) rotate(9) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(74.7,77.2) rotate(-7) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(81.2,68.9) rotate(-24) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(85.0,59.2) rotate(-41) scale(1.00)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(85.9,48.8) rotate(-58) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(83.8,38.6) rotate(-74) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(78.8,29.4) rotate(-91) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(71.4,22.0) rotate(-108) scale(0.78)'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 3 110 95'%3E%3Cg fill='black'%3E%3Cpath d='M46.8 87.9 A37 37 0 0 1 38.6 15.8' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M53.2 87.9 A37 37 0 0 0 61.4 15.8' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(43.7,86.5) rotate(154) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(33.8,83.2) rotate(171) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(25.3,77.2) rotate(187) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(18.8,68.9) rotate(204) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(15.0,59.2) rotate(221) scale(1.00)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(14.1,48.8) rotate(238) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(16.2,38.6) rotate(254) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(21.2,29.4) rotate(271) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(28.6,22.0) rotate(288) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(56.3,86.5) rotate(26) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(66.2,83.2) rotate(9) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(74.7,77.2) rotate(-7) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(81.2,68.9) rotate(-24) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(85.0,59.2) rotate(-41) scale(1.00)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(85.9,48.8) rotate(-58) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(83.8,38.6) rotate(-74) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(78.8,29.4) rotate(-91) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(71.4,22.0) rotate(-108) scale(0.78)'/%3E%3C/g%3E%3C/svg%3E");
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .4));
 }
 
 /* Les familles Pixels sont monochromes par construction — c'est tout leur
    sujet. Un or franc et un vert de laurier y auraient crevé l'illusion aussi
    sûrement qu'une photo dans un jeu Game Boy : les deux ornements reprennent
-   donc l'encre de la palette. */
+   donc l'encre de la palette, et perdent leur dégradé avec elle. */
 :root[data-theme^="pixels"], [data-theme-apercu^="pixels"] {
+  --couronne-clair: var(--gold-soft);
   --couronne: var(--accent);
-  --couronne-ombre: var(--accent);
+  --couronne-ombre: var(--accent-border);
+  --laurier-clair: var(--gold-soft);
   --laurier: var(--accent);
+  --laurier-ombre: var(--accent-border);
 }
 
 /* ------------- La maquette d'écran, pour prévisualiser une palette --------- */
