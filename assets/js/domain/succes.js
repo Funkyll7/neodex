@@ -131,6 +131,7 @@ export const SUCCES = [
   /* ----------------------------- la collection ---------------------------- */
   {
     cle: "cent-cases",
+    rang: 1,
     titre: "Premiers pas",
     resume: "Cocher cent cases.",
     famille: "Collection",
@@ -139,6 +140,7 @@ export const SUCCES = [
   },
   {
     cle: "cinq-cents-cases",
+    rang: 1,
     titre: "En chemin",
     resume: "Cocher cinq cents cases.",
     famille: "Collection",
@@ -147,6 +149,7 @@ export const SUCCES = [
   },
   {
     cle: "mille-cases",
+    rang: 2,
     titre: "Premier millier",
     resume: "Cocher mille cases.",
     famille: "Collection",
@@ -156,6 +159,7 @@ export const SUCCES = [
   },
   {
     cle: "deux-mille-cases",
+    rang: 3,
     titre: "Deux mille",
     resume: "Cocher deux mille cases.",
     famille: "Collection",
@@ -164,6 +168,7 @@ export const SUCCES = [
   },
   {
     cle: "moitie-du-dex",
+    rang: 3,
     titre: "À mi-chemin",
     resume: "Cocher la moitié des cases du Pokédex.",
     famille: "Collection",
@@ -175,6 +180,7 @@ export const SUCCES = [
   },
   {
     cle: "pokedex-entier",
+    rang: 5,
     titre: "Achevé",
     resume: "Cocher toutes les cases du Pokédex.",
     famille: "Collection",
@@ -184,6 +190,7 @@ export const SUCCES = [
   },
   {
     cle: "cent-complets",
+    rang: 2,
     titre: "Cent complets",
     resume: "Obtenir cent Pokémon entièrement complets.",
     famille: "Collection",
@@ -192,6 +199,7 @@ export const SUCCES = [
   },
   {
     cle: "cinq-cents-complets",
+    rang: 3,
     titre: "Cinq cents complets",
     resume: "Obtenir cinq cents Pokémon entièrement complets.",
     famille: "Collection",
@@ -200,6 +208,7 @@ export const SUCCES = [
   },
   {
     cle: "tous-complets",
+    rang: 5,
     titre: "Rien ne manque",
     resume: "Obtenir chaque Pokémon entièrement complet.",
     famille: "Collection",
@@ -210,6 +219,7 @@ export const SUCCES = [
   /* --------------------------- les chromatiques --------------------------- */
   {
     cle: "dix-chromatiques",
+    rang: 1,
     titre: "Première lueur",
     resume: "Obtenir dix chromatiques.",
     famille: "Chromatiques",
@@ -218,6 +228,7 @@ export const SUCCES = [
   },
   {
     cle: "cinquante-chromatiques",
+    rang: 1,
     titre: "Éclat",
     resume: "Obtenir cinquante chromatiques.",
     famille: "Chromatiques",
@@ -226,6 +237,7 @@ export const SUCCES = [
   },
   {
     cle: "cent-chromatiques",
+    rang: 2,
     titre: "Chasseur",
     resume: "Obtenir cent chromatiques.",
     famille: "Chromatiques",
@@ -235,6 +247,7 @@ export const SUCCES = [
   },
   {
     cle: "deux-cent-cinquante-chromatiques",
+    rang: 3,
     titre: "Chasseur confirmé",
     resume: "Obtenir deux cent cinquante chromatiques.",
     famille: "Chromatiques",
@@ -243,6 +256,7 @@ export const SUCCES = [
   },
   {
     cle: "cinq-cents-chromatiques",
+    rang: 3,
     titre: "Chasseur émérite",
     resume: "Obtenir cinq cents chromatiques.",
     famille: "Chromatiques",
@@ -251,6 +265,7 @@ export const SUCCES = [
   },
   {
     cle: "mille-chromatiques",
+    rang: 4,
     titre: "Mille éclats",
     resume: "Obtenir mille chromatiques.",
     famille: "Chromatiques",
@@ -259,6 +274,7 @@ export const SUCCES = [
   },
   {
     cle: "tous-chromatiques",
+    rang: 5,
     titre: "Tout brille",
     resume: "Obtenir chaque chromatique existant.",
     famille: "Chromatiques",
@@ -269,6 +285,7 @@ export const SUCCES = [
   /* ------------------------------ les paires ------------------------------ */
   {
     cle: "moitie-paires",
+    rang: 2,
     titre: "Premiers couples",
     resume: "Réunir la moitié des paires ♂ / ♀.",
     famille: "Paires",
@@ -277,6 +294,7 @@ export const SUCCES = [
   },
   {
     cle: "toutes-les-paires",
+    rang: 4,
     titre: "Couples",
     resume: "Réunir toutes les paires ♂ / ♀.",
     famille: "Paires",
@@ -288,6 +306,7 @@ export const SUCCES = [
   /* ----------------------------- les régions ------------------------------ */
   {
     cle: "une-generation",
+    rang: 3,
     titre: "Région bouclée",
     resume: "Terminer une génération entière.",
     famille: "Régions",
@@ -312,6 +331,7 @@ export const SUCCES = [
   },
   {
     cle: "trois-generations",
+    rang: 4,
     titre: "Trois régions",
     resume: "Terminer trois générations entières.",
     famille: "Régions",
@@ -320,6 +340,7 @@ export const SUCCES = [
   },
   {
     cle: "toutes-generations",
+    rang: 5,
     titre: "Tour du monde",
     resume: "Terminer toutes les générations.",
     famille: "Régions",
@@ -331,6 +352,7 @@ export const SUCCES = [
   },
   {
     cle: "chaque-generation-entamee",
+    rang: 1,
     titre: "Partout un peu",
     resume: "Cocher au moins une case dans chaque génération.",
     famille: "Régions",
@@ -344,6 +366,7 @@ export const SUCCES = [
   /* ------------------------------ les formes ------------------------------ */
   {
     cle: "toutes-alola",
+    rang: 3,
     titre: "Îles",
     resume: "Obtenir toutes les formes d'Alola.",
     famille: "Formes",
@@ -352,6 +375,7 @@ export const SUCCES = [
   },
   {
     cle: "toutes-galar",
+    rang: 3,
     titre: "Couronne de Galar",
     resume: "Obtenir toutes les formes de Galar.",
     famille: "Formes",
@@ -360,6 +384,7 @@ export const SUCCES = [
   },
   {
     cle: "toutes-hisui",
+    rang: 3,
     titre: "Hisui",
     resume: "Obtenir toutes les formes de Hisui.",
     famille: "Formes",
@@ -368,6 +393,7 @@ export const SUCCES = [
   },
   {
     cle: "toutes-paldea",
+    rang: 2,
     titre: "Paldéa",
     resume: "Obtenir toutes les formes de Paldéa.",
     famille: "Formes",
@@ -376,6 +402,7 @@ export const SUCCES = [
   },
   {
     cle: "toutes-regionales",
+    rang: 4,
     titre: "Quatre régions, quatre formes",
     resume: "Obtenir toutes les formes régionales des quatre régions.",
     famille: "Formes",
@@ -387,6 +414,7 @@ export const SUCCES = [
   },
   {
     cle: "tous-gmax",
+    rang: 4,
     titre: "Colosse",
     resume: "Obtenir toutes les formes Gigamax.",
     famille: "Formes",
@@ -395,6 +423,7 @@ export const SUCCES = [
   },
   {
     cle: "moitie-cosmetiques",
+    rang: 2,
     titre: "Motifs",
     resume: "Obtenir la moitié des formes cosmétiques.",
     famille: "Formes",
@@ -406,6 +435,7 @@ export const SUCCES = [
   },
   {
     cle: "tous-cosmetiques",
+    rang: 4,
     titre: "Collectionneur de motifs",
     resume: "Obtenir toutes les formes cosmétiques.",
     famille: "Formes",
@@ -414,6 +444,7 @@ export const SUCCES = [
   },
   {
     cle: "toutes-autres-formes",
+    rang: 4,
     titre: "Tout le reste",
     resume: "Obtenir toutes les formes des autres catégories.",
     famille: "Formes",
@@ -424,6 +455,7 @@ export const SUCCES = [
   /* ---------------------------- le Pokédex GO ----------------------------- */
   {
     cle: "cent-go",
+    rang: 1,
     titre: "Premiers pas dans GO",
     resume: "Attraper cent Pokémon dans le Pokédex GO.",
     famille: "Pokémon GO",
@@ -432,6 +464,7 @@ export const SUCCES = [
   },
   {
     cle: "cinq-cents-go",
+    rang: 2,
     titre: "Explorateur",
     resume: "Attraper cinq cents Pokémon dans le Pokédex GO.",
     famille: "Pokémon GO",
@@ -440,6 +473,7 @@ export const SUCCES = [
   },
   {
     cle: "moitie-go",
+    rang: 3,
     titre: "GO à mi-chemin",
     resume: "Attraper la moitié du Pokédex GO.",
     famille: "Pokémon GO",
@@ -448,6 +482,7 @@ export const SUCCES = [
   },
   {
     cle: "tous-go",
+    rang: 5,
     titre: "GO complet",
     resume: "Attraper tout le Pokédex GO.",
     famille: "Pokémon GO",
@@ -456,6 +491,7 @@ export const SUCCES = [
   },
   {
     cle: "cinquante-go-shiny",
+    rang: 2,
     titre: "Éclats de terrain",
     resume: "Obtenir cinquante chromatiques dans le Pokédex GO.",
     famille: "Pokémon GO",
@@ -464,6 +500,7 @@ export const SUCCES = [
   },
   {
     cle: "deux-cents-go-shiny",
+    rang: 4,
     titre: "Chasseur de terrain",
     resume: "Obtenir deux cents chromatiques dans le Pokédex GO.",
     famille: "Pokémon GO",
@@ -474,6 +511,7 @@ export const SUCCES = [
   /* ------------------------------ les chasses ----------------------------- */
   {
     cle: "premiere-quete",
+    rang: 1,
     titre: "Première prise",
     resume: "Mener une chasse jusqu'au bout.",
     famille: "Chasses",
@@ -482,6 +520,7 @@ export const SUCCES = [
   },
   {
     cle: "dix-quetes",
+    rang: 2,
     titre: "Dix prises",
     resume: "Mener dix chasses jusqu'au bout.",
     famille: "Chasses",
@@ -490,6 +529,7 @@ export const SUCCES = [
   },
   {
     cle: "cinquante-quetes",
+    rang: 4,
     titre: "Cinquante prises",
     resume: "Mener cinquante chasses jusqu'au bout.",
     famille: "Chasses",
@@ -498,6 +538,7 @@ export const SUCCES = [
   },
   {
     cle: "cent-rencontres",
+    rang: 1,
     titre: "Cent rencontres",
     resume: "Compter cent rencontres dans le carnet.",
     famille: "Chasses",
@@ -506,6 +547,7 @@ export const SUCCES = [
   },
   {
     cle: "mille-rencontres",
+    rang: 2,
     titre: "Mille rencontres",
     resume: "Compter mille rencontres dans le carnet.",
     famille: "Chasses",
@@ -514,6 +556,7 @@ export const SUCCES = [
   },
   {
     cle: "dix-mille-rencontres",
+    rang: 4,
     titre: "Dix mille rencontres",
     resume: "Compter dix mille rencontres dans le carnet.",
     famille: "Chasses",

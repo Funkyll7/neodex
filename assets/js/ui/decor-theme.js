@@ -22,13 +22,22 @@
  *   - `aria-hidden`, parce qu'un lecteur d'écran n'a rien à faire d'un décor —
  *     et que les images n'ont pas de texte de remplacement, faute d'avoir quoi
  *     que ce soit à dire ;
- *   - rien en dessous de 1100 px de large : sur un écran étroit, la grille
- *     couvre toute la page et la figure ne ferait que du bruit sous les
- *     vignettes.
+ *   - une opacité qui descend avec la largeur de l'écran, parce que la grille y
+ *     prend toute la place et qu'une figure trop marquée passerait de fond à
+ *     désordre.
+ *
+ * DEUX SURFACES, PAS UNE. La figure de fond était d'abord réservée aux écrans
+ * de plus de 1100 px, au motif qu'en dessous la grille couvre tout. Résultat :
+ * sur un écran normal elle ne s'affichait JAMAIS, et le thème n'avait toujours
+ * pas de visage. Elle s'affiche donc partout, plus discrète quand la place
+ * manque — et sur mobile elle gagne un second emplacement, une bande de
+ * vignettes à droite de la barre « Filtres », qui est la seule chose toujours
+ * visible en haut de l'écran.
  *
  * ON NE CHARGE RIEN QUAND IL N'Y A RIEN À MONTRER. Les palettes « Base » et
  * « Couleurs » ne nomment aucun Pokémon : le décor se vide, et pas une requête
- * ne part.
+ * ne part. Les deux surfaces partagent les mêmes adresses, donc le navigateur
+ * ne télécharge chaque artwork qu'une fois.
  */
 
 import { el, fill } from "../core/dom.js";
@@ -55,11 +64,8 @@ function conteneur() {
  */
 export function majDecor(theme) {
   const ids = !theme || !theme.sprite ? [] : Array.isArray(theme.sprite) ? theme.sprite : [theme.sprite];
-  const boite = conteneur();
-  boite.dataset.n = String(ids.length);
 
-  fill(
-    boite,
+  const figures = () =>
     ids.map((id) =>
       el("img.decor__sprite", {
         src: artworkUrl(id),
@@ -71,6 +77,24 @@ export function majDecor(theme) {
         // grille, qui est ce qu'on est venu voir.
         decoding: "async",
       })
-    )
-  );
+    );
+
+  const boite = conteneur();
+  boite.dataset.n = String(ids.length);
+  fill(boite, figures());
+
+  // La bande de la barre « Filtres ». Le bouton n'existe qu'en dessous de
+  // 860 px, mais il est TOUJOURS dans le document : on le remplit sans
+  // condition, et c'est le CSS qui décide de le montrer. Tester la largeur ici
+  // aurait demandé de réagir aussi au redimensionnement, pour un résultat que
+  // la feuille de style obtient seule.
+  const barre = document.getElementById("nav-toggle");
+  if (!barre) return;
+  let bande = barre.querySelector(".decor-barre");
+  if (!bande) {
+    bande = el("span.decor-barre", { "aria-hidden": "true" });
+    barre.append(bande);
+  }
+  bande.dataset.n = String(ids.length);
+  fill(bande, figures());
 }

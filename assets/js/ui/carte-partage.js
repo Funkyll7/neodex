@@ -135,6 +135,35 @@ function ecrire(c, p, texte, x, y, opts = {}) {
   c.fillText(texte, x, y);
 }
 
+/**
+ * Écrit en tenant dans une largeur donnée.
+ *
+ * Le canvas ne sait pas couper : il déborde, et le texte sort du panneau sans
+ * rien signaler. « Collectionneur de motifs » dans une colonne de 176 px en est
+ * l'exemple. On réduit donc la taille jusqu'à un plancher — en dessous, plus
+ * personne ne lit —, puis on coupe à l'ellipse si ça ne suffit pas.
+ */
+function ecrireAjuste(c, p, texte, x, y, largeurMax, opts = {}) {
+  const { taille = 24, poids = 600, police = "corps" } = opts;
+  const famille = police === "titre" ? p.titre : p.corps;
+  const PLANCHER = 13;
+
+  let taillePosee = taille;
+  c.font = `${poids} ${taillePosee}px ${famille}`;
+  while (c.measureText(texte).width > largeurMax && taillePosee > PLANCHER) {
+    taillePosee -= 1;
+    c.font = `${poids} ${taillePosee}px ${famille}`;
+  }
+
+  let sortie = texte;
+  while (sortie.length > 1 && c.measureText(`${sortie}…`).width > largeurMax) {
+    sortie = sortie.slice(0, -1);
+  }
+  if (sortie !== texte) sortie = `${sortie.trimEnd()}…`;
+
+  ecrire(c, p, sortie, x, y, { ...opts, taille: taillePosee });
+}
+
 /** Le titre d'un panneau, avec sa petite barre d'accent à gauche. */
 function titreDePanneau(c, p, texte, zone) {
   c.fillStyle = p.accent;
@@ -246,13 +275,52 @@ function barreDesGenerations(c, p, zone, gens, ordre) {
   });
 }
 
-/** La légende des générations, trois colonnes sur trois rangées. */
+/**
+ * Le Pokédex national, au sens où on l'entend d'habitude : UNE case par espèce.
+ *
+ * Le panneau montrait les compteurs de `progressOf`, qui comptent les CASES —
+ * normal, chromatique, ♂, ♀, formes et variantes cosmétiques. Un Miaouss y pèse
+ * huit. Sous un titre « Pokédex national », « Kanto 70 % » se lisait donc comme
+ * « 70 % des Pokémon de Kanto » alors qu'il en disait tout autre chose, et le
+ * chiffre juste répondait à une étiquette qui promettait autre chose.
+ *
+ * Les chromatiques sont comptés deux panneaux plus haut, et les formes dans le
+ * total des cases : les répéter ici ne servait qu'à rendre ce panneau illisible.
+ *
+ * Calculé ici et non dans `domain/progress.js` : `progressOf` tourne à chaque
+ * case cochée, la carte se dessine sur demande. Un parcours de mille espèces
+ * de plus n'a rien à faire dans le premier.
+ */
+function especesParGeneration(dataset, collection) {
+  const seaux = {};
+  for (const espece of dataset.species) {
+    const seau = seaux[espece.gen] || (seaux[espece.gen] = { done: 0, total: 0, pct: 0 });
+    seau.total += 1;
+    if (collection.isOwned(espece.id)) seau.done += 1;
+  }
+  for (const seau of Object.values(seaux)) {
+    seau.pct = seau.total ? Math.round((seau.done / seau.total) * 100) : 0;
+  }
+  return seaux;
+}
+
+/**
+ * La légende des générations, trois colonnes sur trois rangées.
+ *
+ * Précédée d'une ligne qui dit CE QU'ON COMPTE : sans elle, rien ne distingue
+ * « une case par espèce » de « toutes les cases », et les deux lectures donnent
+ * des pourcentages très différents.
+ */
 function legendeDesGenerations(c, p, zone, gens, ordre, noms) {
+  ecrire(c, p, t("Pokémon capturés par région — une case par espèce"), zone.x, zone.y + 128, {
+    taille: 18, poids: 600, couleur: p.fantome,
+  });
+
   const colonnes = 3;
   const largeurCol = zone.l / colonnes;
   ordre.forEach((numero, i) => {
     const cx = zone.x + (i % colonnes) * largeurCol;
-    const cy = zone.y + 152 + Math.floor(i / colonnes) * 42;
+    const cy = zone.y + 164 + Math.floor(i / colonnes) * 42;
     c.beginPath();
     c.arc(cx + 7, cy - 6, 7, 0, Math.PI * 2);
     c.fillStyle = TEINTES_GEN[i % TEINTES_GEN.length];
@@ -283,18 +351,21 @@ function panneauChiffres(c, p, y, titre, stats) {
 }
 
 /**
- * Le tableau des succès : vingt icônes sur deux rangées.
+ * Les cinq succès les plus rares, nommés.
  *
- * On montrait les cinq succès en pastilles nommées. À quarante-trois, les
- * nommer tous est impossible et n'en montrer que cinq serait arbitraire — d'où
- * une étagère d'icônes, sans libellé : chacune se reconnaît à sa forme, et le
- * compte au-dessus dit le reste.
+ * TROIS VERSIONS, ET LA TROISIÈME EST LA BONNE. On a d'abord montré les cinq
+ * succès de l'époque, nommés. Puis, passé à quarante-trois, une étagère de
+ * vingt icônes muettes — les nommer tous étant impossible. C'était l'erreur :
+ * vingt formes sans légende ne disent rien à personne, et surtout elles
+ * mélangeaient les gagnés et ceux qui restent à faire, sur une carte dont le
+ * seul objet est de montrer ce qu'on a.
  *
- * L'ordre n'est pas celui de la liste. Les gagnés d'abord, puis les plus
- * proches de l'être : les deux rangées restent pleines même à zéro succès, et
- * la seconde moitié montre exactement ce qui est à portée. Trier les restants
- * par avancement, et non les prendre dans l'ordre du fichier, évite d'exposer
- * « Tout brille » sous le nez de quelqu'un qui a dix chromatiques.
+ * Cinq, gagnés, nommés, les plus rares d'abord. `rang` classe les succès par
+ * difficulté ; à rang égal on garde l'ordre du fichier, qui va du plus
+ * accessible au plus lointain — le dernier arrivé passe donc devant.
+ *
+ * Rien n'est dessiné s'il n'y a rien à montrer : cinq pastilles éteintes sous
+ * un « 0 / 43 » n'apprendraient rien de plus que le compte lui-même.
  */
 function panneauDesSucces(c, p, y, succes) {
   const zone = panneau(c, p, y, 176);
@@ -304,21 +375,29 @@ function panneauDesSucces(c, p, y, succes) {
     taille: 22, poids: 800, couleur: p.fantome, align: "right",
   });
 
-  const proches = succes
-    .filter((s) => !s.obtenu)
-    .sort((a, b) => b.fait / (b.total || 1) - a.fait / (a.total || 1));
-  const COLONNES = 10;
-  const montres = [...gagnes, ...proches].slice(0, COLONNES * 2);
-  const pas = zone.l / COLONNES;
+  const MONTRES = 5;
+  const rares = gagnes
+    .map((s, i) => ({ s, i }))
+    .sort((a, b) => (b.s.rang || 0) - (a.s.rang || 0) || b.i - a.i)
+    .slice(0, MONTRES)
+    .map((x) => x.s);
+  if (!rares.length) return;
 
-  montres.forEach((s, i) => {
-    const cx = zone.x + pas * (i % COLONNES) + pas / 2;
-    const cy = y + 96 + Math.floor(i / COLONNES) * 46;
-    // La couleur du thème pour les cinq qui en ouvrent un, l'accent pour les
-    // autres : c'est ce qui distingue une récompense d'une simple étape.
+  // Les cinq restent centrés quel qu'en soit le nombre : trois succès rangés
+  // dans cinq colonnes auraient laissé un trou à droite, comme s'il manquait
+  // quelque chose. On divise par ce qu'on montre.
+  const pas = zone.l / rares.length;
+  rares.forEach((s, i) => {
+    const cx = zone.x + pas * i + pas / 2;
+    // La couleur du thème pour les cinq succès qui en ouvrent un, l'accent pour
+    // les autres : c'est ce qui distingue une récompense d'une simple étape.
     const theme = THEMES.find((th) => th.verrou === s.cle);
-    const couleur = s.obtenu ? (theme && theme.pastille) || p.accent : p.traitFort;
-    dessinerIcone(c, s.icone, cx, cy, 30, couleur);
+    dessinerIcone(c, s.icone, cx, y + 104, 34, (theme && theme.pastille) || p.accent);
+    // La colonne fait 176 px, « Collectionneur de motifs » en fait 200 à cette
+    // taille : sans l'ajustement, le nom sortait par-dessus ses voisins.
+    ecrireAjuste(c, p, t(s.titre), cx, y + 152, pas - 12, {
+      taille: 17, poids: 700, couleur: p.doux, align: "center",
+    });
   });
 }
 
@@ -355,9 +434,13 @@ export function dessinerCarte(ctx) {
     })
   );
 
-  const gens = prog.gens || {};
-  const ordre = Object.keys(gens)
-    .filter((n) => gens[n].total > 0)
+  // Deux découpages par génération, et ils ne comptent pas la même chose :
+  // `prog.gens` compte les CASES — il alimente le total global —, `parGen`
+  // compte les ESPÈCES et n'alimente que le panneau du Pokédex national.
+  const parGen = especesParGeneration(dataset, collection);
+  const especesPrises = Object.values(parGen).reduce((somme, g) => somme + g.done, 0);
+  const ordre = Object.keys(parGen)
+    .filter((n) => parGen[n].total > 0)
     .sort((a, b) => a - b);
   const noms = ordre.map((numero) => {
     const meta = dataset.generations[numero];
@@ -414,20 +497,21 @@ export function dessinerCarte(ctx) {
   /* --- le Pokédex national --- */
   const nat = panneau(c, p, 460, 300);
   titreDePanneau(c, p, t("Pokédex national"), nat);
-  // Les Pokémon ENTIÈREMENT obtenus, et non les cases : ce chiffre-là répétait
-  // mot pour mot le « Cases cochées » du bloc au-dessus. Le nombre d'espèces
-  // complètes est la seule autre lecture du même travail — celle qui compte un
-  // Miaouss pour un, quand les cases le comptent pour huit.
+  // Le compte du panneau, dans l'unité du panneau : des espèces capturées, pas
+  // des cases. Ce chiffre-là a porté deux autres valeurs avant celle-ci — le
+  // total des cases, qui répétait mot pour mot la ligne du bloc au-dessus, puis
+  // le nombre d'espèces complètes, qui parlait encore d'autre chose que la
+  // barre juste en dessous.
   ecrire(
     c,
     p,
-    `${nombre.format(countComplete(dataset.species, collection))} / ${nombre.format(dataset.species.length)} ★`,
+    `${nombre.format(especesPrises)} / ${nombre.format(dataset.species.length)}`,
     nat.x + nat.l,
     509,
     { taille: 22, poids: 800, couleur: p.fantome, align: "right" }
   );
-  barreDesGenerations(c, p, nat, gens, ordre);
-  legendeDesGenerations(c, p, nat, gens, ordre, noms);
+  barreDesGenerations(c, p, nat, parGen, ordre);
+  legendeDesGenerations(c, p, nat, parGen, ordre, noms);
 
   /* --- le Pokédex GO --- */
   panneauChiffres(c, p, 780, t("Pokédex GO"), [
@@ -447,13 +531,25 @@ export function dessinerCarte(ctx) {
   panneauDesSucces(c, p, 1120, succes);
 
   /* --- le pied --- */
-  const retard = ordre
-    .map((numero, i) => ({ nom: noms[i], pct: gens[numero].pct }))
+  // En CASES, et non en espèces comme le panneau juste au-dessus. Ce n'est pas
+  // une incohérence, c'est la seule mesure qui réponde à « que me reste-t-il à
+  // faire » : en espèces, une collection à 1014 sur 1025 met ses neuf régions
+  // entre 97 et 100 %, et la ligne ne désigne plus rien. En cases, l'écart
+  // entre Galar à 43 % et Kalos à 79 % saute aux yeux. Le libellé dit l'unité,
+  // pour qu'aucune des deux lectures ne passe pour l'autre.
+  const gensCases = prog.gens || {};
+  const retard = Object.keys(gensCases)
+    .filter((n) => gensCases[n].total > 0)
+    .map((numero) => {
+      const meta = dataset.generations[numero];
+      const nom = meta && meta.region ? t(meta.region) : `${t("Génération")} ${numero}`;
+      return { nom, pct: gensCases[numero].pct };
+    })
     .sort((a, b) => a.pct - b.pct)
     .slice(0, 3)
     .map((g) => `${g.nom} ${g.pct} %`);
   if (retard.length) {
-    ecrire(c, p, `${t("Reste à faire")} · ${retard.join("  ·  ")}`, LARGEUR / 2, 1328, {
+    ecrire(c, p, `${t("Cases à cocher")} · ${retard.join("  ·  ")}`, LARGEUR / 2, 1328, {
       taille: 20, poids: 600, couleur: p.fantome, align: "center",
     });
   }
@@ -467,7 +563,7 @@ export function dessinerCarte(ctx) {
     `${t("Quêtes accomplies")} ${nombre.format(store.state.questDone)} · ` +
       `${t("Rencontres comptées")} ${nombre.format(rencontres)}`,
     `${t("Succès")} ${succes.filter((s) => s.obtenu).length} / ${succes.length}`,
-    retard.length ? `${t("Reste à faire")} : ${retard.join(" · ")}` : "",
+    retard.length ? `${t("Cases à cocher")} : ${retard.join(" · ")}` : "",
   ]
     .filter(Boolean)
     .join("\n");
