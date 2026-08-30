@@ -38,3 +38,13 @@ assets/img/sources/gigamax.png
 # les garder ici alourdirait chaque clone pour toujours.
 assets/img/sources/pokemon-home.png
 assets/img/sources/pokemon-go.png
+
+# Modeles de dessin fournis par l'utilisateur pour la couronne et le laurier des
+# cadres de vignette. Ce sont des visuels de BANQUE, filigranes sur toute leur
+# surface : les versionner reviendrait a publier un filigrane au coin de chaque
+# vignette terminee, et a redistribuer une image sous licence. Les ornements du
+# site sont redessines d'apres eux, en SVG, dans assets/css/components.css.
+assets/img/sources/couronne logo.png
+assets/img/sources/couronne pixel art.webp
+assets/img/sources/laurier 3d.jpg
+assets/img/sources/laurier pixel art.jpg

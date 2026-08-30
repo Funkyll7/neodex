@@ -8,11 +8,13 @@
  *     a passer d'un navigateur a l'autre ou a repartir d'une sauvegarde.
  */
 
+import { el } from "../core/dom.js";
 import { deuxPoints, t, tn } from "../core/i18n.js";
 import { resumeDuRapport } from "../domain/sync.js";
 import { downloadJson } from "./common.js";
 import { jouer } from "./sons.js";
 import { ouvrirCartePartage, dessinerCarte } from "./carte-partage.js";
+import { ouvrirChangements } from "./changements.js";
 import { poserApercuCarte } from "./recompenses.js";
 
 export function createSaveControls(ctx) {
@@ -207,7 +209,7 @@ function createSyncControls(ctx) {
       // Le rapport dit CE QUI est arrive. « Collection rechargee » laissait
       // l'utilisateur verifier lui-meme si quelque chose avait bouge, ce qui
       // est exactement la question a laquelle le bouton devait repondre.
-      sync.emit("ok", rapport ? resumeDuRapport(rapport) : t("Collection déjà à jour."));
+      sync.emit("ok", rapport ? resumeDuRapport(rapport) : t("Collection déjà à jour."), rapport);
     } catch {
       /* idem */
     }
@@ -233,7 +235,7 @@ function createSyncControls(ctx) {
   });
 
   function render() {
-    const { status, message } = sync.state;
+    const { status, message, rapport } = sync.state;
     const connected = sync.configured;
     setup.hidden = connected;
     live.hidden = !connected;
@@ -244,6 +246,25 @@ function createSyncControls(ctx) {
     const libelle = SYNC_LABELS[status];
     state.textContent = message || (libelle ? t(libelle) : "");
     state.className = `sync__state sync__state--${status}`;
+
+    // LE DETAIL NE S OUVRE PAS TOUT SEUL. La synchronisation tourne en fond,
+    // toutes les quelques secondes ; un panneau qui s ouvrirait a chaque retour
+    // du telephone se ferait fermer d agacement des la troisieme fois. Il y a
+    // donc un bouton, et il n apparait que lorsqu il y a quelque chose a
+    // montrer.
+    if (rapport && rapport.especes.length) {
+      state.append(
+        " ",
+        el("button.sync__detail", {
+          type: "button",
+          textContent: t("Voir le détail"),
+          onclick: (event) => {
+            event.stopPropagation();
+            ouvrirChangements(rapport);
+          },
+        })
+      );
+    }
   }
 
   render();

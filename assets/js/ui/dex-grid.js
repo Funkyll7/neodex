@@ -580,8 +580,33 @@ function paint(node, species, ctx) {
       // change en cochant une case, et un element a ajouter au vol aurait
       // demande de reconstruire la vignette a chaque fois. Vide et
       // `display: none` par defaut, il ne coute rien.
-      el("span.card__ornement", { "aria-hidden": "true" })
+      el("span.card__ornement", { "aria-hidden": "true" }),
+      // Le reflet qui traverse un chromatique. Il est DECOUPE par le sprite —
+      // un dégradé masqué par la meme image —, ce qui demande son URL : le CSS
+      // ne peut pas la deviner, et c est ici qu on la connait.
+      //
+      // Pose pour tous et anime pour les seuls `.card--shiny-art`, comme
+      // l ornement : la classe change en cochant une case, un element ajoute au
+      // vol aurait demande de reconstruire la vignette a chaque fois.
+      el("span.card__reflet", { "aria-hidden": "true" })
     );
+    // Apres `fill`, qui vient de remplacer les enfants : l URL se lit sur
+    // l image reellement posee, repli de forme compris.
+    const rendue = art.querySelector(".card__img");
+    const reflet = art.querySelector(".card__reflet");
+    if (reflet) {
+      const poser = () =>
+        reflet.style.setProperty("--sprite-src", `url("${rendue.currentSrc || rendue.src}")`);
+      if (!rendue) reflet.style.setProperty("--sprite-src", "none");
+      else {
+        poser();
+        // Le sprite a une CHAINE de replis : la premiere URL peut echouer, et
+        // `src` change alors sous nos pieds. On repose le masque quand l image
+        // a fini de charger, sinon le reflet decoupait une image absente et ne
+        // se voyait pas. `once` : une seule fois suffit, la chaine est terminee.
+        rendue.addEventListener("load", poser, { once: true });
+      }
+    }
   }
 
   fill(

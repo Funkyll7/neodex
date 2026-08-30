@@ -31,8 +31,8 @@ import { lirePrefs, ecrirePrefs } from "../core/prefs.js";
 import { TYPES, RECOMPENSES, choixValide, evaluerRecompenses } from "../domain/recompenses.js";
 import { iconeSvg } from "./icones-succes.js";
 import { RARETES } from "../domain/succes.js";
-import { retourFerme } from "./retour.js";
 import { jouerAvec } from "./sons.js";
+import { ouvrirPopup } from "./popup.js";
 
 /** Les types posés en attribut sur `<html>`, et peints par le CSS seul. */
 const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes"];
@@ -339,79 +339,17 @@ export function ouvrirApercuTheme(theme, succes) {
  * intérieur — est délicat et n'avait pas à exister en double.
  */
 function montrerVerrou({ nom, sousTitre, scene, succes, large = false }) {
-  document.querySelector(".verrou-fond")?.remove();
-
-  const s = succes;
-  const fond = el("div.verrou-fond", {
-    role: "dialog",
-    "aria-modal": "true",
-    "aria-label": `${nom} — ${t("verrouillé")}`,
+  ouvrirPopup({
+    titre: nom,
+    sousTitre,
+    icone: "\u{1F512}",
+    corps: [scene, voieDe(succes)],
+    large,
+    // La loupe des palettes se regle sur une largeur mesuree : elle attend donc
+    // que la boite soit dans le document.
+    apres: ajusterLoupe,
   });
-
-  // Le geste Retour du téléphone doit refermer ce pop-up, pas quitter le site :
-  // c'est la même règle que pour la fiche, la page des succès et le tiroir des
-  // filtres. `liberer` dépile l'entrée si on ferme par un autre chemin.
-  let liberer = null;
-  const fermer = () => {
-    fond.remove();
-    document.removeEventListener("keydown", surTouche, true);
-    if (liberer) {
-      const f = liberer;
-      liberer = null;
-      f();
-    }
-  };
-  const surTouche = (e) => {
-    if (e.key !== "Escape") return;
-    // EN CAPTURE, ET ON ARRÊTE TOUT. Le menu de customisation écoute Échap lui
-    // aussi, sur `document` : sans cet arrêt, une seule pression fermait les
-    // deux panneaux et renvoyait sur la grille, alors qu'on voulait revenir à
-    // la liste. L'écouteur est posé en phase de capture pour passer AVANT le
-    // sien, et `stopImmediatePropagation` coupe la propagation entière.
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    fermer();
-  };
-
-  fond.append(
-    el(
-      "div.verrou" + (large ? ".verrou--large" : ""),
-      {
-        // Un clic DANS la boîte ne doit pas la fermer, alors qu'un clic sur le
-        // voile derrière doit le faire. Sans cette interception, essayer le son
-        // « Cristal » refermait le pop-up au premier appui.
-        onclick: (e) => e.stopPropagation(),
-      },
-      el(
-        "div.verrou__tete",
-        el("span.verrou__cadenas", { "aria-hidden": "true" }, "🔒"),
-        el(
-          "div.verrou__identite",
-          el("h3.verrou__nom", nom),
-          el("p.verrou__type", sousTitre)
-        ),
-        el("button.verrou__fermer", {
-          type: "button",
-          "aria-label": t("Fermer"),
-          textContent: "✕",
-          onclick: fermer,
-        })
-      ),
-      scene,
-      voieDe(s)
-    )
-  );
-
-  fond.addEventListener("click", fermer);
-  document.addEventListener("keydown", surTouche, true);
-  document.body.append(fond);
-  // APRÈS l'insertion, et pas avant : la loupe se règle sur une largeur
-  // mesurée, et un élément hors du document n'en a pas.
-  ajusterLoupe(fond);
-  liberer = retourFerme(fermer);
-  fond.querySelector(".verrou__fermer")?.focus();
 }
-
 /** Le libellé du type, pour la ligne sous le nom de la récompense. */
 function nomDuType(cle) {
   return (TYPES.find((x) => x.cle === cle) || {}).nom || "";

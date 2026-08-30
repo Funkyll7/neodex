@@ -83,8 +83,12 @@ export class GitHubSync {
     return () => this.listeners.delete(fn);
   }
 
-  emit(status, message = "") {
-    this.state = { status, message, at: new Date() };
+  emit(status, message = "", rapport = null) {
+    // Le RAPPORT voyage avec le message, et non a sa place : le bandeau reste
+    // une ligne, mais l interface peut desormais proposer d en voir le detail.
+    // Nul quand il n y a rien a detailler — un enregistrement reussi, une
+    // erreur —, ce qui laisse tous les appelants existants inchanges.
+    this.state = { status, message, rapport, at: new Date() };
     for (const fn of this.listeners) fn(this.state);
   }
 
@@ -340,7 +344,7 @@ export class GitHubSync {
     // ce qui est coche ici, vider la couche locale le perdrait.
     const rapport = this.collection.adopterDistant(distant.marks);
     this.collection.adopterQuetes(distant.quetes);
-    if (rapport) this.emit("ok", resumeDuRapport(rapport));
+    if (rapport) this.emit("ok", resumeDuRapport(rapport), rapport);
     return rapport;
   }
 
