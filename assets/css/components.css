@@ -4586,11 +4586,27 @@ body::before {
 
    MASQUE ET NON IMAGE, et c'est ce qui permet la couleur variable : un SVG en
    `background-image` fige sa teinte dans le fichier ; en `mask-image`, il ne
-   donne que la découpe, et la couleur vient du dégradé dessous. */
+   donne que la découpe, et la couleur vient du dégradé dessous.
+
+   `z-index: 0` : DERRIÈRE le sprite, qui est à 1. C'est la règle, et elle est
+   absolue — le Pokémon n'est jamais recouvert, quoi qu'on dessine et quelle
+   que soit l'espèce.
+
+   Ça n'a pas toujours été le cas. L'ornement est passé DEVANT le temps de deux
+   versions, et la mesure disait alors que la couronne mordait sur 6 % des
+   pixels opaques du sprite en moyenne, jusqu'à 16 % sur les silhouettes hautes
+   comme Draco-Épée. Six pour cent, c'est peu et c'est déjà trop : on vient
+   regarder le Pokémon, pas sa décoration.
+
+   Derrière, le problème ne se pose plus une seule fois — et il ne se posera pas
+   davantage le jour où un sprite changera de cadrage, ce qu'aucun réglage de
+   position ne pouvait garantir. La couronne se lit toujours comme posée sur la
+   tête, puisque c'est la partie qui DÉPASSE au-dessus du crâne qu'on voit, et
+   le laurier encadre toujours, puisqu'il ne passait déjà presque pas dessus. */
 .card__ornement {
   display: none;
   position: absolute;
-  z-index: 2;
+  z-index: 0;
   pointer-events: none;
   mask-repeat: no-repeat;
   mask-position: center;
@@ -4604,6 +4620,23 @@ body::before {
    déborde de quatre pixels vers le haut, dans l'interligne : elle ne touche
    donc ni la rangée du numéro au-dessus, ni l'étoile chromatique et l'emblème
    Gigamax, tous deux collés au bord DROIT. */
+/* SOUS CE CADRE, LE SPRITE DESCEND ET RETRECIT — même geste que sous Laurier,
+   et pour la même raison portée à son terme : passer l'ornement derrière le
+   Pokémon garantit qu'il ne le recouvre pas, mais ne garantit pas qu'on VOIE
+   la couronne. Sur les rendus 3D sans marge haute, elle disparaissait presque
+   entièrement derrière le crâne.
+
+   Le sprite est donc calé en BAS de sa boîte et ramené à 58 pixels : il libère
+   dix-neuf pixels au-dessus de lui, exactement la place de la couronne. Elle
+   se pose sur cette ligne-là, entière et visible, et le Pokémon garde toute sa
+   surface — les deux conditions tiennent en même temps, ce qu'aucun réglage de
+   position seul ne permettait. */
+[data-cadre="couronne"] .card--complete .card__art { align-items: flex-end; }
+[data-cadre="couronne"] .card--complete .card__img {
+  width: 58px;
+  height: 58px;
+}
+
 [data-cadre="couronne"] .card--complete .card__ornement {
   display: block;
   /* REMONTEE DE QUATRE PIXELS apres mesure des sprites. Les rendus 3D
@@ -4616,7 +4649,7 @@ body::before {
   top: -8px;
   left: 50%;
   width: 44px;
-  height: 30px;
+  height: 27px;
   transform: translateX(-50%);
   /* QUATRE COUCHES SOUS UN SEUL MASQUE. Le masque ne donne que la decoupe : ce
      qu'on peint dessous peut donc etre aussi detaille qu'on veut, sans
