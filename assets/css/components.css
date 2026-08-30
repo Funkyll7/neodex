@@ -5349,11 +5349,17 @@ body::before {
    tombait à 1,92. La deuxième resserrait les dégradés dans une bande claire :
    lisible, mais chaque marque y perdait sa couleur.
 
-   Séparer les deux rôles les réconcilie. Le CONTOUR porte la couleur, pleine et
-   saturée, sur deux pixels et demi où rien n'est écrit. Le CENTRE reste clair,
-   à peine teinté de la même famille, et c'est là que le signe se pose. La
-   pastille garde donc son caractère à l'œil tout en gardant un fond neutre sous
-   le glyphe — les deux contraintes tombent d'accord au lieu de se disputer.
+   Séparer les deux rôles les réconcilie. Le CONTOUR porte la couleur profonde,
+   sur deux pixels et demi où rien n'est écrit ; le CENTRE porte la même teinte
+   en clair, et c'est là que le signe se pose.
+
+   LE CENTRE EST TEINTÉ, PAS BLANC, et c'est une troisième correction. La
+   version d'avant le laissait à peine coloré — #e2f8e8, #f1ebff, #fff8e2 : à
+   vingt-deux pixels, les sept pastilles se lisaient toutes comme un disque
+   blanc bordé de couleur, ce qui ne distingue rien. Les centres sont donc
+   franchement teintés, entre 55 et 72 % de luminance, ce qui laisse encore neuf
+   fois le contraste requis pour une encre quasi noire. La marge etait là, il
+   suffisait de la prendre.
 
    TROIS VARIABLES, TROIS RÔLES. `--marque-fond` peint le disque et peut empiler
    autant de couches qu'elle veut ; `--marque-anneau` est le contour ;
@@ -5373,9 +5379,9 @@ body::before {
 
 /* Coche — cent Pokémon terminés. Un sceau : anneau vert franc, cœur pâle. */
 [data-marque="coche"] {
-  --marque-fond: radial-gradient(circle at 50% 42%, #ffffff, #e2f8e8 62%, #c7f0d3);
-  --marque-anneau: #2f9e52;
-  --marque-encre: #06300f;
+  --marque-fond: radial-gradient(circle at 50% 38%, #c9f7d8, #86e5a6 58%, #5fd489);
+  --marque-anneau: #1c7a44;
+  --marque-encre: #04240f;
   --marque-halo: rgba(47, 158, 82, .5);
 }
 
@@ -5383,7 +5389,7 @@ body::before {
    qu'il récompense : c'est la seule marque dont la couleur TOURNE. Elle ne
    pouvait le faire qu'une fois sortie du centre. */
 [data-marque="eclat"] {
-  --marque-fond: radial-gradient(circle at 50% 42%, #ffffff, #f4f0ff 60%, #e9e2ff);
+  --marque-fond: radial-gradient(circle at 50% 38%, #d8f6ff, #e3ccff 46%, #ffc9ea 74%, #ffe9b8);
   --marque-anneau: conic-gradient(from 200deg, #7ee7ff, #b28dff 25%, #ff8ad8 50%, #ffe08a 75%, #7ee7ff);
   --marque-encre: #24124a;
   --marque-halo: rgba(255, 138, 216, .55);
@@ -5392,25 +5398,25 @@ body::before {
 /* Hexagone — les formes régionales. Une pierre violette : l'anneau est la
    taille, le centre est ce qu'on voit à travers. */
 [data-marque="hexagone"] {
-  --marque-fond: radial-gradient(circle at 50% 40%, #ffffff, #f1ebff 58%, #ddd0ff);
-  --marque-anneau: #6d47d9;
-  --marque-encre: #2c1170;
+  --marque-fond: radial-gradient(circle at 50% 38%, #e5daff, #bea3ff 56%, #a488f5);
+  --marque-anneau: #3d1a9e;
+  --marque-encre: #200a5c;
   --marque-halo: rgba(109, 71, 217, .5);
 }
 
 /* Fleur — toutes les formes cosmétiques. Crème au cœur, rose au bord, comme une
    Prismillon vue de près. */
 [data-marque="fleur"] {
-  --marque-fond: radial-gradient(circle at 50% 40%, #fffafc, #fff0f6 58%, #ffdcea);
-  --marque-anneau: #e0538f;
-  --marque-encre: #5c0d2c;
+  --marque-fond: radial-gradient(circle at 50% 36%, #fff0f6, #ffc2da 54%, #ffa3c8);
+  --marque-anneau: #b81f63;
+  --marque-encre: #520824;
   --marque-halo: rgba(224, 83, 143, .5);
 }
 
 /* Gemme — cinq cents Pokémon terminés. Un saphir taillé : l'anneau fait les
    facettes en tournant, le centre est la table de la pierre. */
 [data-marque="gemme"] {
-  --marque-fond: radial-gradient(circle at 50% 40%, #ffffff, #eaf7ff 58%, #d2ecff);
+  --marque-fond: radial-gradient(circle at 50% 36%, #ddf3ff, #9ed6ff 54%, #74c2ff);
   --marque-anneau: conic-gradient(from 140deg, #d6f4ff, #4aa8ff 25%, #1747c4 50%, #4aa8ff 75%, #d6f4ff);
   --marque-encre: #04205e;
   --marque-halo: rgba(23, 71, 196, .5);
@@ -5427,7 +5433,7 @@ body::before {
    jusqu'à ce qu'elles ne soient plus des pierres. Serties dans le bandeau,
    elles ne passent sous rien et peuvent être aussi vives qu'une vraie. */
 [data-marque="couronne"] {
-  --marque-fond: radial-gradient(circle at 50% 40%, #ffffff, #fff8e2 58%, #ffedbe);
+  --marque-fond: radial-gradient(circle at 50% 36%, #fff4cf, #ffdf8a 54%, #ffcf57);
   /* Les trois pierres sont peintes SUR L ANNEAU, donc rognees par lui : elles
      ne mordent sur le centre a aucun moment. Un premier essai les posait dans
      le fond, et celle de gauche tombait sous le glyphe — contraste ramene a
@@ -5462,8 +5468,13 @@ body::before {
 /* L'étoile n'a pas d'anneau : sur elle, `--marque-anneau` vaut `transparent` et
    le trait laisserait voir la vignette au travers. On le lui rend plein de son
    propre fond, ce qui revient à ne pas en avoir. */
+/* PAS DE `[data-marque="etoile"] .recomp__apercu--marque` ICI, et le piege
+   valait d etre nomme : `<html>` porte lui aussi `data-marque`, donc ce
+   selecteur attrapait les SEPT pastilles du menu des que l etoile etait la
+   marque choisie — les six autres y perdaient leur anneau, et le menu montrait
+   sept disques identiques. La pastille du menu porte sa propre marque en
+   attribut : c est sur elle qu il faut viser, pas sur un ancetre. */
 [data-marque="etoile"] .card--complete::after,
-[data-marque="etoile"] .recomp__apercu--marque,
 .recomp__apercu--marque[data-marque="etoile"] {
   background: var(--marque-fond) border-box;
 }
