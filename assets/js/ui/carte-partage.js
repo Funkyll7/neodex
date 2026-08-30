@@ -681,26 +681,246 @@ export function dessinerCarte(ctx, options = {}) {
  * doit être le même à chaque export, sinon deux cartes de la même collection
  * différeraient d'un pixel sans raison.
  */
-function papierDeCartePostale(c, p) {
-  const degrade = c.createLinearGradient(0, 0, LARGEUR, HAUTEUR);
-  degrade.addColorStop(0, "#fbf3e4");
-  degrade.addColorStop(0.5, "#f4e7d1");
-  degrade.addColorStop(1, "#ecd9bd");
-  c.fillStyle = degrade;
-  c.fillRect(0, 0, LARGEUR, HAUTEUR);
+/**
+ * Le paysage d'Alola, dessiné — le fond de la carte postale.
+ *
+ * REDESSINÉ, PAS EMBARQUÉ. La référence est une image de l'anime : elle ne nous
+ * appartient pas, et elle est floue — une capture agrandie. Un dessin vectoriel
+ * reste net quelle que soit la taille, ne pèse rien, et ne pose aucune question
+ * de droits. C'est le même parti que les palmes du motif « Aurore » et que les
+ * ornements de vignette.
+ *
+ * ON NE VOIT QUE LES BORDS, et c'est ce qui décide de la composition. La carte
+ * recouvre tout sauf la bande d'affranchissement en haut et quelques dizaines de
+ * pixels sur les trois autres côtés. Le ciel, la montagne et les frondes sont
+ * donc calés dans les cent soixante premiers pixels, et le sable dans les
+ * derniers : peindre une belle jungle au milieu aurait été peindre sous la
+ * carte.
+ *
+ * AUCUN ALÉATOIRE. Deux cartes de la même collection doivent être identiques au
+ * pixel près ; toutes les positions sont donc écrites ou calculées.
+ */
+function paysageDAlola(c) {
+  const HORIZON = 596;
 
-  c.save();
-  c.strokeStyle = "rgba(120, 92, 52, .05)";
-  c.lineWidth = 1;
-  for (let y = 14; y < HAUTEUR; y += 9) {
+  /* --- le ciel --- */
+  const ciel = c.createLinearGradient(0, 0, 0, HORIZON);
+  ciel.addColorStop(0, "#3fbfe4");
+  ciel.addColorStop(0.55, "#8fdcf2");
+  ciel.addColorStop(1, "#dff4fb");
+  c.fillStyle = ciel;
+  c.fillRect(0, 0, LARGEUR, HORIZON);
+
+  // Les nuages : trois amas de disques, pas un flou. Un `shadowBlur` aurait
+  // coûté un repaint par disque et rendu un gris sale sur les bords.
+  const nuage = (x, y, e, alpha) => {
+    c.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+    for (const [dx, dy, r] of [[0, 0, 1], [-0.62, 0.2, 0.72], [0.66, 0.24, 0.66], [-1.2, 0.42, 0.5], [1.25, 0.46, 0.46]]) {
+      c.beginPath();
+      c.ellipse(x + dx * e, y + dy * e, r * e, r * e * 0.7, 0, 0, Math.PI * 2);
+      c.fill();
+    }
+  };
+  nuage(150, 62, 54, 0.9);
+  nuage(560, 40, 44, 0.75);
+  nuage(935, 96, 60, 0.85);
+  nuage(330, 150, 38, 0.5);
+
+  /* --- la montagne --- */
+  // Deux masses : une crête arrière plus pâle, la principale devant. C'est ce
+  // décalage qui donne la profondeur, pas un dégradé sur une seule silhouette.
+  const crete = (points, haut, bas) => {
+    const g = c.createLinearGradient(0, points[0][1], 0, HORIZON);
+    g.addColorStop(0, haut);
+    g.addColorStop(1, bas);
+    c.fillStyle = g;
     c.beginPath();
-    c.moveTo(0, y);
-    c.lineTo(LARGEUR, y);
+    c.moveTo(-40, HORIZON);
+    for (const [x, y] of points) c.lineTo(x, y);
+    c.lineTo(LARGEUR + 40, HORIZON);
+    c.closePath();
+    c.fill();
+  };
+  // LES SOMMETS SONT HAUTS PARCE QUE SEULS LES CENT SOIXANTE PREMIERS PIXELS
+  // SE VOIENT. Une montagne qui culmine a 150 n aurait montre que dix pixels de
+  // crete sous la bande ; celle-ci entre dans le cadre.
+  crete([[60, 172], [250, 74], [430, 150], [660, 92], [880, 168], [1080, 128]], "#7fe0d4", "#4fbdb8");
+  crete([[10, 250], [110, 168], [262, 34], [366, 116], [470, 210], [610, 156], [760, 240]], "#5fd6c6", "#2f9d9c");
+
+  // Les ravines : des traits pâles qui descendent du sommet. Trois suffisent —
+  // la montagne n'est visible que sur cent soixante pixels de haut.
+  c.strokeStyle = "rgba(214, 250, 244, .5)";
+  c.lineWidth = 7;
+  c.lineCap = "round";
+  for (const [x0, y0, x1, y1] of [0, 1, 2].map((i) => [262, 44, 194 + i * 76, 210 + i * 40])) {
+    c.beginPath();
+    c.moveTo(x0, y0);
+    c.quadraticCurveTo((x0 + x1) / 2 + 18, (y0 + y1) / 2, x1, y1);
     c.stroke();
   }
-  c.restore();
 
-  // L'ombre de la photo sur le carton. Elle est portée par le rectangle qu'on
+  /* --- la jungle, puis le sable --- */
+  c.fillStyle = "#2f9d63";
+  c.beginPath();
+  c.moveTo(-40, HORIZON + 60);
+  for (let x = -40; x <= LARGEUR + 40; x += 46) {
+    c.arc(x + 23, HORIZON - 6, 30, Math.PI, 0);
+  }
+  c.lineTo(LARGEUR + 40, HORIZON + 60);
+  c.closePath();
+  c.fill();
+
+  const sable = c.createLinearGradient(0, HORIZON, 0, HAUTEUR);
+  sable.addColorStop(0, "#efdcb2");
+  sable.addColorStop(0.5, "#e6cf9e");
+  sable.addColorStop(1, "#d3b783");
+  c.fillStyle = sable;
+  c.fillRect(0, HORIZON + 24, LARGEUR, HAUTEUR - HORIZON - 24);
+
+  // Les ornières du chemin : des arcs très pâles qui fuient vers l'horizon.
+  c.strokeStyle = "rgba(160, 130, 82, .22)";
+  c.lineWidth = 9;
+  for (const d of [-1, 1]) {
+    c.beginPath();
+    c.moveTo(LARGEUR / 2 + d * 40, HORIZON + 40);
+    c.quadraticCurveTo(LARGEUR / 2 + d * 210, HAUTEUR - 220, LARGEUR / 2 + d * 430, HAUTEUR + 40);
+    c.stroke();
+  }
+
+  /* --- les palmiers --- */
+  // UN SEUL PALMIER, ET SA COURONNE DANS LA BANDE. Il a fallu deux corrections.
+  // Il etait d abord a 946, c est-a-dire exactement sous le timbre : ses
+  // frondes etaient dessinees puis recouvertes. Puis a 762 mais avec la
+  // couronne a 96, donc a cheval sur le bord de la carte — on n en voyait que
+  // le tronc. Elle est maintenant a 46, bien au-dessus, et ses frondes
+  // s etalent de 580 a 820 : a gauche du timbre, a droite de la montagne.
+  //
+  // Le second palmier a ete retire. Il etait a mi-hauteur, donc entierement
+  // sous la carte : du dessin que personne ne verrait jamais.
+  palmier(c, 686, 82, 168, 1.15);
+}
+
+/**
+ * Un palmier : un tronc courbe et sept frondes.
+ *
+ * Les frondes reprennent la construction des palmes du motif « Aurore » — une
+ * nervure et des folioles couchées vers la pointe — mais en plein plutôt qu'en
+ * masque, et avec deux verts pour que celles du fond passent derrière.
+ */
+function palmier(c, x, y, taille, echelle) {
+  // Le tronc, de bas en haut, en s'affinant.
+  c.strokeStyle = "#b9925c";
+  c.lineWidth = 13 * echelle;
+  c.lineCap = "round";
+  c.beginPath();
+  c.moveTo(x + 26 * echelle, y + 520 * echelle);
+  c.quadraticCurveTo(x + 6 * echelle, y + 240 * echelle, x, y);
+  c.stroke();
+  // Les anneaux du stipe.
+  c.strokeStyle = "rgba(120, 88, 48, .4)";
+  c.lineWidth = 3 * echelle;
+  for (let i = 1; i <= 9; i++) {
+    const t = i / 10;
+    const px = x + 26 * echelle * t * t;
+    const py = y + 520 * echelle * t;
+    c.beginPath();
+    c.moveTo(px - 7 * echelle, py);
+    c.lineTo(px + 7 * echelle, py);
+    c.stroke();
+  }
+
+  const D = Math.PI / 180;
+  // Sept frondes en eventail, de bas-gauche a bas-droite en passant par le
+  // haut. Les deux verts font passer les deux premieres DERRIERE les autres :
+  // une couronne d une seule teinte se lit comme une tache.
+  const frondes = [
+    [-170, 0.96, "#1f7a4e"],
+    [-140, 1.02, "#1f7a4e"],
+    [-112, 1.0, "#2a9560"],
+    [-85, 0.94, "#2a9560"],
+    [-58, 1.0, "#35ab6c"],
+    [-30, 1.02, "#35ab6c"],
+    [-5, 0.9, "#2a9560"],
+  ];
+  for (const [angle, longueur, couleur] of frondes) {
+    c.fillStyle = couleur;
+    fronde(c, x, y, angle * D, taille * longueur, echelle);
+  }
+}
+
+/** Une fronde : nervure courbe, folioles de part et d'autre. */
+function fronde(c, x0, y0, angle, longueur, echelle) {
+  const PAS = 15;
+  // LA COURBURE EST MIROIR, et c est ce qui manquait. Une fronde retombe
+  // toujours vers l EXTERIEUR : celles qui partent a gauche doivent tourner a
+  // gauche, celles qui partent a droite tourner a droite. Avec une courbure de
+  // meme signe pour toutes, la moitie gauche de la couronne se relevait au lieu
+  // de retomber — et sortait du cadre par le haut, ce qui ne laissait voir que
+  // le tronc.
+  const courbe = 1.05 * (Math.cos(angle) < 0 ? -1 : 1);
+  const point = (t) => {
+    const a = angle + courbe * t * t;
+    return [x0 + Math.cos(a) * longueur * t, y0 + Math.sin(a) * longueur * t];
+  };
+  // La nervure, effilée.
+  c.beginPath();
+  c.moveTo(x0, y0);
+  for (let i = 1; i <= PAS; i++) {
+    const [px, py] = point(i / PAS);
+    c.lineTo(px, py);
+  }
+  for (let i = PAS; i >= 0; i--) {
+    const t = i / PAS;
+    const a = angle + courbe * t * t;
+    const [px, py] = point(t);
+    const w = (4.8 * (1 - t) + 0.9) * echelle;
+    c.lineTo(px - Math.sin(a) * w, py + Math.cos(a) * w);
+  }
+  c.closePath();
+  c.fill();
+  // Les folioles.
+  for (let i = 2; i < PAS; i++) {
+    const t = i / PAS;
+    const a = angle + courbe * t * t;
+    const [px, py] = point(t);
+    // Des folioles LONGUES : a 0,3 la couronne etait une arete de poisson.
+    const L = longueur * (0.44 - 0.27 * t);
+    for (const cote of [-1, 1]) {
+      const af = a + cote * (Math.PI / 2) - cote * 0.8 * (1 - 0.25 * t);
+      c.beginPath();
+      c.moveTo(px, py);
+      c.quadraticCurveTo(
+        px + Math.cos(af) * L * 0.55 + Math.cos(a) * L * 0.2,
+        py + Math.sin(af) * L * 0.55 + Math.sin(a) * L * 0.2,
+        px + Math.cos(af) * L,
+        py + Math.sin(af) * L
+      );
+      c.quadraticCurveTo(
+        px + Math.cos(a) * L * 0.34,
+        py + Math.sin(a) * L * 0.34,
+        px + Math.cos(a) * 2.2 * echelle,
+        py + Math.sin(a) * 2.2 * echelle
+      );
+      c.closePath();
+      c.fill();
+    }
+  }
+}
+
+function papierDeCartePostale(c, p) {
+  // LE FOND N'EST PLUS UN CARTON, C'EST UN PAYSAGE. La bande blanche autour de
+  // la carte ne disait rien ; Alola en dit quelque chose. Le dessin occupe tout
+  // le canvas mais n'est visible qu'aux bords — voir `paysageDAlola`, qui cale
+  // sa composition là-dessus.
+  paysageDAlola(c);
+
+  // Un voile très pâle sur l'ensemble : il RECULE le paysage d'un cran, sans
+  // quoi la carte posée dessus paraissait collée sur une affiche plutôt que
+  // posée sur une table. Cinq pour cent suffisent.
+  c.fillStyle = "rgba(255, 252, 244, .05)";
+  c.fillRect(0, 0, LARGEUR, HAUTEUR);
+
+  // L'ombre de la photo sur le paysage. Elle est portée par le rectangle qu'on
   // s'apprête à découper, donc dessinée avant lui — une ombre posée après
   // aurait été rognée par la découpe qu'elle doit justement déborder.
   c.save();
@@ -714,100 +934,119 @@ function papierDeCartePostale(c, p) {
 }
 
 /**
- * Le timbre et son cachet, dans le coin haut droit.
+ * Le timbre et son cachet, dans la bande d'affranchissement.
  *
- * DENTELÉ PAR SOUSTRACTION. Les dents d'un timbre sont des demi-cercles retirés
- * du bord ; on peint donc le rectangle, puis on repose la couleur du papier en
- * ronds le long des quatre côtés. `destination-out` aurait creusé jusqu'au
- * carton et laissé passer l'ombre de la photo.
+ * DENTELÉ SUR UN CALQUE À PART, ET C'EST LA CORRECTION D'UN DÉFAUT. Les dents
+ * étaient d'abord la couleur du carton reposée en ronds sur les bords : ça
+ * marchait tant que le fond ÉTAIT ce carton. Depuis qu'il y a un paysage
+ * derrière, les mêmes ronds faisaient des points crème sur de l'herbe.
  *
- * Le timbre porte l'accent du THÈME, lui : c'est la vignette du site sur la
- * carte, pas un objet du monde réel. Le carton reste crème, le timbre reste à
- * toi.
+ * Le timbre est donc fabriqué hors écran, à sa taille, où `destination-out`
+ * perce vraiment les dents — ce qu'on ne pouvait pas faire sur le canvas
+ * principal sans effacer aussi le paysage et l'ombre de la carte. Le résultat
+ * est collé d'un seul `drawImage` : le paysage se voit à travers les dents,
+ * comme sur un vrai timbre décollé.
+ *
+ * Le timbre porte l'accent du THÈME : c'est la vignette du site sur la carte,
+ * pas un objet du monde réel.
  */
 function timbreEtCachet(c, p) {
   // DANS LA BANDE, ET JAMAIS SUR LA CARTE. Les quatre nombres se déduisent de
   // `POSTALE` plutôt que d'être posés à la main : c'est ce qui garantit que le
   // timbre ne peut pas redescendre sur l'en-tête si la bande change un jour de
-  // hauteur. Il occupe la bande moins six pixels de jeu en haut et en bas.
+  // hauteur.
   const h = POSTALE.haut - 2 * 14;
   const l = Math.round(h * 0.82);
   const x = LARGEUR - POSTALE.cote - l - 10;
   const y = 14;
   const pas = 22;
 
-  c.save();
-  c.fillStyle = "#fffaf0";
-  c.fillRect(x, y, l, h);
+  const hors = document.createElement("canvas");
+  hors.width = l;
+  hors.height = h;
+  const g = hors.getContext("2d");
 
-  // Les dents : la couleur du papier reposée en ronds sur chaque bord.
-  c.fillStyle = "#f4e7d1";
-  const dent = (cx, cy) => {
-    c.beginPath();
-    c.arc(cx, cy, 7, 0, Math.PI * 2);
-    c.fill();
-  };
-  for (let i = pas / 2; i < l; i += pas) {
-    dent(x + i, y);
-    dent(x + i, y + h);
-  }
-  for (let i = pas / 2; i < h; i += pas) {
-    dent(x, y + i);
-    dent(x + l, y + i);
-  }
+  g.fillStyle = "#fffaf0";
+  g.fillRect(0, 0, l, h);
 
-  // Le dessin du timbre : un dégradé d'accent, une Poké Ball en réserve, et la
-  // valeur faciale — le pourcentage n'aurait pas tenu, un timbre ne porte qu'un
-  // chiffre.
   // TOUT EST PROPORTIONNEL À LA VIGNETTE, sans un seul nombre absolu. Le
   // timbre a déjà changé de taille une fois — il descendait sur l'en-tête — et
-  // les rayons écrits en dur avaient alors débordé de leur cadre : une Poké
-  // Ball de quarante pixels dans une réserve de soixante-seize.
+  // les rayons écrits en dur avaient alors débordé de leur cadre.
   const m = Math.round(l * 0.13);
   const bandeau = Math.round(h * 0.2);
-  const util = { x: x + m, y: y + m, l: l - 2 * m, h: h - 2 * m - bandeau };
-  const g = c.createLinearGradient(x, y, x + l, y + h);
-  g.addColorStop(0, p.accent);
-  g.addColorStop(1, p.raretes[4] || p.accent);
-  c.fillStyle = g;
-  c.fillRect(util.x, util.y, util.l, util.h);
+  const util = { x: m, y: m, l: l - 2 * m, h: h - 2 * m - bandeau };
+  const peinture = g.createLinearGradient(0, 0, l, h);
+  peinture.addColorStop(0, p.accent);
+  peinture.addColorStop(1, p.raretes[4] || p.accent);
+  g.fillStyle = peinture;
+  g.fillRect(util.x, util.y, util.l, util.h);
 
-  const cx = x + l / 2;
+  const cx = l / 2;
   const cy = util.y + util.h / 2;
   const r = Math.min(util.l, util.h) * 0.38;
-  c.fillStyle = "rgba(255, 250, 240, .92)";
-  c.beginPath();
-  c.arc(cx, cy, r, 0, Math.PI * 2);
-  c.fill();
-  c.fillStyle = g;
-  c.fillRect(cx - r, cy - r * 0.13, r * 2, r * 0.26);
-  c.beginPath();
-  c.arc(cx, cy, r * 0.35, 0, Math.PI * 2);
-  c.fill();
-  c.fillStyle = "rgba(255, 250, 240, .92)";
-  c.beginPath();
-  c.arc(cx, cy, r * 0.2, 0, Math.PI * 2);
-  c.fill();
+  g.fillStyle = "rgba(255, 250, 240, .92)";
+  g.beginPath();
+  g.arc(cx, cy, r, 0, Math.PI * 2);
+  g.fill();
+  g.fillStyle = peinture;
+  g.fillRect(cx - r, cy - r * 0.13, r * 2, r * 0.26);
+  g.beginPath();
+  g.arc(cx, cy, r * 0.35, 0, Math.PI * 2);
+  g.fill();
+  g.fillStyle = "rgba(255, 250, 240, .92)";
+  g.beginPath();
+  g.arc(cx, cy, r * 0.2, 0, Math.PI * 2);
+  g.fill();
 
-  c.fillStyle = "#5a4526";
-  c.font = `700 ${Math.round(l * 0.17)}px ${p.corps}`;
-  c.textAlign = "center";
-  c.textBaseline = "middle";
-  c.fillText("ALOLA", cx, y + h - m - bandeau / 2 + 2);
+  g.fillStyle = "#5a4526";
+  g.font = `700 ${Math.round(l * 0.17)}px ${p.corps}`;
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillText("ALOLA", cx, h - m - bandeau / 2 + 2);
+
+  // Les dents, PERCÉES pour de bon. Sur le calque hors écran, `destination-out`
+  // ne peut effacer que le timbre lui-même : c'est tout l'intérêt de l'avoir
+  // sorti du canvas principal.
+  g.globalCompositeOperation = "destination-out";
+  const dent = (dx, dy) => {
+    g.beginPath();
+    g.arc(dx, dy, 7, 0, Math.PI * 2);
+    g.fill();
+  };
+  for (let i = pas / 2; i < l; i += pas) {
+    dent(i, 0);
+    dent(i, h);
+  }
+  for (let i = pas / 2; i < h; i += pas) {
+    dent(0, i);
+    dent(l, i);
+  }
+
+  // Une ombre courte sous le timbre : il est COLLÉ sur la carte, il ne flotte
+  // pas. Elle est portée par le drawImage, donc posée sur le canvas principal.
+  c.save();
+  c.shadowColor = "rgba(40, 30, 12, .3)";
+  c.shadowBlur = 10;
+  c.shadowOffsetY = 3;
+  c.drawImage(hors, x, y);
+  c.restore();
 
   // Le cachet : deux arcs, quelques barres et le nom, posés de travers et à
   // cheval sur le timbre — un cachet d'oblitération ne vise jamais juste. Il
   // reste DANS la bande : son centre est à mi-hauteur du timbre, et son plus
   // grand rayon tient dans la moitié de la bande.
+  c.save();
   const rc = Math.min(h * 0.42, POSTALE.haut * 0.4);
   c.translate(x - rc * 0.42, y + h * 0.5);
   c.rotate(-0.22);
-  c.strokeStyle = "rgba(90, 69, 38, .5)";
-  c.fillStyle = "rgba(90, 69, 38, .5)";
+  c.strokeStyle = "rgba(60, 44, 22, .55)";
+  c.fillStyle = "rgba(60, 44, 22, .55)";
   c.lineWidth = 3;
-  for (const r of [rc, rc * 0.86]) {
+  c.textAlign = "center";
+  c.textBaseline = "middle";
+  for (const rayon of [rc, rc * 0.86]) {
     c.beginPath();
-    c.arc(0, 0, r, 0, Math.PI * 2);
+    c.arc(0, 0, rayon, 0, Math.PI * 2);
     c.stroke();
   }
   // Les barres d'oblitération partent du cachet vers la gauche, dans le vide de

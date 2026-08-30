@@ -48,3 +48,10 @@ assets/img/sources/couronne logo.png
 assets/img/sources/couronne pixel art.webp
 assets/img/sources/laurier 3d.jpg
 assets/img/sources/laurier pixel art.jpg
+
+# Fond de la carte postale : une image de l'anime, fournie comme REFERENCE.
+# Elle a servi de modele au paysage d'Alola dessine dans ui/carte-partage.js —
+# ciel, montagne turquoise, jungle, palmiers, sable. On ne l'embarque pas : elle
+# ne nous appartient pas, elle est floue (capture upscalee), et un dessin
+# vectoriel reste net a n'importe quelle taille de carte.
+assets/img/sources/postcard background.png

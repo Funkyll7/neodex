@@ -57,7 +57,7 @@ export const VERSIONS = [
       ["ajout", "Deux fonds de page qui bougent : la pluie de Hoenn et la neige de Sinnoh."],
       ["ajout", "Un écran de chargement « Dynamax » : trois ondes rouges partent du logo pendant que le Pokédex arrive."],
       ["ajout", "Un compagnon à choisir : dix-neuf Pokémon des palettes, plus un légendaire exclusif par région bouclée."],
-      ["ajout", "Un habillage « Carte postale » pour la carte de partage : carton crème, ombre portée, timbre dentelé et cachet."],
+      ["ajout", "Un habillage « Carte postale » pour la carte de partage : un paysage d'Alola dessiné derrière, un timbre dentelé et son cachet."],
     ],
   },
   {
