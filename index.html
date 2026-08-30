@@ -150,13 +150,13 @@
           <button type="button" id="settings-toggle" class="icon-btn icon-btn--teinte"
                   aria-expanded="false" aria-controls="settings-panel"
                   title="Paramètres" aria-label="Paramètres">⚙</button>
-          <span class="reglage__mot" aria-hidden="true">Paramètres</span>
+          <span class="reglage__mot" aria-hidden="true">Réglages</span>
         </span>
         <span class="reglage">
           <button type="button" id="succes-toggle" class="icon-btn icon-btn--teinte"
                   aria-expanded="false" aria-controls="succes-panel"
                   title="Succès" aria-label="Succès"></button>
-          <span class="reglage__mot" aria-hidden="true">Succès</span>
+          <span class="reglage__mot" aria-hidden="true">Trophées</span>
         </span>
         <span class="reglage">
           <button type="button" id="lang-toggle" class="icon-btn icon-btn--teinte icon-btn--lang"
@@ -183,12 +183,6 @@
          corriger, ce qui se voit. -->
     <div id="settings-panel" class="params" role="group" aria-label="Paramètres" hidden></div>
 
-    <!-- Les quarante-trois succès, remplis par ui/page-succes.js. Vide dans le
-         HTML livré pour la même raison que les réglages : leur état se déduit
-         de la collection, qui n'est pas encore lue au moment où cette page
-         arrive. Les écrire en dur aurait montré quarante-trois cadenas avant de
-         les corriger. -->
-    <div id="succes-panel" class="succes-page" role="group" aria-label="Succès" hidden></div>
 
     <!-- Un seul panneau pour toute la progression : le pourcentage global, puis
          le détail par famille de formes et les trois angles généraux. Les
@@ -472,6 +466,21 @@
       </div>
     </section>
   </main>
+
+  <!-- Les quarante-trois succès, remplis par ui/page-succes.js.
+
+       HORS de la barre latérale, et c'est tout l'intérêt du déplacement : elle
+       ne fait que 268 px, et le panneau y tombait à 213 px utiles. Trois
+       colonnes dans cette largeur laissaient une centaine de pixels au texte,
+       où « Cocher deux mille cases. » partait sur quatre lignes — et la même
+       liste alignait des tuiles de 75 à 182 px de haut. En surface, il prend
+       la place qu'il faut.
+
+       Vide dans le HTML livré : l'état des succès se déduit de la collection,
+       qui n'est pas encore lue quand cette page arrive. Les écrire en dur
+       aurait montré quarante-trois cadenas avant de les corriger. -->
+  <div id="succes-panel" class="succes-fond" role="dialog" aria-modal="true"
+       aria-label="Succès" hidden></div>
 </div>
 
 <script type="module" src="assets/js/main.js"></script>

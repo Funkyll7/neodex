@@ -60,6 +60,17 @@ export function initPageSucces() {
   function dessiner() {
     const succes = succesCourants();
     const gagnes = succes.filter((s) => s.obtenu).length;
+    fill(panneau, boite(succes, gagnes));
+  }
+
+  /**
+   * Le contenu, dans sa boîte centrée.
+   *
+   * Le panneau lui-même est le voile plein écran ; c'est cette boîte qui porte
+   * le fond, la largeur et le défilement. Les deux ne peuvent pas être le même
+   * élément : un voile qui défile emmènerait le fond assombri avec lui.
+   */
+  function boite(succes, gagnes) {
 
     // Regrouper par famille en UNE passe plutôt qu'un `filter` par section :
     // sept filtres sur quarante-trois entrées, c'est gratuit, mais l'ordre des
@@ -73,8 +84,8 @@ export function initPageSucces() {
       parFamille.get(nom).push(s);
     }
 
-    fill(
-      panneau,
+    return el(
+      "div.succes-boite",
       entete(gagnes, succes.length),
       [...parFamille].map(([nom, liste]) =>
         liste.length
@@ -97,7 +108,15 @@ export function initPageSucces() {
     const pct = total ? Math.round((gagnes / total) * 100) : 0;
     return el(
       "div.succes__entete",
-      el("h3.panel__label", t("Succès")),
+      el(
+        "div.succes__barre",
+        el("h3.panel__label", t("Succès")),
+        el(
+          "button.icon-btn.succes__fermer",
+          { type: "button", title: t("Fermer"), "aria-label": t("Fermer"), onclick: () => ouvrir(false) },
+          "✕"
+        )
+      ),
       el("p.succes__score", String(gagnes), el("span", ` / ${total}`)),
       el(
         "div.succes__jauge.succes__jauge--globale",
@@ -176,8 +195,11 @@ export function initPageSucces() {
     ouvrir(panneau.hidden);
   });
 
-  document.addEventListener("click", (event) => {
-    if (!panneau.hidden && !panneau.contains(event.target)) ouvrir(false);
+  // Le voile ferme, la boîte non. Le test « en dehors du panneau » d'avant ne
+  // vaut plus rien depuis que le panneau OCCUPE tout l'écran : plus aucun clic
+  // n'était en dehors, et la page ne se fermait qu'à Échap.
+  panneau.addEventListener("click", (event) => {
+    if (event.target === panneau) ouvrir(false);
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !panneau.hidden) {

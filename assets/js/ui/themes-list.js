@@ -38,7 +38,10 @@ export const THEMES = [
   // hors de la famille Pixels à servir les sprites dessinés plutôt que les
   // rendus 3D : son fond très sombre et son accent franc sont justement la
   // recette qui fait ressortir un sprite de 96 pixels. Voir theme.css.
-  { value: "boussole", label: "Boussole ❤️", groupe: "Base", bandeau: "#14100d", pastille: "#f174d3", sprites: "pixel" },
+  // Le trio est celui du thème, pas celui d'une région : Psykokwak, Luxray et
+  // Chelours. `sprite` accepte déjà un tableau — c'est le même mécanisme que
+  // les trios de starters, et il ne touche à aucune couleur.
+  { value: "boussole", label: "Boussole ❤️", groupe: "Base", bandeau: "#14100d", pastille: "#f174d3", sprites: "pixel", sprite: [54, 405, 760] },
 
   // --- Couleurs : une palette par teinte ------------------------------------
   { value: "rubis", label: "Rubis", groupe: "Couleurs", bandeau: "#150c0f", pastille: "#f2586c" },

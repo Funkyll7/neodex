@@ -3012,27 +3012,45 @@
 
 /* --------------------------- La page des succès --------------------------- */
 
-/* Elle s'ouvre comme le panneau des réglages, avec une différence : quarante-
-   trois tuiles ne tiennent dans aucune colonne de 268 px. D'où le défilement
-   interne borné à 70 % de la hauteur — le panneau reste sous son bouton, mais
-   il ne pousse plus la page sur trois écrans. */
-.succes-page {
+/* Une page, pas un menu déroulant. Quarante-trois tuiles ne tiennent dans
+   aucune colonne de 268 px : le panneau y descendait à 213 px utiles, dont une
+   centaine restaient au texte une fois l'icône et la mesure servies. « Cocher
+   deux mille cases. » y passait sur quatre lignes, et la liste alignait des
+   tuiles de 75 à 182 px de haut.
+
+   Le voile et la boîte sont DEUX éléments : c'est la boîte qui défile, sinon le
+   fond assombri serait parti avec le contenu. */
+.succes-fond {
+  position: fixed;
+  inset: 0;
+  z-index: 92;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(0, 0, 0, .74);
+  backdrop-filter: blur(5px);
+}
+.succes-fond[hidden] { display: none; }
+
+.succes-boite {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
-  margin-top: calc(-1 * var(--sp-2));
-  padding: var(--sp-3);
-  flex: none;
-  max-height: 70vh;
+  width: min(100%, 780px);
+  max-height: 100%;
+  padding: var(--sp-4);
   overflow-y: auto;
   overscroll-behavior: contain;
   border-radius: var(--r-lg);
   background: var(--bg-raised);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .55);
 }
-.succes-page[hidden] { display: none; }
 
 .succes__entete { display: flex; flex-direction: column; gap: 6px; }
+.succes__barre { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.succes__fermer { margin-left: 0; }
 /* Le score en grand, comme le pourcentage de la barre latérale : c'est le
    chiffre qu'on vient chercher en ouvrant le panneau. */
 .succes__score {
@@ -3067,7 +3085,14 @@
   text-transform: none;
   color: var(--text-ghost);
 }
-.succes__liste { display: flex; flex-direction: column; gap: 6px; }
+/* Deux colonnes dès qu'il y a la place, une seule sinon. `auto-fill` et non
+   `auto-fit` : avec une famille de trois succès, `auto-fit` aurait étiré les
+   trois tuiles sur toute la largeur au lieu d'en poser deux et une. */
+.succes__liste {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 6px;
+}
 
 /* Une tuile. `align-items: center` ici, contrairement aux réglages : le corps
    d'un succès fait toujours trois lignes de hauteur — nom, résumé, jauge — et
