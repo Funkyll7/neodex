@@ -46,6 +46,15 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "5.1",
+    date: "2026-08-30",
+    titre: "Les boîtes de HOME",
+    notes: [
+      ["ajout", "Une vue « Boîtes » : le Pokédex rangé trente par trente comme dans HOME, où un trou se voit sans le chercher."],
+      ["ajout", "Un second rangement, « Familles », qui suit les lignées d'évolution et n'en coupe jamais une en deux."],
+    ],
+  },
+  {
     version: "5.0",
     date: "2026-08-30",
     titre: "Neuf régions, neuf fanatiques",

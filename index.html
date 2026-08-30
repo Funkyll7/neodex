@@ -94,6 +94,8 @@
 <link rel="modulepreload" href="assets/js/ui/popup.js">
 <link rel="modulepreload" href="assets/js/ui/changements.js">
 <link rel="modulepreload" href="assets/js/domain/journal.js">
+<link rel="modulepreload" href="assets/js/ui/livingdex.js">
+<link rel="modulepreload" href="assets/js/domain/livingdex.js">
 <link rel="modulepreload" href="assets/js/ui/succes-detail.js">
 <link rel="modulepreload" href="assets/js/ui/journal.js">
 <link rel="modulepreload" href="assets/js/domain/maj.js">
@@ -378,6 +380,10 @@
         </div>
         <select id="filter-type" class="select select--inline" aria-label="Filtrer par type"></select>
         <div class="segmented" id="view-toggle" role="group" aria-label="Image affichée"></div>
+        <!-- Grille ou boîtes. La grille répond à « où est Machin », les boîtes
+             à « où sont mes trous » : ce sont deux questions, et la seconde n'a
+             jamais eu de réponse ici. Voir ui/livingdex.js. -->
+        <div class="segmented" id="mode-toggle" role="group" aria-label="Disposition"></div>
         <!-- La lecture de captures ne part qu'au bouton, jamais toute seule :
              préparer son filtre dans HOME fait partie du geste. -->
         <button type="button" class="btn btn--ghost toolbar__lire" data-import="dex"
@@ -395,6 +401,10 @@
       <div class="dex">
         <div class="dex__list">
           <div id="grid" class="grid" role="list"></div>
+          <!-- Les boîtes de HOME. Elles remplacent la grille, elles ne
+               s'ajoutent pas à elle : deux dispositions du même Pokédex
+               affichées ensemble auraient doublé mille sprites pour rien. -->
+          <div id="livingdex" class="livingdex" hidden></div>
           <!-- L'état vide dit quoi faire, pas seulement qu'il n'y a rien : le
                plus souvent c'est un filtre oublié, et le bouton le retire. -->
           <div id="grid-empty" class="empty" hidden>

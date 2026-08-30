@@ -39,7 +39,7 @@ function loadOptional(path, fallback) {
 }
 
 export async function loadDataset() {
-  const [manifest, typesRef, gensRef, gamesRef, huntRef, locksRef, formDetails, cosmeticRef, goRef] =
+  const [manifest, typesRef, gensRef, gamesRef, huntRef, locksRef, formDetails, cosmeticRef, goRef, famillesRef] =
     await Promise.all([
       loadJson("pokemon/manifest.json"),
       loadJson("reference/types.json"),
@@ -50,6 +50,11 @@ export async function loadDataset() {
       loadOptional("details/forms.json", { defaults: {}, bySince: {}, forms: {} }),
       loadOptional("details/cosmetic-forms.json", { groups: {} }),
       loadOptional("reference/go.json", { shiny: [] }),
+      // Les lignees d evolution, pour le rangement par famille du Living Dex.
+      // `loadOptional` et non `loadJson` : le fichier est un CONFORT, pas une
+      // donnee de collection. S il manque, la vue par boites garde son
+      // rangement par numero et rien d autre ne bouge.
+      loadOptional("reference/familles.json", { chaines: [] }),
     ]);
 
   const gens = manifest.generations.map((g) => g.gen);
@@ -147,6 +152,13 @@ export async function loadDataset() {
     forms: species.flatMap((p) => p.forms),
     /** Ce que le Pokedex GO range dans des boites. Voir `goEntries()`. */
     goEntries: goEntries(species),
+    /**
+     * Les 541 lignees d evolution, rangees par le premier numero national de
+     * chacune. Elles ne servent qu au rangement « par famille » des boites —
+     * voir `domain/livingdex.js`. Relevees dans les CSV de PokeAPI, colonnes
+     * `evolves_from_species_id` et `evolution_chain_id`.
+     */
+    chaines: famillesRef.chaines || [],
   };
 }
 

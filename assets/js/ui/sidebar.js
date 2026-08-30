@@ -118,6 +118,32 @@ export function createSidebar(ctx) {
     )
   );
 
+  // TROIS BOUTONS ET NON DEUX, parce qu'il y a deux questions et non une :
+  // quelle disposition, et — pour les boites — quel rangement. Les fondre en
+  // un seul groupe evite un second controle qui n apparaitrait qu a moitie du
+  // temps, et fait lire les trois etats comme ce qu ils sont : trois facons de
+  // regarder le meme Pokedex.
+  const modeToggle = document.getElementById("mode-toggle");
+  if (modeToggle) {
+    fill(
+      modeToggle,
+      [
+        ["grille", "Grille", "La liste, filtrable et triable"],
+        ["boites", "Boîtes", "Le rangement de HOME, trente par boîte"],
+        ["familles", "Familles", "Les boîtes, rangées par lignée d'évolution"],
+      ].map(([value, label, title]) =>
+        el("button", {
+          type: "button",
+          title: t(title),
+          "aria-pressed": String((store.state.mode || "grille") === value),
+          dataset: { mode: value },
+          onclick: () => store.set({ mode: value }),
+          textContent: t(label),
+        })
+      )
+    );
+  }
+
   /* ----------------------------- ecouteurs ---------------------------- */
 
   // Un seul select de generation pour deux Pokedex, et c'est voulu : deux
@@ -232,6 +258,16 @@ export function createSidebar(ctx) {
     }
     for (const button of viewToggle.children) {
       button.setAttribute("aria-pressed", String(button.dataset.view === store.state.view));
+    }
+    // La disposition suit le meme chemin que la vue : `syncActive` est appelee
+    // a chaque changement de filtre, la ou `render()` refait les compteurs sur
+    // mille vingt-cinq especes et coute bien trop cher pour trois boutons.
+    const modeToggle = document.getElementById("mode-toggle");
+    if (modeToggle) {
+      const mode = store.state.mode || "grille";
+      for (const button of modeToggle.children) {
+        button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
+      }
     }
   }
 

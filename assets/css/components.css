@@ -6285,3 +6285,107 @@ body::before {
   line-height: 1.6;
   color: var(--text-faint);
 }
+
+/* ============================ Le Living Dex ============================== */
+
+/* UNE BOÎTE TIENT SUR UN ÉCRAN, et c'est toute la raison d'être de la vue. Cinq
+   colonnes et six rangées, comme HOME : trente cases qu'on embrasse d'un regard,
+   là où la grille demande de faire défiler quatre mille pixels pour trouver un
+   trou. La largeur est donc FIXE — cinq colonnes, jamais quatre ni six — parce
+   qu'une boîte de HOME a cinq colonnes et que la comparer à la sienne est
+   exactement ce qu'on vient faire. */
+.livingdex {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.livingdex[hidden] { display: none; }
+
+.boite {
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-raised);
+}
+.boite__tete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+.boite__nom {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-soft);
+}
+.boite__compte { font-size: 12px; font-weight: 800; color: var(--text-faint); }
+/* Une boîte pleine s'annonce : c'est la seule récompense de la vue, et elle
+   arrive trente-cinq fois au maximum. */
+.boite__compte--pleine { color: var(--accent); }
+
+.boite__grille {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+/* TROIS ÉTATS, TROIS TRAITEMENTS. « Vide » et « commencée » se distinguent par
+   le sprite — éteint ou en couleur —, « commencée » et « terminée » par le fond.
+   Trois nuances d'une même chose auraient demandé de les apprendre ; là, chaque
+   état se lit sans légende. */
+.ldx {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-inset);
+  cursor: pointer;
+}
+.ldx__img { width: 82%; height: 82%; object-fit: contain; }
+/* Le numéro n'apparaît qu'au survol : à quarante-six pixels il ne tiendrait pas
+   sous le sprite, et c'est le sprite qu'on reconnaît, pas le nombre. Sur
+   téléphone il ne se voit jamais — et n'y sert à rien non plus. */
+.ldx__num {
+  position: absolute;
+  inset: auto 0 2px 0;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--text-ghost);
+  opacity: 0;
+}
+@media (hover: hover) {
+  .ldx:hover { border-color: var(--accent); }
+  .ldx:hover .ldx__num { opacity: 1; }
+}
+.ldx:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.ldx--vide .ldx__img { filter: var(--sprite-dim); }
+.ldx--entame { border-color: var(--border-strong); }
+.ldx--fini {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 11%, var(--bg-inset));
+}
+/* Une case sans Pokémon : elle n'existe que dans le rangement par famille,
+   quand une lignée n'a pas tenu dans la place restante. Un pointillé dit
+   « rien ici » là où un fond plein aurait dit « trou ». */
+.ldx--absente {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--border) 70%, transparent);
+  background: none;
+  cursor: default;
+}
+
+/* Sous 560 px, cinq colonnes donnent des cases de quarante pixels : c'est petit
+   mais lisible, et surtout c'est LA boîte de HOME. La réduire à quatre colonnes
+   aurait cassé la correspondance, qui est le seul intérêt de la vue. */
+@media (max-width: 560px) {
+  .boite { padding: var(--sp-2); }
+  .boite__grille { gap: 4px; }
+}

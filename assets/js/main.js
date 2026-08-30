@@ -23,6 +23,7 @@ import { initParametres, appliquerParametres, poserContexteParametres } from "./
 import { suivreCollection } from "./domain/journal.js";
 import { versionCourante } from "./domain/maj.js";
 import { renderMaj } from "./ui/maj.js";
+import { renderLivingDex } from "./ui/livingdex.js";
 import { iconeSvg } from "./ui/icones-succes.js";
 import { initPageSucces } from "./ui/page-succes.js";
 import { appliquerRecompenses, poserSourceDesEspeces } from "./ui/recompenses.js";
@@ -44,7 +45,7 @@ import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
 import { initLangue, initBoutonLangue } from "./ui/langue.js";
 import { nomEspece, nomForme, t } from "./core/i18n.js";
 
-const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view"];
+const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view", "mode"];
 /** Les filtres du Pokedex GO, qui ne pilotent que sa grille a lui. */
 const GO_KEYS = ["goSearch", "goGen", "goStatus", "goType"];
 
@@ -131,6 +132,10 @@ function start(dataset) {
     sort: "num",
     status: "all",
     view: "auto",
+    // La disposition du Pokedex HOME : « grille », « boites » ou « familles ».
+    // Elle vit dans les filtres enregistres comme le tri et la vue, parce que
+    // c est le meme genre de reglage — on la retrouve en revenant.
+    mode: "grille",
     selectedId: 25,
     goSearch: "",
     goGen: "all",
@@ -562,7 +567,32 @@ function start(dataset) {
 
   function renderList() {
     visible = applyFilters(dataset.species, store.state, collection, complete, planner);
-    grid.render(visible);
+
+    // GRILLE OU BOÎTES, JAMAIS LES DEUX. Les deux dispositions montrent le même
+    // Pokédex ; les afficher ensemble aurait doublé mille sprites pour rien, et
+    // laissé deux zones de défilement l'une sous l'autre.
+    const mode = store.state.mode || "grille";
+    const enBoites = mode !== "grille";
+    const grille = document.getElementById("grid");
+    const boitesRacine = document.getElementById("livingdex");
+    if (grille) grille.hidden = enBoites;
+    if (boitesRacine) boitesRacine.hidden = !enBoites;
+
+    if (!enBoites) {
+      grid.render(visible);
+      return;
+    }
+    // LES BOÎTES IGNORENT LES FILTRES, et c'est le point. Une boîte de HOME a
+    // trente cases : en retirer vingt parce qu'un filtre de type est actif
+    // détruirait le seul intérêt de la vue, qui est de montrer les trous À LEUR
+    // PLACE. On range donc toujours les mille vingt-cinq.
+    renderLivingDex(boitesRacine, {
+      especes: dataset.species,
+      chaines: dataset.chaines,
+      collection,
+      ordre: mode === "familles" ? "famille" : "numero",
+      surChoix: (id) => store.set({ selectedId: id }),
+    });
   }
 
   function renderDetail(reveal = false) {
@@ -619,6 +649,17 @@ function start(dataset) {
       go.render();
       return;
     }
+    // En vue BOÎTES, la grille est cachée : `grid.refresh` repeindrait une
+    // vignette que personne ne voit, et la case de boîte garderait son ancien
+    // état. Les boîtes n'ont pas de rafraîchissement à l'unité — elles n'ont
+    // aucun état à préserver, ni défilement interne ni bouton sous le doigt —,
+    // un redessin complet est donc à la fois plus simple et sans effet visible.
+    if ((store.state.mode || "grille") !== "grille") {
+      renderList();
+      detail.syncMarks(dataset.byId.get(id) || dataset.species[0]);
+      return;
+    }
+
     grid.refresh(id);
     // Les filtres « capturés / manquants / complets » peuvent exclure la carte.
     // On la BARRE au lieu de reconstruire la liste : voir `grid.setStale()`.
