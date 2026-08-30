@@ -13,7 +13,7 @@ import { sansAccents } from "../core/data.js";
 import { evaluerSucces } from "../domain/succes.js";
 import { majDecor } from "./decor-theme.js";
 import { TYPES } from "../domain/recompenses.js";
-import { optionsDuType, poserSourceDesSucces, redessinerOptions } from "./recompenses.js";
+import { compteDuType, optionsDuType, poserSourceDesSucces, redessinerOptions } from "./recompenses.js";
 import { iconeSvg } from "./icones-succes.js";
 import { retourFerme } from "./retour.js";
 import { t } from "../core/i18n.js";
@@ -286,7 +286,12 @@ function menuDeCustomisation(interieur) {
   // visible, un seul défilement. Sept sections de plus à faire défiler coûtent
   // moins qu'un seul niveau de plus à explorer.
   const sections = TYPES.map((type) =>
-    section(type.cle, t(type.nom), null, el("div.custo__corps", el("p.recomp__aide", t(type.aide)), optionsDuType(type)))
+    section(
+      type.cle,
+      t(type.nom),
+      compteDuType(type),
+      el("div.custo__corps", el("p.recomp__aide", t(type.aide)), optionsDuType(type))
+    )
   );
 
   return el(

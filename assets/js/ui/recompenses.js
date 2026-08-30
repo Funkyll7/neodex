@@ -183,8 +183,29 @@ export function redessinerOptions() {
   const etat = evaluerRecompenses(succesSource(), choix);
   for (const ancien of conteneurs) {
     const type = TYPES.find((x) => x.cle === ancien.dataset.type);
-    if (type) ancien.replaceWith(optionsDuType(type, etat, choix));
+    if (!type) continue;
+    ancien.replaceWith(optionsDuType(type, etat, choix));
+    // Le compte du titre suit, sinon la section annoncerait « 2 / 7 » au-dessus
+    // de sept options dont cinq sont ouvertes — le titre est justement ce qu'on
+    // lit avant de déplier.
+    const compte = document.querySelector(`.custo__section[data-custo="${type.cle}"] .custo__compte`);
+    if (compte) compte.textContent = compteDuType(type, etat);
   }
+}
+
+/**
+ * « Combien en ai-je, sur combien » pour un type.
+ *
+ * Le titre des thèmes portait un simple « 38 » — le nombre de palettes, sans
+ * plus, parce qu'elles sont toutes visibles. Les six autres familles ont des
+ * options verrouillées : le nombre seul n'y dirait rien, alors que « 3 / 7 »
+ * dit d'un coup s'il reste à gagner de ce côté-là.
+ */
+export function compteDuType(type, etat) {
+  const liste = (etat || evaluerRecompenses(succesSource(), choixCourant())).filter(
+    (r) => r.type === type.cle
+  );
+  return `${liste.filter((r) => r.ouvert).length} / ${liste.length}`;
 }
 
 /**
