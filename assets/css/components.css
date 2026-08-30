@@ -3208,30 +3208,12 @@
    couleur — sur une surface qui leur appartient, des figures effacées
    n'auraient été que des taches.
 
-   Du fond de page il ne reste que le halo, ci-dessous. */
-
-/* Le halo. Une lueur de l'accent du thème au coin bas droit, fixe et sous tout
-   le reste. Il n'a rien à faire reconnaître : les vignettes qui le traversent ne
-   le gênent pas, il donne simplement au fond la couleur du thème. */
-.decor {
-  position: fixed;
-  right: -140px;
-  bottom: -160px;
-  width: 620px;
-  height: 620px;
-  z-index: 0;
-  display: none;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-wash) 0%, transparent 68%);
-  pointer-events: none;
-}
-.decor[data-n="1"],
-.decor[data-n="3"] { display: block; }
-.app { position: relative; z-index: 1; }
-
-@media (max-width: 1099px) {
-  .decor { width: 420px; height: 420px; right: -100px; bottom: -110px; }
-}
+   ET RIEN DU TOUT EN FOND DE PAGE. Il y avait ici un halo — une lueur de
+   l'accent du thème au coin bas droit — dont le seul rôle était d'ancrer la
+   grande figure dans la page, pour qu'elle ne flotte pas comme une image
+   collée. La figure partie, il ne restait qu'une tache colorée dans un coin,
+   sans rien à ancrer. Une décoration qui a perdu sa raison d'être ne devient
+   pas neutre : elle devient du bruit. */
 
 /* --------------------- La bande de la barre latérale --------------------- */
 

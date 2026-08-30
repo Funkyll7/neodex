@@ -47,9 +47,12 @@
  * Les vignettes y sont en PLEINE COULEUR et non en filigrane : sur une surface
  * qui leur appartient, une figure effacée n'aurait été qu'une tache.
  *
- * Du fond de page, il ne reste que le halo — une lueur de l'accent du thème au
- * coin bas droit. Elle n'a rien à faire reconnaître, donc les vignettes qui la
- * traversent ne la gênent pas ; elle donne juste au fond la couleur du thème.
+ * Le fond de page, lui, ne reçoit plus rien du tout. Il a porté un moment un
+ * halo aux couleurs du thème, dont le seul rôle était d'ancrer la grande figure
+ * pour qu'elle ne flotte pas comme une image collée. La figure partie, il ne
+ * restait qu'une tache colorée dans un coin, sans rien à ancrer : une
+ * décoration qui a perdu sa raison d'être ne devient pas neutre, elle devient
+ * du bruit.
  *
  * ON NE CHARGE RIEN QUAND IL N'Y A RIEN À MONTRER. Les palettes « Base » et
  * « Couleurs » ne nomment aucun Pokémon : le décor se vide, et pas une requête
@@ -59,20 +62,6 @@
 
 import { el, fill } from "../core/dom.js";
 import { artworkUrl } from "../domain/sprites.js";
-
-/** Le conteneur, créé une fois et réutilisé à chaque changement de thème. */
-let racine = null;
-
-function conteneur() {
-  if (racine && racine.isConnected) return racine;
-  racine = el("div.decor", { "aria-hidden": "true" });
-  // AVANT `#app` dans le document, et le CSS le range derrière : `body` peint
-  // son propre fond, un décor posé plus bas dans l'empilement aurait donc
-  // disparu dessous. Ici il se glisse entre le fond et l'application, dont les
-  // panneaux gardent chacun le leur.
-  document.body.prepend(racine);
-  return racine;
-}
 
 /**
  * Accorde le décor au thème.
@@ -95,9 +84,6 @@ export function majDecor(theme) {
         decoding: "async",
       })
     );
-
-  // Le halo seul : il ne porte plus de figure, seulement la couleur du thème.
-  conteneur().dataset.n = String(ids.length);
 
   // Les deux surfaces que rien ne recouvre. On les remplit toutes les deux sans
   // condition, et c'est le CSS qui décide laquelle montrer : tester la largeur
