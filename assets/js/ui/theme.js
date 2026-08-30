@@ -401,13 +401,21 @@ function carte(theme) {
       "aria-pressed": "false",
       "--sw-bg": theme.bandeau,
       "--sw-fg": theme.pastille,
+      // Les deux bouts du dégradé de progression du thème. Absents pour les
+      // familles qui n'en déclarent pas : le CSS retombe alors sur l'accent
+      // seul, et le nom s'écrit d'une couleur unie comme avant.
+      "--sw-deg1": theme.degrade ? theme.degrade[0] : null,
+      "--sw-deg2": theme.degrade ? theme.degrade[1] : null,
       onclick: () => choisir(theme.value),
     },
     vignette(theme),
     // Les noms de régions et « Émeraude » sortent déjà de la table `games`,
     // que `t()` interroge après `ui` : dix libellés se traduisent sans qu'on
     // ait à les redire ici.
-    el("span.thopt__name", t(theme.label))
+    el(
+      "span.thopt__name" + (theme.degrade ? ".thopt__name--degrade" : ""),
+      t(theme.label)
+    )
   );
 }
 

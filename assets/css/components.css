@@ -1723,7 +1723,14 @@
   cursor: pointer;
   border: 1px solid color-mix(in srgb, var(--sw-fg) 28%, transparent);
   border-radius: 11px;
-  background: var(--sw-bg);
+  /* Le fond du thème, ASSOURDI de quelques pour cent.
+     Les quatre palettes à surfaces claires montraient ici un rectangle presque
+     blanc, au milieu de trente-quatre cartes très sombres : dans un menu qui
+     s'ouvre par-dessus une page sombre, c'est un flash. Le mélange les calme
+     sans les dénaturer — un fond à #f2f4f9 descend à #d3d5da, ce qui reste
+     franchement clair à côté des autres — et ne coûte presque rien aux cartes
+     sombres, qui sont déjà à cette hauteur. */
+  background: color-mix(in srgb, var(--sw-bg) 86%, #000);
   color: var(--sw-fg);
   font: inherit; font-size: 10px; font-weight: 800; line-height: 1.15;
   text-align: center;
@@ -3792,3 +3799,27 @@ body::before {
 }
 .custo__sous-titre .custo__compte { font-size: 10px; }
 .custo__sous-titre:first-child { margin-top: 0; }
+
+/* Le nom du theme, peint dans SON degrade de progression.
+
+   Xerneas va de l or au bleu : son nom aussi. C est la seule chose de la carte
+   qui puisse porter les deux couleurs a la fois — la vignette montre le
+   Pokemon, le fond montre la page, il ne restait que le libelle.
+
+   `background-clip: text` sur un fond degrade, et l encre rendue transparente.
+   Le repli compte : si le navigateur ignore `background-clip`, la couleur
+   declaree juste avant reste, et le nom s ecrit en une seule teinte au lieu de
+   disparaitre. C est pour cela que `color` est pose AVANT, et non a la place. */
+.thopt__name--degrade {
+  color: var(--sw-deg1, var(--sw-fg));
+  background-image: linear-gradient(100deg, var(--sw-deg1, var(--sw-fg)), var(--sw-deg2, var(--sw-fg)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* Sans `background-clip`, le degrade peindrait la BOITE du libelle : un
+   rectangle colore par-dessus lequel on ne lirait plus rien. `@supports` garde
+   les deux mondes propres — avec, le texte est peint ; sans, il reste uni. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .thopt__name--degrade { background-image: none; -webkit-text-fill-color: currentColor; }
+}

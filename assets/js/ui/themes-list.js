@@ -25,15 +25,30 @@
  *              peindre la carte du theme.
  *   `pastille` l'accent du theme. Fond + accent, c'est tout ce qui distingue
  *              visuellement une palette d'une autre : le menu montre les deux.
- *   `sprite`   le Pokemon qui donne son nom au theme — un numero, ou trois pour
- *              un trio de starters. Absent pour « Base » et « Couleurs », qui
- *              ne portent le nom d'aucun Pokemon : le menu leur dessine une
- *              Poke Ball dans les deux couleurs du theme.
+ *   `sprite`   le Pokemon a montrer — un numero, ou plusieurs pour un groupe.
+ *              Les trente-huit en ont un : les familles qui ne portent pas de
+ *              nom de Pokemon en recoivent un CHOISI, faute d'en avoir un
+ *              donne. Les six « Couleurs » prennent les coeurs de Meteno, qui
+ *              existent justement en sept teintes ; « Sombre » prend Darkrai et
+ *              « Clair » Arceus. Le menu dessinait sinon une Poke Ball, la meme
+ *              treize fois.
+ *   `degrade`  les deux bouts du degrade de progression du theme, `--gold` et
+ *              `--gold-soft`. Le menu s'en sert pour peindre le NOM du theme :
+ *              Xerneas va de l'or au bleu, son nom aussi. Trente palettes sur
+ *              trente-huit l'ont ; les huit qui ne l'ont pas sont « Base » sans
+ *              Boussole et les six « Couleurs », dont le degrade n'est qu'une
+ *              teinte et sa version claire — un degrade qu'on ne verrait pas.
+ *              Leur nom s'ecrit alors d'une seule couleur.
+ *
+ * `bandeau`, `pastille` et `degrade` recopient des valeurs qui vivent aussi
+ * dans theme.css, et c'est assume : une carte du menu n'est pas peinte dans les
+ * variables du theme qu'elle propose — elle est dans la page, qui porte un
+ * AUTRE theme. Elle ne peut donc que recevoir ces couleurs en dur.
  */
 export const THEMES = [
   // --- Base -----------------------------------------------------------------
-  { value: "dark", label: "Sombre", groupe: "Base", bandeau: "#0a0d17", pastille: "#ffcb05" },
-  { value: "light", label: "Clair", groupe: "Base", bandeau: "#f2f4f9", pastille: "#c98f00" },
+  { value: "dark", label: "Sombre", groupe: "Base", bandeau: "#0a0d17", pastille: "#ffcb05", sprite: 491 },
+  { value: "light", label: "Clair", groupe: "Base", bandeau: "#f2f4f9", pastille: "#c98f00", sprite: 493 },
   // Sable et rose en dégradé sur les tuiles, sur une nuit chaude. Le seul thème
   // hors de la famille Pixels à servir les sprites dessinés plutôt que les
   // rendus 3D : son fond très sombre et son accent franc sont justement la
@@ -41,39 +56,39 @@ export const THEMES = [
   // Le trio est celui du thème, pas celui d'une région : Psykokwak, Luxray et
   // Chelours. `sprite` accepte déjà un tableau — c'est le même mécanisme que
   // les trios de starters, et il ne touche à aucune couleur.
-  { value: "boussole", label: "Boussole ❤️", groupe: "Base", bandeau: "#14100d", pastille: "#f174d3", sprites: "pixel", sprite: [54, 405, 760] },
+  { value: "boussole", label: "Boussole ❤️", groupe: "Base", bandeau: "#14100d", pastille: "#f174d3", sprites: "pixel", sprite: [54, 405, 760], degrade: ["#e0c79c", "#f174d3"] },
 
   // --- Couleurs : une palette par teinte ------------------------------------
-  { value: "rubis", label: "Rubis", groupe: "Couleurs", bandeau: "#150c0f", pastille: "#f2586c" },
-  { value: "ambre", label: "Ambre", groupe: "Couleurs", bandeau: "#13100a", pastille: "#ff9f2e" },
-  { value: "emeraude", label: "Émeraude", groupe: "Couleurs", bandeau: "#091310", pastille: "#45cf8d" },
-  { value: "turquoise", label: "Turquoise", groupe: "Couleurs", bandeau: "#06141a", pastille: "#36ced8" },
-  { value: "saphir", label: "Saphir", groupe: "Couleurs", bandeau: "#080d1c", pastille: "#5b8dff" },
-  { value: "amethyste", label: "Améthyste", groupe: "Couleurs", bandeau: "#100b1a", pastille: "#a97dff" },
+  { value: "rubis", label: "Rubis", groupe: "Couleurs", bandeau: "#150c0f", pastille: "#f2586c", sprite: 10136 },
+  { value: "ambre", label: "Ambre", groupe: "Couleurs", bandeau: "#13100a", pastille: "#ff9f2e", sprite: 10137 },
+  { value: "emeraude", label: "Émeraude", groupe: "Couleurs", bandeau: "#091310", pastille: "#45cf8d", sprite: 10139 },
+  { value: "turquoise", label: "Turquoise", groupe: "Couleurs", bandeau: "#06141a", pastille: "#36ced8", sprite: 10140 },
+  { value: "saphir", label: "Saphir", groupe: "Couleurs", bandeau: "#080d1c", pastille: "#5b8dff", sprite: 10141 },
+  { value: "amethyste", label: "Améthyste", groupe: "Couleurs", bandeau: "#100b1a", pastille: "#a97dff", sprite: 10142 },
 
   // --- Legendaires : une region, son legendaire -----------------------------
-  { value: "kanto", label: "Mewtwo", groupe: "Légendaires", bandeau: "#0f1015", pastille: "#f2b3d6", sprite: 150 },
-  { value: "johto", label: "Ho-Oh", groupe: "Légendaires", bandeau: "#140f09", pastille: "#ff7f3a", sprite: 250 },
-  { value: "hoenn", label: "Kyogre", groupe: "Légendaires", bandeau: "#030913", pastille: "#2ea8ff", sprite: 382 },
-  { value: "sinnoh", label: "Dialga", groupe: "Légendaires", bandeau: "#141822", pastille: "#a9c9e8", sprite: 483 },
-  { value: "unys", label: "Reshiram", groupe: "Légendaires", bandeau: "#f6f2ea", pastille: "#a04516", sprite: 643 },
-  { value: "kalos", label: "Xerneas", groupe: "Légendaires", bandeau: "#0a0c1e", pastille: "#f0d27a", sprite: 716 },
-  { value: "alola", label: "Solgaleo", groupe: "Légendaires", bandeau: "#06181a", pastille: "#ffe7c2", sprite: 791 },
-  { value: "galar", label: "Zacian", groupe: "Légendaires", bandeau: "#0d121b", pastille: "#f2637f", sprite: 888 },
-  { value: "paldea", label: "Koraidon", groupe: "Légendaires", bandeau: "#09070f", pastille: "#ff5f43", sprite: 1007 },
+  { value: "kanto", label: "Mewtwo", groupe: "Légendaires", bandeau: "#0f1015", pastille: "#f2b3d6", sprite: 150, degrade: ["#f2b3d6", "#b49bea"] },
+  { value: "johto", label: "Ho-Oh", groupe: "Légendaires", bandeau: "#140f09", pastille: "#ff7f3a", sprite: 250, degrade: ["#ff7f3a", "#ffcf5e"] },
+  { value: "hoenn", label: "Kyogre", groupe: "Légendaires", bandeau: "#030913", pastille: "#2ea8ff", sprite: 382, degrade: ["#2ea8ff", "#8ae4ff"] },
+  { value: "sinnoh", label: "Dialga", groupe: "Légendaires", bandeau: "#141822", pastille: "#a9c9e8", sprite: 483, degrade: ["#a9c9e8", "#e2eefa"] },
+  { value: "unys", label: "Reshiram", groupe: "Légendaires", bandeau: "#f6f2ea", pastille: "#a04516", sprite: 643, degrade: ["#a04516", "#e08a35"] },
+  { value: "kalos", label: "Xerneas", groupe: "Légendaires", bandeau: "#0a0c1e", pastille: "#f0d27a", sprite: 716, degrade: ["#f0d27a", "#7fd8ff"] },
+  { value: "alola", label: "Solgaleo", groupe: "Légendaires", bandeau: "#06181a", pastille: "#ffe7c2", sprite: 791, degrade: ["#ffe7c2", "#ffab3d"] },
+  { value: "galar", label: "Zacian", groupe: "Légendaires", bandeau: "#0d121b", pastille: "#f2637f", sprite: 888, degrade: ["#f2637f", "#ffc45e"] },
+  { value: "paldea", label: "Koraidon", groupe: "Légendaires", bandeau: "#09070f", pastille: "#ff5f43", sprite: 1007, degrade: ["#ff5f43", "#b07cff"] },
 
   // --- Starters : une region, son trio de depart ----------------------------
   // Trois numeros et non un seul : un trio de depart ne se resume pas a l'un
   // des trois, et c'est le trio qu'on reconnait d'un coup d'oeil.
-  { value: "starters-kanto", label: "Kanto", groupe: "Starters", bandeau: "#0a100c", pastille: "#6cc86a", sprite: [1, 4, 7] },
-  { value: "starters-johto", label: "Johto", groupe: "Starters", bandeau: "#110f0c", pastille: "#ff8a3c", sprite: [152, 155, 158] },
-  { value: "starters-hoenn", label: "Hoenn", groupe: "Starters", bandeau: "#061315", pastille: "#4cc6e8", sprite: [252, 255, 258] },
-  { value: "starters-sinnoh", label: "Sinnoh", groupe: "Starters", bandeau: "#121620", pastille: "#9fc46a", sprite: [387, 390, 393] },
-  { value: "starters-unys", label: "Unys", groupe: "Starters", bandeau: "#0f0f11", pastille: "#7fbdec", sprite: [495, 498, 501] },
-  { value: "starters-kalos", label: "Kalos", groupe: "Starters", bandeau: "#100f16", pastille: "#f5c04f", sprite: [650, 653, 656] },
-  { value: "starters-alola", label: "Alola", groupe: "Starters", bandeau: "#eef5f4", pastille: "#1c7049", sprite: [722, 725, 728] },
-  { value: "starters-galar", label: "Galar", groupe: "Starters", bandeau: "#101410", pastille: "#5090e0", sprite: [810, 813, 816] },
-  { value: "starters-paldea", label: "Paldéa", groupe: "Starters", bandeau: "#12110a", pastille: "#ff6b3d", sprite: [906, 909, 912] },
+  { value: "starters-kanto", label: "Kanto", groupe: "Starters", bandeau: "#0a100c", pastille: "#6cc86a", sprite: [1, 4, 7], degrade: ["#6cc86a", "#ffbe87"] },
+  { value: "starters-johto", label: "Johto", groupe: "Starters", bandeau: "#110f0c", pastille: "#ff8a3c", sprite: [152, 155, 158], degrade: ["#ff8a3c", "#a6c520"] },
+  { value: "starters-hoenn", label: "Hoenn", groupe: "Starters", bandeau: "#061315", pastille: "#4cc6e8", sprite: [252, 255, 258], degrade: ["#4cc6e8", "#22b073"] },
+  { value: "starters-sinnoh", label: "Sinnoh", groupe: "Starters", bandeau: "#121620", pastille: "#9fc46a", sprite: [387, 390, 393], degrade: ["#9fc46a", "#ffab5e"] },
+  { value: "starters-unys", label: "Unys", groupe: "Starters", bandeau: "#0f0f11", pastille: "#7fbdec", sprite: [495, 498, 501], degrade: ["#7fbdec", "#3aa459"] },
+  { value: "starters-kalos", label: "Kalos", groupe: "Starters", bandeau: "#100f16", pastille: "#f5c04f", sprite: [650, 653, 656], degrade: ["#f5c04f", "#82a64e"] },
+  { value: "starters-alola", label: "Alola", groupe: "Starters", bandeau: "#eef5f4", pastille: "#1c7049", sprite: [722, 725, 728], degrade: ["#1c7049", "#cf7524"] },
+  { value: "starters-galar", label: "Galar", groupe: "Starters", bandeau: "#101410", pastille: "#5090e0", sprite: [810, 813, 816], degrade: ["#5090e0", "#8fd47a"] },
+  { value: "starters-paldea", label: "Paldéa", groupe: "Starters", bandeau: "#12110a", pastille: "#ff6b3d", sprite: [906, 909, 912], degrade: ["#ff6b3d", "#b9cf5e"] },
 
   // --- Pixels ---------------------------------------------------------------
   // La seule famille qui ne se contente pas de recolorer : `sprites: "pixel"`
@@ -89,12 +104,12 @@ export const THEMES = [
   //
   // Chaque carte montre un Pokemon de la teinte de son accent : c'est la seule
   // famille ou le sprite ne nomme pas le theme, il l'illustre.
-  { value: "pixels", label: "Console", groupe: "Pixels", bandeau: "#141024", pastille: "#8be04e", sprites: "pixel", sprite: 25 },
-  { value: "pixels-ambre", label: "Ambré", groupe: "Pixels", bandeau: "#1a1206", pastille: "#ffb340", sprites: "pixel", sprite: 4 },
-  { value: "pixels-cyan", label: "Cathode", groupe: "Pixels", bandeau: "#061418", pastille: "#3fd8e8", sprites: "pixel", sprite: 131 },
-  { value: "pixels-magenta", label: "Néon", groupe: "Pixels", bandeau: "#170a18", pastille: "#f45fd0", sprites: "pixel", sprite: 151 },
-  { value: "pixels-sang", label: "Braise", groupe: "Pixels", bandeau: "#170808", pastille: "#ff6a4d", sprites: "pixel", sprite: 6 },
-  { value: "pixels-encre", label: "Encre", groupe: "Pixels", bandeau: "#0b0f1a", pastille: "#7f9cff", sprites: "pixel", sprite: 130 },
+  { value: "pixels", label: "Console", groupe: "Pixels", bandeau: "#141024", pastille: "#8be04e", sprites: "pixel", sprite: 25, degrade: ["#8be04e", "#d2f08a"] },
+  { value: "pixels-ambre", label: "Ambré", groupe: "Pixels", bandeau: "#1a1206", pastille: "#ffb340", sprites: "pixel", sprite: 4, degrade: ["#ffb340", "#ffd694"] },
+  { value: "pixels-cyan", label: "Cathode", groupe: "Pixels", bandeau: "#061418", pastille: "#3fd8e8", sprites: "pixel", sprite: 131, degrade: ["#3fd8e8", "#9cebf4"] },
+  { value: "pixels-magenta", label: "Néon", groupe: "Pixels", bandeau: "#170a18", pastille: "#f45fd0", sprites: "pixel", sprite: 151, degrade: ["#f45fd0", "#ffa9e6"] },
+  { value: "pixels-sang", label: "Braise", groupe: "Pixels", bandeau: "#170808", pastille: "#ff6a4d", sprites: "pixel", sprite: 6, degrade: ["#ff6a4d", "#ffab93"] },
+  { value: "pixels-encre", label: "Encre", groupe: "Pixels", bandeau: "#0b0f1a", pastille: "#7f9cff", sprites: "pixel", sprite: 130, degrade: ["#7f9cff", "#b9c8ff"] },
 
   // --- Récompenses : on ne les choisit pas, on les gagne ---------------------
   // `verrou` porte la clé du succès qui les ouvre — voir domain/succes.js, qui
@@ -108,9 +123,9 @@ export const THEMES = [
   // Toutes sont bi- ou tricolores, ce qu'aucune autre famille ne fait : elles
   // séparent la couleur de ce qu'on TERMINE de celle de ce qu'on TOUCHE, et
   // les font se rencontrer dans le voile des vignettes. Voir theme.css.
-  { value: "aube", label: "Aube", groupe: "Récompenses", bandeau: "#0c0e1a", pastille: "#ff9a5c", verrou: "mille-cases" },
-  { value: "prisme", label: "Prisme", groupe: "Récompenses", bandeau: "#0a0c14", pastille: "#7ee7ff", verrou: "cent-chromatiques" },
-  { value: "cartouche", label: "Cartouche", groupe: "Récompenses", bandeau: "#15151b", pastille: "#9ef01a", verrou: "une-generation" },
-  { value: "duo", label: "Duo", groupe: "Récompenses", bandeau: "#0c1414", pastille: "#ff7a6b", verrou: "toutes-les-paires" },
-  { value: "couronne", label: "Couronne", groupe: "Récompenses", bandeau: "#12100c", pastille: "#ffcf4d", verrou: "pokedex-entier" },
+  { value: "aube", label: "Aube", groupe: "Récompenses", bandeau: "#0c0e1a", pastille: "#ff9a5c", verrou: "mille-cases", sprite: 637, degrade: ["#6ea8ff", "#a8c9ff"] },
+  { value: "prisme", label: "Prisme", groupe: "Récompenses", bandeau: "#0a0c14", pastille: "#7ee7ff", verrou: "cent-chromatiques", sprite: 800, degrade: ["#ff8ad8", "#ffe08a"] },
+  { value: "cartouche", label: "Cartouche", groupe: "Récompenses", bandeau: "#15151b", pastille: "#9ef01a", verrou: "une-generation", sprite: 137, degrade: ["#c8b6ff", "#e2d8ff"] },
+  { value: "duo", label: "Duo", groupe: "Récompenses", bandeau: "#0c1414", pastille: "#ff7a6b", verrou: "toutes-les-paires", sprite: [29, 32], degrade: ["#3fd6c0", "#8ae8db"] },
+  { value: "couronne", label: "Couronne", groupe: "Récompenses", bandeau: "#12100c", pastille: "#ffcf4d", verrou: "pokedex-entier", sprite: 889, degrade: ["#e8e2d0", "#d4574e"] },
 ];
