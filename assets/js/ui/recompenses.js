@@ -395,26 +395,32 @@ function sceneDe(type, r) {
   }
 
   if (type === "motif") {
-    // La trame se pose derrière l'application entière : la montrer seule, sur
-    // un carré vide, ne dirait pas à quel point elle est discrète. On pose donc
-    // une vignette par-dessus, qui donne l'échelle et le contraste réels.
+    // La trame se pose derrière l'APPLICATION ENTIÈRE. La montrer seule, sur un
+    // carré vide, ne dit rien : à cette échelle un quadrillage de 34 px et une
+    // poussière de 26 px se ressemblent, et surtout on ne voit pas ce qui
+    // compte — si elle passe derrière le contenu sans le gêner.
+    //
+    // D'où une tranche de page plutôt qu'un échantillon : la ligne de marque,
+    // une barre de progression, deux vignettes. La trame se juge alors sur ce
+    // qu'elle laisse lire, ce qui est la seule question qu'on se pose.
     return el(
       "div.verrou__scene.verrou__scene--motif",
       { dataset: { motif: r.cle } },
       el("span.verrou__motif", { "aria-hidden": "true" }),
-      tuileDemo()
+      el(
+        "div.verrou__page",
+        el(
+          "div.verrou__page-tete",
+          el("span.verrou__page-nom", "Funkylldex"),
+          el("span.verrou__page-pct", "64 %")
+        ),
+        el("div.verrou__page-jauge", el("span")),
+        el("div.verrou__page-tuiles", tuileDemo(0), tuileDemo(1))
+      )
     );
   }
 
-  if (type === "banniere") {
-    // Le bandeau ne vit que sur la carte de partage, qui est un canvas : il n'y
-    // a pas de version DOM à cloner. La bande large reprend le dégradé de la
-    // pastille — même règle CSS, autre format.
-    return el(
-      "div.verrou__scene.verrou__scene--plein",
-      el("span.recomp__apercu.verrou__bande", { dataset: { banniere: r.cle } })
-    );
-  }
+  if (type === "banniere") return sceneCarte(r);
 
   if (type === "sons") return sceneSonore(r);
 
@@ -422,6 +428,62 @@ function sceneDe(type, r) {
     "div.verrou__scene.verrou__scene--plein",
     el("span.recomp__apercu.verrou__gros", { dataset: { [type]: r.cle } })
   );
+}
+
+/**
+ * Le bandeau, montré SUR LA CARTE DE PARTAGE.
+ *
+ * Une bande de couleur large de trois cents pixels ne dit rien : les cinq
+ * bandeaux sont cinq dégradés, et alignés côte à côte hors de leur contexte ils
+ * se valent tous. Or ce bandeau n'existe qu'à un seul endroit — le filet de
+ * six pixels en haut de la carte qu'on envoie —, et c'est là, au-dessus du
+ * nom, des barres et des chiffres, qu'on peut dire s'il va.
+ *
+ * C'est donc la VRAIE carte qui est dessinée, avec les vrais compteurs, et
+ * seulement le bandeau forcé. 1080 × 1350 réduits à la largeur de la scène :
+ * on ne lit plus les chiffres, mais on n'est pas là pour ça — on regarde une
+ * mise en page qu'on connaît déjà et le filet qui la coiffe.
+ *
+ * REPLI. `poserApercuCarte` est appelé par `ui/save.js`, seul détenteur du
+ * contexte ; si ce chemin n'a pas encore tourné, ou si le dessin échoue, on
+ * retombe sur la bande large. Un aperçu dégradé vaut mieux qu'une scène vide.
+ */
+function sceneCarte(r) {
+  const canvas = dessinerLaCarte(r.cle);
+  if (!canvas) {
+    return el(
+      "div.verrou__scene.verrou__scene--plein",
+      el("span.recomp__apercu.verrou__bande", { dataset: { banniere: r.cle } })
+    );
+  }
+  canvas.className = "verrou__carte";
+  canvas.setAttribute("aria-hidden", "true");
+  return el("div.verrou__scene.verrou__scene--carte", canvas);
+}
+
+/**
+ * Le dessinateur de carte, posé de l'extérieur.
+ *
+ * Posé et non importé, pour la raison qui vaut déjà pour `poserSourceDesSucces`
+ * juste au-dessus, avec un motif de plus ici : `ui/carte-partage.js` importe CE
+ * module — il y lit le bandeau porté et le titre — et l'importer en retour
+ * aurait fait un cycle franc.
+ *
+ * Rend `null` tant que rien n'est posé, ce qui laisse simplement le repli.
+ */
+let peintre = null;
+export function poserApercuCarte(fn) {
+  peintre = fn;
+}
+function dessinerLaCarte(banniere) {
+  if (!peintre) return null;
+  try {
+    return peintre(banniere);
+  } catch {
+    // La carte lit une douzaine de compteurs : si l'un manque au moment où on
+    // ouvre l'aperçu, on préfère la bande large à un pop-up qui ne s'ouvre pas.
+    return null;
+  }
 }
 
 /**
@@ -482,10 +544,13 @@ function sceneSonore(r) {
  * alors une vignette nue : elle porte le cadre et la pastille, ce qui est
  * exactement ce qu'on venait voir.
  */
-function tuileDemo() {
-  const modele = [...document.querySelectorAll(".card--complete")].find((n) =>
+function tuileDemo(rang = 0) {
+  // `rang` sert aux scenes qui en montrent plusieurs : deux clones du meme
+  // Pokemon cote a cote se liraient comme un bug d'affichage.
+  const modeles = [...document.querySelectorAll(".card--complete")].filter((n) =>
     n.querySelector(".card__img")
   );
+  const modele = modeles[rang % Math.max(1, modeles.length)];
 
   if (!modele) {
     return el(

@@ -4345,3 +4345,69 @@ body::before {
   .verrou__scene { min-height: 168px; padding: var(--sp-3); }
   .verrou__tuile { width: 148px; }
 }
+
+/* La carte de partage, dessinee en vrai puis reduite.
+
+   Le canvas fait 1080 x 1350 : on ne lit plus les chiffres a cette taille, et
+   ce n'est pas le sujet — on regarde une mise en page qu'on connait deja, pour
+   juger le filet de couleur qui la coiffe. La scene se contente donc de la
+   contenir, avec l'ombre portee qui la detache du fond. */
+.verrou__scene--carte { min-height: 0; padding: var(--sp-3); }
+.verrou__carte {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 44vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+}
+
+/* La tranche de page, pour juger un motif.
+
+   Tout y est a l'echelle de l'application : les deux vignettes gardent leur
+   largeur de grille, la barre et la ligne de marque ont leurs proportions.
+   C'est ce rapport-la qui dit si une trame passe derriere le contenu ou
+   devant lui — un echantillon isole ne le dit pas. */
+.verrou__scene--motif { padding: 0; }
+.verrou__page {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  padding: var(--sp-3);
+}
+.verrou__page-tete { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); }
+.verrou__page-nom {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+.verrou__page-pct { font-size: 11px; font-weight: 800; color: var(--accent); }
+.verrou__page-jauge {
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+.verrou__page-jauge span {
+  display: block;
+  width: 64%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+}
+/* Les deux vignettes debordent volontiers de la scene : elles gardent leur
+   largeur de grille, et sur un ecran etroit la seconde sort a moitie. C'est
+   exactement ce qu'on veut voir — une grille continue, coupee par le bord,
+   plutot que deux vignettes centrees qui ne ressembleraient a aucune page. */
+.verrou__page-tuiles { display: flex; gap: 8px; overflow: hidden; }
+.verrou__page-tuiles .verrou__tuile { flex: 0 0 auto; }
+
+@media (max-width: 420px) {
+  .verrou__carte { max-height: 38vh; }
+  .verrou__page-tuiles .verrou__tuile { width: 128px; }
+}

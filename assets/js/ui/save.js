@@ -12,12 +12,20 @@ import { deuxPoints, t, tn } from "../core/i18n.js";
 import { resumeDuRapport } from "../domain/sync.js";
 import { downloadJson } from "./common.js";
 import { jouer } from "./sons.js";
-import { ouvrirCartePartage } from "./carte-partage.js";
+import { ouvrirCartePartage, dessinerCarte } from "./carte-partage.js";
+import { poserApercuCarte } from "./recompenses.js";
 
 export function createSaveControls(ctx) {
   const note = document.getElementById("dirty-note");
   const fileInput = document.getElementById("import-file");
   const sync = createSyncControls(ctx);
+
+  // L'apercu d'un bandeau verrouille montre la VRAIE carte de partage, et la
+  // carte a besoin du contexte : ce module est le seul a l'avoir sous la main
+  // en meme temps que le dessinateur. On le pose donc ici plutot que d'ajouter
+  // une dependance a `ui/recompenses.js`, qui est justement importe PAR
+  // `ui/carte-partage.js` — l'importer en retour aurait fait un cycle.
+  poserApercuCarte((banniere) => dessinerCarte(ctx, { banniere }).canvas);
 
   document.getElementById("export-btn").addEventListener("click", () => {
     downloadJson("collection.json", ctx.collection.toExport("export navigateur"));

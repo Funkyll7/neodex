@@ -457,9 +457,14 @@ function panneauDesSucces(c, p, y, succes) {
  * reste indispensable — c'est le repli quand le partage de fichier n'existe
  * pas, et le seul format lisible par un lecteur d'écran à l'autre bout.
  *
+ * @param {Object} [options]
+ * @param {string} [options.banniere] force le bandeau au lieu de lire celui qui
+ *        est porte. Ecrit pour l'apercu d'une recompense verrouillee : on ne
+ *        peut pas juger un bandeau qu'on n'a pas le droit de choisir, et le
+ *        montrer sur autre chose que la vraie carte ne dirait rien.
  * @returns {{canvas: HTMLCanvasElement, texte: string}}
  */
-export function dessinerCarte(ctx) {
+export function dessinerCarte(ctx, options = {}) {
   const p = palette();
   const langue = langueCourante();
   const nombre = new Intl.NumberFormat(langue);
@@ -508,7 +513,7 @@ export function dessinerCarte(ctx) {
   // Le filet de tête : c'est ce qui fait reconnaître la carte comme venant
   // d'ici, le jour où le thème change tout le reste. Sa peinture est l'une des
   // six récompenses — voir `domain/recompenses.js`.
-  c.fillStyle = peintureDuBandeau(c, p, bannierePortee());
+  c.fillStyle = peintureDuBandeau(c, p, options.banniere || bannierePortee());
   c.fillRect(0, 0, LARGEUR, 6);
 
   /* --- l'en-tête --- */
