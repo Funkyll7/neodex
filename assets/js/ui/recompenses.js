@@ -103,7 +103,13 @@ export function appliquerRecompenses() {
   // Le titre est du texte : il remplace la ligne sous le nom du site. Le défaut
   // y réécrit « Collection perso », donc sans récompense choisie rien ne change.
   const sous = document.querySelector(".brand__sub");
-  if (sous) sous.textContent = titrePorte();
+  if (sous) {
+    sous.textContent = titrePorte();
+    // La CLE en attribut, pas seulement le texte : les cinq titres les plus
+    // rares portent un degrade, et le CSS ne peut pas deviner lequel a partir
+    // d une chaine traduite.
+    sous.dataset.titre = choix.titre;
+  }
 
   document.dispatchEvent(new CustomEvent("funkylldex:recompenses", { detail: choix }));
 }

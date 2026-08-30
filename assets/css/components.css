@@ -368,9 +368,16 @@
    ::before POSITIONNE, donc peint apres le contenu en flux du meme conteneur.
    Elle recouvrait donc le sprite depuis toujours — invisible tant qu elle etait
    a 22 %, franchement genant des qu on l a renforcee. */
+/* La taille vit dans une VARIABLE parce que deux elements la suivent : le
+   sprite et le reflet qui le traverse. Elle change a trois endroits — le grand
+   ecran l agrandit, les cadres Laurier et Couronne la reduisent pour faire
+   place a leur ornement —, et un reflet qui aurait garde la sienne se serait
+   decale d autant. C est exactement ce qui arrivait. */
+.card { --taille-sprite: 70px; }
 .card__img {
   position: relative; z-index: 1;
-  width: 70px; height: 70px; max-width: 100%; object-fit: contain;
+  width: var(--taille-sprite); height: var(--taille-sprite);
+  max-width: 100%; object-fit: contain;
   transition: filter .2s;
 }
 .card--missing .card__img { filter: var(--sprite-dim); }
@@ -1173,7 +1180,7 @@
   .card__name { font-size: 15px; }
   .card__gen,
   .card__num { font-size: 11px; }
-  .card__img { width: 76px; height: 76px; }
+  .card { --taille-sprite: 76px; }
   .card__art { height: 84px; }
 
   .info__text,
@@ -1453,16 +1460,14 @@
   display: grid; place-items: center;
   padding-bottom: calc(-2 * var(--marque-dy));
   border-radius: 50%;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--gold-soft) 78%, #fff), var(--gold-soft));
-  /* Une encre À ELLE, et non `--accent-ink`. Celle-ci est taillée pour
+  /* Le fond, l'encre et le halo viennent de la marque choisie — voir la
+     section « Les sept marques » plus bas. Une encre À ELLE, et non `--accent-ink`. Celle-ci est taillée pour
      l'accent : sur le thème clair, où l'accent est un or sombre, elle vaut
      blanc — et le blanc sur le `--gold-soft` orangé du même thème tombait à
      2,08, illisible. `--gold-soft` étant toujours d'un ton moyen à clair, un
      quasi-noir tient partout : mesuré sur les trente-huit palettes, 4,88 au
      pire, sur Couronne. */
-  color: var(--marque-ink);
   font-size: 12px; font-weight: 800;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
   pointer-events: none;
 }
 
@@ -3717,8 +3722,6 @@ body::before {
   place-items: center;
   padding-bottom: calc(-2 * var(--marque-dy));
   border: none;
-  background: var(--accent);
-  color: var(--accent-ink);
   border-radius: 50%;
   font-size: 11px;
   font-weight: 800;
@@ -3861,9 +3864,15 @@ body::before {
    l'icône restait à gauche, le libellé partait à droite, et sept sections sur
    huit avaient leur nom au mauvais bout. C'est `margin-left: auto` sur le seul
    compte qui range ce qui doit l'être. */
+/* `center` ET NON `baseline`. La pastille de l icone est une grille de 22 px :
+   sa ligne de base est celle de son contenu, c est-a-dire le BAS du trace SVG.
+   Alignee sur la ligne de base du texte, elle descendait donc de toute la
+   hauteur du dessin — l icone tombait quatre pixels trop bas dans chacun des
+   huit titres, et le compte a droite avec elle. Une ligne de base ne veut rien
+   dire pour un dessin ; c est le centre qu on veut. */
 .custo__titre {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--sp-2);
   margin: 0;
   font-family: var(--font-display);
@@ -3979,7 +3988,7 @@ body::before {
    donc au titre — « BASE3 », « COULEURS6 ». */
 .custo__sous-titre {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--sp-2);
   margin: 10px 0 0;
   font-size: 10.5px;
@@ -4490,6 +4499,9 @@ body::before {
 .verrou__page {
   position: relative;
   z-index: 1;
+  /* Sans lui, les vignettes imposent leur largeur au bloc entier et le
+     debordement se reporte sur lui au lieu d etre rogne ici. */
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -4522,7 +4534,11 @@ body::before {
    largeur de grille, et sur un ecran etroit la seconde sort a moitie. C'est
    exactement ce qu'on veut voir — une grille continue, coupee par le bord,
    plutot que deux vignettes centrees qui ne ressembleraient a aucune page. */
-.verrou__page-tuiles { display: flex; gap: 8px; overflow: hidden; }
+/* CENTREES, et elles debordent des DEUX cotes. Alignees a gauche, la grille
+   sortait de trente pixels a droite et d aucun a gauche : l apercu paraissait
+   pousse dans un coin alors qu il voulait montrer une grille qui continue. Le
+   debordement symetrique dit la meme chose sans le desequilibre. */
+.verrou__page-tuiles { display: flex; justify-content: center; gap: 8px; overflow: hidden; }
 .verrou__page-tuiles .verrou__tuile { flex: 0 0 auto; }
 
 @media (max-width: 420px) {
@@ -4720,11 +4736,8 @@ body::before {
    se pose sur cette ligne-là, entière et visible, et le Pokémon garde toute sa
    surface — les deux conditions tiennent en même temps, ce qu'aucun réglage de
    position seul ne permettait. */
+[data-cadre="couronne"] .card--complete { --taille-sprite: 58px; }
 [data-cadre="couronne"] .card--complete .card__art { align-items: flex-end; }
-[data-cadre="couronne"] .card--complete .card__img {
-  width: 58px;
-  height: 58px;
-}
 
 [data-cadre="couronne"] .card--complete .card__ornement {
   display: block;
@@ -4782,10 +4795,7 @@ body::before {
    un cadre ; ou reculer le Pokémon de six pixels. La troisième ne coûte rien à
    la mise en page, et le résultat se lit comme une médaille — un sujet un peu
    plus petit au centre d'une couronne, ce qui est exactement le geste. */
-[data-cadre="laurier"] .card--complete .card__img {
-  width: 58px;
-  height: 58px;
-}
+[data-cadre="laurier"] .card--complete { --taille-sprite: 58px; }
 [data-cadre="laurier"] .card--complete .card__ornement {
   display: block;
   inset: -2px 22px;
@@ -5075,9 +5085,20 @@ body::before {
    Le sprite est une image : on ne peut pas peindre à l'intérieur. Le reflet est
    donc un CALQUE distinct, masqué par la même image — d'où `--sprite-src`,
    posé en ligne par `dex-grid.js`, seul endroit qui connaisse l'URL. */
+/* IL EPOUSE LA BOITE DU SPRITE, pas celle de la zone.
+   Il occupait toute la zone avec un masque en `contain` : le decoupage tombait
+   donc au centre d une boite de 138 sur 84, alors que le sprite fait 70 ou 76
+   et se cale en BAS sous le cadre Couronne. Le reflet passait a cote — la
+   plainte etait exacte. Meme largeur, meme hauteur, meme `max-width` que
+   l image : les deux boites ne peuvent plus diverger. */
 .card__reflet {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
+  width: var(--taille-sprite);
+  height: var(--taille-sprite);
+  max-width: 100%;
+  transform: translate(-50%, -50%);
   z-index: 2;
   pointer-events: none;
   opacity: 0;
@@ -5093,9 +5114,14 @@ body::before {
   mask: var(--sprite-src) center / contain no-repeat;
   -webkit-mask: var(--sprite-src) center / contain no-repeat;
 }
-/* Le reflet suit la taille du sprite, qui rétrécit sous Laurier et Couronne. */
-[data-cadre="laurier"] .card--complete .card__reflet,
-[data-cadre="couronne"] .card--complete .card__reflet { mask-size: 58px; -webkit-mask-size: 58px; }
+/* Sous Couronne le sprite est cale en BAS de sa zone pour laisser la place a
+   l ornement : le reflet s y cale aussi, sans quoi il flottait dix pixels
+   au-dessus de lui. */
+[data-cadre="couronne"] .card--complete .card__reflet {
+  top: auto;
+  bottom: 0;
+  transform: translateX(-50%);
+}
 
 @keyframes reflet-chromatique {
   0%   { opacity: 0; background-position: 140% 0; }
@@ -5308,3 +5334,203 @@ body::before {
   transition: transform .15s;
 }
 .jrn__entree[open] .jrn__somme::after { transform: translateY(-20%) rotate(-135deg); }
+
+/* ============ Les sept marques : chacune sa matière, pas juste son signe ==== */
+
+/* ELLES ÉTAIENT SEPT SIGNES SUR UN SEUL DISQUE. Le glyphe changeait, l'or
+   restait — et sept récompenses qui se ressemblent à ce point ne récompensent
+   plus rien : on choisissait un caractère, pas un objet.
+
+   UN CONTOUR COLORÉ, UN CENTRE CLAIR. C'est le montage qui règle tout, et il
+   vaut d'expliquer ce qu'il remplace. La première version peignait chaque
+   pastille d'un dégradé allant du clair au sombre — un violet de #d9c9ff à
+   #3f2596. Chaque marque était superbe et le signe illisible : aucune encre ne
+   tient à la fois sur un violet pâle et sur un violet profond, et le contraste
+   tombait à 1,92. La deuxième resserrait les dégradés dans une bande claire :
+   lisible, mais chaque marque y perdait sa couleur.
+
+   Séparer les deux rôles les réconcilie. Le CONTOUR porte la couleur, pleine et
+   saturée, sur deux pixels et demi où rien n'est écrit. Le CENTRE reste clair,
+   à peine teinté de la même famille, et c'est là que le signe se pose. La
+   pastille garde donc son caractère à l'œil tout en gardant un fond neutre sous
+   le glyphe — les deux contraintes tombent d'accord au lieu de se disputer.
+
+   TROIS VARIABLES, TROIS RÔLES. `--marque-fond` peint le disque et peut empiler
+   autant de couches qu'elle veut ; `--marque-anneau` est le contour ;
+   `--marque-encre` écrit le signe. `--marque-halo` colore l'ombre portée, ce
+   qui suffit à faire rayonner la pastille sans rien ajouter au tracé.
+
+   L'ÉTOILE, ELLE, RESTE CELLE DU THÈME. C'est la marque qu'on a sans rien avoir
+   gagné, et la seule qui doive suivre les trente-huit palettes : elle
+   accompagne la barre de progression, dont elle prend le second bout. Lui
+   donner une couleur à elle l'aurait détachée du reste du site. */
+:root {
+  --marque-fond: linear-gradient(145deg, color-mix(in srgb, var(--gold-soft) 78%, #fff), var(--gold-soft));
+  --marque-encre: var(--marque-ink);
+  --marque-halo: rgba(0, 0, 0, .42);
+  --marque-anneau: transparent;
+}
+
+/* Coche — cent Pokémon terminés. Un sceau : anneau vert franc, cœur pâle. */
+[data-marque="coche"] {
+  --marque-fond: radial-gradient(circle at 50% 42%, #ffffff, #e2f8e8 62%, #c7f0d3);
+  --marque-anneau: #2f9e52;
+  --marque-encre: #06300f;
+  --marque-halo: rgba(47, 158, 82, .5);
+}
+
+/* Éclat — cinq cents chromatiques. Le contour prend le spectre, comme la chasse
+   qu'il récompense : c'est la seule marque dont la couleur TOURNE. Elle ne
+   pouvait le faire qu'une fois sortie du centre. */
+[data-marque="eclat"] {
+  --marque-fond: radial-gradient(circle at 50% 42%, #ffffff, #f4f0ff 60%, #e9e2ff);
+  --marque-anneau: conic-gradient(from 200deg, #7ee7ff, #b28dff 25%, #ff8ad8 50%, #ffe08a 75%, #7ee7ff);
+  --marque-encre: #24124a;
+  --marque-halo: rgba(255, 138, 216, .55);
+}
+
+/* Hexagone — les formes régionales. Une pierre violette : l'anneau est la
+   taille, le centre est ce qu'on voit à travers. */
+[data-marque="hexagone"] {
+  --marque-fond: radial-gradient(circle at 50% 40%, #ffffff, #f1ebff 58%, #ddd0ff);
+  --marque-anneau: #6d47d9;
+  --marque-encre: #2c1170;
+  --marque-halo: rgba(109, 71, 217, .5);
+}
+
+/* Fleur — toutes les formes cosmétiques. Crème au cœur, rose au bord, comme une
+   Prismillon vue de près. */
+[data-marque="fleur"] {
+  --marque-fond: radial-gradient(circle at 50% 40%, #fffafc, #fff0f6 58%, #ffdcea);
+  --marque-anneau: #e0538f;
+  --marque-encre: #5c0d2c;
+  --marque-halo: rgba(224, 83, 143, .5);
+}
+
+/* Gemme — cinq cents Pokémon terminés. Un saphir taillé : l'anneau fait les
+   facettes en tournant, le centre est la table de la pierre. */
+[data-marque="gemme"] {
+  --marque-fond: radial-gradient(circle at 50% 40%, #ffffff, #eaf7ff 58%, #d2ecff);
+  --marque-anneau: conic-gradient(from 140deg, #d6f4ff, #4aa8ff 25%, #1747c4 50%, #4aa8ff 75%, #d6f4ff);
+  --marque-encre: #04205e;
+  --marque-halo: rgba(23, 71, 196, .5);
+}
+
+/* Couronne — le Pokédex entier, et la seule qui porte PLUSIEURS couleurs à la
+   fois. L'or tourne sur l'anneau comme un métal poli, et trois pierres — rubis,
+   saphir, émeraude — y sont serties, là où le bandeau d'une vraie couronne les
+   porte.
+
+   ELLES SONT SUR L'ANNEAU, PAS SOUS LE SIGNE, et c'est ce qui permet de les
+   garder franches. Deux versions les ont posées au centre : elles y ramenaient
+   le contraste du glyphe à 4,32 puis à 3,55, et il aurait fallu les pâlir
+   jusqu'à ce qu'elles ne soient plus des pierres. Serties dans le bandeau,
+   elles ne passent sous rien et peuvent être aussi vives qu'une vraie. */
+[data-marque="couronne"] {
+  --marque-fond: radial-gradient(circle at 50% 40%, #ffffff, #fff8e2 58%, #ffedbe);
+  /* Les trois pierres sont peintes SUR L ANNEAU, donc rognees par lui : elles
+     ne mordent sur le centre a aucun moment. Un premier essai les posait dans
+     le fond, et celle de gauche tombait sous le glyphe — contraste ramene a
+     3,55. Serties dans le bandeau, elles peuvent rester franches. */
+  --marque-anneau:
+    radial-gradient(circle 2.6px at 50% 98%, #ffffff 0 20%, #4a9be8 22% 100%, transparent 100%),
+    radial-gradient(circle 2.3px at 9% 72%, #ffffff 0 22%, #e0553f 24% 100%, transparent 100%),
+    radial-gradient(circle 2.3px at 91% 72%, #ffffff 0 22%, #4fbf6a 24% 100%, transparent 100%),
+    conic-gradient(from 200deg, #fff3c4, #f5b921 22%, #c47f12 44%, #ffe07a 62%, #f5b921 80%, #c47f12);
+  --marque-encre: #43290a;
+  --marque-halo: rgba(245, 185, 33, .55);
+}
+
+/* --- Les deux endroits où ces variables se posent --- */
+
+/* L'ANNEAU EST UN FOND, PAS UNE BORDURE, parce qu'une bordure ne sait pas
+   porter un dégradé conique — et deux des sept en veulent un. Le montage est
+   celui du cadre « Prisme » des vignettes : la couleur est peinte jusqu'au bord
+   extérieur, le disque clair par-dessus jusqu'au bord INTÉRIEUR, et il ne reste
+   visible de la première que l'épaisseur du trait. */
+.card--complete::after,
+.recomp__apercu--marque {
+  border: 2.5px solid transparent;
+  background:
+    var(--marque-fond) padding-box,
+    var(--marque-anneau) border-box;
+  color: var(--marque-encre);
+}
+.card--complete::after { box-shadow: 0 2px 7px var(--marque-halo); }
+.recomp__apercu--marque { box-shadow: 0 1px 5px var(--marque-halo); }
+
+/* L'étoile n'a pas d'anneau : sur elle, `--marque-anneau` vaut `transparent` et
+   le trait laisserait voir la vignette au travers. On le lui rend plein de son
+   propre fond, ce qui revient à ne pas en avoir. */
+[data-marque="etoile"] .card--complete::after,
+[data-marque="etoile"] .recomp__apercu--marque,
+.recomp__apercu--marque[data-marque="etoile"] {
+  background: var(--marque-fond) border-box;
+}
+
+/* ================= Les titres rares portent leur couleur ================== */
+
+/* DOUZE TITRES, ET ILS SE LISAIENT TOUS PAREIL. « Dresseur » s'obtient à cent
+   cases, « Maître du Pokédex » demande les deux mille huit cents : les afficher
+   du même gris rendait le second aussi banal que le premier.
+   Les cinq plus rares — rang 4 et 5 dans l'échelle des succès — reçoivent donc
+   un dégradé, et les sept autres gardent la couleur de texte. C'est la rareté
+   qui décide, pas le goût : un titre coloré doit vouloir dire quelque chose.
+
+   `background-clip: text` a besoin d'une couleur ÉCRITE AVANT lui, et c'est
+   volontaire : si le navigateur ne sait pas découper un fond sur du texte, il
+   ignore les trois dernières lignes et garde celle-là. Un titre lisible plutôt
+   qu'un titre invisible. */
+.brand__sub[data-titre],
+.recomp__opt[data-type="titre"] .recomp__label {
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+.brand__sub[data-titre="chasseur-emerite"],
+.recomp__opt[data-valeur="chasseur-emerite"] .recomp__label,
+.brand__sub[data-titre="traqueur"],
+.recomp__opt[data-valeur="traqueur"] .recomp__label,
+.brand__sub[data-titre="patient"],
+.recomp__opt[data-valeur="patient"] .recomp__label,
+.brand__sub[data-titre="globe-trotteur"],
+.recomp__opt[data-valeur="globe-trotteur"] .recomp__label,
+.brand__sub[data-titre="marieur"],
+.recomp__opt[data-valeur="marieur"] .recomp__label,
+.brand__sub[data-titre="arpenteur"],
+.recomp__opt[data-valeur="arpenteur"] .recomp__label,
+.brand__sub[data-titre="maitre"],
+.recomp__opt[data-valeur="maitre"] .recomp__label {
+  color: var(--accent);
+  -webkit-text-fill-color: transparent;
+  background-image: var(--titre-degrade);
+}
+
+/* Chasseur émérite — cinq cents chromatiques : le rose et l'or de la chasse. */
+.brand__sub[data-titre="chasseur-emerite"],
+.recomp__opt[data-valeur="chasseur-emerite"] .recomp__label { --titre-degrade: linear-gradient(90deg, #ff8ad8, #ffe08a); }
+
+/* Traqueur de lumière — mille chromatiques : le spectre entier, rien de moins. */
+.brand__sub[data-titre="traqueur"],
+.recomp__opt[data-valeur="traqueur"] .recomp__label { --titre-degrade: linear-gradient(90deg, #7ee7ff, #b28dff 45%, #ff8ad8 72%, #ffe08a); }
+
+/* Marieur — toutes les paires ♂ / ♀. Les deux couleurs des boutons de sexe,
+   et c'est le seul endroit du site où elles servent d'ornement : ici elles
+   nomment le succès, elles ne désignent pas une case. */
+.brand__sub[data-titre="marieur"],
+.recomp__opt[data-valeur="marieur"] .recomp__label { --titre-degrade: linear-gradient(90deg, var(--pair), var(--female)); }
+
+/* Globe-trotteur — les neuf générations : du départ vert au bout bleu. */
+.brand__sub[data-titre="globe-trotteur"],
+.recomp__opt[data-valeur="globe-trotteur"] .recomp__label { --titre-degrade: linear-gradient(90deg, #4fbf6a, #4aa8ff); }
+
+/* Arpenteur de terrain — tout le Pokédex GO : ses deux couleurs. */
+.brand__sub[data-titre="arpenteur"],
+.recomp__opt[data-valeur="arpenteur"] .recomp__label { --titre-degrade: linear-gradient(90deg, #4aa8ff, #ffcf4d); }
+
+/* Patient — dix mille rencontres : la nuit d'une longue chasse. */
+.brand__sub[data-titre="patient"],
+.recomp__opt[data-valeur="patient"] .recomp__label { --titre-degrade: linear-gradient(90deg, #8ea2ff, #d6f4ff); }
+
+/* Maître du Pokédex — le dernier. Or, ivoire, or : un titre gravé. */
+.brand__sub[data-titre="maitre"],
+.recomp__opt[data-valeur="maitre"] .recomp__label { --titre-degrade: linear-gradient(90deg, #c47f12, #fff3c4 42%, #f5b921 68%, #d4574e); }
