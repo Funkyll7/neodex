@@ -32,7 +32,7 @@
  * naît déjà actif.
  */
 
-import { reglage, poserReglage } from "../core/prefs.js";
+import { lirePrefs, reglage, poserReglage } from "../core/prefs.js";
 
 let contexte = null;
 let voix = 0;
@@ -66,6 +66,42 @@ export function sonsActifs() {
 /** Bascule la préférence et rend son nouvel état. */
 export function basculerSons() {
   return poserReglage("sons", !sonsActifs());
+}
+
+/**
+ * Les trois jeux de notes, dont deux se débloquent par un succès.
+ *
+ * UNE TRANSFORMATION, ET NON TROIS PALETTES. Écrire trois fois les quinze
+ * recettes aurait été trois fois plus de choses à tenir d'accord : ajouter un
+ * son au site aurait demandé de l'écrire trois fois, et deux des trois
+ * versions auraient fini par diverger de la première.
+ *
+ * Chaque jeu est donc un filtre appliqué à la palette unique. `ton` transpose —
+ * 1,5 est une quinte au-dessus, 0,75 une quarte en dessous —, `duree` étire ou
+ * raccourcit l'extinction, `volume` compense la forme d'onde : un carré porte
+ * beaucoup plus loin qu'un sinus à volume égal, et sans ce correctif « Rétro »
+ * aurait été deux fois trop fort.
+ *
+ * `forme: null` laisse chaque recette garder la sienne — c'est ce qui préserve
+ * le triangle des réussites dans le jeu par défaut.
+ */
+const JEUX = {
+  doux: { forme: null, ton: 1, duree: 1, volume: 1 },
+  cristal: { forme: "sine", ton: 1.5, duree: 1.45, volume: 0.85 },
+  retro: { forme: "square", ton: 0.75, duree: 0.72, volume: 0.5 },
+};
+
+/**
+ * Le jeu choisi.
+ *
+ * Lu ici dans les préférences plutôt que reçu de `ui/recompenses.js` : ce module
+ * est appelé à chaque case cochée et n'a aucune raison de dépendre du panneau
+ * qui règle le choix. Un jeu inconnu retombe sur « doux » — une préférence peut
+ * venir d'un autre appareil, ou nommer une récompense retirée du catalogue.
+ */
+function jeu() {
+  const choix = (lirePrefs().recompenses || {}).sons;
+  return JEUX[choix] || JEUX.doux;
 }
 
 /**
@@ -183,15 +219,22 @@ export function jouer(nom) {
 
   const t = ctx.currentTime;
   const ecart = recette.ecart || 0;
+  const j = jeu();
   recette.notes.forEach((frequence, i) => {
     note(ctx, {
-      frequence,
-      depart: t + i * ecart,
+      frequence: frequence * j.ton,
+      // L'écart suit la durée : transposer sans étirer les silences donnait un
+      // arpège cristallin joué au tempo d'un tic de case, ce qui s'entendait
+      // comme une erreur de lecture plutôt que comme un autre jeu.
+      depart: t + i * ecart * j.duree,
       // La dernière note d'une suite traîne un peu : c'est ce qui fait qu'elle
       // se termine au lieu de s'arrêter.
-      duree: i === recette.notes.length - 1 && recette.notes.length > 1 ? recette.duree * 2.4 : recette.duree,
-      volume: recette.volume,
-      forme: recette.forme,
+      duree:
+        (i === recette.notes.length - 1 && recette.notes.length > 1
+          ? recette.duree * 2.4
+          : recette.duree) * j.duree,
+      volume: recette.volume * j.volume,
+      forme: j.forme || recette.forme,
     });
   });
 }

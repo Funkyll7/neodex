@@ -28,6 +28,8 @@ import { t } from "../core/i18n.js";
 import { FAMILLES, RARETES } from "../domain/succes.js";
 import { iconeSvg } from "./icones-succes.js";
 import { succesCourants } from "./theme.js";
+import { sectionRecompenses } from "./recompenses.js";
+import { retourFerme } from "./retour.js";
 import { THEMES } from "./themes-list.js";
 
 /** La palette qu'un succès déverrouille, s'il en déverrouille une. */
@@ -45,7 +47,12 @@ export function initPageSucces() {
   // annonce. Celle-ci est la même que les autres, et se teinte comme elles.
   fill(bouton, iconeSvg("trophee", 17));
 
+  // Le balayage Retour d'un téléphone doit refermer la page, pas quitter le
+  // site — et depuis une application installée, « quitter » veut dire fermer.
+  let liberer = null;
+
   const ouvrir = (etat) => {
+    if (etat === !panneau.hidden) return;
     panneau.hidden = !etat;
     bouton.setAttribute("aria-expanded", String(etat));
     if (etat) {
@@ -54,6 +61,11 @@ export function initPageSucces() {
       // ce qui surprend : on le rouvre pour voir ce qu'on vient de gagner, et
       // il s'ouvre au milieu des chasses. On remonte.
       panneau.scrollTop = 0;
+      liberer = retourFerme(() => ouvrir(false));
+    } else if (liberer) {
+      const f = liberer;
+      liberer = null;
+      f();
     }
   };
 
@@ -87,6 +99,10 @@ export function initPageSucces() {
     return el(
       "div.succes-boite",
       entete(gagnes, succes.length),
+      // Les récompenses AVANT la liste des succès : c'est ce qu'on vient
+      // chercher une fois qu'on en a gagné quelques-uns, et la liste, elle, se
+      // consulte. Après quarante-trois tuiles, personne ne serait descendu.
+      sectionRecompenses(succes),
       [...parFamille].map(([nom, liste]) =>
         liste.length
           ? el(

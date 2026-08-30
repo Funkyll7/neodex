@@ -88,6 +88,9 @@
 <link rel="modulepreload" href="assets/js/ui/icones-succes.js">
 <link rel="modulepreload" href="assets/js/ui/page-succes.js">
 <link rel="modulepreload" href="assets/js/ui/decor-theme.js">
+<link rel="modulepreload" href="assets/js/domain/recompenses.js">
+<link rel="modulepreload" href="assets/js/ui/recompenses.js">
+<link rel="modulepreload" href="assets/js/ui/retour.js">
 
 <link rel="stylesheet" href="assets/css/theme.css">
 <link rel="stylesheet" href="assets/css/base.css">
@@ -98,7 +101,14 @@
 
 <!-- Ecran de chargement, remplace des que les donnees sont pretes. -->
 <div id="boot" class="boot">
-  <div class="boot__ball" aria-hidden="true"></div>
+  <!-- Le logo du site, et non plus une Poké Ball dessinée en CSS. C'est le même
+       fichier que le favicon, que l'icône de l'application installée et que la
+       marque en haut de la barre latérale : l'écran de chargement montre enfin
+       ce qu'on vient d'ouvrir. En SVG, donc net à toutes les densités, et pour
+       398 octets — il est de toute façon déjà demandé comme favicon, l'écran de
+       chargement ne coûte donc pas une requête de plus. -->
+  <img class="boot__ball" src="assets/img/favicon.svg" alt="" aria-hidden="true"
+       width="46" height="46" decoding="async">
   <p class="boot__text">Chargement du Pokédex…</p>
   <p id="boot-error" class="boot__error" hidden></p>
 </div>
@@ -150,7 +160,7 @@
         <span class="reglage">
           <button type="button" id="settings-toggle" class="icon-btn icon-btn--teinte"
                   aria-expanded="false" aria-controls="settings-panel"
-                  title="Paramètres" aria-label="Paramètres">⚙</button>
+                  title="Paramètres" aria-label="Paramètres"></button>
           <span class="reglage__mot" aria-hidden="true">Réglages</span>
         </span>
         <span class="reglage">

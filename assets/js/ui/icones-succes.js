@@ -102,6 +102,14 @@ export const ICONES = {
   flamme: "M12 21.5c-3.3 0-6-2.4-6-5.5 0-4 4-5.5 3-9.5 3 1 5 3 5 5.5 1-.8 1.5-2 1.5-3.5 2 2 2.5 4.5 2.5 7.5 0 3.1-2.7 5.5-6 5.5z",
   lune: "M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z",
   soleil: "M12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10zM12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8",
+
+  /* --- l'en-tête ---
+     Le rouage des réglages. Il ne sert à aucun succès : il est ici parce que le
+     bouton de l'en-tête portait le caractère « ⚙ », dont la boîte de glyphe
+     n'est pas centrée sur son dessin — le rouage tombait haut et à gauche dans
+     son rond, quel que soit le centrage appliqué au bouton. Un tracé n'a pas ce
+     défaut, et il ressemble enfin au trophée d'à côté. */
+  roue: "M12 15.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zM12 2.6l1.5 2.6 3-.4.6 3 2.7 1.4-1.4 2.7 1.4 2.7-2.7 1.4-.6 3-3-.4-1.5 2.6-1.5-2.6-3 .4-.6-3-2.7-1.4L6 12l-1.4-2.7 2.7-1.4.6-3 3 .4z",
 };
 
 /**

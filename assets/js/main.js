@@ -21,6 +21,7 @@ import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
 import { jouer } from "./ui/sons.js";
 import { initParametres, appliquerParametres } from "./ui/parametres.js";
 import { initPageSucces } from "./ui/page-succes.js";
+import { appliquerRecompenses } from "./ui/recompenses.js";
 import { chassesOuvertes } from "./domain/quetes.js";
 import { estCaseChromatique } from "./domain/collection.js";
 
@@ -48,6 +49,10 @@ initTheme();
 // compact n'est qu'un attribut sur <html>, et le poser tôt évite que la grille
 // naisse en taille normale pour se contracter ensuite sous les yeux.
 appliquerParametres();
+// Les recompenses AVANT le premier rendu, pour la meme raison que le mode
+// compact : la grille doit naitre avec son cadre plutot que le prendre sous les
+// yeux. Ce ne sont que des attributs sur <html>, le CSS fait le reste.
+appliquerRecompenses();
 initParametres();
 // La page des succes n a pas besoin des donnees : elle lit l etat que
 // `ui/theme.js` tient a jour, et se dessine a l ouverture.

@@ -20,16 +20,29 @@
   color: var(--text-muted);
   font-weight: 700;
 }
+/* Le logo du site, et non plus une Poké Ball approximée en CSS : deux demi-cercles
+   sans bande noire ni bouton central, là où le vrai logo est déjà dans le dossier
+   et déjà téléchargé comme favicon.
+
+   Il ne TOURNE plus, il respire. Une image détourée qui tourne sur elle-même
+   part de travers dès qu'elle n'est pas parfaitement symétrique — ce qui était
+   sans conséquence sur un disque bicolore et se voit tout de suite sur un logo.
+   Le battement dit la même chose : quelque chose travaille. */
 .boot__ball {
   width: 46px;
   height: 46px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #ff4d4d 50%, #f4f6fa 50%);
-  border: 3px solid var(--bg);
-  box-shadow: 0 0 0 2px var(--gold);
-  animation: boot-spin 1.1s linear infinite;
+  animation: boot-battement 1.4s ease-in-out infinite;
 }
-@keyframes boot-spin { to { transform: rotate(360deg); } }
+@keyframes boot-battement {
+  0%, 100% { transform: scale(1);    opacity: .82; }
+  50%      { transform: scale(1.09); opacity: 1; }
+}
+/* Un battement continu derrière un texte est fatigant pour qui y est sensible,
+   et le site respecte déjà ce réglage ailleurs. Sans animation, le logo reste
+   simplement posé — il n'y avait rien à comprendre dans la rotation. */
+@media (prefers-reduced-motion: reduce) {
+  .boot__ball { animation: none; opacity: 1; }
+}
 .boot__error {
   max-width: 46ch;
   text-align: center;

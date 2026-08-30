@@ -45,6 +45,8 @@ import { chassesOuvertes, totalPartie } from "../domain/quetes.js";
 import { countComplete } from "../domain/completion.js";
 import { bilanDesSucces, evaluerSucces } from "../domain/succes.js";
 import { dessinerIcone } from "./icones-succes.js";
+import { bannierePortee, titrePorte } from "./recompenses.js";
+import { retourFerme } from "./retour.js";
 
 const LARGEUR = 1080;
 const HAUTEUR = 1350;
@@ -99,6 +101,30 @@ function palette() {
     corps: lire("--font-body", "system-ui, sans-serif"),
     titre: lire("--font-display", "system-ui, sans-serif"),
   };
+}
+
+/**
+ * La peinture du filet de tête, selon le bandeau porté.
+ *
+ * Un dégradé de canvas n'existe que pour un contexte donné : il se fabrique ici,
+ * au dessin, et pas dans une table de constantes. « Uni » rend une couleur
+ * simple — `fillStyle` accepte les deux, l'appelant n'a pas à savoir lequel il a
+ * reçu.
+ */
+function peintureDuBandeau(c, p, cle) {
+  if (cle === "uni") return p.accent;
+  const d = c.createLinearGradient(0, 0, LARGEUR, 0);
+  const arrets = {
+    // Les deux couleurs de la complétion, celles des barres de progression.
+    degrade: [p.accent, "#ff9c3d"],
+    // Les trois premières teintes de génération : la carte les porte déjà dans
+    // sa barre du Pokédex national, le bandeau y répond.
+    tricolore: [TEINTES_GEN[0], TEINTES_GEN[2], TEINTES_GEN[5]],
+    prisme: TEINTES_GEN.filter((_, i) => i % 2 === 0),
+    or: ["#8a6a00", "#ffd76a", "#8a6a00"],
+  }[cle] || [p.accent];
+  arrets.forEach((couleur, i) => d.addColorStop(arrets.length === 1 ? 0 : i / (arrets.length - 1), couleur));
+  return d;
 }
 
 /** Rectangle à coins ronds, avec le repli pour les navigateurs sans `roundRect`. */
@@ -479,21 +505,28 @@ export function dessinerCarte(ctx) {
   degrade.addColorStop(1, p.fondBas);
   c.fillStyle = degrade;
   c.fillRect(0, 0, LARGEUR, HAUTEUR);
-  // Le filet d'accent en haut : c'est ce qui fait reconnaître la carte comme
-  // venant d'ici, le jour où le thème change tout le reste.
-  c.fillStyle = p.accent;
+  // Le filet de tête : c'est ce qui fait reconnaître la carte comme venant
+  // d'ici, le jour où le thème change tout le reste. Sa peinture est l'une des
+  // six récompenses — voir `domain/recompenses.js`.
+  c.fillStyle = peintureDuBandeau(c, p, bannierePortee());
   c.fillRect(0, 0, LARGEUR, 6);
 
   /* --- l'en-tête --- */
-  ecrire(c, p, "Funkylldex", MARGE, 108, { taille: 46, poids: 800, police: "titre" });
+  ecrire(c, p, "Funkylldex", MARGE, 96, { taille: 46, poids: 800, police: "titre" });
   ecrire(
     c,
     p,
     new Date().toLocaleDateString(langue, { day: "numeric", month: "long", year: "numeric" }),
     LARGEUR - MARGE,
-    106,
+    94,
     { taille: 21, poids: 600, couleur: p.fantome, align: "right" }
   );
+  // Le titre porté, sous le nom. C'est le seul endroit de la carte qui dise
+  // quelque chose de la personne plutôt que de la collection — et la raison
+  // pour laquelle un titre vaut d'être gagné.
+  ecrire(c, p, titrePorte(), MARGE + 2, 124, {
+    taille: 21, poids: 700, couleur: p.accent,
+  });
 
   /* --- le bloc de tête --- */
   const tete = panneau(c, p, 140, 300);
@@ -631,10 +664,20 @@ export async function ouvrirCartePartage(ctx) {
     height: HAUTEUR,
   });
 
+  // Le balayage Retour d'un téléphone doit refermer la carte, pas quitter le
+  // site — et depuis une application installée, « quitter » veut dire fermer.
+  // Voir `ui/retour.js`.
+  let liberer = null;
+
   const fermer = () => {
     document.removeEventListener("keydown", auClavier);
     URL.revokeObjectURL(url);
     fond.remove();
+    if (liberer) {
+      const f = liberer;
+      liberer = null;
+      f();
+    }
     if (rendu && rendu.isConnected) rendu.focus();
   };
 
@@ -687,6 +730,7 @@ export async function ouvrirCartePartage(ctx) {
 
   document.body.append(fond);
   document.addEventListener("keydown", auClavier);
+  liberer = retourFerme(fermer);
   boutonPartager.focus();
 }
 

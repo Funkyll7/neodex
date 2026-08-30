@@ -1435,7 +1435,7 @@
    repérer, et où elle disputait la place au compteur de cases. */
 .card { position: relative; }
 .card--complete::after {
-  content: "★";
+  content: var(--marque);
   position: absolute; top: -7px; right: -7px;
   z-index: 3;
   width: 22px; height: 22px;
@@ -3257,7 +3257,9 @@
     align-items: flex-end;
     justify-content: center;
     /* `margin-top: auto` la pousse au bas de la colonne quand les filtres ne la
-       remplissent pas ; sans lui elle flottait juste sous le dernier panneau. */
+       remplissent pas ; sans lui elle flottait juste sous le dernier panneau.
+       Les marges latérale et basse lui font retrouver les bords de la barre,
+       dont le `padding` la séparait. */
     margin: auto calc(-1 * var(--sp-5)) calc(-1 * var(--sp-6));
     padding: 12px var(--sp-3) 14px;
     pointer-events: none;
@@ -3346,3 +3348,191 @@
   border-radius: 50%;
   background: var(--pastille);
 }
+
+/* ========================= Les récompenses portées ======================== */
+
+/* Six familles de cosmétiques, débloquées par les succès et choisies dans leur
+   page. Tout passe par un attribut sur <html> et par le CSS : changer de cadre
+   ne reconstruit pas les 1025 vignettes, il ne coûte qu'un attribut.
+
+   Voir domain/recompenses.js pour le catalogue et ce qui ouvre quoi. */
+
+/* ---------------------------- La marque « ★ » ---------------------------- */
+
+/* Le glyphe est une VARIABLE, pas une règle par endroit. Il est peint à deux
+   endroits — la pastille du coin d'une vignette terminée, et la ligne
+   « ★ Complet » sous son nom — et une variable garde les deux d'accord sans
+   qu'on ait à y penser. */
+:root { --marque: "\2605"; }
+:root[data-marque="coche"]    { --marque: "\2714"; }
+:root[data-marque="eclat"]    { --marque: "\2726"; }
+:root[data-marque="hexagone"] { --marque: "\2B22"; }
+:root[data-marque="fleur"]    { --marque: "\2740"; }
+:root[data-marque="gemme"]    { --marque: "\25C6"; }
+:root[data-marque="couronne"] { --marque: "\265B"; }
+
+.card__marque::before { content: var(--marque); }
+
+/* ----------------------------- Les cadres -------------------------------- */
+
+/* Ils ne touchent QUE les vignettes terminées. Un cadre sur les 1025 aurait
+   fait un damier, et surtout n'aurait plus rien récompensé : c'est la
+   complétion qu'on décore, pas la grille. */
+:root[data-cadre="or"] .card--complete {
+  box-shadow: 0 0 0 1px var(--gold), inset 0 0 0 2px color-mix(in srgb, var(--gold) 26%, transparent);
+}
+:root[data-cadre="laurier"] .card--complete {
+  border-color: #7bbf72;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, #7bbf72 24%, transparent);
+}
+/* Le prisme passe par `border-image` : c'est le seul moyen d'obtenir un dégradé
+   SUR le trait de bordure sans ajouter d'élément. Le « 1 » final signifie « la
+   bordure entière », sans découpe en neuf zones. */
+:root[data-cadre="prisme"] .card--complete {
+  border-image: conic-gradient(from 210deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2, #ff6b6b) 1;
+  box-shadow: none;
+}
+:root[data-cadre="neon"] .card--complete {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 14px var(--accent-glow);
+}
+:root[data-cadre="couronne"] .card--complete {
+  border-color: var(--gold);
+  box-shadow:
+    inset 0 0 0 3px color-mix(in srgb, var(--gold) 34%, transparent),
+    inset 0 0 0 4px color-mix(in srgb, var(--gold) 12%, transparent),
+    0 0 0 1px var(--gold);
+}
+
+/* ----------------------------- Les motifs -------------------------------- */
+
+/* Une trame en fond de page, sous l'application. `body` peint déjà `--bg` ; la
+   trame se pose entre lui et le contenu, sur un pseudo-élément FIXE qui ne
+   défile pas — un motif qui bougerait avec la grille se lirait comme une
+   texture qui glisse, ce qui donne le mal de mer sur mille vignettes.
+
+   `.app` remonte donc d'un plan. C'est la seule ligne qui rende les cinq motifs
+   visibles, et son absence les rendrait tous invisibles d'un coup. */
+.app { position: relative; z-index: 1; }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: none;
+}
+:root[data-motif="grille"] body::before {
+  background-image:
+    repeating-linear-gradient(0deg, var(--border) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, var(--border) 0 1px, transparent 1px 34px);
+  opacity: .5;
+}
+:root[data-motif="eclats"] body::before {
+  background-image:
+    radial-gradient(circle at 20% 30%, var(--accent-wash) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 65%, var(--accent-wash) 0 2px, transparent 3px),
+    radial-gradient(circle at 45% 85%, var(--accent-wash) 0 1.5px, transparent 3px);
+  background-size: 190px 190px, 240px 240px, 150px 150px;
+}
+:root[data-motif="vagues"] body::before {
+  background-image: repeating-radial-gradient(circle at 50% 120%, transparent 0 38px, var(--border) 38px 39px);
+  opacity: .55;
+}
+:root[data-motif="poussiere"] body::before {
+  background-image: radial-gradient(circle, var(--text-ghost) 0 1px, transparent 1.5px);
+  background-size: 26px 26px;
+  opacity: .14;
+}
+:root[data-motif="aurore"] body::before {
+  background-image:
+    radial-gradient(60% 45% at 15% 0%, var(--accent-wash) 0%, transparent 70%),
+    radial-gradient(55% 40% at 90% 20%, color-mix(in srgb, var(--pair) 14%, transparent) 0%, transparent 72%),
+    radial-gradient(70% 50% at 50% 100%, color-mix(in srgb, var(--female) 11%, transparent) 0%, transparent 72%);
+}
+
+/* --------------------- Le choix, dans la page des succès ----------------- */
+
+.recomp { display: flex; flex-direction: column; gap: var(--sp-3); }
+.recomp__famille { display: flex; flex-direction: column; gap: 5px; }
+.recomp__entete { display: flex; flex-direction: column; gap: 1px; }
+.recomp__nom { font-size: 12px; font-weight: 800; color: var(--text-soft); }
+.recomp__aide { font-size: 10.5px; color: var(--text-ghost); }
+.recomp__options { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* Une pastille par option, l'aperçu à gauche et le nom à droite. Montrer la
+   chose plutôt que la nommer : « Prisme » ne dit pas à quoi ressemble un
+   prisme, et six listes de mots seraient six listes à essayer une par une. */
+.recomp__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.recomp__opt:hover:not(:disabled) { color: var(--text); border-color: var(--border-strong); }
+.recomp__opt[aria-pressed="true"] {
+  color: var(--text);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--bg-inset));
+}
+/* Verrouillée, elle reste VISIBLE et garde son aperçu : une récompense dont on
+   ignore l'existence ne donne envie de rien. Le curseur dit qu'elle ne se
+   clique pas, l'attribut `disabled` le dit aux lecteurs d'écran. */
+.recomp__opt:disabled { opacity: .45; cursor: not-allowed; }
+.recomp__cadenas { font-size: 9px; }
+.recomp__label { white-space: nowrap; }
+
+.recomp__apercu {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border-radius: 5px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-sunken);
+}
+/* L'aperçu d'une marque montre le glyphe lui-même : c'est exactement ce qu'on
+   verra sur la vignette, et aucune miniature ne le dirait mieux. */
+.recomp__apercu--marque {
+  display: grid;
+  place-items: center;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+}
+.recomp__apercu--marque[data-marque="etoile"]::before   { content: "\2605"; }
+.recomp__apercu--marque[data-marque="coche"]::before    { content: "\2714"; }
+.recomp__apercu--marque[data-marque="eclat"]::before    { content: "\2726"; }
+.recomp__apercu--marque[data-marque="hexagone"]::before { content: "\2B22"; }
+.recomp__apercu--marque[data-marque="fleur"]::before    { content: "\2740"; }
+.recomp__apercu--marque[data-marque="gemme"]::before    { content: "\25C6"; }
+.recomp__apercu--marque[data-marque="couronne"]::before { content: "\265B"; }
+
+/* Les aperçus de cadre reprennent le traitement réel, en réduction. */
+.recomp__apercu[data-cadre="or"]       { border-color: var(--gold); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--gold) 26%, transparent); }
+.recomp__apercu[data-cadre="laurier"]  { border-color: #7bbf72; box-shadow: inset 0 0 0 2px color-mix(in srgb, #7bbf72 24%, transparent); }
+.recomp__apercu[data-cadre="prisme"]   { border-image: conic-gradient(from 210deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2, #ff6b6b) 1; }
+.recomp__apercu[data-cadre="neon"]     { border-color: var(--accent); box-shadow: 0 0 7px var(--accent-glow); }
+.recomp__apercu[data-cadre="couronne"] { border-color: var(--gold); box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--gold) 34%, transparent); }
+
+.recomp__apercu[data-motif="grille"]    { background-image: repeating-linear-gradient(0deg, var(--border-strong) 0 1px, transparent 1px 5px), repeating-linear-gradient(90deg, var(--border-strong) 0 1px, transparent 1px 5px); }
+.recomp__apercu[data-motif="eclats"]    { background-image: radial-gradient(circle at 30% 35%, var(--accent) 0 1.5px, transparent 2px), radial-gradient(circle at 72% 70%, var(--accent) 0 1.5px, transparent 2px); }
+.recomp__apercu[data-motif="vagues"]    { background-image: repeating-radial-gradient(circle at 50% 130%, transparent 0 4px, var(--border-strong) 4px 5px); }
+.recomp__apercu[data-motif="poussiere"] { background-image: radial-gradient(circle, var(--text-faint) 0 .7px, transparent 1.2px); background-size: 4px 4px; }
+.recomp__apercu[data-motif="aurore"]    { background-image: radial-gradient(80% 60% at 20% 0%, var(--accent-glow) 0%, transparent 70%), radial-gradient(80% 60% at 90% 100%, var(--female) 0%, transparent 70%); }
+
+.recomp__apercu[data-banniere="uni"]       { background: var(--accent); }
+.recomp__apercu[data-banniere="degrade"]   { background: linear-gradient(90deg, var(--gold), var(--gold-soft)); }
+.recomp__apercu[data-banniere="tricolore"] { background: linear-gradient(90deg, #ff6b6b 0 33%, #ffd43b 33% 66%, #4dabf7 66%); }
+.recomp__apercu[data-banniere="prisme"]    { background: linear-gradient(90deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2); }
+.recomp__apercu[data-banniere="or"]        { background: linear-gradient(90deg, #8a6a00, #ffd76a, #8a6a00); }

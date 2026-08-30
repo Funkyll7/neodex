@@ -28,6 +28,7 @@ import { el, fill } from "../core/dom.js";
 import { t } from "../core/i18n.js";
 import { reglage, poserReglage } from "../core/prefs.js";
 import { jouer, sonsActifs, basculerSons } from "./sons.js";
+import { iconeSvg } from "./icones-succes.js";
 
 /**
  * Les réglages du panneau, dans l'ordre d'affichage.
@@ -75,6 +76,12 @@ export function initParametres() {
   const bouton = document.getElementById("settings-toggle");
   const panneau = document.getElementById("settings-panel");
   if (!bouton || !panneau) return;
+
+  // Le rouage vient d'ici et non du caractère « ⚙ » écrit dans le HTML : la
+  // boîte de ce glyphe n'est pas centrée sur son dessin, et il tombait haut et
+  // à gauche dans son rond quel que soit le centrage appliqué au bouton. Un
+  // tracé n'a pas ce défaut, et il s'accorde au trophée d'à côté.
+  fill(bouton, iconeSvg("roue", 17));
 
   const ouvrir = (etat) => {
     panneau.hidden = !etat;

@@ -570,7 +570,10 @@ function paint(node, species, ctx) {
   fill(
     node.querySelector(".card__foot"),
     progress.complete
-      ? el("span.card__complete", `★ ${t("Complet")}`)
+      // Le signe vient du CSS, par `--marque` : c'est une récompense qu'on
+      // choisit, et l'écrire ici en dur aurait obligé à reconstruire les 1025
+      // vignettes à chaque changement. La pastille du coin lit la même variable.
+      ? el("span.card__complete", el("i.card__marque", { "aria-hidden": "true" }), ` ${t("Complet")}`)
       : el("span.card__gen", t(dataset.generations[species.gen].game).replace("Pokémon ", ""))
   );
 
