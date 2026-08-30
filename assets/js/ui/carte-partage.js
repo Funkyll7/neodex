@@ -326,8 +326,18 @@ function legendeDesGenerations(c, p, zone, gens, ordre, noms) {
     c.fillStyle = TEINTES_GEN[i % TEINTES_GEN.length];
     c.fill();
     ecrire(c, p, noms[i], cx + 24, cy, { taille: 21, poids: 600, couleur: p.discret });
-    ecrire(c, p, `${gens[numero].pct} %`, cx + largeurCol - 30, cy, {
-      taille: 21, poids: 800, couleur: p.doux, align: "right",
+    // Le COMPTE et non le pourcentage. « Kanto 70 % » oblige à connaître le
+    // dénominateur pour savoir ce qu'il reste ; « 151 / 151 » dit d'un coup
+    // que la région est finie, et « 138 / 151 » dit combien manquent. Le
+    // pourcentage n'a pas disparu pour autant — c'est ce que la barre au-dessus
+    // dessine, à l'échelle et sans un chiffre.
+    const seau = gens[numero];
+    const fini = seau.done === seau.total;
+    ecrire(c, p, `${seau.done} / ${seau.total}`, cx + largeurCol - 30, cy, {
+      taille: 21, poids: 800, align: "right",
+      // Une région terminée passe à l'accent : sur neuf lignes de chiffres, ce
+      // sont les seules qu'on cherche.
+      couleur: fini ? p.accent : p.doux,
     });
   });
 }
@@ -368,7 +378,7 @@ function panneauChiffres(c, p, y, titre, stats) {
  * un « 0 / 43 » n'apprendraient rien de plus que le compte lui-même.
  */
 function panneauDesSucces(c, p, y, succes) {
-  const zone = panneau(c, p, y, 176);
+  const zone = panneau(c, p, y, 190);
   const gagnes = succes.filter((s) => s.obtenu);
   titreDePanneau(c, p, t("Succès"), zone);
   ecrire(c, p, `${gagnes.length} / ${succes.length}`, zone.x + zone.l, y + 49, {
@@ -392,11 +402,19 @@ function panneauDesSucces(c, p, y, succes) {
     // La couleur du thème pour les cinq succès qui en ouvrent un, l'accent pour
     // les autres : c'est ce qui distingue une récompense d'une simple étape.
     const theme = THEMES.find((th) => th.verrou === s.cle);
-    dessinerIcone(c, s.icone, cx, y + 104, 34, (theme && theme.pastille) || p.accent);
+    dessinerIcone(c, s.icone, cx, y + 98, 34, (theme && theme.pastille) || p.accent);
     // La colonne fait 176 px, « Collectionneur de motifs » en fait 200 à cette
     // taille : sans l'ajustement, le nom sortait par-dessus ses voisins.
-    ecrireAjuste(c, p, t(s.titre), cx, y + 152, pas - 12, {
+    ecrireAjuste(c, p, t(s.titre), cx, y + 144, pas - 12, {
       taille: 17, poids: 700, couleur: p.doux, align: "center",
+    });
+    // La CONDITION sous le nom, en trois mots. « Chasseur émérite » ne dit pas
+    // ce qu'il a fallu faire, et c'est justement ce qu'on regarde sur la carte
+    // de quelqu'un d'autre. Le champ `resume` des succès est une phrase
+    // entière — « Obtenir cinq cents chromatiques. » —, illisible dans une
+    // colonne de 176 px : chaque succès porte donc aussi un libellé court.
+    ecrireAjuste(c, p, t(s.court || s.resume), cx, y + 168, pas - 8, {
+      taille: 15, poids: 600, couleur: p.fantome, align: "center",
     });
   });
 }
@@ -530,29 +548,11 @@ export function dessinerCarte(ctx) {
   /* --- les succès --- */
   panneauDesSucces(c, p, 1120, succes);
 
-  /* --- le pied --- */
-  // En CASES, et non en espèces comme le panneau juste au-dessus. Ce n'est pas
-  // une incohérence, c'est la seule mesure qui réponde à « que me reste-t-il à
-  // faire » : en espèces, une collection à 1014 sur 1025 met ses neuf régions
-  // entre 97 et 100 %, et la ligne ne désigne plus rien. En cases, l'écart
-  // entre Galar à 43 % et Kalos à 79 % saute aux yeux. Le libellé dit l'unité,
-  // pour qu'aucune des deux lectures ne passe pour l'autre.
-  const gensCases = prog.gens || {};
-  const retard = Object.keys(gensCases)
-    .filter((n) => gensCases[n].total > 0)
-    .map((numero) => {
-      const meta = dataset.generations[numero];
-      const nom = meta && meta.region ? t(meta.region) : `${t("Génération")} ${numero}`;
-      return { nom, pct: gensCases[numero].pct };
-    })
-    .sort((a, b) => a.pct - b.pct)
-    .slice(0, 3)
-    .map((g) => `${g.nom} ${g.pct} %`);
-  if (retard.length) {
-    ecrire(c, p, `${t("Cases à cocher")} · ${retard.join("  ·  ")}`, LARGEUR / 2, 1328, {
-      taille: 20, poids: 600, couleur: p.fantome, align: "center",
-    });
-  }
+  // PAS DE PIED. La carte se terminait par « Cases à cocher · Galar 43 % ·
+  // Sinnoh 50 % · Johto 58 % » : les trois régions les plus en retard. C'est
+  // une liste de courses, et elle n'a rien à faire sur une image qu'on envoie
+  // à quelqu'un — on partage ce qu'on a, pas ce qu'on n'a pas. La place rendue
+  // sert aux libellés courts des succès, qui eux disent quelque chose.
 
   const texte = [
     `Funkylldex — ${t("ma collection")}`,
@@ -562,8 +562,8 @@ export function dessinerCarte(ctx) {
     `${t("Pokédex GO")} ${go.pct} % · ${nombre.format(go.owned)} / ${nombre.format(go.total)}`,
     `${t("Quêtes accomplies")} ${nombre.format(store.state.questDone)} · ` +
       `${t("Rencontres comptées")} ${nombre.format(rencontres)}`,
+    `${t("Pokédex national")} ${nombre.format(especesPrises)} / ${nombre.format(dataset.species.length)}`,
     `${t("Succès")} ${succes.filter((s) => s.obtenu).length} / ${succes.length}`,
-    retard.length ? `${t("Cases à cocher")} : ${retard.join(" · ")}` : "",
   ]
     .filter(Boolean)
     .join("\n");
