@@ -64,12 +64,56 @@ import { el, fill } from "../core/dom.js";
 import { artworkUrl } from "../domain/sprites.js";
 
 /**
- * Accorde le décor au thème.
+ * Le dernier thème appliqué, retenu pour pouvoir redessiner sans lui.
  *
- * @param {{sprite?: number|number[]}} theme  l'entrée de `ui/themes-list.js`
+ * Le décor change désormais pour DEUX raisons : on change de palette, ou on
+ * change de compagnon. La seconde ne connaît pas la première — `ui/recompenses.js`
+ * n'a aucune raison de savoir quel thème est porté —, et lui faire remonter
+ * l'objet aurait demandé de le faire redescendre à travers trois appels. Le
+ * module retient donc le sien.
+ */
+let dernierTheme = null;
+
+/**
+ * Le compagnon choisi, posé de l'extérieur.
+ *
+ * Injecté plutôt qu'importé, comme `poserApercuCarte` et `poserSourceDesSucces`
+ * ailleurs : `ui/recompenses.js` importerait sinon ce module qui l'importerait
+ * en retour, et le cycle serait franc.
+ *
+ * Rend l'identifiant d'espèce à afficher, ou `null` pour « celui du thème ».
+ */
+let compagnonChoisi = () => null;
+export function poserCompagnon(fn) {
+  compagnonChoisi = fn;
+}
+
+/**
+ * Accorde le décor au thème — ou au compagnon, s'il en est porté un.
+ *
+ * @param {{sprite?: number|number[]}} [theme]  l'entrée de `ui/themes-list.js` ;
+ *   omise, on reprend la dernière connue.
  */
 export function majDecor(theme) {
-  const ids = !theme || !theme.sprite ? [] : Array.isArray(theme.sprite) ? theme.sprite : [theme.sprite];
+  if (theme !== undefined) dernierTheme = theme;
+  const courant = dernierTheme;
+
+  // LE COMPAGNON GAGNE SUR LA PALETTE, et il est SEUL quand il est là : les
+  // thèmes de starters portent un trio, et poser le compagnon à côté aurait
+  // donné quatre figures au pied de la colonne. Choisir un compagnon, c'est
+  // dire « je veux celui-là », pas « celui-là en plus ».
+  const compagnon = compagnonChoisi();
+  const ids = compagnon
+    ? [compagnon]
+    : !courant || !courant.sprite
+      ? []
+      : Array.isArray(courant.sprite)
+        ? courant.sprite
+        : [courant.sprite];
+  // Le chromatique appartient à la palette Couronne, pas au compagnon : Zacian
+  // y est relevé sur son artwork chromatique. Un compagnon choisi reprend donc
+  // sa couleur ordinaire.
+  const theme_ = compagnon ? null : courant;
 
   const figures = () =>
     ids.map((id) =>
@@ -77,7 +121,7 @@ export function majDecor(theme) {
         // Couronne vient du Zacian CHROMATIQUE : sans ce drapeau, le décor
         // affichait le bleu terne du normal sous une palette relevée sur le
         // cyan du chromatique — deux couleurs qui ne se répondaient pas.
-        src: artworkUrl(id, { shiny: Boolean(theme && theme.shiny) }),
+        src: artworkUrl(id, { shiny: Boolean(theme_ && theme_.shiny) }),
         alt: "",
         // `lazy` serait un contresens : l'élément est en bas de l'écran, donc
         // toujours dans le champ, et le navigateur le chargerait tout de suite

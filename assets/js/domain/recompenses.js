@@ -90,6 +90,22 @@ export const TYPES = [
     aide: "Les notes jouées quand une case se coche.",
     defaut: "doux",
   },
+  /* LE COMPAGNON REMPLACE LA FIGURE DU THÈME, il ne s'ajoute pas à elle.
+     Le site montre déjà le Pokémon de la palette au pied de la colonne et dans
+     la barre « Filtres » — voir `ui/decor-theme.js`. Poser un second sprite
+     ailleurs aurait fait deux mascottes qui se disputent la page ; le choix
+     décide donc de CELLE-LÀ.
+
+     Le défaut est « celui du thème », c'est-à-dire le comportement d'avant :
+     personne ne voit son site changer, et la palette garde sa figure tant
+     qu'on ne lui en préfère pas une autre. */
+  {
+    cle: "compagnon",
+    nom: "Compagnon",
+    onglet: "Compagnon",
+    aide: "Le Pokémon au pied de la colonne, et dans la barre « Filtres ».",
+    defaut: "theme",
+  },
   /* L'ÉCRAN DE CHARGEMENT EST LA PREMIÈRE CHOSE QU'ON VOIT, et la seule qu'on
      regarde sans rien faire d'autre. Il montrait un logo qui tourne, ce qui est
      honnête et un peu court pour les secondes que prend un jeu de données de
@@ -266,6 +282,45 @@ export const RECOMPENSES = [
      parce que Johto est la région des Balls d'Apricot ; Paldea la Master Ball
      parce que c'est la dernière région, la plus grosse, et qu'on ne gaspille
      pas une Master Ball. */
+  /* ------------------------------ Compagnons -------------------------------
+     LES DIX-HUIT LIBRES SONT LES POKEMON QUE LES PALETTES PORTAIENT DEJA.
+     Ils sont dans le site depuis toujours, chacun comme figure d'un thème :
+     les rendre choisissables ne coûte donc aucune image de plus, et ouvre le
+     menu à tout le monde dès la première visite.
+
+     Les six « pierres » — Rubis, Ambre, Émeraude, Turquoise, Saphir,
+     Améthyste — n'y sont pas : leurs figures sont des noyaux de Météno, donc
+     des FORMES, et la table des espèces ne les connaît pas par leur numéro.
+     Elles se dessineraient sans problème mais n'auraient pas de nom.
+
+     LES NEUF QUI SE GAGNENT SONT LE TROISIEME LEGENDAIRE DE CHAQUE REGION :
+     celui de la troisième version, celle qui arrive après les deux jeux —
+     Suicune pour Cristal, Rayquaza pour Émeraude, Giratina pour Platine,
+     Kyurem, Zygarde, Necrozma, Eternatus, Terapagos. Kanto n'en a pas, sa
+     troisième version étant Jaune : il donne Mew, le fabuleux qui EST son
+     secret. Aucun n'est la figure d'une palette, ils n'existaient donc nulle
+     part sur le site avant. */
+  { cle: "theme", type: "compagnon", nom: "Celui du thème", succes: null },
+  ...[4, 6, 25, 130, 131, 137, 150, 250, 382, 483, 491, 493, 637, 643, 716, 791, 888, 1007].map(
+    (espece) => ({ cle: "e" + espece, type: "compagnon", espece, succes: null })
+  ),
+  ...[
+    [151, 1],
+    [245, 2],
+    [384, 3],
+    [487, 4],
+    [646, 5],
+    [718, 6],
+    [800, 7],
+    [890, 8],
+    [1024, 9],
+  ].map(([espece, gen]) => ({
+    cle: "e" + espece,
+    type: "compagnon",
+    espece,
+    succes: "fanatique-" + gen,
+  })),
+
   /* -------------------------- Écran de chargement -------------------------
      Galar, donc le Dynamax : trois ondes rouges qui partent du logo et une
      lueur qui bat, comme l énergie qui monte d un antre. Le rouge est fixe et

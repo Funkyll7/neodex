@@ -6252,3 +6252,36 @@ body::before {
 .recomp__apercu[data-chargement="dynamax"] {
   background-image: radial-gradient(circle at 50% 50%, #e4342f 0 4px, color-mix(in srgb, #e4342f 45%, transparent) 5px 7px, transparent 8px);
 }
+
+/* ============================== Les compagnons =========================== */
+
+/* La pastille EST le sprite : la seule des onze familles dont l'aperçu existe
+   déjà dans le jeu de données. Un aplat n'aurait rien dit — « Suicune » ne
+   donne pas sa couleur. */
+.recomp__apercu--compagnon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border: none;
+  background: none;
+}
+/* La liste des compagnons est la plus longue des onze — vingt-huit entrées.
+   Elle passe donc en grille plutôt qu'en ligne qui se replie : les noms ont des
+   longueurs très inégales (« Mew » contre « Dracaufeu »), et un `flex-wrap`
+   donnait des lignes de deux puis de quatre, impossibles à parcourir. */
+.recomp__options[data-type="compagnon"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 5px;
+}
+
+.verrou__scene--compagnon { display: grid; place-items: center; padding: var(--sp-4); }
+.verrou__compagnon { width: min(228px, 60vw); height: auto; object-fit: contain; }
+.verrou__compagnon-vide {
+  margin: 0;
+  max-width: 30ch;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}

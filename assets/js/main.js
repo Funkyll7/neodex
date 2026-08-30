@@ -25,7 +25,7 @@ import { versionCourante } from "./domain/maj.js";
 import { renderMaj } from "./ui/maj.js";
 import { iconeSvg } from "./ui/icones-succes.js";
 import { initPageSucces } from "./ui/page-succes.js";
-import { appliquerRecompenses } from "./ui/recompenses.js";
+import { appliquerRecompenses, poserSourceDesEspeces } from "./ui/recompenses.js";
 import { initCourbe } from "./ui/courbe.js";
 import { chassesOuvertes } from "./domain/quetes.js";
 import { estCaseChromatique, CASE_HORS } from "./domain/collection.js";
@@ -111,7 +111,12 @@ async function boot() {
 }
 
 function start(dataset) {
-  /** Liste filtree actuellement a l'ecran : c'est elle qui definit « suivant ». */
+  // Le menu des recompenses nomme ses compagnons par leur numero d espece : il
+  // lui faut le jeu de donnees pour en tirer un nom traduit. Pose ici, au plus
+  // tot apres le chargement, et avant tout rendu du menu.
+  poserSourceDesEspeces((id) => dataset.byId.get(id));
+
+  /** Liste filtree actuellement a l ecran : c est elle qui definit « suivant ». */
   let visible = [];
   const collection = new Collection(dataset.baseCollection, dataset);
   const sync = new GitHubSync(collection);

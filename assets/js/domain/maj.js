@@ -55,6 +55,7 @@ export const VERSIONS = [
       ["ajout", "Trois Balls à gagner : elles remplacent la Poké Ball du bouton « capturé », et le curseur sur ordinateur."],
       ["ajout", "Deux fonds de page qui bougent : la pluie de Hoenn et la neige de Sinnoh."],
       ["ajout", "Un écran de chargement « Dynamax » : trois ondes rouges partent du logo pendant que le Pokédex arrive."],
+      ["ajout", "Un compagnon à choisir : dix-neuf Pokémon des palettes, plus le troisième légendaire de chaque région bouclée."],
     ],
   },
   {

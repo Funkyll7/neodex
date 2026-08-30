@@ -34,8 +34,45 @@ import { RARETES } from "../domain/succes.js";
 import { jouerAvec } from "./sons.js";
 import { ouvrirPopup } from "./popup.js";
 import { precisionDuSucces } from "./succes-detail.js";
-import { setStyleDeSprite } from "../domain/sprites.js";
+import { setStyleDeSprite, spriteUrl, artworkUrl } from "../domain/sprites.js";
 import { CONFIG } from "../config.js";
+import { nomEspece } from "../core/i18n.js";
+import { poserCompagnon, majDecor } from "./decor-theme.js";
+
+/**
+ * De quoi retrouver une espèce par son numéro — le jeu de données, injecté.
+ *
+ * Les compagnons sont désignés par un identifiant, et leur libellé doit être le
+ * NOM du Pokémon, traduit. Ce module ne connaît pas le jeu de données et n'a pas
+ * à le connaître ; `main.js`, qui le détient, le lui pose. Sans source, on
+ * retombe sur le numéro : un menu qui affiche « #151 » reste utilisable, un menu
+ * qui plante ne l'est pas.
+ */
+let sourceEspeces = () => null;
+export function poserSourceDesEspeces(fn) {
+  sourceEspeces = fn;
+}
+
+/** Le libellé d'une récompense : son nom, ou celui de son Pokémon. */
+function libelle(r) {
+  if (!r.espece) return t(r.nom);
+  const e = sourceEspeces(r.espece);
+  return e ? nomEspece(e) : "#" + r.espece;
+}
+
+/**
+ * Le compagnon porté, en identifiant d'espèce — `null` pour « celui du thème ».
+ *
+ * `ui/decor-theme.js` l'interroge à chaque redessin plutôt que de le recevoir :
+ * il est le seul à savoir QUAND il redessine, et lui pousser la valeur aurait
+ * demandé de la lui repasser à chaque changement de palette aussi.
+ */
+export function compagnonPorte() {
+  const cle = choixCourant().compagnon;
+  const r = RECOMPENSES.find((x) => x.type === "compagnon" && x.cle === cle);
+  return r && r.espece ? r.espece : null;
+}
+poserCompagnon(compagnonPorte);
 
 /** Les types posés en attribut sur `<html>`, et peints par le CSS seul. */
 const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes", "ball", "chargement"];
@@ -124,6 +161,11 @@ export function appliquerRecompenses() {
     // d une chaine traduite.
     sous.dataset.titre = choix.titre;
   }
+
+  // Le compagnon n'est pas peint par le CSS : il remplace la figure du thème,
+  // qui est une image posée par `ui/decor-theme.js`. On lui demande donc de se
+  // redessiner — sans lui repasser le thème, qu'il retient lui-même.
+  majDecor();
 
   document.dispatchEvent(new CustomEvent("funkylldex:recompenses", { detail: choix }));
 }
@@ -255,7 +297,7 @@ const succesSource = () => source();
  * vivant est le pire des deux.
  */
 function option(type, r, choisi) {
-  const titre = r.ouvert ? t(r.nom) : `${t(r.nom)} — ${conditionDe(r)}`;
+  const titre = r.ouvert ? libelle(r) : `${libelle(r)} — ${conditionDe(r)}`;
 
   return el(
     "button.recomp__opt",
@@ -273,7 +315,7 @@ function option(type, r, choisi) {
       onclick: r.ouvert ? () => poserChoix(type.cle, r.cle) : () => ouvrirApercu(type.cle, r),
     },
     apercu(type.cle, r),
-    el("span.recomp__label", t(r.nom)),
+    el("span.recomp__label", libelle(r)),
     r.ouvert ? null : el("span.recomp__cadenas", { "aria-hidden": "true" }, "🔒")
   );
 }
@@ -318,7 +360,7 @@ function conditionDe(r) {
  */
 function ouvrirApercu(type, r) {
   montrerVerrou({
-    nom: t(r.nom),
+    nom: libelle(r),
     sousTitre: t(nomDuType(type)),
     scene: sceneDe(type, r),
     succes: r.source,
@@ -403,6 +445,23 @@ function sceneDe(type, r) {
         el("span.verrou__marque-nom", "Funkylldex"),
         el("span.verrou__marque-sous", t(r.texte || r.nom))
       )
+    );
+  }
+
+  if (type === "compagnon") {
+    // L ARTWORK ET NON LE SPRITE, comme dans le decor lui-meme : c est la meme
+    // image qu on verra au pied de la colonne, a la meme echelle. Le repli
+    // « celui du theme » n a pas de Pokemon a montrer — il montre donc le
+    // decor courant, quel qu il soit.
+    if (!r.espece) {
+      return el(
+        "div.verrou__scene.verrou__scene--compagnon",
+        el("p.verrou__compagnon-vide", t("Le Pokémon de la palette portée, quelle qu'elle soit."))
+      );
+    }
+    return el(
+      "div.verrou__scene.verrou__scene--compagnon",
+      el("img.verrou__compagnon", { src: artworkUrl(r.espece), alt: "", loading: "eager" })
     );
   }
 
@@ -969,6 +1028,17 @@ function apercu(type, r) {
     return el("span.recomp__apercu.recomp__apercu--marque", { dataset: { marque: r.cle } });
   }
   if (type === "sons") return iconeSvg("etincelle", 16);
+  // Un compagnon se montre par SON sprite : c est la seule pastille dont le
+  // dessin est deja dans le jeu de donnees, et la seule ou un aplat n aurait
+  // rien appris — « Suicune » ne dit pas de quelle couleur il est.
+  if (type === "compagnon") {
+    if (!r.espece) return iconeSvg("palette", 16);
+    return el("img.recomp__apercu.recomp__apercu--compagnon", {
+      src: spriteUrl(r.espece),
+      alt: "",
+      loading: "lazy",
+    });
+  }
   // La Poké Ball par défaut n'a pas de fichier : elle est le masque du bouton,
   // peint par `currentColor`. On lui rend donc la pastille du bouton lui-même,
   // ce qui la montre exactement telle qu'elle sera.
