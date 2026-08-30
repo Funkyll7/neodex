@@ -77,9 +77,10 @@ export function initTheme() {
  *
  * AU CHANGEMENT DE LANGUE, ensuite, par l'écouteur posé dans `initTheme()`.
  *
- * L'onglet ouvert est conservé : `syncPicker()` rouvre sinon la famille du
- * thème actif, et basculer la langue en parcourant « Pixels » aurait ramené
- * ailleurs sans qu'on l'ait demandé.
+ * Il n'y a plus d'onglet à conserver : le menu affiche tout à plat, et un
+ * simple redessin suffit. La position de défilement, elle, se perd — c'est le
+ * prix d'un `fill()` complet, et changer de langue est assez rare pour que
+ * personne ne s'en aperçoive.
  */
 export function retraduirePalette() {
   // Le bouton D'ABORD, et hors de toute condition : il porte le nom du thème
@@ -89,13 +90,8 @@ export function retraduirePalette() {
   peindreBoutonTheme();
 
   const root = document.getElementById("theme-picker");
-  if (!root || !root.querySelector(".themes__tab")) return;
-  const ouvert = [...root.querySelectorAll(".themes__tab")].find(
-    (onglet) => onglet.getAttribute("aria-selected") === "true"
-  );
-  const famille = ouvert && ouvert.dataset.famille;
+  if (!root || !root.querySelector(".thopt")) return;
   buildPicker();
-  if (famille) montrerFamille(root, famille);
 }
 
 /**
@@ -221,45 +217,21 @@ function buildPicker() {
     familles.get(theme.groupe).push(theme);
   }
 
-  const onglets = el("div.themes__tabs", { role: "tablist", "aria-label": t("Familles de thèmes") });
   const panneaux = el("div.themes__panels");
 
   for (const [titre, liste] of familles) {
+    // Le TEXTE se traduit, la CLÉ non. `cle` vient de `idDeFamille(titre)` et
+    // sert d'identifiant DOM ; elle est aussi écrite en dur ailleurs —
+    // `redessinerRecompenses` cherche `[data-famille="recompenses"]`. Traduire
+    // le titre AVANT d'en dériver la clé aurait donné « rewards » en anglais,
+    // et ce sélecteur, muet, aurait cessé de repeindre les récompenses dans
+    // cette langue-là.
     const cle = idDeFamille(titre);
-    onglets.append(
-      el(
-        "button.themes__tab",
-        {
-          type: "button",
-          role: "tab",
-          id: `theme-tab-${cle}`,
-          "aria-controls": `theme-panel-${cle}`,
-          "aria-selected": "false",
-          tabindex: "-1",
-          dataset: { famille: cle },
-          onclick: () => montrerFamille(root, cle),
-          onkeydown: (event) => naviguerOnglets(root, event),
-        },
-        // Le TEXTE se traduit, la CLÉ non. `cle` vient de `idDeFamille(titre)`
-        // et sert d'identifiant DOM (`aria-controls`, `data-famille`) ; elle est
-        // aussi écrite en dur ailleurs — `redessinerRecompenses` cherche
-        // `[data-famille="recompenses"]`. Traduire le titre AVANT d'en dériver
-        // la clé aurait donné « rewards » en anglais, et ce sélecteur, muet,
-        // aurait cessé de repeindre les récompenses dans cette langue-là.
-        t(titre)
-      )
-    );
     panneaux.append(
       el(
-        "div.themes__panel",
-        {
-          role: "tabpanel",
-          id: `theme-panel-${cle}`,
-          "aria-labelledby": `theme-tab-${cle}`,
-          dataset: { famille: cle },
-          hidden: true,
-        },
-        liste.map(carte)
+        "section.custo__section",
+        el("h4.custo__titre", t(titre), el("span.custo__compte", String(liste.length))),
+        el("div.themes__panel", { dataset: { famille: cle } }, liste.map(carte))
       )
     );
   }
@@ -269,12 +241,13 @@ function buildPicker() {
   // ont chacun le leur. Les familles de palettes deviennent donc des
   // SOUS-onglets, imbriqués dans le panneau « Thème ».
   //
-  // La structure interne — `.themes__tabs`, `.themes__panel[data-famille]` —
-  // n'est pas touchée d'un caractère, et c'est délibéré : `syncPicker`,
-  // `montrerFamille`, `naviguerOnglets` et `redessinerRecompenses` la
-  // désignent tous par ces sélecteurs. La déplacer d'un cran dans l'arbre ne
-  // leur demande rien ; la renommer aurait demandé de tout relire.
-  fill(root, menuDeCustomisation(el("div.themes__interieur", onglets, panneaux)));
+  // `.themes__panel[data-famille]` survit au démontage des onglets, et ce n'est
+  // pas de la nostalgie : `redessinerRecompenses` cherche encore
+  // `[data-famille="recompenses"]` pour repeindre les cinq cartes verrouillées
+  // quand un succès tombe. Le conteneur a changé de rôle — il n'est plus un
+  // panneau d'onglet mais le corps d'une section —, son nom n'avait aucune
+  // raison de changer avec lui.
+  fill(root, menuDeCustomisation(panneaux));
   syncPicker();
 }
 
@@ -288,8 +261,6 @@ function buildPicker() {
  * trophées pour changer un cadre.
  */
 function menuDeCustomisation(interieur) {
-  const onglets = el("div.custo__tabs", { role: "tablist", "aria-label": t("Customisation") });
-  const panneaux = el("div.custo__panels");
   const entete = el(
     "div.custo__entete",
     el("h3.panel__label", t("Customisation")),
@@ -300,65 +271,27 @@ function menuDeCustomisation(interieur) {
     )
   );
 
-  const ajouter = (cle, libelle, contenu) => {
-    onglets.append(
-      el(
-        "button.custo__tab",
-        {
-          type: "button",
-          role: "tab",
-          id: `custo-tab-${cle}`,
-          "aria-controls": `custo-panel-${cle}`,
-          "aria-selected": String(cle === "theme"),
-          tabindex: cle === "theme" ? "0" : "-1",
-          dataset: { custo: cle },
-          onclick: () => montrerCusto(cle),
-        },
-        libelle
-      )
-    );
-    panneaux.append(
-      el(
-        "div.custo__panel",
-        {
-          role: "tabpanel",
-          id: `custo-panel-${cle}`,
-          "aria-labelledby": `custo-tab-${cle}`,
-          dataset: { custo: cle },
-          hidden: cle !== "theme",
-        },
-        contenu
-      )
-    );
-  };
+  // TOUT À PLAT, et rien derrière un onglet.
+  //
+  // On avait d'abord posé huit onglets, un par type de cosmétique, avec les six
+  // familles de palettes en sous-onglets du premier. C'était rangé, et
+  // parfaitement pénible : voir ce qu'on possède demandait quatorze clics, et
+  // rien ne disait qu'il y avait quelque chose derrière l'onglet « Bandeau ».
+  //
+  // La page des succès affiche ses quarante-trois tuiles d'un coup et se
+  // parcourt au doigt. Celle-ci fait pareil : une section par famille, tout
+  // visible, un seul défilement. Sept sections de plus à faire défiler coûtent
+  // moins qu'un seul niveau de plus à explorer.
+  const sections = TYPES.map((type) =>
+    el(
+      "section.custo__section",
+      el("h4.custo__titre", t(type.nom)),
+      el("p.recomp__aide", t(type.aide)),
+      optionsDuType(type)
+    )
+  );
 
-  ajouter("theme", t("Thème"), interieur);
-  for (const type of TYPES) {
-    // `onglet` plutôt que `nom` : l'onglet est une pastille dans une rangée de
-    // huit, « Marque de complétion » y prenait à lui seul le quart de la
-    // largeur. Le nom entier reste dans le panneau, sous forme d'explication.
-    ajouter(
-      type.cle,
-      t(type.onglet || type.nom),
-      el("div.custo__corps", el("p.recomp__aide", t(type.aide)), optionsDuType(type))
-    );
-  }
-
-  return el("div.custo-boite", entete, el("div.custo", onglets, panneaux));
-}
-
-/** Montre un onglet de customisation et un seul. */
-function montrerCusto(cle) {
-  const root = document.getElementById("theme-picker");
-  if (!root) return;
-  for (const onglet of root.querySelectorAll(".custo__tab")) {
-    const actif = onglet.dataset.custo === cle;
-    onglet.setAttribute("aria-selected", String(actif));
-    onglet.tabIndex = actif ? 0 : -1;
-  }
-  for (const panneau of root.querySelectorAll(".custo__panel")) {
-    panneau.hidden = panneau.dataset.custo !== cle;
-  }
+  return el("div.custo-boite", entete, el("div.custo", interieur, sections));
 }
 
 /** « Légendaires » -> « legendaires » : un identifiant sur pour aria-controls. */
@@ -469,35 +402,6 @@ function vignette(theme) {
   );
 }
 
-/** Montre une famille et une seule. */
-function montrerFamille(root, cle) {
-  for (const onglet of root.querySelectorAll(".themes__tab")) {
-    const actif = onglet.dataset.famille === cle;
-    onglet.setAttribute("aria-selected", String(actif));
-    onglet.tabIndex = actif ? 0 : -1;
-  }
-  for (const panneau of root.querySelectorAll(".themes__panel")) {
-    panneau.hidden = panneau.dataset.famille !== cle;
-  }
-}
-
-/**
- * Fleches gauche / droite entre les onglets.
- *
- * Attendu d'un `role="tablist"` : sans cela, un seul onglet est atteignable au
- * clavier, puisque les autres portent `tabindex="-1"` — c'est justement ce qui
- * evite d'avoir a traverser cinq onglets pour atteindre les cartes.
- */
-function naviguerOnglets(root, event) {
-  const sens = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-  if (!sens) return;
-  event.preventDefault();
-  const onglets = [...root.querySelectorAll(".themes__tab")];
-  const ici = onglets.indexOf(event.currentTarget);
-  const cible = onglets[(ici + sens + onglets.length) % onglets.length];
-  montrerFamille(root, cible.dataset.famille);
-  cible.focus();
-}
 
 
 /* ============================ Récompenses ================================= */
@@ -628,17 +532,12 @@ function syncPicker() {
   if (!root) return;
   const courant = document.documentElement.dataset.theme;
 
-  let famille = null;
+  // Plus rien à ouvrir ni à replier : les six familles sont affichées ensemble,
+  // il ne reste qu'à cocher la bonne carte. La fonction faisait aussi le tri
+  // des onglets — c'est justement ce qui a disparu.
   for (const bouton of root.querySelectorAll(".thopt")) {
-    const actif = bouton.dataset.theme === courant;
-    bouton.setAttribute("aria-pressed", String(actif));
-    if (actif) famille = bouton.closest(".themes__panel").dataset.famille;
+    bouton.setAttribute("aria-pressed", String(bouton.dataset.theme === courant));
   }
-
-  // Un theme inconnu — une palette retiree, des preferences venues d'ailleurs —
-  // ne doit pas laisser le menu sans aucun onglet ouvert.
-  const premier = root.querySelector(".themes__tab");
-  montrerFamille(root, famille || (premier && premier.dataset.famille));
 }
 
 const PAR_VALEUR = new Map(THEMES.map((t) => [t.value, t]));

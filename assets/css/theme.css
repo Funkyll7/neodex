@@ -413,6 +413,7 @@
   --gold: #c3aef2; --gold-soft: #e6d8ff;
   --accent: #c3aef2; --accent-ink: #1c0d3a;
   --accent-glow: rgba(195, 174, 242, .42); --accent-wash: rgba(195, 174, 242, .12); --accent-border: #3a3159;
+  --teinte-1: #d3cbdf; --teinte-2: #8f74d8; --teinte-3: #e468c6;
 }
 
 /* Johto — Ho-Oh : le sépia des plumes brûlées, l'or de la queue, et des
@@ -426,6 +427,7 @@
   --gold: #ff7f3a; --gold-soft: #ffcf5e;
   --accent: #ff7f3a; --accent-ink: #2b0d00;
   --accent-glow: rgba(255, 127, 58, .45); --accent-wash: rgba(255, 127, 58, .13); --accent-border: #4f2a12;
+  --teinte-1: #e8442b; --teinte-2: #f7bb26; --teinte-3: #43b96b;
 }
 
 /* Hoenn — Kyogre : l'abysse. Le fond descend presque au noir tandis que les
@@ -438,6 +440,7 @@
   --gold: #2ea8ff; --gold-soft: #8ae4ff;
   --accent: #2ea8ff; --accent-ink: #01152b;
   --accent-glow: rgba(46, 168, 255, .45); --accent-wash: rgba(46, 168, 255, .13); --accent-border: #17395f;
+  --teinte-1: #2f74dd; --teinte-2: #e2f0fb; --teinte-3: #dd4a4f;
 }
 
 /* Sinnoh — Dialga : l'acier et le diamant. Le fond est le plus clair des
@@ -448,9 +451,12 @@
   color-scheme: dark;
   /* Ses cinq surfaces sont les plus CLAIRES du fichier : le fond de survol
      atteint #2f374a, là où les autres thèmes sombres plafonnent vers #182038.
-     L'échelle héritée du bloc sombre y retombait sous le seuil AA — mesuré,
-     `--text-ghost` à 2,41. Elle est donc relevée ici, comme le font déjà les
-     palettes de récompense. 6,31 / 5,42 / 4,64 sur la pire des cinq.
+     L'échelle héritée du bloc sombre y retombait sous le seuil AA — remesuré,
+     `--text-ghost` tombe à 4,04 sur ce survol (et non 2,41, chiffre du relevé
+     précédent qu'aucune surface de ce thème ne produit). Elle est donc relevée
+     ici, comme le font déjà les palettes de récompense :
+     10,52 > 7,03 > 6,31 > 5,42 > 4,64 sur la pire des cinq, strictement
+     décroissante et AA jusqu'au dernier échelon.
      Assombrir les surfaces aurait été l'autre voie, mais elle aurait cassé
      l'ordre des cinq : le survol serait passé sous `--bg-inset`. */
   --text-muted: #afbddd; --text-faint: #a5afc8; --text-ghost: #98a1c0;
@@ -459,6 +465,9 @@
   --gold: #a9c9e8; --gold-soft: #e2eefa;
   --accent: #a9c9e8; --accent-ink: #0b1724;
   --accent-glow: rgba(169, 201, 232, .40); --accent-wash: rgba(169, 201, 232, .12); --accent-border: #46566e;
+  /* Corps, armure, gemme. Aucune ne porte de texte, mais toutes tiennent le
+     plancher de 3:1 sur la plus claire des cinq surfaces : 3,04 / 8,66 / 4,65. */
+  --teinte-1: #4c7ee0; --teinte-2: #d3dde9; --teinte-3: #24aee0;
 }
 
 /* Unys — Reshiram : le dragon blanc, donc un thème clair. Ivoire chaud,
@@ -471,11 +480,19 @@
   --bg: #f6f2ea; --bg-raised: #fffdf9; --bg-sunken: #fbf8f2; --bg-inset: #efe9dd; --bg-hover: #eae2d3;
   --border: #e2dacb; --border-strong: #cabfa9;
 
+  /* Échelle du thème Clair réancrée sur l'ivoire. Sur #eae2d3, la plus grise
+     des cinq : 13,11 > 7,61 > 5,59 > 5,03 > 4,54 — décroissante, AA au bout. */
   --text: #221c14; --text-soft: #4d4234; --text-muted: #605646; --text-faint: #665d4f; --text-ghost: #6b6459;
 
   --gold: #a04516; --gold-soft: #e08a35;
   --accent: #a04516; --accent-ink: #fffaf3;
   --accent-glow: rgba(160, 69, 22, .32); --accent-wash: rgba(160, 69, 22, .10); --accent-border: #e3c39c;
+
+  /* Turbine, braise, œil. Sur fond clair elles doivent être plus SOMBRES que
+     les surfaces : 3,67 / 5,22 / 5,28 sur #eae2d3. L'œil est à #215ba3 et non
+     à un bleu moyen pour rester séparable de `--avail-event-lock`, quatre
+     lignes plus bas (ΔE2000 9,06). */
+  --teinte-1: #a2661a; --teinte-2: #ab2b33; --teinte-3: #215ba3;
 
   --avail-ok: #2f7a4f; --avail-nolock: #b5651f; --avail-event: #8b47ac; --avail-event-lock: #2f74b8;
   --shadow-panel: 0 1px 2px rgba(52, 40, 26, .06), 0 6px 18px rgba(52, 40, 26, .06);
@@ -492,6 +509,10 @@
   --gold: #f0d27a; --gold-soft: #7fd8ff;
   --accent: #f0d27a; --accent-ink: #2a2205;
   --accent-glow: rgba(240, 210, 122, .42); --accent-wash: rgba(240, 210, 122, .12); --accent-border: #4a4029;
+  /* Trois pointes des bois, dans l'ordre du spectre. Aucune n'est reprise
+     d'une autre palette : la plus proche parenté du fichier est à ΔE2000 5,67.
+     6,25 / 6,74 / 5,75 sur `--bg-hover`, la plus claire des cinq. */
+  --teinte-1: #d8a020; --teinte-2: #45c93f; --teinte-3: #cf85ef;
 }
 
 /* Alola — Solgaleo : midi sur le lagon. Le fond est froid et vert d'eau,
@@ -499,14 +520,17 @@
    c'est l'inverse exact de Turquoise, qui part de la même mer. */
 :root[data-theme="alola"] {
   color-scheme: dark;
-  /* Même cas que Sinnoh : surfaces claires, échelle héritée trop sombre.
-     Mesuré à 2,42 sur `--text-ghost` avant correction. 6,33 / 5,44 / 4,60. */
+  /* Même cas que Sinnoh : surfaces claires, échelle héritée trop sombre —
+     `--text-ghost` y tombe à 4,06 sur `--bg-hover`, sous le seuil AA. Relevée,
+     la chaîne entière tient sur cette même surface, la pire des cinq :
+     10,56 > 7,05 > 6,33 > 5,44 > 4,60. Les fonds ne bougent pas, elle non plus. */
   --text-muted: #afbddd; --text-faint: #a5afc8; --text-ghost: #97a0bf;
   --bg: #06181a; --bg-raised: #0f2a2c; --bg-sunken: #091f21; --bg-inset: #133134; --bg-hover: #193c3f;
   --border: #1d484a; --border-strong: #2a6163;
   --gold: #ffe7c2; --gold-soft: #ffab3d;
   --accent: #ffe7c2; --accent-ink: #2b1c00;
   --accent-glow: rgba(255, 231, 194, .42); --accent-wash: rgba(255, 231, 194, .12); --accent-border: #4d3a1c;
+  --teinte-1: #fb5000; --teinte-2: #f4d01f; --teinte-3: #fdf5e8;
 }
 
 /* Galar — Zacian : le cramoisi de la crinière et l'or de la lame, posés sur
@@ -519,6 +543,7 @@
   --gold: #f2637f; --gold-soft: #ffc45e;
   --accent: #f2637f; --accent-ink: #2c0512;
   --accent-glow: rgba(242, 99, 127, .45); --accent-wash: rgba(242, 99, 127, .13); --accent-border: #4d2534;
+  --teinte-1: #4fa8c8; --teinte-2: #f2637f; --teinte-3: #e9ddc7;
 }
 
 /* Paldéa — Koraidon et Miraidon : l'Écarlate et le Violet réunis. Fond noir
@@ -531,6 +556,7 @@
   --gold: #ff5f43; --gold-soft: #b07cff;
   --accent: #ff5f43; --accent-ink: #2b0700;
   --accent-glow: rgba(255, 95, 67, .45); --accent-wash: rgba(255, 95, 67, .13); --accent-border: #4d2436;
+  --teinte-1: #ff5f43; --teinte-2: #e345c0; --teinte-3: #6b76fd;
 }
 
 /* =============================================================================
@@ -550,9 +576,10 @@
    le bulbe en accent, la flamme dans le dégradé, l'eau dans les bordures. */
 :root[data-theme="starters-kanto"] {
   color-scheme: dark;
+  --teinte-1: #6cc86a; --teinte-2: #ffbe87; --teinte-3: #8fd0f7;
   --bg: #0a100c; --bg-raised: #151d17; --bg-sunken: #0f1611; --bg-inset: #19221b; --bg-hover: #202b22;
-  --border: #22384f; --border-strong: #2f4d6e;
-  --gold: #6cc86a; --gold-soft: #ff9a4d;
+  --border: #2b4f66; --border-strong: #3c6c88;
+  --gold: #6cc86a; --gold-soft: #ffbe87;
   --accent: #6cc86a; --accent-ink: #04200a;
   --accent-glow: rgba(108, 200, 106, .42); --accent-wash: rgba(108, 200, 106, .12); --accent-border: #1e4a2a;
 }
@@ -562,9 +589,10 @@
    bleue de Kaiminus dans les bordures. */
 :root[data-theme="starters-johto"] {
   color-scheme: dark;
+  --teinte-1: #a6c520; --teinte-2: #ff8a3c; --teinte-3: #3f96d4;
   --bg: #110f0c; --bg-raised: #1d1a16; --bg-sunken: #151310; --bg-inset: #221e19; --bg-hover: #2a251f;
   --border: #1d3f52; --border-strong: #295571;
-  --gold: #ff8a3c; --gold-soft: #b6d96a;
+  --gold: #ff8a3c; --gold-soft: #a6c520;
   --accent: #ff8a3c; --accent-ink: #2b0f00;
   --accent-glow: rgba(255, 138, 60, .45); --accent-wash: rgba(255, 138, 60, .13); --accent-border: #4e2a12;
 }
@@ -573,9 +601,10 @@
    accent cyan, et des bordures orange brûlé — le volcan cerne l'océan. */
 :root[data-theme="starters-hoenn"] {
   color-scheme: dark;
+  --teinte-1: #22b073; --teinte-2: #e87614; --teinte-3: #4cc6e8;
   --bg: #061315; --bg-raised: #0e2124; --bg-sunken: #09191b; --bg-inset: #12282a; --bg-hover: #173234;
   --border: #4a2c1a; --border-strong: #653c22;
-  --gold: #4cc6e8; --gold-soft: #7fd98a;
+  --gold: #4cc6e8; --gold-soft: #22b073;
   --accent: #4cc6e8; --accent-ink: #02222b;
   --accent-glow: rgba(76, 198, 232, .45); --accent-wash: rgba(76, 198, 232, .13); --accent-border: #1a4a5a;
 }
@@ -592,6 +621,7 @@
   --gold: #9fc46a; --gold-soft: #ffab5e;
   --accent: #9fc46a; --accent-ink: #16220a;
   --accent-glow: rgba(159, 196, 106, .42); --accent-wash: rgba(159, 196, 106, .12); --accent-border: #3c4a1e;
+  --teinte-1: #9fc46a; --teinte-2: #ffab5e; --teinte-3: #309ec0;
 }
 
 /* Unys — Vipélierre, Gruikui, Moustillon : le béton de Volucité, gris pur et
@@ -601,9 +631,10 @@
   color-scheme: dark;
   --bg: #0f0f11; --bg-raised: #1a1a1d; --bg-sunken: #131315; --bg-inset: #1e1e22; --bg-hover: #26262b;
   --border: #47291f; --border-strong: #5f382a;
-  --gold: #7fbdec; --gold-soft: #8fd47a;
+  --gold: #7fbdec; --gold-soft: #3aa459;
   --accent: #7fbdec; --accent-ink: #04182c;
   --accent-glow: rgba(127, 189, 236, .42); --accent-wash: rgba(127, 189, 236, .12); --accent-border: #234a68;
+  --teinte-1: #3aa459; --teinte-2: #c06a45; --teinte-3: #7fbdec;
 }
 
 /* Kalos — Marisson, Feunnec, Grenousse : la pierre lavande d'Illumis au
@@ -613,9 +644,10 @@
   color-scheme: dark;
   --bg: #100f16; --bg-raised: #1b1a23; --bg-sunken: #14131b; --bg-inset: #1f1e29; --bg-hover: #272632;
   --border: #2a3a6a; --border-strong: #3a4f8c;
-  --gold: #f5c04f; --gold-soft: #b8d96a;
+  --gold: #f5c04f; --gold-soft: #82a64e;
   --accent: #f5c04f; --accent-ink: #2c1e00;
   --accent-glow: rgba(245, 192, 79, .42); --accent-wash: rgba(245, 192, 79, .12); --accent-border: #4d3d14;
+  --teinte-1: #82a64e; --teinte-2: #f5c04f; --teinte-3: #7175d2;
 }
 
 /* Alola — Brindibou, Flamiaou, Otaquin : le sable et le lagon, donc un thème
@@ -634,6 +666,8 @@
   --accent: #1c7049; --accent-ink: #ffffff;
   --accent-glow: rgba(28, 112, 73, .30); --accent-wash: rgba(28, 112, 73, .10); --accent-border: #a9d0bb;
 
+  --teinte-1: #2f8d2b; --teinte-2: #c34420; --teinte-3: #0f7fbe;
+
   --avail-ok: #2f7a4f; --avail-nolock: #b5651f; --avail-event: #8b47ac; --avail-event-lock: #2f74b8;
   --shadow-panel: 0 1px 2px rgba(16, 32, 31, .06), 0 6px 18px rgba(16, 32, 31, .06);
   --sprite-dim: grayscale(1) brightness(1.05) opacity(.55);
@@ -650,6 +684,8 @@
   --gold: #5090e0; --gold-soft: #8fd47a;
   --accent: #5090e0; --accent-ink: #03122c;
   --accent-glow: rgba(80, 144, 224, .42); --accent-wash: rgba(80, 144, 224, .12); --accent-border: #21406a;
+
+  --teinte-1: #61a800; --teinte-2: #ff404a; --teinte-3: #00b7a2;
 }
 
 /* Paldéa — Poussacha, Chochodile, Coiffeton : la terre d'ocre et les
@@ -662,6 +698,8 @@
   --gold: #ff6b3d; --gold-soft: #b9cf5e;
   --accent: #ff6b3d; --accent-ink: #2b0a00;
   --accent-glow: rgba(255, 107, 61, .45); --accent-wash: rgba(255, 107, 61, .13); --accent-border: #4e2716;
+
+  --teinte-1: #849467; --teinte-2: #c18170; --teinte-3: #817fb3;
 }
 
 /* =============================================================================
