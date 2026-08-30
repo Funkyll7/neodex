@@ -196,6 +196,29 @@ export class Collection {
     return Boolean(m.om && m.of);
   }
 
+  /**
+   * Cette espèce est-elle mise de côté ?
+   *
+   * « Hors d'atteinte » veut dire : je sais que je ne l'aurai pas, cesse de me
+   * la compter. Un chromatique distribué une seule fois en 2013, un Pokémon
+   * verrouillé dans un jeu qu'on ne rachètera pas. Le dénominateur cesse de
+   * l'attendre, et le pourcentage redevient une mesure de ce qu'on peut
+   * vraiment faire.
+   *
+   * Ce n'est PAS « je ne l'ai pas ». Une espèce mise de côté garde ses cases,
+   * et les récupère toutes le jour où on la remet en jeu — la décision porte
+   * sur le décompte, jamais sur les données.
+   */
+  estHorsAtteinte(id) {
+    return Boolean(this.get(id)[CASE_HORS]);
+  }
+
+  /** Met de côté, ou remet en jeu. Rend le nouvel état. */
+  basculerHorsAtteinte(id) {
+    this.toggle(id, CASE_HORS);
+    return this.estHorsAtteinte(id);
+  }
+
   /** Coche / decoche une case et persiste aussitot. */
   toggle(id, slot) {
     const key = String(id);
@@ -239,14 +262,22 @@ export class Collection {
     // plutôt que dans une seconde boucle ailleurs — on parcourt déjà les 1025
     // espèces, et ce test coûte le même prix que les quatre autres.
     let shinyRestant = 0;
+    // Les especes mises de cote sortent du DENOMINATEUR, pas seulement du
+    // numerateur : les compter au denominateur reviendrait a les compter comme
+    // manquantes, ce qui est exactement ce qu on vient de leur retirer.
+    let hors = 0;
     for (const p of species) {
+      if (this.estHorsAtteinte(p.id)) {
+        hors += 1;
+        continue;
+      }
       if (this.isOwned(p.id)) owned += 1;
       if (this.isShiny(p.id)) shiny += 1;
       if (this.isCompletePair(p.id)) pair += 1;
       if (isComplete(p)) complete += 1;
       if (presqueShiny(p)) shinyRestant += 1;
     }
-    const total = species.length;
+    const total = species.length - hors;
     return {
       total,
       owned,
@@ -256,6 +287,8 @@ export class Collection {
       complete,
       incomplete: total - complete,
       shinyRestant,
+      /** Combien on a mis de cote — le filtre du meme nom en a besoin. */
+      hors,
       pct: total ? Math.round((owned / total) * 100) : 0,
     };
   }

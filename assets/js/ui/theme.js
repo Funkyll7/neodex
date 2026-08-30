@@ -123,10 +123,23 @@ function initBouton() {
       syncPicker();
       picker.scrollTop = 0;
       liberer = retourFerme(() => ouvrir(false));
-    } else if (liberer) {
-      const f = liberer;
-      liberer = null;
-      f();
+    } else {
+      // On referme les sections en partant. Le menu est construit UNE fois et
+      // seulement caché : sans ce nettoyage, il rouvrait exactement comme on
+      // l'avait laissé — sept sections dépliées et deux mille pixels à faire
+      // défiler pour retrouver ses palettes.
+      //
+      // On ne ferme pas TOUT pour autant : « Thèmes » revient ouvert, comme au
+      // premier affichage. Le menu a ainsi toujours la même tête quand on
+      // l'ouvre, et on voit sa palette sans un geste de plus.
+      for (const s of picker.querySelectorAll(".custo__section")) {
+        s.open = s.dataset.custo === "theme";
+      }
+      if (liberer) {
+        const f = liberer;
+        liberer = null;
+        f();
+      }
     }
   };
   fermerLeMenu = () => ouvrir(false);

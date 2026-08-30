@@ -103,6 +103,12 @@ export function progressOf(speciesList, collection) {
   const gens = {};
 
   for (const species of speciesList) {
+    // Une espece mise de cote ne compte NULLE PART : ni ses cases, ni sa paire,
+    // ni ses chromatiques, ni ses formes. C est le sens meme de la mise de
+    // cote — le denominateur cesse de l attendre. La sortir ici, en tete de
+    // boucle, evite d avoir a y penser dans les six seaux qui suivent.
+    if (collection.estHorsAtteinte && collection.estHorsAtteinte(species.id)) continue;
+
     const gen = gens[species.gen] || (gens[species.gen] = empty());
     for (const entry of requiredSlots(species)) {
       const possede = collection.has(species.id, entry.slot);

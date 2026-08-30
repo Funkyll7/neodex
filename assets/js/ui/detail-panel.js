@@ -324,10 +324,52 @@ function head(species, ctx) {
       "div.detail__chips",
       species.types.map((type) => typeChip(type, ctx.dataset.types[type] || "#8b8b8b", "lg"))
     ),
-    el("p.detail__progress", { dataset: { role: "progress" } }, "")
+    el("p.detail__progress", { dataset: { role: "progress" } }, ""),
+    boutonHorsAtteinte(species, ctx)
   );
   fillHead(node, species, ctx);
   return node;
+}
+
+/**
+ * « Hors d'atteinte » : sortir une espèce du décompte.
+ *
+ * Un chromatique distribué une seule fois en 2013, un Pokémon verrouillé dans
+ * un jeu qu'on ne rachètera pas : tant qu'il compte au dénominateur, le
+ * pourcentage mesure une chose impossible, et les onze dernières cases d'un
+ * Pokédex à 99 % sont toutes de celles-là. Mis de côté, il cesse d'être attendu.
+ *
+ * SES CASES NE BOUGENT PAS. La décision porte sur le décompte, jamais sur les
+ * données : remettre l'espèce en jeu la retrouve exactement comme elle était.
+ * C'est ce qui rend le geste sans risque, et c'est pour cela qu'il n'y a pas de
+ * confirmation.
+ *
+ * Le bouton vit dans l'en-tête de la fiche, juste sous la ligne d'avancement —
+ * c'est-à-dire à côté du chiffre qu'il change.
+ */
+function boutonHorsAtteinte(species, ctx) {
+  const bouton = el("button.detail__hors", {
+    type: "button",
+    dataset: { role: "hors" },
+    // `main.js` fait le reste : basculer, sonner, repeindre la grille et les
+    // compteurs, et lancer la synchronisation. La fiche ne connaît ni l'un ni
+    // l'autre — elle dit seulement ce qu'on vient de demander, comme pour une
+    // case cochée.
+    onclick: () => ctx.onHorsAtteinte(species.id),
+  });
+  majBoutonHors(bouton, species, ctx);
+  return bouton;
+}
+
+/** Remet le bouton d'accord avec l'état de l'espèce. */
+function majBoutonHors(bouton, species, ctx) {
+  if (!bouton) return;
+  const mis = ctx.collection.estHorsAtteinte(species.id);
+  bouton.dataset.actif = String(mis);
+  bouton.textContent = mis ? t("Remettre dans le décompte") : t("Hors d'atteinte");
+  bouton.title = mis
+    ? t("Cette espèce est sortie du décompte. Ses cases sont conservées.")
+    : t("Sortir cette espèce du décompte, sans toucher à ses cases.");
 }
 
 /**
@@ -385,6 +427,8 @@ function fillHead(node, species, ctx) {
   const tag = node.querySelector('[data-role="tag"]');
   tag.textContent = shiny ? t("✦ Shiny obtenu") : owned ? t("✓ Capturé") : t("Manquant");
   tag.className = owned ? "detail__tag detail__tag--owned" : "detail__tag";
+
+  majBoutonHors(node.querySelector('[data-role="hors"]'), species, ctx);
 
   const bar = node.querySelector('[data-role="progress"]');
   bar.textContent = progress.complete

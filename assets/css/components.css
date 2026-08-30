@@ -3840,3 +3840,32 @@ body::before {
 @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
   .thopt__name--degrade { background-image: none; -webkit-text-fill-color: currentColor; }
 }
+
+/* Le bouton « Hors d atteinte », dans l en-tete de la fiche. Discret quand il
+   ne sert pas — un lien de plus qu un bouton —, franc quand l espece est mise
+   de cote : c est alors une information sur la fiche, pas une action. */
+.detail__hors {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 3px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.detail__hors:hover { color: var(--text); border-color: var(--text-faint); }
+.detail__hors[data-actif="true"] {
+  color: var(--marque-ink);
+  border-color: var(--text-muted);
+  background: var(--text-muted);
+}
+
+/* La vignette d une espece mise de cote : desaturee et en retrait, comme une
+   case qu on aurait rayee. Elle reste visible et cliquable — la mettre de cote
+   n est pas la cacher, et il faut pouvoir revenir dessus. */
+.card--hors { opacity: .5; filter: saturate(.35); }
+.card--hors .card__name { text-decoration: line-through; }

@@ -514,6 +514,10 @@ function paint(node, species, ctx) {
     shiny ? "card--shiny" : "",
     showShiny && owned ? "card--shiny-art" : "",
     progress.complete ? "card--complete" : "",
+    // Mise de côté : la vignette part en retrait, mais reste là et reste
+    // cliquable. Sortir une espèce du décompte n'est pas la cacher — il faut
+    // pouvoir revenir dessus, et voir ce qu'on a écarté.
+    collection.estHorsAtteinte(species.id) ? "card--hors" : "",
     store.state.selectedId === species.id ? "card--selected" : "",
   ]
     .filter(Boolean)

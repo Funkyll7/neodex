@@ -23,7 +23,7 @@ import { initParametres, appliquerParametres } from "./ui/parametres.js";
 import { initPageSucces } from "./ui/page-succes.js";
 import { appliquerRecompenses } from "./ui/recompenses.js";
 import { chassesOuvertes } from "./domain/quetes.js";
-import { estCaseChromatique } from "./domain/collection.js";
+import { estCaseChromatique, CASE_HORS } from "./domain/collection.js";
 
 import { createSidebar } from "./ui/sidebar.js";
 import { createGrid } from "./ui/dex-grid.js";
@@ -173,6 +173,34 @@ function start(dataset) {
       if (finiMaintenant) jouer("complet");
       else if (!avant && estCaseChromatique(slot)) jouer("shiny");
       else jouer(avant ? "decase" : "case");
+      onCollectionChange(id);
+    },
+
+    /**
+     * Mettre une espece de cote, ou la remettre en jeu.
+     *
+     * Passe par le meme chemin qu'une case cochee — memes compteurs, meme
+     * annulation, meme synchronisation — parce que c'en est une : la decision
+     * voyage dans `marks`, sous une cle reservee. Voir CASE_HORS dans
+     * domain/collection.js.
+     *
+     * Le geste est annulable comme les autres. Il ne touche AUCUNE case de
+     * l'espece : la remettre en jeu la retrouve exactement comme elle etait, et
+     * c'est ce qui permet de s'en servir sans y reflechir.
+     */
+    onHorsAtteinte: (id) => {
+      const espece = dataset.byId.get(id);
+      const nom = espece ? nomEspece(espece) : `${t("n°")} ${id}`;
+      const avant = collection.estHorsAtteinte(id);
+      collection.basculerHorsAtteinte(id);
+
+      sync.schedule(espece ? espece.name : `n° ${id}`);
+      undo.record(
+        `${avant ? t("Remise dans le décompte") : t("Mise hors d'atteinte")} · ${nom}`,
+        [{ id, slot: CASE_HORS, before: avant }]
+      );
+      tapCase();
+      jouer(avant ? "case" : "passe");
       onCollectionChange(id);
     },
 
