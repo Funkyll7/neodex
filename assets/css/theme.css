@@ -64,6 +64,14 @@
      La rampe est celle qu'on lit partout ailleurs : acier, vert, bleu, violet,
      or. On ne l'a pas inventee, et c'est exactement pour ca qu'elle se lit sans
      legende. */
+  /* L'encre du signe posé sur une vignette terminée.
+     Elle ne peut pas être `--accent-ink`, taillée pour l'accent : la pastille
+     est peinte en `--gold-soft`, et sur le thème clair — accent or sombre, donc
+     encre blanche — le blanc sur cet orangé tombait à 2,08. `--gold-soft` étant
+     d'un ton moyen à clair sur les trente-huit palettes, un quasi-noir tient
+     partout : 4,88 au pire, sur Couronne. */
+  --marque-ink: #0f0d08;
+
   --rarete-1: color-mix(in srgb, #737f96 74%, var(--text));
   --rarete-2: color-mix(in srgb, #2f9e44 74%, var(--text));
   --rarete-3: color-mix(in srgb, #4180ef 74%, var(--text));
@@ -451,7 +459,7 @@
   --gold: #ff7f3a; --gold-soft: #ffcf5e;
   --accent: #ff7f3a; --accent-ink: #2b0d00;
   --accent-glow: rgba(255, 127, 58, .45); --accent-wash: rgba(255, 127, 58, .13); --accent-border: #4f2a12;
-  --teinte-1: #e8442b; --teinte-2: #f7bb26; --teinte-3: #43b96b;
+  --teinte-1: #e8442b; --teinte-2: #dcae1a; --teinte-3: #43b96b;
 }
 
 /* Hoenn — Kyogre : l'abysse. Le fond descend presque au noir tandis que les
@@ -464,7 +472,7 @@
   --gold: #2ea8ff; --gold-soft: #8ae4ff;
   --accent: #2ea8ff; --accent-ink: #01152b;
   --accent-glow: rgba(46, 168, 255, .45); --accent-wash: rgba(46, 168, 255, .13); --accent-border: #17395f;
-  --teinte-1: #2f74dd; --teinte-2: #e2f0fb; --teinte-3: #dd4a4f;
+  --teinte-1: #1c6ef2; --teinte-2: #c8d8cf; --teinte-3: #dd4a4f;
 }
 
 /* Sinnoh — Dialga : l'acier et le diamant. Le fond est le plus clair des

@@ -93,7 +93,25 @@ const aUneCosmetique = (marks, lettre) => {
   return false;
 };
 
+/**
+ * La case RÉSERVÉE des espèces mises de côté.
+ *
+ * « Hors d'atteinte » n'est pas une case qu'on coche : c'est une décision sur
+ * l'espèce entière — un Pokémon distribué une seule fois en 2013 et qu'on
+ * n'aura jamais. Elle voyage pourtant dans `marks`, comme une case, et c'est
+ * tout l'intérêt : la fusion à trois voies, la normalisation, l'export et la
+ * synchronisation la portent sans une ligne de plus. Une clé de premier niveau
+ * dans `collection.json` aurait demandé les quatre.
+ *
+ * Elle ne peut heurter aucune vraie case : les cases HOME commencent par o, s,
+ * g ou v, les formes par f, les cosmétiques par x ou y. Aucune ne commence par
+ * h, et `aUneCosmetique()` — qui teste la première lettre — ne s'y trompe donc
+ * pas non plus.
+ */
+export const CASE_HORS = "hors";
+
 const isSlot = (key) =>
+  key === CASE_HORS ||
   SLOT_KEYS.includes(key) ||
   FORM_SLOT.test(key) ||
   GO_FORM_SLOT.test(key) ||

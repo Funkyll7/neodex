@@ -1434,6 +1434,17 @@
    une étoile dans la rangée de badges, où elle se lisait au lieu de se
    repérer, et où elle disputait la place au compteur de cases. */
 .card { position: relative; }
+/* La pastille prend le SECOND bout du dégradé de progression, `--gold-soft`.
+
+   Elle était peinte à l'accent, c'est-à-dire — sur trente-six palettes — la
+   même couleur que le cadre « Classique » qui l'entoure. Déplacer le cadre
+   n'aurait pas marché : il doit porter la couleur de complétion du thème,
+   celle qui dit « terminé ». C'est donc la pastille qui bouge, sur l'autre
+   bout du même dégradé.
+
+   Les deux couleurs viennent ainsi du même endroit et diffèrent par
+   construction. `--gold-soft` étant plus clair que `--gold` partout, l'encre
+   sombre de l'accent y tient sans changement. */
 .card--complete::after {
   content: var(--marque);
   position: absolute; top: -7px; right: -7px;
@@ -1441,8 +1452,14 @@
   width: 22px; height: 22px;
   display: grid; place-items: center;
   border-radius: 50%;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 78%, #fff), var(--accent));
-  color: var(--accent-ink);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--gold-soft) 78%, #fff), var(--gold-soft));
+  /* Une encre À ELLE, et non `--accent-ink`. Celle-ci est taillée pour
+     l'accent : sur le thème clair, où l'accent est un or sombre, elle vaut
+     blanc — et le blanc sur le `--gold-soft` orangé du même thème tombait à
+     2,08, illisible. `--gold-soft` étant toujours d'un ton moyen à clair, un
+     quasi-noir tient partout : mesuré sur les trente-huit palettes, 4,88 au
+     pire, sur Couronne. */
+  color: var(--marque-ink);
   font-size: 12px; font-weight: 800;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
   pointer-events: none;
