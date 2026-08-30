@@ -364,6 +364,7 @@ const ALLURE = {
      l'orange, le rose, le cyan et le vert-jaune. Restaient le rouge — celui de
      la Poke Ball, ce qui tombe bien — et le vert franc. */
   ball: { icone: "ball", teinte: "#ff6b6b" },
+  chargement: { icone: "ecran", teinte: "#d6336c" },
   sprites: { icone: "pixel", teinte: "#51cf66" },
   mascottes: { icone: "duo", teinte: "#a9e34b" },
 };

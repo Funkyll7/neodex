@@ -228,3 +228,56 @@
 
 /* Les surcharges mobiles qui touchent aux composants sont a la fin de
    components.css : cette feuille-ci est chargee avant, elle perdrait. */
+
+/* ------------------- L'écran de chargement « Dynamax » ------------------- */
+
+/* L'enveloppe ne fait RIEN sans récompense portée : elle est en ligne, de la
+   taille de son image, et n'ajoute pas un pixel à la mise en page. C'est ce qui
+   permet de l'écrire dans le HTML une fois pour toutes plutôt que de la poser en
+   JavaScript — et l'écran de chargement s'affiche justement avant le premier
+   module. */
+.boot__astre { position: relative; display: inline-flex; }
+
+/* Trois ondes qui partent du logo, décalées d'un tiers de cycle chacune : c'est
+   ce décalage qui donne l'impression d'une source continue plutôt que de trois
+   anneaux qui battent ensemble.
+
+   ROUGE FIXE, ET NON L'ACCENT DU THÈME. Le Dynamax EST rouge, comme une Master
+   Ball est violette : lui donner la couleur de la palette aurait effacé ce qui
+   le nomme. Le second anneau prend `--accent`, ce qui suffit à rattacher
+   l'effet au thème sans le déguiser. */
+[data-chargement="dynamax"] .boot__astre::before,
+[data-chargement="dynamax"] .boot__astre::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #e4342f;
+  opacity: 0;
+  pointer-events: none;
+}
+[data-chargement="dynamax"] .boot__astre::after { border-color: var(--accent); }
+
+/* La lueur sous le logo, qui bat au même rythme que les ondes. */
+[data-chargement="dynamax"] .boot__ball {
+  filter: drop-shadow(0 0 10px rgba(228, 52, 47, .85)) drop-shadow(0 0 22px rgba(228, 52, 47, .45));
+}
+[data-chargement="dynamax"] .boot__text { color: color-mix(in srgb, #e4342f 34%, var(--text-muted)); }
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes boot-onde {
+    from { transform: scale(.72); opacity: .9; }
+    to   { transform: scale(2.5); opacity: 0; }
+  }
+  @keyframes boot-pulse {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(228, 52, 47, .7)) drop-shadow(0 0 18px rgba(228, 52, 47, .35)); }
+    50%      { filter: drop-shadow(0 0 15px rgba(228, 52, 47, 1)) drop-shadow(0 0 34px rgba(228, 52, 47, .6)); }
+  }
+  [data-chargement="dynamax"] .boot__astre::before { animation: boot-onde 1.65s ease-out infinite; }
+  [data-chargement="dynamax"] .boot__astre::after  { animation: boot-onde 1.65s ease-out .55s infinite; }
+  /* Le logo garde sa rotation — `boot-spin` vient de la règle générale — et
+     reçoit la pulsation en plus. Deux animations sur un même élément se
+     cumulent ; il ne fallait donc surtout pas réécrire `animation` ici, ce qui
+     aurait arrêté la rotation. */
+  [data-chargement="dynamax"] .boot__ball { animation: boot-spin 1.1s linear infinite, boot-pulse 1.65s ease-in-out infinite; }
+}

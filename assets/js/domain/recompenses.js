@@ -90,6 +90,26 @@ export const TYPES = [
     aide: "Les notes jouées quand une case se coche.",
     defaut: "doux",
   },
+  /* L'ÉCRAN DE CHARGEMENT EST LA PREMIÈRE CHOSE QU'ON VOIT, et la seule qu'on
+     regarde sans rien faire d'autre. Il montrait un logo qui tourne, ce qui est
+     honnête et un peu court pour les secondes que prend un jeu de données de
+     cinq mégaoctets.
+
+     UNE RÉSERVE À CONNAÎTRE : le choix vit dans les préférences, donc dans du
+     JavaScript, et l'écran s'affiche AVANT que le premier module ne tourne. Il
+     démarre donc toujours en « Classique » et prend son habillage quelques
+     dizaines de millisecondes plus tard, quand `appliquerRecompenses()` passe —
+     bien avant que les données ne soient chargées, donc pour l'essentiel de
+     l'attente. Le corriger tout à fait demanderait un script en ligne dans
+     l'en-tête, qui recopierait la clé des préférences : une seconde vérité à
+     tenir d'accord avec la première, pour gagner un dixième de seconde. */
+  {
+    cle: "chargement",
+    nom: "Écran de chargement",
+    onglet: "Chargement",
+    aide: "Ce qu'on regarde pendant que le Pokédex arrive.",
+    defaut: "classique",
+  },
   /* LA BALL EST LE SEUL COSMÉTIQUE QU'ON VOIT MILLE FOIS PAR SESSION : c'est
      le bouton qu'on presse pour cocher, et il est sur chaque vignette. Il
      portait une Poké Ball, la même pour tout le monde.
@@ -246,6 +266,16 @@ export const RECOMPENSES = [
      parce que Johto est la région des Balls d'Apricot ; Paldea la Master Ball
      parce que c'est la dernière région, la plus grosse, et qu'on ne gaspille
      pas une Master Ball. */
+  /* -------------------------- Écran de chargement -------------------------
+     Galar, donc le Dynamax : trois ondes rouges qui partent du logo et une
+     lueur qui bat, comme l énergie qui monte d un antre. Le rouge est fixe et
+     ne suit pas la palette — c est la couleur du Dynamax, elle EST son
+     identité, au même titre que le violet d une Master Ball. Le second anneau
+     prend l accent du thème : de quoi rattacher l effet à la palette sans lui
+     retirer ce qui le nomme. */
+  { cle: "classique", type: "chargement", nom: "Classique", succes: null },
+  { cle: "dynamax", type: "chargement", nom: "Dynamax", succes: "fanatique-8" },
+
   { cle: "poke", type: "ball", nom: "Poké Ball", succes: null },
   { cle: "hyper", type: "ball", nom: "Hyper Ball", succes: "fanatique-1" },
   { cle: "lune", type: "ball", nom: "Lune Ball", succes: "fanatique-2" },

@@ -61,6 +61,12 @@ export const ICONES = {
      Pokémon aurait demandé de choisir lequel. */
   pixel: "M3 15h4.5v4.5H3zM7.5 10.5H12V15H7.5zM12 6h4.5v4.5H12zM16.5 4.5H21V9h-4.5z",
 
+  /* Un ecran, et le point qui tourne dedans : c est litteralement ce que la
+     recompense habille. Le choix precedent — l horloge — commencait par le meme
+     grand cercle que la palette du theme, et deux onglets voisins portaient donc
+     deux ronds quasi identiques. */
+  ecran: "M3 6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 15.5zM9 20h6M12 9.6a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8",
+
   /* --- cocher, compter --- */
   case: "M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5zM8 12l2.8 2.8L16.5 9",
   grille: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13.5 16.8l2 2 4.2-4.2",

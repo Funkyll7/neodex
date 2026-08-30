@@ -6229,3 +6229,26 @@ body::before {
   [data-motif="neige"] body::after,
   [data-motif="neige"] .verrou__motif::after { animation: motif-neige 9s linear infinite; }
 }
+
+/* L'aperçu d'un écran de chargement : le vrai, en réduction. Les ondes du
+   Dynamax montent jusqu'à deux fois et demie la taille du logo — la scène leur
+   réserve donc la place, faute de quoi elles se feraient couper au bord. */
+.verrou__scene--chargement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  min-height: 208px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+.verrou__scene--chargement .boot__text { margin: 0; font-size: 13px; }
+
+/* La pastille du menu ne peut pas montrer une animation dans vingt-deux
+   pixels : elle montre la LUEUR, qui est ce qui distingue les deux options au
+   premier regard. */
+.recomp__apercu[data-chargement="classique"] { background-image: radial-gradient(circle at 50% 50%, var(--text-faint) 0 5px, transparent 6px); }
+.recomp__apercu[data-chargement="dynamax"] {
+  background-image: radial-gradient(circle at 50% 50%, #e4342f 0 4px, color-mix(in srgb, #e4342f 45%, transparent) 5px 7px, transparent 8px);
+}

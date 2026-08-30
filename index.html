@@ -116,8 +116,16 @@
        ce qu'on vient d'ouvrir. En SVG, donc net à toutes les densités, et pour
        398 octets — il est de toute façon déjà demandé comme favicon, l'écran de
        chargement ne coûte donc pas une requête de plus. -->
-  <img class="boot__ball" src="assets/img/favicon.svg" alt="" aria-hidden="true"
-       width="46" height="46" decoding="async">
+  <!-- L'enveloppe existe pour les ANNEAUX de l'écran de chargement « Dynamax ».
+       Une image est un élément remplacé : elle ne peut pas porter de
+       pseudo-élément, et c'est pourtant sur elle, exactement centrés, que les
+       ondes doivent partir. Les poser sur `.boot` aurait visé le milieu du bloc,
+       c'est-à-dire entre le logo et le texte. Sans récompense portée, cette
+       enveloppe ne fait rien du tout. -->
+  <span class="boot__astre">
+    <img class="boot__ball" src="assets/img/favicon.svg" alt="" aria-hidden="true"
+         width="46" height="46" decoding="async">
+  </span>
   <p class="boot__text">Chargement du Pokédex…</p>
   <p id="boot-error" class="boot__error" hidden></p>
 </div>

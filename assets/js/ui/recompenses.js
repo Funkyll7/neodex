@@ -38,7 +38,7 @@ import { setStyleDeSprite } from "../domain/sprites.js";
 import { CONFIG } from "../config.js";
 
 /** Les types posés en attribut sur `<html>`, et peints par le CSS seul. */
-const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes", "ball"];
+const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes", "ball", "chargement"];
 
 /**
  * Le choix courant, tous types confondus, déjà validé.
@@ -403,6 +403,29 @@ function sceneDe(type, r) {
         el("span.verrou__marque-nom", "Funkylldex"),
         el("span.verrou__marque-sous", t(r.texte || r.nom))
       )
+    );
+  }
+
+  if (type === "chargement") {
+    // L'ÉCRAN LUI-MÊME, EN PLUS PETIT — pas une image de l'écran. Les classes
+    // sont celles du vrai (`boot__astre`, `boot__ball`, `boot__text`) et
+    // l'attribut est posé sur la scène : les règles de `layout.css` s'y
+    // appliquent telles quelles, sans une seule ligne écrite en double. Ce qu'on
+    // regarde ici est donc littéralement ce qu'on verra au prochain démarrage.
+    return el(
+      "div.verrou__scene.verrou__scene--chargement",
+      { dataset: { chargement: r.cle } },
+      el(
+        "span.boot__astre",
+        el("img.boot__ball", {
+          src: "assets/img/favicon.svg",
+          alt: "",
+          width: 46,
+          height: 46,
+          "aria-hidden": "true",
+        })
+      ),
+      el("p.boot__text", t("Chargement du Pokédex…"))
     );
   }
 

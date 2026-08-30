@@ -54,6 +54,7 @@ export const VERSIONS = [
       ["ajout", "Le style de sprite se choisit à part du thème : le pixel art devient portable sur les trente-huit palettes."],
       ["ajout", "Trois Balls à gagner : elles remplacent la Poké Ball du bouton « capturé », et le curseur sur ordinateur."],
       ["ajout", "Deux fonds de page qui bougent : la pluie de Hoenn et la neige de Sinnoh."],
+      ["ajout", "Un écran de chargement « Dynamax » : trois ondes rouges partent du logo pendant que le Pokédex arrive."],
     ],
   },
   {
