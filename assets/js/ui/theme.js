@@ -294,10 +294,26 @@ function menuDeCustomisation(interieur) {
     )
   );
 
+  // « 33 / 38 » et non « 38 » : cinq palettes se gagnent, comme les
+  // cosmétiques, et le nombre seul laissait croire qu'elles étaient toutes
+  // disponibles. Le calcul est le même que celui de `carte()` — sans `verrou`,
+  // ou son succès obtenu, ou palette portée en ce moment.
+  const courant = document.documentElement.dataset.theme;
+  const ouvertes = THEMES.filter(
+    (th) =>
+      !th.verrou ||
+      th.value === courant ||
+      etatSucces.some((s) => s.cle === th.verrou && s.obtenu)
+  ).length;
+
   return el(
     "div.custo-boite",
     entete,
-    el("div.custo", section("theme", t("Thèmes"), "38", interieur, { ouvert: true }), sections)
+    el(
+      "div.custo",
+      section("theme", t("Thèmes"), `${ouvertes} / ${THEMES.length}`, interieur, { ouvert: true }),
+      sections
+    )
   );
 }
 
@@ -539,6 +555,19 @@ function redessinerRecompenses() {
   const panneau = document.querySelector('.themes__panel[data-famille="recompenses"]');
   if (!panneau) return;
   fill(panneau, THEMES.filter((theme) => idDeFamille(theme.groupe) === "recompenses").map(carte));
+
+  // Le compte des thèmes suit ses cartes. Une palette qui vient de se
+  // déverrouiller sous les yeux ne doit pas laisser « 33 / 38 » au-dessus de
+  // trente-quatre cartes ouvertes.
+  const compte = document.querySelector('.custo__section[data-custo="theme"] .custo__compte');
+  if (compte) {
+    const courant = document.documentElement.dataset.theme;
+    const ouvertes = THEMES.filter(
+      (th) => !th.verrou || th.value === courant || etatSucces.some((s) => s.cle === th.verrou && s.obtenu)
+    ).length;
+    compte.textContent = `${ouvertes} / ${THEMES.length}`;
+  }
+
   syncPicker();
 }
 
