@@ -385,6 +385,17 @@ function naviguerOnglets(root, event) {
 let etatSucces = [];
 
 /**
+ * L'état des succès au dernier calcul, pour qui a besoin de le lire.
+ *
+ * `ui/page-succes.js` s'en sert et NE le recalcule pas : deux calculs, ce
+ * seraient deux vérités, capables de diverger d'une fraction de seconde entre
+ * la tuile et le bandeau qui la félicite.
+ */
+export function succesCourants() {
+  return etatSucces;
+}
+
+/**
  * Les succès dont le bandeau a déjà été montré.
  *
  * Dans les préférences locales, et NON dans la collection : savoir qu'on a déjà
@@ -406,16 +417,22 @@ function annoncesVues() {
  * déjà calculés, et un redessin de cinq cartes seulement quand l'une d'elles
  * change d'état.
  */
-export function majSucces(progress) {
+export function majSucces(bilan) {
   const avant = etatSucces;
-  etatSucces = evaluerSucces(progress);
+  etatSucces = evaluerSucces(bilan);
 
   // Ne redessiner que si quelque chose a bougé : sans ce test, cocher une case
   // reconstruirait cinq boutons à chaque fois, pour rien.
   const bouge =
     avant.length !== etatSucces.length ||
     etatSucces.some((s, i) => !avant[i] || avant[i].obtenu !== s.obtenu || avant[i].fait !== s.fait);
-  if (bouge) redessinerRecompenses();
+  if (bouge) {
+    redessinerRecompenses();
+    // La page des succès écoute, mais ne se redessine que si elle est ouverte.
+    // Émettre depuis ici plutôt que la laisser recalculer garantit qu'elle
+    // montre exactement le même état que le bandeau de déverrouillage.
+    document.dispatchEvent(new CustomEvent("funkylldex:succes"));
+  }
 
   const vues = annoncesVues();
   const nouveaux = etatSucces.filter((s) => s.obtenu && !vues.has(s.cle));
@@ -444,14 +461,30 @@ function redessinerRecompenses() {
  * la surprise. Il dit qu'il y a quelque chose à aller voir.
  */
 function annoncer(nouveaux) {
-  const titres = nouveaux.map((s) => t(s.titre)).join(" · ");
+  // Quatre titres au plus. Le bandeau en listait autant qu'il en arrivait, ce
+  // qui allait tant qu'il y avait cinq succès en tout ; à quarante-trois, la
+  // première ouverture en débloque une douzaine d'un coup et la liste couvrait
+  // la moitié de l'écran.
+  const MONTRES = 4;
+  const titres = nouveaux.slice(0, MONTRES).map((s) => t(s.titre)).join(" · ");
+  const reste = nouveaux.length - MONTRES;
+
+  // La palette n'est promise que si l'un des nouveaux en ouvre vraiment une.
+  // Cinq succès sur quarante-trois déverrouillent un thème : l'annoncer à
+  // chaque fois aurait envoyé chercher une couleur qui n'existe pas.
+  const palette = nouveaux.some((s) => s.theme);
 
   const bandeau = el(
     "div.succes-bandeau",
     { role: "status", "aria-live": "polite" },
     el("span.bandeau__titre", nouveaux.length > 1 ? t("Succès débloqués") : t("Succès débloqué")),
-    el("p.succes__liste", titres),
-    el("span.bandeau__suite", t("Une nouvelle palette vous attend dans les thèmes."))
+    el("p.succes__liste", reste > 0 ? `${titres} + ${reste}` : titres),
+    el(
+      "span.bandeau__suite",
+      palette
+        ? t("Une nouvelle palette vous attend dans les thèmes.")
+        : t("À voir dans la page des succès.")
+    )
   );
   document.body.append(bandeau);
   jouer("succes");

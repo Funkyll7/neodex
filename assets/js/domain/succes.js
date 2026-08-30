@@ -1,107 +1,570 @@
 /**
- * succes.js — les succès, et les thèmes qu'ils déverrouillent.
+ * succes.js — les succès, et les thèmes que cinq d'entre eux déverrouillent.
  *
  * RIEN N'EST STOCKÉ, et c'est le choix qui tient tout le fichier.
  *
  * On avait d'abord prévu de ranger les succès obtenus dans `collection.json`,
  * sous une clé à part, pour qu'ils suivent d'un appareil à l'autre. C'était
- * inutile : chacun des cinq se DÉDUIT des compteurs que `progressOf()` calcule
- * déjà à chaque rendu. Un succès stocké aurait été une seconde vérité à tenir
- * d'accord avec la première — avec tout ce que ça suppose de dérive le jour où
- * une case se décoche, où une espèce change de génération, où le dénominateur
- * bouge parce qu'une forme nouvelle entre dans les données.
+ * inutile : chacun se DÉDUIT des compteurs que `progressOf()` calcule déjà à
+ * chaque rendu. Un succès stocké aurait été une seconde vérité à tenir d'accord
+ * avec la première — avec tout ce que ça suppose de dérive le jour où une case
+ * se décoche, où une espèce change de génération, où le dénominateur bouge
+ * parce qu'une forme nouvelle entre dans les données.
  *
  * Déduits, ils sont justes par construction, identiques sur tous les appareils
  * sans rien synchroniser, et surtout ils ne peuvent pas se perdre — ce qui
- * compte pour un fichier dont on vient de corriger un bug de perte de cases.
+ * compte pour un fichier dont on a déjà corrigé un bug de perte de cases.
  *
  * Le seul état qui mérite d'être retenu est « celui-là, on l'a déjà annoncé »,
  * pour que le bandeau de déverrouillage ne se rejoue pas à chaque ouverture.
  * C'est du confort d'affichage, propre à un appareil : il vit dans les
  * préférences locales, et `ui/` s'en charge. Rien à faire ici.
  *
- * Ce module ne touche pas au DOM : `domain/` n'en a pas le droit, et il est
- * importé par `ui/theme.js` qui, lui, dessine.
- */
-
-/**
- * Les cinq succès, du plus accessible au plus lointain.
+ * CE QUE MESURE UN SUCCÈS.
  *
- * `mesure` rend un avancement chiffré et non un booléen : le menu des thèmes
- * affiche « 1733 / 2802 » sous un cadenas, et un oui-ou-non n'aurait rien dit
+ * `mesure` reçoit un BILAN et non les seuls compteurs du Pokédex national.
+ * Tant qu'il n'y avait que cinq succès, `progressOf()` suffisait ; les
+ * quarante-trois d'aujourd'hui parlent aussi du Pokédex GO, du carnet de
+ * chasse et du nombre d'espèces entièrement obtenues. Le bilan rassemble ces
+ * quatre sources, et `ui/` le fabrique une fois par rendu — au même endroit et
+ * au même instant que les compteurs de la barre latérale, pour qu'un succès ne
+ * puisse jamais annoncer autre chose que ce qui est affiché.
+ *
+ * `mesure` rend un avancement CHIFFRÉ et non un booléen : la page des succès
+ * affiche « 1733 / 2000 » sous un cadenas, et un oui-ou-non n'aurait rien dit
  * du chemin restant. Un succès qu'on ne peut pas situer décourage au lieu
  * d'attirer.
  *
- * `theme` est la valeur du thème que le succès rend visible — la même clé que
- * dans `ui/themes-list.js`, où ces cinq palettes portent `verrou`.
+ * POURQUOI TOUS N'OUVRENT PAS UN THÈME.
+ *
+ * Cinq le font — ce sont les cinq d'origine, et leurs clés n'ont pas bougé
+ * d'une lettre : `ui/themes-list.js` les référence par `verrou`, et les
+ * préférences locales gardent la liste des succès déjà annoncés sous ces
+ * mêmes clés. Les renommer aurait rejoué trente-huit bandeaux d'un coup et
+ * reverrouillé cinq thèmes déjà gagnés.
+ *
+ * Les trente-huit autres ne donnent rien de plus qu'eux-mêmes. C'est assumé :
+ * une récompense par succès aurait demandé trente-huit palettes, dont trente
+ * seraient nées d'un besoin de remplir une case plutôt que d'une idée.
+ *
+ * Ce module ne touche pas au DOM : `domain/` n'en a pas le droit.
+ */
+
+import { totalPartie } from "./quetes.js";
+
+/** Un seau vide, pour les compteurs qu'un bilan partiel n'a pas fournis. */
+const VIDE = { done: 0, total: 0, pct: 0 };
+
+/**
+ * Rassemble en un bilan les quatre sources dont les succès parlent.
+ *
+ * Rien n'est recalculé ici : les deux progressions et les comptes d'espèces
+ * arrivent tels que la barre latérale vient de les faire, et le carnet n'est
+ * qu'une lecture. C'est la condition pour qu'un succès ne puisse jamais
+ * annoncer autre chose que ce qui est affiché au même instant.
+ *
+ * `questDone` est passé plutôt que lu : ce compteur vit dans l'état de
+ * l'application, pas dans la collection, et `domain/` n'a pas à le connaître.
+ */
+export function bilanDesSucces({ progression, progressionGo, comptes, carnet, questDone }) {
+  return {
+    p: progression,
+    go: progressionGo,
+    complets: comptes ? comptes.complete : 0,
+    especes: comptes ? comptes.total : 0,
+    questDone: questDone || 0,
+    rencontres: Object.values((carnet && carnet.parties) || {}).reduce(
+      (somme, part) => somme + totalPartie(part),
+      0
+    ),
+  };
+}
+
+/** Un seau de `kinds`, sans jamais lever sur un bilan incomplet. */
+const seau = (b, nom) => (b.p.kinds && b.p.kinds[nom]) || VIDE;
+
+/** La somme de plusieurs seaux, pour les succès qui couvrent quatre régions. */
+function somme(b, noms) {
+  let fait = 0;
+  let total = 0;
+  for (const nom of noms) {
+    const s = seau(b, nom);
+    fait += s.done;
+    total += s.total;
+  }
+  return { fait, total };
+}
+
+/** Les générations non vides, en tableau — l'ordre n'importe pas ici. */
+const generations = (b) => Object.values(b.p.gens || {}).filter((g) => g.total > 0);
+
+/**
+ * Un palier : « en avoir N ».
+ *
+ * La forme la plus courante, et celle qui se trompait le plus facilement à la
+ * main — un `total` oublié donnait un succès gratuit, un `fait` non plafonné
+ * une barre remplie à 173 %.
+ */
+const palier = (lire, cible) => (b) => ({ fait: lire(b), total: cible });
+
+/** Un seau entier : « tout avoir dans cette catégorie ». */
+const complet = (lire) => (b) => {
+  const s = lire(b);
+  // Un seau VIDE — catégorie absente du jeu de données — donne un succès NON
+  // obtenu plutôt qu'un succès gratuit : mieux vaut un cadenas de trop qu'une
+  // récompense qui tombe toute seule le jour où une table se vide.
+  return { fait: s.done, total: s.total || 1 };
+};
+
+/**
+ * Les quarante-trois succès, groupés par famille.
+ *
+ * `famille` ne sert qu'à la page des succès, qui en fait ses sections. Elle ne
+ * change rien au calcul.
+ *
+ * `icone` est une clé de `ui/icones-succes.js`. Plusieurs succès d'une même
+ * série partagent la leur : un palier de mille cases et un palier de deux mille
+ * racontent la même chose, ils se distinguent par leur libellé et par leur
+ * rang, pas par un dessin qu'il aurait fallu inventer différent pour rien.
  */
 export const SUCCES = [
+  /* ----------------------------- la collection ---------------------------- */
+  {
+    cle: "cent-cases",
+    titre: "Premiers pas",
+    resume: "Cocher cent cases.",
+    famille: "Collection",
+    icone: "case",
+    mesure: palier((b) => b.p.all.done, 100),
+  },
+  {
+    cle: "cinq-cents-cases",
+    titre: "En chemin",
+    resume: "Cocher cinq cents cases.",
+    famille: "Collection",
+    icone: "grille",
+    mesure: palier((b) => b.p.all.done, 500),
+  },
   {
     cle: "mille-cases",
     titre: "Premier millier",
     resume: "Cocher mille cases.",
+    famille: "Collection",
+    icone: "pile",
     theme: "aube",
-    mesure: (p) => ({ fait: p.all.done, total: 1000 }),
+    mesure: palier((b) => b.p.all.done, 1000),
+  },
+  {
+    cle: "deux-mille-cases",
+    titre: "Deux mille",
+    resume: "Cocher deux mille cases.",
+    famille: "Collection",
+    icone: "pile",
+    mesure: palier((b) => b.p.all.done, 2000),
+  },
+  {
+    cle: "moitie-du-dex",
+    titre: "À mi-chemin",
+    resume: "Cocher la moitié des cases du Pokédex.",
+    famille: "Collection",
+    icone: "moitie",
+    // La moitié se calcule sur le total du moment, pas sur un nombre écrit en
+    // dur : le dénominateur bouge à chaque génération nouvelle, et « 1401 »
+    // aurait cessé d'être la moitié dès la suivante.
+    mesure: (b) => ({ fait: b.p.all.done, total: Math.ceil(b.p.all.total / 2) || 1 }),
+  },
+  {
+    cle: "pokedex-entier",
+    titre: "Achevé",
+    resume: "Cocher toutes les cases du Pokédex.",
+    famille: "Collection",
+    icone: "couronne",
+    theme: "couronne",
+    mesure: complet((b) => b.p.all),
+  },
+  {
+    cle: "cent-complets",
+    titre: "Cent complets",
+    resume: "Obtenir cent Pokémon entièrement complets.",
+    famille: "Collection",
+    icone: "etoile",
+    mesure: palier((b) => b.complets, 100),
+  },
+  {
+    cle: "cinq-cents-complets",
+    titre: "Cinq cents complets",
+    resume: "Obtenir cinq cents Pokémon entièrement complets.",
+    famille: "Collection",
+    icone: "etoile",
+    mesure: palier((b) => b.complets, 500),
+  },
+  {
+    cle: "tous-complets",
+    titre: "Rien ne manque",
+    resume: "Obtenir chaque Pokémon entièrement complet.",
+    famille: "Collection",
+    icone: "laurier",
+    mesure: (b) => ({ fait: b.complets, total: b.especes || 1 }),
+  },
+
+  /* --------------------------- les chromatiques --------------------------- */
+  {
+    cle: "dix-chromatiques",
+    titre: "Première lueur",
+    resume: "Obtenir dix chromatiques.",
+    famille: "Chromatiques",
+    icone: "etincelle",
+    mesure: palier((b) => b.p.shiny.done, 10),
+  },
+  {
+    cle: "cinquante-chromatiques",
+    titre: "Éclat",
+    resume: "Obtenir cinquante chromatiques.",
+    famille: "Chromatiques",
+    icone: "etincelle",
+    mesure: palier((b) => b.p.shiny.done, 50),
   },
   {
     cle: "cent-chromatiques",
     titre: "Chasseur",
     resume: "Obtenir cent chromatiques.",
+    famille: "Chromatiques",
+    icone: "etincelles",
     theme: "prisme",
-    mesure: (p) => ({ fait: p.shiny.done, total: 100 }),
+    mesure: palier((b) => b.p.shiny.done, 100),
   },
+  {
+    cle: "deux-cent-cinquante-chromatiques",
+    titre: "Chasseur confirmé",
+    resume: "Obtenir deux cent cinquante chromatiques.",
+    famille: "Chromatiques",
+    icone: "etincelles",
+    mesure: palier((b) => b.p.shiny.done, 250),
+  },
+  {
+    cle: "cinq-cents-chromatiques",
+    titre: "Chasseur émérite",
+    resume: "Obtenir cinq cents chromatiques.",
+    famille: "Chromatiques",
+    icone: "prisme",
+    mesure: palier((b) => b.p.shiny.done, 500),
+  },
+  {
+    cle: "mille-chromatiques",
+    titre: "Mille éclats",
+    resume: "Obtenir mille chromatiques.",
+    famille: "Chromatiques",
+    icone: "arcenciel",
+    mesure: palier((b) => b.p.shiny.done, 1000),
+  },
+  {
+    cle: "tous-chromatiques",
+    titre: "Tout brille",
+    resume: "Obtenir chaque chromatique existant.",
+    famille: "Chromatiques",
+    icone: "soleil",
+    mesure: complet((b) => b.p.shiny),
+  },
+
+  /* ------------------------------ les paires ------------------------------ */
+  {
+    cle: "moitie-paires",
+    titre: "Premiers couples",
+    resume: "Réunir la moitié des paires ♂ / ♀.",
+    famille: "Paires",
+    icone: "duo",
+    mesure: (b) => ({ fait: b.p.pairs.done, total: Math.ceil(b.p.pairs.total / 2) || 1 }),
+  },
+  {
+    cle: "toutes-les-paires",
+    titre: "Couples",
+    resume: "Réunir toutes les paires ♂ / ♀.",
+    famille: "Paires",
+    icone: "coeur",
+    theme: "duo",
+    mesure: complet((b) => b.p.pairs),
+  },
+
+  /* ----------------------------- les régions ------------------------------ */
   {
     cle: "une-generation",
     titre: "Région bouclée",
     resume: "Terminer une génération entière.",
+    famille: "Régions",
+    icone: "drapeau",
     theme: "cartouche",
     // La MEILLEURE génération, pas leur somme : le succès demande d'en finir
     // une, et afficher « 8 / 9 générations » aurait décrit un autre défi.
     // L'avancement montre donc celle dont on est le plus près.
-    mesure: (p) => {
-      const seaux = Object.values(p.gens || {}).filter((g) => g.total > 0);
+    mesure: (b) => {
+      const seaux = generations(b);
       if (!seaux.length) return { fait: 0, total: 100 };
-      // Termine si une génération a TOUTES ses cases. On compare les COMPTES et
+      // Terminé si une génération a TOUTES ses cases. On compare les COMPTES et
       // non les pourcentages : `pct` est arrondi, et une génération à 99,6 %
       // s'affichait donc à 100 — le thème se débloquait alors qu'il restait des
       // cases à cocher.
       if (seaux.some((g) => g.done === g.total)) return { fait: 100, total: 100 };
       // Sinon on montre la plus avancée, plancher plutôt qu'arrondi et plafonnée
       // à 99 : un cadenas au-dessus de « 100 / 100 » serait incompréhensible.
-      const meilleure = seaux.reduce((a, b) => (b.done / b.total > a.done / a.total ? b : a));
+      const meilleure = seaux.reduce((a, g) => (g.done / g.total > a.done / a.total ? g : a));
       return { fait: Math.min(99, Math.floor((meilleure.done / meilleure.total) * 100)), total: 100 };
     },
   },
   {
-    cle: "toutes-les-paires",
-    titre: "Couples",
-    resume: "Réunir toutes les paires ♂ / ♀.",
-    theme: "duo",
-    mesure: (p) => ({ fait: p.pairs.done, total: p.pairs.total }),
+    cle: "trois-generations",
+    titre: "Trois régions",
+    resume: "Terminer trois générations entières.",
+    famille: "Régions",
+    icone: "carte",
+    mesure: (b) => ({ fait: generations(b).filter((g) => g.done === g.total).length, total: 3 }),
   },
   {
-    cle: "pokedex-entier",
-    titre: "Achevé",
-    resume: "Cocher toutes les cases du Pokédex.",
-    theme: "couronne",
-    mesure: (p) => ({ fait: p.all.done, total: p.all.total }),
+    cle: "toutes-generations",
+    titre: "Tour du monde",
+    resume: "Terminer toutes les générations.",
+    famille: "Régions",
+    icone: "globe",
+    mesure: (b) => {
+      const seaux = generations(b);
+      return { fait: seaux.filter((g) => g.done === g.total).length, total: seaux.length || 1 };
+    },
+  },
+  {
+    cle: "chaque-generation-entamee",
+    titre: "Partout un peu",
+    resume: "Cocher au moins une case dans chaque génération.",
+    famille: "Régions",
+    icone: "boussole",
+    mesure: (b) => {
+      const seaux = generations(b);
+      return { fait: seaux.filter((g) => g.done > 0).length, total: seaux.length || 1 };
+    },
+  },
+
+  /* ------------------------------ les formes ------------------------------ */
+  {
+    cle: "toutes-alola",
+    titre: "Îles",
+    resume: "Obtenir toutes les formes d'Alola.",
+    famille: "Formes",
+    icone: "vague",
+    mesure: complet((b) => seau(b, "alola")),
+  },
+  {
+    cle: "toutes-galar",
+    titre: "Couronne de Galar",
+    resume: "Obtenir toutes les formes de Galar.",
+    famille: "Formes",
+    icone: "tour",
+    mesure: complet((b) => seau(b, "galar")),
+  },
+  {
+    cle: "toutes-hisui",
+    titre: "Hisui",
+    resume: "Obtenir toutes les formes de Hisui.",
+    famille: "Formes",
+    icone: "montagne",
+    mesure: complet((b) => seau(b, "hisui")),
+  },
+  {
+    cle: "toutes-paldea",
+    titre: "Paldéa",
+    resume: "Obtenir toutes les formes de Paldéa.",
+    famille: "Formes",
+    icone: "cristal",
+    mesure: complet((b) => seau(b, "paldea")),
+  },
+  {
+    cle: "toutes-regionales",
+    titre: "Quatre régions, quatre formes",
+    resume: "Obtenir toutes les formes régionales des quatre régions.",
+    famille: "Formes",
+    icone: "desert",
+    mesure: (b) => {
+      const { fait, total } = somme(b, ["alola", "galar", "hisui", "paldea"]);
+      return { fait, total: total || 1 };
+    },
+  },
+  {
+    cle: "tous-gmax",
+    titre: "Colosse",
+    resume: "Obtenir toutes les formes Gigamax.",
+    famille: "Formes",
+    icone: "geant",
+    mesure: complet((b) => seau(b, "gmax")),
+  },
+  {
+    cle: "moitie-cosmetiques",
+    titre: "Motifs",
+    resume: "Obtenir la moitié des formes cosmétiques.",
+    famille: "Formes",
+    icone: "papillon",
+    mesure: (b) => {
+      const s = seau(b, "cosmetic");
+      return { fait: s.done, total: Math.ceil(s.total / 2) || 1 };
+    },
+  },
+  {
+    cle: "tous-cosmetiques",
+    titre: "Collectionneur de motifs",
+    resume: "Obtenir toutes les formes cosmétiques.",
+    famille: "Formes",
+    icone: "palette",
+    mesure: complet((b) => seau(b, "cosmetic")),
+  },
+  {
+    cle: "toutes-autres-formes",
+    titre: "Tout le reste",
+    resume: "Obtenir toutes les formes des autres catégories.",
+    famille: "Formes",
+    icone: "masque",
+    mesure: complet((b) => seau(b, "other")),
+  },
+
+  /* ---------------------------- le Pokédex GO ----------------------------- */
+  {
+    cle: "cent-go",
+    titre: "Premiers pas dans GO",
+    resume: "Attraper cent Pokémon dans le Pokédex GO.",
+    famille: "Pokémon GO",
+    icone: "cible",
+    mesure: palier((b) => b.go.owned, 100),
+  },
+  {
+    cle: "cinq-cents-go",
+    titre: "Explorateur",
+    resume: "Attraper cinq cents Pokémon dans le Pokédex GO.",
+    famille: "Pokémon GO",
+    icone: "boussole",
+    mesure: palier((b) => b.go.owned, 500),
+  },
+  {
+    cle: "moitie-go",
+    titre: "GO à mi-chemin",
+    resume: "Attraper la moitié du Pokédex GO.",
+    famille: "Pokémon GO",
+    icone: "moitie",
+    mesure: (b) => ({ fait: b.go.owned, total: Math.ceil(b.go.total / 2) || 1 }),
+  },
+  {
+    cle: "tous-go",
+    titre: "GO complet",
+    resume: "Attraper tout le Pokédex GO.",
+    famille: "Pokémon GO",
+    icone: "globe",
+    mesure: (b) => ({ fait: b.go.owned, total: b.go.total || 1 }),
+  },
+  {
+    cle: "cinquante-go-shiny",
+    titre: "Éclats de terrain",
+    resume: "Obtenir cinquante chromatiques dans le Pokédex GO.",
+    famille: "Pokémon GO",
+    icone: "etincelle",
+    mesure: palier((b) => b.go.shiny, 50),
+  },
+  {
+    cle: "deux-cents-go-shiny",
+    titre: "Chasseur de terrain",
+    resume: "Obtenir deux cents chromatiques dans le Pokédex GO.",
+    famille: "Pokémon GO",
+    icone: "etincelles",
+    mesure: palier((b) => b.go.shiny, 200),
+  },
+
+  /* ------------------------------ les chasses ----------------------------- */
+  {
+    cle: "premiere-quete",
+    titre: "Première prise",
+    resume: "Mener une chasse jusqu'au bout.",
+    famille: "Chasses",
+    icone: "cible",
+    mesure: palier((b) => b.questDone, 1),
+  },
+  {
+    cle: "dix-quetes",
+    titre: "Dix prises",
+    resume: "Mener dix chasses jusqu'au bout.",
+    famille: "Chasses",
+    icone: "carnet",
+    mesure: palier((b) => b.questDone, 10),
+  },
+  {
+    cle: "cinquante-quetes",
+    titre: "Cinquante prises",
+    resume: "Mener cinquante chasses jusqu'au bout.",
+    famille: "Chasses",
+    icone: "trophee",
+    mesure: palier((b) => b.questDone, 50),
+  },
+  {
+    cle: "cent-rencontres",
+    titre: "Cent rencontres",
+    resume: "Compter cent rencontres dans le carnet.",
+    famille: "Chasses",
+    icone: "de",
+    mesure: palier((b) => b.rencontres, 100),
+  },
+  {
+    cle: "mille-rencontres",
+    titre: "Mille rencontres",
+    resume: "Compter mille rencontres dans le carnet.",
+    famille: "Chasses",
+    icone: "compteur",
+    mesure: palier((b) => b.rencontres, 1000),
+  },
+  {
+    cle: "dix-mille-rencontres",
+    titre: "Dix mille rencontres",
+    resume: "Compter dix mille rencontres dans le carnet.",
+    famille: "Chasses",
+    icone: "sablier",
+    mesure: palier((b) => b.rencontres, 10000),
   },
 ];
 
+/** Les familles, dans l'ordre où la page les présente. */
+export const FAMILLES = ["Collection", "Chromatiques", "Paires", "Régions", "Formes", "Pokémon GO", "Chasses"];
+
 /**
- * L'état des cinq succès, à partir des compteurs du moment.
+ * Complète un bilan partiel.
+ *
+ * Chaque `mesure` lit `b.p.all.done` ou `b.go.owned` sans se demander si la
+ * source existe. Plutôt que quarante-trois gardes recopiées, une seule
+ * normalisation à l'entrée : un appelant qui ne fournit que les compteurs du
+ * Pokédex national obtient des zéros ailleurs, jamais une exception.
+ */
+function normaliser(bilan) {
+  const p = bilan.p || {};
+  return {
+    p: {
+      all: p.all || VIDE,
+      pairs: p.pairs || VIDE,
+      shiny: p.shiny || VIDE,
+      kinds: p.kinds || {},
+      gens: p.gens || {},
+    },
+    go: bilan.go || { owned: 0, total: 0, shiny: 0, shinyTotal: 0, pct: 0 },
+    complets: bilan.complets || 0,
+    especes: bilan.especes || 0,
+    questDone: bilan.questDone || 0,
+    rencontres: bilan.rencontres || 0,
+  };
+}
+
+/**
+ * L'état des succès, à partir du bilan du moment.
  *
  * `fait` est plafonné à `total` : sans ce plafond, « 1733 / 1000 » se serait
  * affiché sous un succès déjà gagné, et une barre remplie à 173 %.
  *
- * Un `total` nul — aucune paire attendue, jamais le cas en pratique mais les
- * données peuvent bouger — donne un succès NON obtenu plutôt qu'un succès
- * gratuit : mieux vaut un cadenas de trop qu'une récompense qui tombe seule.
+ * Un `total` nul donne un succès NON obtenu plutôt qu'un succès gratuit : mieux
+ * vaut un cadenas de trop qu'une récompense qui tombe toute seule.
  */
-export function evaluerSucces(progress) {
-  if (!progress) return [];
+export function evaluerSucces(bilan) {
+  if (!bilan) return [];
+  const b = normaliser(bilan);
   return SUCCES.map((succes) => {
-    const { fait, total } = succes.mesure(progress);
+    const { fait, total } = succes.mesure(b);
     return {
       ...succes,
       fait: Math.min(fait, total),
@@ -110,4 +573,3 @@ export function evaluerSucces(progress) {
     };
   });
 }
-

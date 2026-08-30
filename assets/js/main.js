@@ -16,9 +16,11 @@ import { HuntPlanner } from "./domain/hunt.js";
 import { applyFilters } from "./domain/filters.js";
 import { isComplete, requiredSlots, neManqueQueLeChromatique } from "./domain/completion.js";
 import { progressOf, goProgressOf } from "./domain/progress.js";
+import { bilanDesSucces } from "./domain/succes.js";
 import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
 import { jouer } from "./ui/sons.js";
 import { initParametres, appliquerParametres } from "./ui/parametres.js";
+import { initPageSucces } from "./ui/page-succes.js";
 import { chassesOuvertes } from "./domain/quetes.js";
 import { estCaseChromatique } from "./domain/collection.js";
 
@@ -47,6 +49,9 @@ initTheme();
 // naisse en taille normale pour se contracter ensuite sous les yeux.
 appliquerParametres();
 initParametres();
+// La page des succes n a pas besoin des donnees : elle lit l etat que
+// `ui/theme.js` tient a jour, et se dessine a l ouverture.
+initPageSucces();
 boot();
 
 /**
@@ -493,15 +498,27 @@ function start(dataset) {
 
   function renderCounts() {
     const progression = progressOf(dataset.species, collection);
-    sidebar.render(
-      collection.counts(dataset.species, complete, presqueShiny),
-      progression,
-      goProgressOf(dataset.goEntries, collection)
-    );
+    const progressionGo = goProgressOf(dataset.goEntries, collection);
+    const comptes = collection.counts(dataset.species, complete, presqueShiny);
+    sidebar.render(comptes, progression, progressionGo);
     // Les succes se DEDUISENT de ces memes compteurs. Les recalculer ici, et
     // nulle part ailleurs, garantit qu'ils ne peuvent pas diverger de ce que la
     // barre laterale affiche au meme instant.
-    majSucces(progression);
+    //
+    // Le bilan reunit les quatre sources dont les succes parlent : le Pokedex
+    // national, le Pokedex GO, le nombre d'especes entierement obtenues, et le
+    // carnet de chasse. Aucune n'est recalculee pour l'occasion — `comptes` et
+    // les deux progressions viennent d'etre faits pour la barre laterale, et le
+    // carnet n'est qu'une lecture.
+    majSucces(
+      bilanDesSucces({
+        progression,
+        progressionGo,
+        comptes,
+        carnet: collection.quetes,
+        questDone: store.state.questDone,
+      })
+    );
     save.render();
     renderTabs();
   }

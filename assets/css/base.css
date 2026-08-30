@@ -120,6 +120,36 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .icon-btn:hover { color: var(--accent); border-color: var(--accent); }
 
+/* Les trois boutons de l'en-tête, chacun sa couleur.
+
+   Ils étaient gris tous les trois, et le seul reconnaissable au premier coup
+   d'œil était la roue chromatique des thèmes — parce qu'elle, elle a une
+   couleur. On donne la même chance aux autres.
+
+   LA TEINTE EST MÉLANGÉE À `--text`, et c'est tout l'intérêt du procédé. Une
+   couleur écrite en dur aurait demandé trente-huit vérifications de contraste,
+   une par palette, et trente-huit exceptions le jour où l'une d'elles part sur
+   un fond clair. Ici le mélange suit le thème tout seul : `--text` est presque
+   blanc sur les palettes sombres, ce qui éclaircit la teinte, et presque noir
+   sur les claires, ce qui l'assombrit. Dans les deux cas elle reste au-dessus
+   des 3:1 exigés d'un objet graphique, sans qu'on ait rien à recalculer.
+
+   Le fond et le contour reprennent la même teinte, très dilués : c'est ce qui
+   fait lire les trois ronds comme une famille plutôt que comme trois accidents. */
+.icon-btn--teinte {
+  color: color-mix(in srgb, var(--teinte) 55%, var(--text));
+  border-color: color-mix(in srgb, var(--teinte) 34%, var(--border-strong));
+  background: color-mix(in srgb, var(--teinte) 11%, var(--bg-sunken));
+}
+.icon-btn--teinte:hover {
+  color: color-mix(in srgb, var(--teinte) 55%, var(--text));
+  border-color: color-mix(in srgb, var(--teinte) 62%, var(--border-strong));
+  background: color-mix(in srgb, var(--teinte) 20%, var(--bg-sunken));
+}
+#settings-toggle { --teinte: #22b8cf; }
+#succes-toggle   { --teinte: #f0a30a; }
+#lang-toggle     { --teinte: #845ef7; }
+
 /* ----------------------------- Utilitaires ------------------------------- */
 .panel__label {
   font-size: 11px;

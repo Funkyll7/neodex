@@ -84,6 +84,9 @@
 <link rel="modulepreload" href="assets/js/domain/quetes.js">
 <link rel="modulepreload" href="assets/js/ui/symboles-jeux.js">
 <link rel="modulepreload" href="assets/js/ui/sons.js">
+<link rel="modulepreload" href="assets/js/ui/carte-partage.js">
+<link rel="modulepreload" href="assets/js/ui/icones-succes.js">
+<link rel="modulepreload" href="assets/js/ui/page-succes.js">
 
 <link rel="stylesheet" href="assets/css/theme.css">
 <link rel="stylesheet" href="assets/css/base.css">
@@ -144,13 +147,19 @@
            seul appui. -->
       <div class="brand__reglages">
         <span class="reglage">
-          <button type="button" id="settings-toggle" class="icon-btn"
+          <button type="button" id="settings-toggle" class="icon-btn icon-btn--teinte"
                   aria-expanded="false" aria-controls="settings-panel"
                   title="Paramètres" aria-label="Paramètres">⚙</button>
           <span class="reglage__mot" aria-hidden="true">Paramètres</span>
         </span>
         <span class="reglage">
-          <button type="button" id="lang-toggle" class="icon-btn icon-btn--lang"
+          <button type="button" id="succes-toggle" class="icon-btn icon-btn--teinte"
+                  aria-expanded="false" aria-controls="succes-panel"
+                  title="Succès" aria-label="Succès"></button>
+          <span class="reglage__mot" aria-hidden="true">Succès</span>
+        </span>
+        <span class="reglage">
+          <button type="button" id="lang-toggle" class="icon-btn icon-btn--teinte icon-btn--lang"
                   title="Langue : Français — cliquer pour l'anglais"
                   aria-label="Langue : Français — cliquer pour l'anglais">FR</button>
           <span class="reglage__mot" aria-hidden="true">Langue</span>
@@ -173,6 +182,13 @@
          Le poser en dur ici aurait affiché des cases décochées avant de les
          corriger, ce qui se voit. -->
     <div id="settings-panel" class="params" role="group" aria-label="Paramètres" hidden></div>
+
+    <!-- Les quarante-trois succès, remplis par ui/page-succes.js. Vide dans le
+         HTML livré pour la même raison que les réglages : leur état se déduit
+         de la collection, qui n'est pas encore lue au moment où cette page
+         arrive. Les écrire en dur aurait montré quarante-trois cadenas avant de
+         les corriger. -->
+    <div id="succes-panel" class="succes-page" role="group" aria-label="Succès" hidden></div>
 
     <!-- Un seul panneau pour toute la progression : le pourcentage global, puis
          le détail par famille de formes et les trois angles généraux. Les

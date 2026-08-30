@@ -43,8 +43,9 @@ import { langueCourante, t } from "../core/i18n.js";
 import { progressOf, goProgressOf } from "../domain/progress.js";
 import { chassesOuvertes, totalPartie } from "../domain/quetes.js";
 import { countComplete } from "../domain/completion.js";
-import { evaluerSucces } from "../domain/succes.js";
+import { bilanDesSucces, evaluerSucces } from "../domain/succes.js";
 import { THEMES } from "./themes-list.js";
+import { dessinerIcone } from "./icones-succes.js";
 
 const LARGEUR = 1080;
 const HAUTEUR = 1350;
@@ -282,51 +283,42 @@ function panneauChiffres(c, p, y, titre, stats) {
 }
 
 /**
- * Les cinq succès.
+ * Le tableau des succès : vingt icônes sur deux rangées.
  *
- * Obtenu : la pastille du thème qu'il déverrouille, pleine. Pas encore :
- * l'anneau seul, plus son avancement en arc. C'est le choix déjà fait dans le
- * menu des thèmes, et pour la même raison — un cadenas sans mesure décourage au
- * lieu d'attirer, alors qu'un arc aux trois quarts donne envie de finir.
+ * On montrait les cinq succès en pastilles nommées. À quarante-trois, les
+ * nommer tous est impossible et n'en montrer que cinq serait arbitraire — d'où
+ * une étagère d'icônes, sans libellé : chacune se reconnaît à sa forme, et le
+ * compte au-dessus dit le reste.
+ *
+ * L'ordre n'est pas celui de la liste. Les gagnés d'abord, puis les plus
+ * proches de l'être : les deux rangées restent pleines même à zéro succès, et
+ * la seconde moitié montre exactement ce qui est à portée. Trier les restants
+ * par avancement, et non les prendre dans l'ordre du fichier, évite d'exposer
+ * « Tout brille » sous le nez de quelqu'un qui a dix chromatiques.
  */
 function panneauDesSucces(c, p, y, succes) {
   const zone = panneau(c, p, y, 176);
-  const gagnes = succes.filter((s) => s.obtenu).length;
+  const gagnes = succes.filter((s) => s.obtenu);
   titreDePanneau(c, p, t("Succès"), zone);
-  ecrire(c, p, `${gagnes} / ${succes.length}`, zone.x + zone.l, y + 49, {
+  ecrire(c, p, `${gagnes.length} / ${succes.length}`, zone.x + zone.l, y + 49, {
     taille: 22, poids: 800, couleur: p.fantome, align: "right",
   });
 
-  const pas = zone.l / succes.length;
-  succes.forEach((s, i) => {
-    const cx = zone.x + pas * i + pas / 2;
-    const cy = y + 110;
-    const theme = THEMES.find((th) => th.verrou === s.cle);
-    const couleur = (theme && theme.pastille) || p.accent;
+  const proches = succes
+    .filter((s) => !s.obtenu)
+    .sort((a, b) => b.fait / (b.total || 1) - a.fait / (a.total || 1));
+  const COLONNES = 10;
+  const montres = [...gagnes, ...proches].slice(0, COLONNES * 2);
+  const pas = zone.l / COLONNES;
 
-    c.beginPath();
-    c.arc(cx, cy, 25, 0, Math.PI * 2);
-    if (s.obtenu) {
-      c.fillStyle = couleur;
-      c.fill();
-    } else {
-      c.strokeStyle = p.traitFort;
-      c.lineWidth = 3;
-      c.stroke();
-      // L'arc d'avancement par-dessus l'anneau éteint : on voit d'un coup
-      // lequel des succès restants est le plus proche.
-      if (s.total > 0 && s.fait > 0) {
-        c.beginPath();
-        c.arc(cx, cy, 25, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * s.fait) / s.total);
-        c.strokeStyle = couleur;
-        c.lineWidth = 3;
-        c.stroke();
-      }
-    }
-    ecrire(c, p, t(s.titre), cx, y + 158, {
-      taille: 18, poids: s.obtenu ? 800 : 600, align: "center",
-      couleur: s.obtenu ? p.doux : p.fantome,
-    });
+  montres.forEach((s, i) => {
+    const cx = zone.x + pas * (i % COLONNES) + pas / 2;
+    const cy = y + 96 + Math.floor(i / COLONNES) * 46;
+    // La couleur du thème pour les cinq qui en ouvrent un, l'accent pour les
+    // autres : c'est ce qui distingue une récompense d'une simple étape.
+    const theme = THEMES.find((th) => th.verrou === s.cle);
+    const couleur = s.obtenu ? (theme && theme.pastille) || p.accent : p.traitFort;
+    dessinerIcone(c, s.icone, cx, cy, 30, couleur);
   });
 }
 
@@ -352,7 +344,16 @@ export function dessinerCarte(ctx) {
   const carnet = collection.quetes;
   const ouvertes = chassesOuvertes(carnet).size;
   const rencontres = Object.values(carnet.parties || {}).reduce((s, part) => s + totalPartie(part), 0);
-  const succes = evaluerSucces(prog);
+  const complets = countComplete(dataset.species, collection);
+  const succes = evaluerSucces(
+    bilanDesSucces({
+      progression: prog,
+      progressionGo: go,
+      comptes: { complete: complets, total: dataset.species.length },
+      carnet,
+      questDone: store.state.questDone,
+    })
+  );
 
   const gens = prog.gens || {};
   const ordre = Object.keys(gens)

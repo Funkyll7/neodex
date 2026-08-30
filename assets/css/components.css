@@ -3009,3 +3009,150 @@
   border-color: color-mix(in srgb, var(--c) 60%, transparent);
   background: color-mix(in srgb, var(--c) 20%, var(--bg-inset));
 }
+
+/* --------------------------- La page des succès --------------------------- */
+
+/* Elle s'ouvre comme le panneau des réglages, avec une différence : quarante-
+   trois tuiles ne tiennent dans aucune colonne de 268 px. D'où le défilement
+   interne borné à 70 % de la hauteur — le panneau reste sous son bouton, mais
+   il ne pousse plus la page sur trois écrans. */
+.succes-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-top: calc(-1 * var(--sp-2));
+  padding: var(--sp-3);
+  flex: none;
+  max-height: 70vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: var(--r-lg);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+}
+.succes-page[hidden] { display: none; }
+
+.succes__entete { display: flex; flex-direction: column; gap: 6px; }
+/* Le score en grand, comme le pourcentage de la barre latérale : c'est le
+   chiffre qu'on vient chercher en ouvrant le panneau. */
+.succes__score {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+}
+.succes__score span { font-size: 15px; color: var(--text-faint); }
+.succes__note { margin: 0; font-size: 11px; color: var(--text-ghost); }
+
+.succes__famille { display: flex; flex-direction: column; gap: var(--sp-2); }
+.succes__titre-famille {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.succes__compte-famille {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-ghost);
+}
+.succes__liste { display: flex; flex-direction: column; gap: 6px; }
+
+/* Une tuile. `align-items: center` ici, contrairement aux réglages : le corps
+   d'un succès fait toujours trois lignes de hauteur — nom, résumé, jauge — et
+   l'icône comme la mesure se posent bien en face du milieu. */
+.succes {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: var(--bg-inset);
+  border: 1px solid transparent;
+}
+/* Gagné : la couleur de sa pastille passe sur l'icône, le cadre et la jauge.
+   Pas encore : tout reste dans les gris, et seule la jauge dit où l'on en est.
+   C'est le contraste entre les deux qui fait lire la liste d'un coup. */
+.succes[data-obtenu="true"] {
+  border-color: color-mix(in srgb, var(--pastille) 38%, transparent);
+  background: color-mix(in srgb, var(--pastille) 9%, var(--bg-inset));
+}
+.succes__icone {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--text-ghost);
+  background: var(--bg-sunken);
+}
+.succes[data-obtenu="true"] .succes__icone {
+  color: var(--pastille);
+  background: color-mix(in srgb, var(--pastille) 16%, var(--bg-sunken));
+}
+.succes__corps { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.succes__nom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 12.5px;
+  color: var(--text-soft);
+}
+.succes[data-obtenu="true"] .succes__nom { color: var(--text); }
+/* Le marqueur des cinq succès qui ouvrent une palette. */
+.succes__palette {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border-radius: var(--r-pill);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--pastille);
+  background: color-mix(in srgb, var(--pastille) 15%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pastille) 40%, transparent);
+}
+.succes__resume {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--text-faint);
+}
+.succes__mesure {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-faint);
+}
+.succes[data-obtenu="true"] .succes__mesure { font-size: 15px; color: var(--pastille); }
+
+.succes__jauge {
+  height: 4px;
+  margin-top: 2px;
+  border-radius: var(--r-pill);
+  background: var(--bg-sunken);
+  overflow: hidden;
+}
+.succes__jauge i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--text-ghost);
+}
+.succes[data-obtenu="true"] .succes__jauge i { background: var(--pastille); }
+.succes__jauge--globale { height: 7px; background: var(--bg-inset); }
+.succes__jauge--globale i { background: var(--accent); }
