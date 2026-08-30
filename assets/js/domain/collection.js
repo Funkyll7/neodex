@@ -363,6 +363,18 @@ export class Collection {
    * @param {object} distantMarks  les marques lues dans le depot
    * @returns {boolean} vrai si l'affichage doit etre refait
    */
+  /**
+   * Ce que la couche locale ajoute au depot : ce qu un envoi va y ecrire.
+   *
+   * Meme forme que le rapport d `adopterDistant`, et volontairement : le
+   * journal range les deux sens cote a cote, et deux formes differentes
+   * l auraient oblige a savoir de laquelle il parle.
+   *
+   * Rend `null` quand rien n est en attente.
+   */
+  rapportLocal() {
+    return rapportDeChangement(this.base, this.toExport("comparaison").marks, this.dataset);
+  }
   adopterDistant(distantMarks) {
     const fusionne = this.fusionnerAvec(distantMarks);
     const avant = this.toExport("comparaison").marks;

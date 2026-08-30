@@ -16,6 +16,7 @@
  */
 
 import { CONFIG } from "../config.js";
+import { ajouterAuJournal } from "./journal.js";
 // Les messages d'etat sont lus par l'utilisateur : ils suivent la langue. Les
 // `reason`, elles, restent en francais — ce sont des messages de commit git,
 // ecrits dans l'historique du depot, pas a l'ecran.
@@ -249,7 +250,13 @@ export class GitHubSync {
       // ne garde en attente que ce qui l'en ecarte. Quand rien n'a bouge
       // pendant le vol, il ne reste rien : le comportement est exactement celui
       // de `commitLocal`, sans le trou.
+      // LE JOURNAL AVANT L ACQUITTEMENT. `adopterDistant` prend ce qu on vient
+      // d ecrire pour nouvel ancetre : apres lui, la couche locale est vide et
+      // il n y a plus rien a raconter. On releve donc ce qu on envoyait juste
+      // avant de l effacer.
+      const envoye = this.collection.rapportLocal();
       this.collection.adopterDistant(payload.marks);
+      if (envoye) ajouterAuJournal("envoi", envoye, Date.now());
       // Le carnet suit le meme acquittement : ce qu on vient d ecrire devient ce
       // que le depot contient. La jointure etant idempotente, ceci ne peut pas
       // creer d ecart — c est ce qui garantit qu on ne replanifie pas sans fin.
@@ -344,7 +351,10 @@ export class GitHubSync {
     // ce qui est coche ici, vider la couche locale le perdrait.
     const rapport = this.collection.adopterDistant(distant.marks);
     this.collection.adopterQuetes(distant.quetes);
-    if (rapport) this.emit("ok", resumeDuRapport(rapport), rapport);
+    if (rapport) {
+      ajouterAuJournal("reception", rapport, Date.now());
+      this.emit("ok", resumeDuRapport(rapport), rapport);
+    }
     return rapport;
   }
 

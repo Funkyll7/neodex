@@ -15,6 +15,7 @@ import { downloadJson } from "./common.js";
 import { jouer } from "./sons.js";
 import { ouvrirCartePartage, dessinerCarte } from "./carte-partage.js";
 import { ouvrirChangements } from "./changements.js";
+import { ajouterAuJournal } from "../domain/journal.js";
 import { poserApercuCarte } from "./recompenses.js";
 
 export function createSaveControls(ctx) {
@@ -209,6 +210,11 @@ function createSyncControls(ctx) {
       // Le rapport dit CE QUI est arrive. « Collection rechargee » laissait
       // l'utilisateur verifier lui-meme si quelque chose avait bouge, ce qui
       // est exactement la question a laquelle le bouton devait repondre.
+      // Le rechargement manuel passe par `adopterDistant` sans passer par
+      // `relire`, qui est l'autre point ou le journal est nourri : sans cette
+      // ligne, un rechargement volontaire etait le seul changement a ne pas
+      // laisser de trace.
+      if (rapport) ajouterAuJournal("reception", rapport, Date.now());
       sync.emit("ok", rapport ? resumeDuRapport(rapport) : t("Collection déjà à jour."), rapport);
     } catch {
       /* idem */
@@ -225,6 +231,11 @@ function createSyncControls(ctx) {
   // « attente » passent en silence, sinon chaque enregistrement automatique se
   // serait annonce deux fois.
   let dernierStatut = null;
+  // L horodatage du dernier rapport montre : `render` tourne a chaque
+  // changement d etat, et sans cette memoire le panneau se serait rouvert a
+  // chaque repeinte tant que le rapport restait dans l etat.
+  let dernierRapportVu = 0;
+
   sync.subscribe((etat) => {
     if (etat.status !== dernierStatut) {
       if (etat.status === "ok") jouer("synchro");
@@ -232,6 +243,33 @@ function createSyncControls(ctx) {
       dernierStatut = etat.status;
     }
     render();
+
+    // LE DETAIL S OUVRE TOUT SEUL QUAND LE CHANGEMENT VIENT D AILLEURS.
+    //
+    // La premiere version se contentait d un bouton, au motif qu un panneau
+    // qui s ouvre seul finit par agacer. C etait mal poser le probleme : la
+    // synchronisation tourne en fond toutes les quelques secondes, mais elle
+    // ne produit un RAPPORT que lorsque le depot a reellement bouge — ce qui
+    // n arrive qu apres qu un autre appareil y a ecrit. C est rare, et c est
+    // exactement l evenement qu on veut voir sans avoir a le chercher.
+    //
+    // Les envois, eux, n ouvrent rien : ce sont nos propres cases, on vient de
+    // les cocher, et se les faire montrer serait absurde. `emit` ne transporte
+    // un rapport que du cote reception — voir `relire` dans `domain/sync.js`.
+    //
+    // Et rien ne s ouvre par-dessus un panneau deja la : on peut etre en train
+    // de regarder une fiche ou un apercu, et se les faire chasser par une
+    // synchronisation de fond serait le pire des deux mondes.
+    const { rapport } = sync.state;
+    if (
+      rapport &&
+      rapport.especes.length &&
+      etat.at.getTime() !== dernierRapportVu &&
+      !document.querySelector(".verrou-fond")
+    ) {
+      dernierRapportVu = etat.at.getTime();
+      ouvrirChangements(rapport);
+    }
   });
 
   function render() {

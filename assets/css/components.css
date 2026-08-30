@@ -5116,3 +5116,191 @@ body::before {
   .card--shiny-art:nth-child(5n + 4) .card__reflet { animation-delay: 4.1s; }
   .card--shiny-art:nth-child(5n + 5) .card__reflet { animation-delay: 5.6s; }
 }
+
+/* =================== Le journal des modifications ======================== */
+
+/* Le bouton du panneau des réglages. Une ACTION au milieu de bascules : il
+   fallait qu'il se distingue des cases sans crier, d'où le fond creusé, la
+   flèche implicite du compte à droite, et le liseré d'accent au survol. */
+.param__action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 10px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-sunken);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.param__action:hover { border-color: var(--accent); background: var(--bg-hover); }
+.param__action-icone {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+.param__action-texte { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+/* Le compte : ce qui dit s'il y a quelque chose à voir AVANT d'ouvrir. */
+.param__action-compte {
+  flex: 0 0 auto;
+  min-width: 24px;
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.jrn { display: flex; flex-direction: column; gap: var(--sp-3); }
+.jrn__vide { margin: 0; padding: var(--sp-4) 0; text-align: center; font-size: 12px; line-height: 1.6; color: var(--text-faint); }
+
+.jrn__resume {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.jrn__vider {
+  padding: 3px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.jrn__vider:hover { color: var(--danger); border-color: var(--danger); }
+
+/* Le titre du jour COLLE EN HAUT pendant qu'on fait défiler ses entrées : sur
+   trois mois d'historique on perd sinon le fil de la date en deux tours de
+   molette. Il est opaque, sans quoi les entrées défileraient à travers. */
+.jrn__jour { display: flex; flex-direction: column; gap: 6px; }
+.jrn__titre {
+  position: sticky;
+  top: calc(-1 * var(--sp-3));
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 6px 0 5px;
+  background: var(--bg-raised);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.jrn__titre::after {
+  /* Le filet part du titre et file jusqu'au bord : il sépare les jours sans
+     ajouter une ligne de plus à lire. */
+  content: "";
+  flex: 1 1 auto;
+  order: 1;
+  height: 1px;
+  background: var(--border);
+}
+.jrn__nom-jour { order: 0; }
+.jrn__compte-jour {
+  order: 2;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  color: var(--text-faint);
+  font-size: 10px;
+  text-align: center;
+}
+
+/* Une entrée : envoyée, ou reçue. La couleur du bord gauche porte la
+   distinction, et elle est la même que celle des chevrons de la fiche — un
+   envoi part, une réception arrive. */
+.jrn__entree {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: var(--bg-sunken);
+  overflow: hidden;
+}
+.jrn__entree--recu { border-left-color: var(--gold-soft); background: var(--gold-wash); }
+
+.jrn__somme {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.jrn__somme::-webkit-details-marker { display: none; }
+.jrn__somme:hover { background: var(--bg-hover); }
+.jrn__fleche {
+  flex: 0 0 auto;
+  display: grid; place-items: center;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent-wash);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+.jrn__entree--recu .jrn__fleche { background: var(--gold-wash); color: var(--gold-soft); }
+.jrn__quoi { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.jrn__sens { font-size: 12px; font-weight: 800; color: var(--text); }
+.jrn__heure { font-size: 10.5px; font-weight: 700; color: var(--text-ghost); }
+.jrn__comptes { flex: 0 0 auto; display: flex; gap: 4px; }
+.jrn__compte {
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  font-weight: 800;
+}
+.jrn__compte--plus {
+  background: color-mix(in srgb, var(--success, #4fbf6a) 16%, transparent);
+  color: color-mix(in srgb, var(--success, #4fbf6a) 70%, var(--text));
+}
+.jrn__compte--moins {
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+  color: color-mix(in srgb, var(--danger) 70%, var(--text));
+}
+
+.jrn__detail { padding: 2px 10px 8px; border-top: 1px solid var(--border); }
+/* Les lignes d'espèces sont les MÊMES que celles du détail de synchronisation —
+   voir `ligneEspece` —, seule leur densité change ici : dans un journal on
+   parcourt, on ne lit pas. */
+.jrn__detail .chgt__espece { padding: 5px 0; margin: 0; border-radius: 0; }
+.jrn__detail .chgt__sprite { width: 38px; height: 38px; border-radius: 10px; }
+.jrn__coupees { margin: 4px 0 0; font-size: 10.5px; font-style: italic; color: var(--text-ghost); }
+
+/* Le chevron de repli, dessiné plutôt qu'écrit : le triangle par défaut change
+   de forme d'un système à l'autre, et il est ici répété des dizaines de fois. */
+.jrn__somme { position: relative; padding-right: 26px; }
+.jrn__somme::after {
+  content: "";
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  width: 6px; height: 6px;
+  border-right: 2px solid var(--text-ghost);
+  border-bottom: 2px solid var(--text-ghost);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform .15s;
+}
+.jrn__entree[open] .jrn__somme::after { transform: translateY(-20%) rotate(-135deg); }

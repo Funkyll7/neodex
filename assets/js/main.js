@@ -19,7 +19,7 @@ import { progressOf, goProgressOf } from "./domain/progress.js";
 import { bilanDesSucces } from "./domain/succes.js";
 import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
 import { jouer } from "./ui/sons.js";
-import { initParametres, appliquerParametres } from "./ui/parametres.js";
+import { initParametres, appliquerParametres, poserContexteParametres } from "./ui/parametres.js";
 import { initPageSucces } from "./ui/page-succes.js";
 import { appliquerRecompenses } from "./ui/recompenses.js";
 import { initCourbe } from "./ui/courbe.js";
@@ -322,6 +322,12 @@ function start(dataset) {
       if (target) store.set({ selectedId: target.id });
     },
   };
+
+  // Le panneau des reglages a besoin du jeu de donnees pour son journal : il
+  // n y retrouve les especes que par leur numero. Pose ici plutot qu importe,
+  // parce que `initParametres` a deja tourne au demarrage, bien avant que les
+  // donnees soient la.
+  poserContexteParametres(ctx);
 
   const sidebar = createSidebar(ctx);
   const grid = createGrid(ctx);

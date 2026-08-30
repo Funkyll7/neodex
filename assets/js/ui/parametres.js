@@ -29,6 +29,8 @@ import { t } from "../core/i18n.js";
 import { reglage, poserReglage } from "../core/prefs.js";
 import { jouer, sonsActifs, basculerSons } from "./sons.js";
 import { iconeSvg } from "./icones-succes.js";
+import { ouvrirJournal } from "./journal.js";
+import { lireJournal } from "../domain/journal.js";
 
 /**
  * Les réglages du panneau, dans l'ordre d'affichage.
@@ -72,6 +74,20 @@ export function appliquerParametres() {
 }
 
 /** Le panneau et son bouton. */
+let contexte = null;
+
+/**
+ * Le jeu de donnees, pose par `main.js`.
+ *
+ * Pose et non importe : ce module est initialise avant le chargement des
+ * donnees, et le journal n en a besoin qu au moment ou on l ouvre — c est-a-dire
+ * bien apres. Meme mecanique que `poserSourceDesSucces` dans `ui/recompenses.js`,
+ * et pour la meme raison : eviter un import qui obligerait a attendre.
+ */
+export function poserContexteParametres(ctx) {
+  contexte = ctx;
+}
+
 export function initParametres() {
   const bouton = document.getElementById("settings-toggle");
   const panneau = document.getElementById("settings-panel");
@@ -94,6 +110,29 @@ export function initParametres() {
       panneau,
       el("h3.panel__label", t("Réglages de cet appareil")),
       ...REGLAGES.map((r) => ligne(r)),
+      // LE JOURNAL EST UNE ACTION, PAS UN RÉGLAGE, d'où la ligne séparée sous
+      // les bascules plutôt qu'une case de plus. Il vit ici quand même parce
+      // que c'est le seul panneau qui parle de CET appareil, et que le journal
+      // est justement local — il ne suit pas la collection d'un écran à
+      // l'autre. Le compte est sur le bouton : sans lui, on ne sait pas s'il y
+      // a quelque chose à voir avant de l'ouvrir.
+      el(
+        "button.param__action",
+        {
+          type: "button",
+          onclick: () => {
+            ouvrir(false);
+            ouvrirJournal(contexte && contexte.dataset);
+          },
+        },
+        el("span.param__action-icone", { "aria-hidden": "true" }, iconeSvg("carnet", 16)),
+        el(
+          "span.param__action-texte",
+          el("span.param__titre", t("Journal des modifications")),
+          el("span.param__aide", t("Tout ce qui a été coché ici ou reçu d'un autre appareil, jour par jour."))
+        ),
+        el("span.param__action-compte", String(lireJournal().length))
+      ),
       // Les réglages ne partent pas dans le dépôt, et il faut le dire : sinon
       // on suppose que couper le son sur le téléphone le coupe partout.
       el("p.param__note", t("Ces réglages restent dans ce navigateur : ils ne suivent pas ta collection d'un appareil à l'autre."))

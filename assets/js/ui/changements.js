@@ -69,8 +69,14 @@ function portrait(entree, chromatiques) {
   );
 }
 
-/** Une espèce et ce qui a bougé chez elle. */
-function ligne(entree) {
+/**
+ * Une espèce et ce qui a bougé chez elle.
+ *
+ * Exportée parce que le journal en affiche les mêmes : une entrée d'historique
+ * n'est rien d'autre qu'un rapport ancien, et deux rendus differents auraient
+ * fini par diverger sur le libellé d'une case ou le choix du sprite.
+ */
+export function ligneEspece(entree) {
   const cases = entree.espece ? requiredSlots(entree.espece) : [];
   const noms = libelles(entree.espece);
   const nom = (slot) => noms.get(slot) || slot;
@@ -141,7 +147,7 @@ export function ouvrirChangements(rapport) {
         rapport.especes
           .slice()
           .sort((a, b) => b.perdues.length - a.perdues.length || a.id - b.id)
-          .map(ligne)
+          .map(ligneEspece)
       ),
     ],
   });
