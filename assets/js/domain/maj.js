@@ -53,7 +53,7 @@ export const VERSIONS = [
       ["amelioration", "« Aurore » est devenu un coucher de soleil : ciel, mer, traînée sur l'eau et palmiers en contre-jour."],
       ["correction", "L'aperçu d'un fond de page cachait la colonne de gauche derrière la trame."],
       ["correction", "La marque « Classique » prenait les couleurs de la marque équipée dans le menu de customisation."],
-      ["correction", "La recherche recouvrait le bas de la barre « Filtres » sur téléphone."],
+      ["correction", "Les barres collantes se recouvraient sur téléphone : la recherche mordait sur « Filtres », le séparateur de génération sur la recherche."],
       ["correction", "La dernière ligne d'un panneau passait sous la barre de gestes du téléphone."],
       ["amelioration", "Les sprites de la fiche arrivent avec elle au lieu d'attendre un tour de mise en page."],
     ],

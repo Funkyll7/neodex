@@ -2389,7 +2389,14 @@
    la largeur, elle mesure 124 px sur un écran étroit et moins sur un large. Un
    `ResizeObserver` tient `--barre-outils-h` à jour, dans ui/dex-grid.js. */
 @media (max-width: 860px) {
-  .gen-sep { top: calc(45px + var(--barre-outils-h, 124px)); }
+  /* Les DEUX hauteurs sont mesurées, plus aucune n'est écrite à la main. La
+     barre d'outils l'était déjà (`--barre-outils-h`, ui/dex-grid.js) ; la barre
+     « Filtres » valait 45 px en dur, et elle en fait soixante-cinq depuis
+     qu'elle porte un logo. Le séparateur de génération se collait donc vingt
+     pixels trop haut et passait sous la recherche — le même défaut que la
+     recherche elle-même avait sur la barre « Filtres », au même endroit et pour
+     la même raison. */
+  .gen-sep { top: calc(var(--h-filtres, 45px) + var(--barre-outils-h, 124px)); }
 }
 
 /* ---------------------- Thèmes qu'il faut mériter ------------------------- */
