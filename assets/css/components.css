@@ -192,6 +192,28 @@
 
 /* -------------------------------- Onglets -------------------------------- */
 .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border); }
+
+/* LA RANGÉE D'ONGLETS EST LE SEUL TEXTE POSÉ À MÊME LE FOND DE PAGE.
+   Tout le reste de l'interface vit sur un panneau opaque ; ces libellés-là,
+   non. Sur le fond nu ils tiennent tout juste — 4,82 de rapport sur la palette
+   « Clair », pour un seuil de 4,5 — et n'importe quel motif dessiné derrière
+   les fait passer dessous : 4,08 pour le seul ciel d'Aurore, 2,31 une fois les
+   palmes posées.
+
+   Ils reçoivent donc un fond, MAIS SEULEMENT QUAND UN MOTIF EST ACTIF : sans
+   motif il n'y a rien derrière eux, et une bande grise de plus n'aurait servi
+   qu'à alourdir la page. Le voile reprend `--bg`, la couleur qu'ils avaient
+   déjà sous eux — il ne change donc rien à leur apparence, il rend seulement
+   au texte le fond que le motif lui prenait — mesuré : 4,42 à 86 %, 4,86 à 92 %. Le remède vaut pour les six
+   motifs, pas seulement pour Aurore. */
+[data-motif]:not([data-motif="aucun"]) .tabs {
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  /* Les marges négatives étendent le voile jusqu'aux bords de la colonne : une
+     bande arrêtée pile sur le texte se lirait comme une étiquette. */
+  margin: 0 calc(-1 * var(--sp-3));
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md) var(--r-md) 0 0;
+}
 .tab {
   display: flex; align-items: center; gap: var(--sp-2);
   cursor: pointer; border: none; background: transparent;
@@ -805,7 +827,7 @@
   flex: 0 0 auto;
   width: 16px; height: 16px;
   background: url("../img/gigamax-nb.png") center / contain no-repeat;
-  opacity: .55;
+  opacity: .5;
   transition: opacity .14s;
 }
 .form__btn:hover .form__btn-icon { opacity: .8; }
@@ -2185,8 +2207,14 @@
      Le compteur remonte visuellement mais reste dernier dans le DOM : ce
      n'est pas un élément focalisable, l'ordre de tabulation ne bouge donc
      pas. */
+  /* `top` SUIT LA HAUTEUR RÉELLE DE LA BARRE « FILTRES », publiée dans
+     `--h-filtres` par `ui/sidebar.js`. La valeur était écrite en dur — 45 px —
+     et la barre en fait soixante-cinq depuis qu'elle porte un logo : la
+     recherche lui recouvrait ses vingt derniers pixels, et gagnait la
+     superposition par-dessus le marché. Le repli garde l'ancienne valeur pour
+     le cas où le script n'aurait pas encore mesuré. */
   .toolbar {
-    position: sticky; top: 45px; z-index: 25;
+    position: sticky; top: var(--h-filtres, 45px); z-index: 25;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -2721,7 +2749,7 @@
   font-size: 13px;
   line-height: 1;
   cursor: pointer;
-  opacity: .55;
+  opacity: .5;
 }
 .qstat__raz:hover,
 .qstat__raz:focus-visible { opacity: 1; color: var(--accent); background: var(--bg-sunken); }
@@ -3652,7 +3680,7 @@ body::before {
 [data-motif="vagues"] body::before,
 [data-motif="vagues"] .verrou__motif {
   background-image: repeating-radial-gradient(circle at 50% 120%, transparent 0 38px, var(--border) 38px 39px);
-  opacity: .55;
+  opacity: .5;
 }
 [data-motif="poussiere"] body::before,
 [data-motif="poussiere"] .verrou__motif {
@@ -3660,13 +3688,119 @@ body::before {
   background-size: 26px 26px;
   opacity: .14;
 }
+/* AURORE — UN LEVER DE SOLEIL, ET NON TROIS TACHES.
+   La première version posait trois halos, dont un en `--accent-wash` : une
+   couleur qui vaut déjà 12 % d'opacité, encore diluée par le dégradé. Sur un
+   fond sombre, ça ne se voyait pas — le motif ne se distinguait pas de
+   « Aucun », et c'est ce qui a été signalé.
+
+   Le dessin est maintenant un CIEL, ce que le nom promettait : une bande
+   verticale qui va du bleu froid du haut à l'or de l'horizon, et six voiles
+   posés dessus, du plus haut au plus bas, comme des nuages qui prennent la
+   lumière avant le soleil.
+
+   LA MOITIÉ CHAUDE VIENT DU THÈME, LA MOITIÉ FROIDE NON, et c'est délibéré.
+   `--accent` et `--gold-soft` changent sur les trente-huit palettes : chaque
+   thème a donc son propre soleil — orange sur Sombre, bleu glacé sur Couronne,
+   rose sur Rubis. Le bleu et le violet du haut viennent de l'échelle de rareté,
+   qui ne connaît que deux états, clair et sombre : c'est ce qui garde un ciel
+   de ciel même sur une palette dont l'accent est déjà bleu, où tout aurait été
+   de la même couleur.
+
+   LES OPACITÉS SONT MESURÉES, PAS CHOISIES. Le motif se peint derrière la page
+   entière ; tout texte posé dessus le lit à travers. Elles ont été montées
+   jusqu'à ce que le motif se voie, puis retenues au point où le plus pâle des
+   textes garde son rapport de contraste sur les trente-huit palettes. */
 [data-motif="aurore"] body::before,
 [data-motif="aurore"] .verrou__motif {
   background-image:
-    radial-gradient(60% 45% at 15% 0%, var(--accent-wash) 0%, transparent 70%),
-    radial-gradient(55% 40% at 90% 20%, color-mix(in srgb, var(--pair) 14%, transparent) 0%, transparent 72%),
-    radial-gradient(70% 50% at 50% 100%, color-mix(in srgb, var(--female) 11%, transparent) 0%, transparent 72%);
+    /* Le soleil : un disque net posé sur la ligne d'horizon, et son halo.
+       EN `vmin`, ET NON EN PIXELS NI EN POURCENTAGE. Un pourcentage sur un
+       `radial-gradient` circulaire n'est pas permis, et l'ellipse qu'il aurait
+       fallu écrire à la place donnait un soleil ovale sur un écran large. Des
+       pixels donnaient un soleil de taille fixe : correct sur un portable,
+       énorme sur un téléphone, minuscule sur un grand écran. `vmin` le lie au
+       plus petit côté de la fenêtre — il garde donc la même place quel que
+       soit l'appareil, et il reste rond. */
+    radial-gradient(circle 3.2vmin at 50% 61.5%, color-mix(in srgb, var(--gold) 90%, #fff) 0 58%, transparent 100%),
+    radial-gradient(circle 19vmin at 50% 61.5%, color-mix(in srgb, var(--gold) 38%, transparent) 0%, transparent 72%),
+    /* La traînée sur l'eau, sous le soleil : c'est elle qui fait la mer. */
+    radial-gradient(9% 27% at 50% 82%, color-mix(in srgb, var(--gold) 38%, transparent) 0%, transparent 76%),
+    /* LA MER, ET LE SABLE — la moitié basse compte autant que le ciel.
+       Sur la référence, le coucher ne s'arrête pas à l'horizon : l'eau reprend
+       l'orange en plus sombre, et la plage du premier plan vire au magenta.
+       Une première version laissait cette moitié-là presque nue, et le motif
+       avait alors l'air d'une bannière posée en haut de page au lieu d'un
+       décor. Les teintes y sont donc du même ordre que celles du ciel. */
+    linear-gradient(
+      180deg,
+      transparent 0 61.5%,
+      color-mix(in srgb, var(--gold-soft) 26%, transparent) 62%,
+      color-mix(in srgb, var(--accent) 22%, transparent) 74%,
+      color-mix(in srgb, var(--female) 24%, transparent) 87%,
+      /* Le sable : la bande la plus rose de l'image, tout en bas. */
+      color-mix(in srgb, var(--female) 34%, transparent) 94%,
+      color-mix(in srgb, var(--female) 30%, transparent) 100%
+    ),
+    /* Le ciel : magenta en haut, orange au milieu, l'or du thème à l'horizon.
+       Il s'arrête net à 61,6 % — une ligne d'horizon est une ligne. */
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--female) 28%, transparent) 0%,
+      color-mix(in srgb, var(--female) 22%, transparent) 26%,
+      color-mix(in srgb, var(--gold-soft) 24%, transparent) 48%,
+      color-mix(in srgb, var(--gold) 32%, transparent) 61%,
+      transparent 61.6%
+    );
 }
+
+/* LES PALMES, EN SILHOUETTE, SUR UNE COUCHE À ELLES.
+   Elles ne pouvaient pas rejoindre la pile ci-dessus : le fichier est un tracé
+   noir, et une image de fond se peint telle quelle — un aplat noir sur un ciel
+   sombre ne se voit pas. En MASQUE, c'est la couleur du dessous qui les peint,
+   et cette couleur peut suivre le thème.
+
+   Le dessin est fabriqué, pas photographié : la référence fournie est une image
+   sous licence, on s'en inspire sans l'embarquer. Voir le générateur dans
+   l'historique — nervures courbes, folioles couchées vers la pointe.
+
+   `auto 100%` : la hauteur remplit la bande, la largeur suit le rapport du
+   dessin, et la droite de l'écran reste du ciel nu. C'est le cadrage de la
+   référence, où le palmier ne mange que le coin. */
+[data-motif="aurore"] body::after,
+[data-motif="aurore"] .verrou__motif::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: min(38%, 340px);
+  pointer-events: none;
+  /* Une silhouette est plus SOMBRE que le ciel derrière elle, quelle que soit
+     l'heure. Le mélange part donc d'un prune presque noir et n'emprunte au fond
+     du thème que de quoi ne pas faire de tache : quasi noir sur les palettes
+     sombres, prune profond sur les claires. */
+  /* LE PRUNE EST COUPÉ DE FOND DE THÈME, et c'est ce qui rend la bande
+     utilisable partout. Un prune pur donnait une découpe superbe sur les vingt
+     palettes sombres et une catastrophe sur les claires : texte sombre sur
+     palme sombre, 1,60 de rapport pour un seuil de 4,5 sur « Clair ». En
+     empruntant au fond, la silhouette reste plus sombre que son ciel sur les
+     palettes sombres, et devient un prune pâle sur les claires — plus sombre
+     que le ciel là aussi, mais plus clair que l'encre. */
+  background-color: color-mix(in srgb, #1b0610 55%, var(--bg));
+  /* PAS TOUT À FAIT OPAQUE, et ce n'est pas une coquetterie : la bande couvre
+     le haut de la fenêtre, c'est-à-dire les onglets, et leurs libellés sont
+     posés à même le fond. Une silhouette pleine les rendait illisibles sur les
+     palettes claires — texte sombre sur palme sombre, 1,94 de rapport pour un
+     seuil de 4,5. À la moitié, la fronde se lit toujours comme
+     une découpe, et le pire des textes garde son contraste. C'est aussi ce que
+     fait un vrai contre-jour : le ciel déborde sur les bords des feuilles. */
+  opacity: .5;
+  -webkit-mask: url("../img/motif-palmes.svg") top left / auto 100% no-repeat;
+  mask: url("../img/motif-palmes.svg") top left / auto 100% no-repeat;
+}
+/* Sur la page, la bande suit la FENÊTRE et non le document : elle accompagne
+   `body::before`, qui est fixe lui aussi. Dans l'aperçu, elle reste absolue
+   dans la maquette — c'est un écran en réduction, pas une fenêtre. */
+[data-motif="aurore"] body::after { position: fixed; z-index: 0; }
 
 /* --------------------- Le choix, dans la page des succès ----------------- */
 
@@ -4352,6 +4486,22 @@ body::before {
 .verrou__scene--motif .verrou__ecran { position: relative; }
 .verrou__scene--motif .verrou__motif { background-color: var(--bg); }
 
+/* LA TRAME PASSE SOUS TOUTE LA MAQUETTE, ET NON SOUS CHAQUE MORCEAU. C'est la
+   correction d'un bug que la première version portait sans le montrer : une
+   trame en `position: absolute` sans `z-index` se peint dans l'étape des
+   éléments positionnés, c'est-à-dire APRÈS le contenu dans le flux — et comme
+   elle est opaque ici, tout ce qui n'était pas positionné disparaissait
+   dessous. Seules les vignettes avaient été remontées, une par une ; la
+   colonne de gauche, elle, était statique, et l'aperçu d'un fond de page ne
+   montrait donc plus qu'une grille flottant sur un rectangle vide.
+
+   Remonter les morceaux un à un était le mauvais réflexe : la maquette
+   grandira, et chaque nouvelle pièce statique aurait disparu de la même façon
+   sans que rien ne le dise. Un seul plan pour la trame, un seul pour la
+   maquette entière, et la question ne se repose plus. */
+.verrou__scene--motif .verrou__motif { z-index: 0; }
+.verrou__scene--motif .verrou__appli { position: relative; z-index: 1; }
+
 .verrou__motif {
   position: absolute;
   inset: 0;
@@ -4361,7 +4511,6 @@ body::before {
   height: 100%;
   pointer-events: none;
 }
-.verrou__scene--motif .verrou__tuile { position: relative; z-index: 1; }
 
 /* Le titre, montré là où il apparaîtra : sous le nom du site. */
 .verrou__marque { display: flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -4480,11 +4629,21 @@ body::before {
   .verrou-fond { padding: 0; align-items: flex-end; }
   .verrou {
     max-height: 88vh;
+    /* `dvh` APRÈS `vh`, et non à sa place : la hauteur de fenêtre change quand
+       la barre d'adresse se rétracte, et `vh` garde la valeur d'écran plein.
+       Les deux sont écrites, le navigateur qui connaît la seconde la garde. */
+    max-height: 88dvh;
     border-radius: var(--r-lg) var(--r-lg) 0 0;
     border-bottom: none;
   }
   .verrou__tete { padding: var(--sp-3) var(--sp-3) var(--sp-2); }
-  .verrou__corps { padding: var(--sp-3); }
+  /* LA DERNIÈRE LIGNE REMONTE AU-DESSUS DE LA BARRE DE GESTES. La feuille est
+     collée au bas de l'écran, et sur un téléphone à navigation gestuelle le bas
+     de l'écran n'est pas le bas de la zone lisible : le pourcentage d'un succès
+     — dernière ligne du panneau, et celle qu'on vient chercher — se retrouvait
+     sous la barre. `env()` rend la hauteur réelle de cette barre, zéro sur un
+     appareil qui n'en a pas. */
+  .verrou__corps { padding: var(--sp-3); padding-bottom: calc(var(--sp-3) + env(safe-area-inset-bottom, 0px)); }
   .verrou__scene { min-height: 168px; padding: var(--sp-3); }
   .verrou__tuile { width: 148px; }
 }
@@ -5433,6 +5592,39 @@ body::before {
    `base.css`, ou le mot-cle ne se collait qu a la derniere couche. Une valeur
    qui traverse une propriete personnalisee ne se comporte pas comme une valeur
    ecrite sur place. */
+
+/* Classique — celle qu'on porte sans rien avoir gagné, et la SEULE à suivre les
+   trente-huit palettes : elle prend `--gold-soft`, le second bout du dégradé de
+   progression du thème. Elle n'a pas d'anneau — son anneau reprend la couleur
+   de son fond, ce qui revient à ne pas en avoir, sans demander une règle de
+   plus pour l'annuler.
+
+   ELLE DOIT SE DÉCLARER QUAND MÊME, et c'est la correction d'un bug. Les six
+   autres posent leurs couleurs sur `[data-marque="…"]`, un sélecteur qui
+   attrape aussi bien le `<html>` — la marque équipée — que les pastilles du
+   menu, qui portent le même attribut. Classique, elle, n'écrivait rien et
+   comptait sur le repli de `var()` : sa pastille héritait donc des variables
+   posées sur `<html>`, c'est-à-dire des couleurs de la marque ÉQUIPÉE. Avec
+   Éclat au poignet, « Classique » était dessinée en Éclat. Un repli ne
+   remplace pas une déclaration dès lors qu'un ancêtre déclare la même variable.
+
+   `initial` ET NON LES COULEURS ÉCRITES, et c'est tout le fond de l'affaire.
+   Les écrire ici aurait recassé la prévisualisation de thème, corrigée juste
+   avant : un `var()` posé dans la valeur d'une propriété personnalisée est
+   résolu sur l'élément qui la DÉCLARE, pas sur celui qui la lit. Déclaré sur
+   `<html>`, `var(--gold-soft)` aurait pris l'or du thème PORTÉ, et l'aperçu de
+   « Cartouche » aurait remontré la marque du thème courant.
+
+   `initial` rend la variable invalide-par-garantie : `var(--marque-fond, …)`
+   retombe alors sur son repli, et ce repli-là est évalué sur la vignette ou la
+   pastille — donc dans la portée de l'aperçu. Une ligne par variable, et les
+   deux défauts tombent ensemble. */
+[data-marque="etoile"] {
+  --marque-fond: initial;
+  --marque-anneau: initial;
+  --marque-encre: initial;
+  --marque-halo: initial;
+}
 
 /* Coche — cent Pokémon terminés. Un sceau : anneau vert franc, cœur pâle. */
 [data-marque="coche"] {

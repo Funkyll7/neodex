@@ -217,13 +217,13 @@ export function artworkUrl(id, { shiny = false } = {}) {
  * Cree un <img> qui tente successivement plusieurs sources.
  * On garde `loading="lazy"` : la grille peut afficher un millier d'images.
  */
-export function spriteImg(id, { shiny = false, female = false, alt = "", className = "" } = {}) {
+export function spriteImg(id, { shiny = false, female = false, alt = "", className = "", paresseux = true } = {}) {
   const chain = urlsEnPixels(id, { shiny });
   if (female) chain.push(spriteUrl(id, { shiny, female: true }));
   chain.push(spriteUrl(id, { shiny }));
   chain.push(artworkUrl(id, { shiny }));
   if (shiny) chain.push(artworkUrl(id));
-  return imageFrom(chain, alt, className);
+  return imageFrom(chain, alt, className, paresseux);
 }
 
 /**
@@ -231,7 +231,7 @@ export function spriteImg(id, { shiny = false, female = false, alt = "", classNa
  * demande jamais une image absente, et une forme sans chromatique connu
  * retombe volontairement sur son image normale.
  */
-export function formImg(form, { shiny = false, alt = "", className = "" } = {}) {
+export function formImg(form, { shiny = false, alt = "", className = "", paresseux = true } = {}) {
   const has = form.sprites || {};
   // En tete de tout : les seuls sprites dont on SAIT qu'ils sont la, parce
   // qu'ils sont dans le depot. Ils ne couvrent que les vingt-six formes
@@ -287,7 +287,7 @@ export function formImg(form, { shiny = false, alt = "", className = "" } = {}) 
   // Le repli ultime doit exister meme quand `has` a rempli la chaine : sans
   // lui, une forme absente du dossier en pixels n'avait plus rien a essayer.
   else if (enPixels) chain.push(spriteUrl(form.id, { shiny }), artworkUrl(form.id));
-  return imageFrom(chain, alt || form.name, className);
+  return imageFrom(chain, alt || form.name, className, paresseux);
 }
 
 /**
@@ -317,11 +317,26 @@ export function cosmeticImg(variant, speciesId, { shiny = false, alt = "", class
   return imageFrom(chain, alt || variant.name, className);
 }
 
-function imageFrom(chain, alt, className) {
+function imageFrom(chain, alt, className, paresseux = true) {
   const img = document.createElement("img");
   img.alt = alt;
-  img.loading = "lazy";
+  /* PARESSEUX DANS LA GRILLE, PRESSÉ DANS LA FICHE.
+     `lazy` est le bon réglage pour un millier de vignettes dont vingt sont à
+     l'écran. Il est le mauvais pour la fiche d'un Pokémon : elle s'ouvre en
+     feuille plein écran, ses images sont visibles à l'instant où elle apparaît,
+     et le chargement paresseux leur faisait attendre un tour de mise en page de
+     plus. Sur un réseau de téléphone, ce tour se compte en secondes — c'est le
+     « ils mettent quinze ans à apparaître » qui a été signalé. */
+  img.loading = paresseux ? "lazy" : "eager";
+  if (!paresseux) img.fetchPriority = "high";
   img.decoding = "async";
+  /* Le texte de remplacement ne se DESSINE pas.
+     Entre deux essais de la chaîne, le navigateur affiche un instant l'icône
+     d'image cassée suivie du texte `alt` — « Shaymin Céleste » s'étalait alors
+     en travers de la tuile et poussait la mise en page. Le texte reste dans le
+     document, pour les lecteurs d'écran et pour la recherche du navigateur ;
+     il ne se voit simplement plus. */
+  img.style.color = "transparent";
   if (className) img.className = className;
 
   let step = 0;

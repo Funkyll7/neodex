@@ -444,7 +444,7 @@ function fillHead(node, species, ctx) {
   const portrait = node.querySelector('[data-role="portrait"]');
   if (portrait) {
     portrait.replaceChildren(
-      spriteImg(species.id, { shiny, alt: "", className: "detail__portrait-img" })
+      spriteImg(species.id, { shiny, alt: "", className: "detail__portrait-img", paresseux: false })
     );
   }
 
@@ -538,6 +538,9 @@ function slotButton(species, ctx, { slot, label, gold, female }) {
       female: female && Boolean(species.gd),
       alt: `${nomEspece(species)} ${label}`,
       className: "slot__img",
+      // La fiche s ouvre en feuille plein ecran : ces deux images sont visibles
+      // des la premiere image de l animation. Rien a attendre.
+      paresseux: false,
     }),
     el("span.slot__label", label)
   );
@@ -933,7 +936,7 @@ function formTile(form, species, ctx) {
     { dataset: { slots: slots.join(" "), species: species.id } },
     el(
       "div.ftile__art",
-      formImg(form, { alt: nomForme(form), className: "ftile__img" }),
+      formImg(form, { alt: nomForme(form), className: "ftile__img", paresseux: false }),
       form.hasShinySprite
         ? el(
             "span.ftile__shiny",
@@ -941,6 +944,7 @@ function formTile(form, species, ctx) {
               shiny: true,
               alt: `${nomForme(form)} ${t("chromatique")}`,
               className: "ftile__img",
+              paresseux: false,
             }),
             el("span.ftile__spark", { title: t("Version chromatique"), "aria-hidden": "true" })
           )

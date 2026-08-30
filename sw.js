@@ -40,7 +40,7 @@
    v19 : l'installation pre-cache enfin TOUS les modules, et non le seul
         main.js. La liste est lue dans les `modulepreload` d'index.html
         plutot que recopiee : une seule liste a tenir juste. */
-const VERSION = "funkylldex-v66";
+const VERSION = "funkylldex-v69";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;
@@ -74,6 +74,7 @@ const SHELL_FILES = [
   "./assets/img/logo-quete.svg",
   "./assets/img/logo-maj.png",
   "./assets/img/logo-maj-icone.png",
+  "./assets/img/motif-palmes.svg",
 ];
 
 /**

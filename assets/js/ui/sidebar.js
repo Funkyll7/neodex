@@ -325,6 +325,32 @@ function createTiroir() {
   const barre = document.getElementById("sidebar");
   const mobile = window.matchMedia("(max-width: 860px)");
 
+  /**
+   * La hauteur de la barre « Filtres », publiée pour la feuille de styles.
+   *
+   * LA BARRE DE RECHERCHE SE COLLE JUSTE EN DESSOUS, et jusqu'ici elle le
+   * faisait à une constante écrite à la main — `top: 45px`. La barre a grandi
+   * depuis : elle mesure soixante-cinq pixels, et la recherche lui recouvrait
+   * donc les vingt derniers, en gagnant en plus la superposition. Le bas de
+   * « Filtres » disparaissait sous le champ de recherche.
+   *
+   * Recopier la nouvelle hauteur aurait remis la même bombe à retardement :
+   * la barre porte un logo, et son gabarit changera encore. Elle est donc
+   * MESURÉE, et republiée à chaque fois qu'elle change — au chargement des
+   * polices, à la rotation de l'écran, quand le logo arrive. La feuille de
+   * styles lit `--h-filtres` et n'a plus rien à savoir.
+   */
+  if (typeof ResizeObserver === "function") {
+    const publier = () => {
+      const h = bouton.getBoundingClientRect().height;
+      // Zéro quand la barre est masquée — sur grand écran, elle n'existe pas et
+      // la recherche ne se colle à rien.
+      document.documentElement.style.setProperty("--h-filtres", `${Math.round(h)}px`);
+    };
+    new ResizeObserver(publier).observe(bouton);
+    publier();
+  }
+
   /** Ou l'on etait dans la grille avant l'ouverture. */
   let defilement = 0;
   const ouvert = () => bouton.getAttribute("aria-expanded") === "true";

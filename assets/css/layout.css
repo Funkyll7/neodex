@@ -149,7 +149,11 @@
     gap: var(--sp-2);
     position: sticky;
     top: 0;
-    z-index: 20;
+    /* AU-DESSUS DE LA BARRE DE RECHERCHE, qui vaut 25. Les deux se collent
+       bord à bord et ne devraient jamais se croiser ; mais un demi-pixel
+       d'arrondi suffisait à faire passer la recherche devant, et c'est
+       « Filtres » qu'il faut pouvoir toucher à tout moment. */
+    z-index: 26;
     width: 100%;
     padding: 12px var(--sp-4);
     border: none;
