@@ -56,6 +56,7 @@ export const VERSIONS = [
       ["correction", "Les barres collantes se recouvraient sur téléphone : la recherche mordait sur « Filtres », le séparateur de génération sur la recherche."],
       ["correction", "La dernière ligne d'un panneau passait sous la barre de gestes du téléphone."],
       ["amelioration", "Les sprites de la fiche arrivent avec elle au lieu d'attendre un tour de mise en page."],
+      ["correction", "Le motif de fond se peignait par-dessus l'écran de chargement, message d'erreur compris."],
     ],
   },
   {

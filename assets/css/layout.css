@@ -9,7 +9,17 @@
    au-dessus : elle sert de repli aux navigateurs qui ignorent `dvh`. */
 
 /* ----------------------------- Chargement -------------------------------- */
+/* IL PASSE DEVANT LE MOTIF DE FOND, comme `.app` juste après lui.
+   Le fond de page est un pseudo-élément fixe en `z-index: 0` : il se peint
+   donc dans l'étape des éléments positionnés, c'est-à-dire APRÈS tout ce qui
+   est resté dans le flux. `.app` s'en protège avec `z-index: 1` ; cet écran-ci,
+   statique, ne s'en protégeait pas — le motif lui passait dessus, et le
+   coucher de soleil d'« Aurore » venait teinter « Chargement du Pokédex… » et
+   le message d'erreur qui prend sa place quand les données ne se chargent pas.
+   C'est justement le message qu'il faut pouvoir lire. */
 .boot {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;

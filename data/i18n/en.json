@@ -2278,6 +2278,7 @@
     "Les barres collantes se recouvraient sur téléphone : la recherche mordait sur « Filtres », le séparateur de génération sur la recherche.": "Sticky bars overlapped on phones: search bit into \"Filters\", and the generation separator into search.",
     "La dernière ligne d'un panneau passait sous la barre de gestes du téléphone.": "A panel's last line slipped under the phone's gesture bar.",
     "Les sprites de la fiche arrivent avec elle au lieu d'attendre un tour de mise en page.": "The detail panel's sprites arrive with it instead of waiting for another layout pass.",
+    "Le motif de fond se peignait par-dessus l'écran de chargement, message d'erreur compris.": "The background pattern painted over the loading screen, error message included.",
     "Dire de quoi on parle": "Saying what it is about",
     "« Région bouclée » nomme la région la plus proche du bout, ce qu'il reste à cocher et le pourcentage.": "\"Region complete\" now names the region closest to done, what is left to tick and the percentage.",
     "L'onglet des mises à jour porte son logo, teinté par la palette du moment.": "The updates tab carries its own logo, tinted by the current palette.",
