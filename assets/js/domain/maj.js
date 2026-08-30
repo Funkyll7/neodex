@@ -46,6 +46,16 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "4.3",
+    date: "2026-08-30",
+    titre: "Dire de quoi on parle",
+    notes: [
+      ["ajout", "« Région bouclée » nomme la région la plus proche du bout, ce qu'il reste à cocher et le pourcentage."],
+      ["amelioration", "L'onglet des mises à jour porte son logo, teinté par la palette du moment."],
+      ["correction", "L'aperçu d'un fond de page montrait deux vignettes géantes au lieu du motif."],
+    ],
+  },
+  {
     version: "4.2",
     date: "2026-08-30",
     titre: "Le journal, et les cosmétiques qui se regardent",

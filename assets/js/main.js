@@ -516,12 +516,14 @@ function start(dataset) {
         // monochrome : le ✦ qu'elle remplace faisait tache a cote de deux
         // logotypes en couleur.
         ["quest", "assets/img/logo-quete.svg", t("Quêtes"), t("Quêtes"), String(store.state.questDone)],
-        // Le quatrieme onglet ne porte pas de logo : les trois autres en ont un
-        // parce qu ils designent un jeu ou une activite, celui-ci designe le
-        // site lui-meme. Une icone tracee, teintee comme les boutons de
-        // l en-tete, dit  ici on parle de l application  sans faire croire a un
-        // quatrieme Pokedex. Sa pastille porte le numero de version : c est ce
-        // qu on vient verifier.
+        // Le quatrieme onglet porte lui aussi un logo, mais pas de la meme
+        // facon que ses voisins : les trois autres designent un jeu ou une
+        // activite et gardent donc leurs couleurs propres, celui-ci designe le
+        // site lui-meme et prend les siennes. Le dessin sert de MASQUE et non
+        // d image : c est l accent du theme qui le peint, et il suit donc les
+        // trente-huit palettes au lieu d en imposer une trente-neuvieme.
+        // Sa pastille porte le numero de version : c est ce qu on vient
+        // verifier.
         ["maj", null, t("Mises à jour"), t("Maj"), versionCourante()],
       ].map(([value, logo, long, court, badge]) =>
         el(
@@ -539,7 +541,7 @@ function start(dataset) {
           },
           logo
             ? el("img.tab__logo", { src: logo, alt: "", height: 22, loading: "lazy" })
-            : el("span.tab__ico", { "aria-hidden": "true" }, iconeSvg("maj", 18)),
+            : el("span.tab__ico", { "aria-hidden": "true" }),
           el("span.tab__long", long),
           el("span.tab__court", court),
           el("span.tab__badge", badge)
@@ -584,6 +586,12 @@ function start(dataset) {
         comptes,
         carnet: collection.quetes,
         questDone: store.state.questDone,
+        // Les noms de region, pour que « Region bouclee » puisse dire LAQUELLE.
+        // `domain/succes.js` ne connait pas le jeu de donnees : on ne lui passe
+        // que ce dont il se sert.
+        regions: Object.fromEntries(
+          Object.entries(dataset.generations).map(([n, g]) => [n, g.region || g.label])
+        ),
       })
     );
     save.render();

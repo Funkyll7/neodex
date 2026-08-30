@@ -66,9 +66,15 @@ const VIDE = { done: 0, total: 0, pct: 0 };
  * `questDone` est passé plutôt que lu : ce compteur vit dans l'état de
  * l'application, pas dans la collection, et `domain/` n'a pas à le connaître.
  */
-export function bilanDesSucces({ progression, progressionGo, comptes, carnet, questDone }) {
+export function bilanDesSucces({ progression, progressionGo, comptes, carnet, questDone, regions }) {
   return {
     p: progression,
+    // Le NOM des regions, indexe par numero de generation. Ce module ne connait
+    // pas le jeu de donnees et n a pas a le connaitre : c est l appelant qui
+    // lit `dataset.generations`, et il n en passe que ce dont un succes se sert.
+    // Sans lui, « Region bouclee » ne pouvait annoncer qu un pourcentage nu,
+    // sans dire DE QUELLE region il parle — ce qui etait justement la question.
+    regions: regions || {},
     go: progressionGo,
     complets: comptes ? comptes.complete : 0,
     especes: comptes ? comptes.total : 0,
@@ -95,8 +101,33 @@ function somme(b, noms) {
   return { fait, total };
 }
 
-/** Les générations non vides, en tableau — l'ordre n'importe pas ici. */
-const generations = (b) => Object.values(b.p.gens || {}).filter((g) => g.total > 0);
+/**
+ * Les générations non vides, en tableau.
+ *
+ * `entries` et non `values` : le numéro EST l'information qui manquait. Sans
+ * lui, la mesure de « Région bouclée » savait qu'on était à 78 % sans pouvoir
+ * dire de quelle région, ce qui est la seule chose qu'on veut savoir.
+ */
+const generations = (b) =>
+  Object.entries(b.p.gens || {})
+    .filter(([, g]) => g.total > 0)
+    .map(([numero, g]) => ({ ...g, gen: Number(numero), region: (b.regions || {})[numero] || "" }));
+
+/**
+ * Ce qu'il faut savoir d'une génération : laquelle, et où on en est.
+ *
+ * Les nombres seulement, jamais une phrase : celle-ci se traduit, et ce module
+ * ne parle aucune langue. L'affichage l'assemble.
+ */
+const detailRegion = (g) => ({
+  quoi: "region",
+  gen: g.gen,
+  region: g.region,
+  fait: g.done,
+  total: g.total,
+  reste: g.total - g.done,
+  pct: g.total ? Math.floor((g.done / g.total) * 100) : 0,
+});
 
 /**
  * Un palier : « en avoir N ».
@@ -345,11 +376,20 @@ export const SUCCES = [
       // non les pourcentages : `pct` est arrondi, et une génération à 99,6 %
       // s'affichait donc à 100 — le thème se débloquait alors qu'il restait des
       // cases à cocher.
-      if (seaux.some((g) => g.done === g.total)) return { fait: 100, total: 100 };
+      const finie = seaux.find((g) => g.done === g.total);
+      if (finie) return { fait: 100, total: 100, detail: detailRegion(finie) };
       // Sinon on montre la plus avancée, plancher plutôt qu'arrondi et plafonnée
       // à 99 : un cadenas au-dessus de « 100 / 100 » serait incompréhensible.
       const meilleure = seaux.reduce((a, g) => (g.done / g.total > a.done / a.total ? g : a));
-      return { fait: Math.min(99, Math.floor((meilleure.done / meilleure.total) * 100)), total: 100 };
+      return {
+        fait: Math.min(99, Math.floor((meilleure.done / meilleure.total) * 100)),
+        total: 100,
+        // Le POURCENTAGE seul ne disait pas de quelle région il parlait, ni
+        // combien de cases il restait. Les deux comptes voyagent donc à côté :
+        // « 78 % » se lit tout autrement quand on sait que c'est Kalos et qu'il
+        // reste huit cases.
+        detail: detailRegion(meilleure),
+      };
     },
   },
   {
@@ -647,6 +687,7 @@ function normaliser(bilan) {
     especes: bilan.especes || 0,
     questDone: bilan.questDone || 0,
     rencontres: bilan.rencontres || 0,
+    regions: bilan.regions || {},
   };
 }
 
@@ -663,11 +704,14 @@ export function evaluerSucces(bilan) {
   if (!bilan) return [];
   const b = normaliser(bilan);
   return SUCCES.map((succes) => {
-    const { fait, total } = succes.mesure(b);
+    const { fait, total, detail } = succes.mesure(b);
     return {
       ...succes,
       fait: Math.min(fait, total),
       total,
+      // Absent chez quarante-deux succes sur quarante-trois : seul « Region
+      // bouclee » a quelque chose de plus a dire que son compte.
+      detail: detail || null,
       obtenu: total > 0 && fait >= total,
     };
   });

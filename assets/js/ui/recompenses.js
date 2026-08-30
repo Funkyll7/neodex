@@ -33,6 +33,7 @@ import { iconeSvg } from "./icones-succes.js";
 import { RARETES } from "../domain/succes.js";
 import { jouerAvec } from "./sons.js";
 import { ouvrirPopup } from "./popup.js";
+import { precisionDuSucces } from "./succes-detail.js";
 
 /** Les types posés en attribut sur `<html>`, et peints par le CSS seul. */
 const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes"];
@@ -303,7 +304,15 @@ function conditionDe(r) {
  * ────────────────────────────────────────────────────────────────────────
  */
 function ouvrirApercu(type, r) {
-  montrerVerrou({ nom: t(r.nom), sousTitre: t(nomDuType(type)), scene: sceneDe(type, r), succes: r.source });
+  montrerVerrou({
+    nom: t(r.nom),
+    sousTitre: t(nomDuType(type)),
+    scene: sceneDe(type, r),
+    succes: r.source,
+    // Le motif reçoit la maquette d'écran, donc le pop-up large : c'est la même
+    // chose à montrer qu'une palette, et elle demande la même place.
+    large: type === "motif",
+  });
 }
 
 /**
@@ -392,22 +401,34 @@ function sceneDe(type, r) {
   }
 
   if (type === "motif") {
-    // La trame se pose derrière l'APPLICATION ENTIÈRE. La montrer seule, sur un
-    // carré vide, ne dit rien : à cette échelle un quadrillage de 34 px et une
-    // poussière de 26 px se ressemblent, et surtout on ne voit pas ce qui
-    // compte — si elle passe derrière le contenu sans le gêner.
+    // LA MEME MAQUETTE QUE LES PALETTES, et c'est le troisième essai.
     //
-    // D'où une tranche de page plutôt qu'un échantillon : la ligne de marque,
-    // une barre de progression, deux vignettes. La trame se juge alors sur ce
-    // qu'elle laisse lire, ce qui est la seule question qu'on se pose.
+    // Un échantillon carré d'abord : à cette taille, un quadrillage de 34 px et
+    // une poussière de 26 px se ressemblent. Deux vignettes ensuite, pour
+    // donner l'échelle — mais elles faisaient 172 px dans un cadre de 346 et
+    // mangeaient toute la place : on ne voyait plus la trame qu'en bordure.
+    //
+    // Or une trame se juge exactement comme une palette : sur ce qu'elle fait
+    // à un ECRAN, pas sur ce qu'elle fait à un carré. La maquette réduite lui
+    // donne enfin de la surface — une colonne, une grille, et la trame derrière
+    // tout ça, à l'échelle où elle se voit vraiment.
     return el(
-      "div.verrou__scene.verrou__scene--motif",
+      "div.verrou__scene.verrou__scene--theme.verrou__scene--motif",
       { dataset: { motif: r.cle } },
-      el("span.verrou__motif", { "aria-hidden": "true" }),
-      trancheDePage()
+      el(
+        "div.verrou__loupe",
+        el(
+          "div.verrou__ecran",
+          // La trame se pose DANS l'écran et non sur la scène : elle doit être
+          // réduite avec lui, sinon un quadrillage de 34 px resterait à 34 px
+          // sur une maquette rendue à 65 %, et paraîtrait deux fois plus serré
+          // qu'il ne l'est.
+          el("span.verrou__motif", { "aria-hidden": "true" }),
+          maquetteDePage()
+        )
+      )
     );
   }
-
   if (type === "banniere") return sceneCarte(r);
 
   if (type === "sons") return sceneSonore(r);
@@ -831,7 +852,11 @@ function voieDe(s) {
           t(s.titre),
           el("span.verrou__rang", t(RARETES[s.rang - 1] || ""))
         ),
-        el("span.verrou__succes-resume", t(s.resume))
+        el("span.verrou__succes-resume", t(s.resume)),
+        // La meme ligne que la page des succes : « Region bouclee » y dit
+        // laquelle et ce qu il y reste. Importee plutot que refaite — deux
+        // rendus auraient fini par diverger sur le format des comptes.
+        precisionDuSucces(s)
       )
     ),
     el(

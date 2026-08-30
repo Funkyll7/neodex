@@ -4340,6 +4340,18 @@ body::before {
    absolument positionne dans une grille se cale sur sa zone, pas sur le bloc
    entier — la trame sortait haute de 166 px et large de 24. D`ou les deux
    `stretch` et les dimensions explicites, qui la ramenent sur toute la scene. */
+/* LA MAQUETTE DEVIENT TRANSPARENTE quand c'est une trame qu'on montre : elle
+   peint `--bg` par-dessus, et la trame posée dessous aurait disparu. Le fond
+   revient donc à la trame elle-même, qui devient le fond de page — ce qu'elle
+   est réellement.
+
+   La trame vit DANS l'écran et non sur la scène : elle doit être réduite avec
+   lui. Posée sur la scène, un quadrillage de 34 px serait resté à 34 px sur une
+   maquette rendue à 65 %, et aurait paru deux fois plus serré qu'il ne l'est. */
+.verrou__scene--motif .verrou__appli { background: none; }
+.verrou__scene--motif .verrou__ecran { position: relative; }
+.verrou__scene--motif .verrou__motif { background-color: var(--bg); }
+
 .verrou__motif {
   position: absolute;
   inset: 0;
@@ -4506,7 +4518,6 @@ body::before {
    largeur de grille, la barre et la ligne de marque ont leurs proportions.
    C'est ce rapport-la qui dit si une trame passe derriere le contenu ou
    devant lui — un echantillon isole ne le dit pas. */
-.verrou__scene--motif { padding: 0; }
 .verrou__page {
   position: relative;
   z-index: 1;
@@ -5597,24 +5608,44 @@ body::before {
 
 /* ===================== L'onglet des mises à jour ========================== */
 
-/* L'ICÔNE PREND LA TEINTE DE L'ACCENT dans une pastille, comme les boutons de
-   l'en-tête. Les trois autres onglets portent un logotype en couleur — HOME,
-   GO, la Poké Ball des quêtes —, et un quatrième dessin monochrome à côté
-   aurait fait tache. La pastille lui rend le poids visuel que le logo lui
-   donne, sans faire croire à un quatrième Pokédex. */
+/* LE LOGO SERT DE MASQUE, PAS D'IMAGE. C'est un dessin monochrome — un disque
+   plein, une flèche et une barre évidées dedans — et posé tel quel à côté de
+   HOME, GO et la Poké Ball des quêtes, il aurait fait la tache noire de la
+   rangée. En masque, c'est la couleur du dessous qui le peint : il prend
+   l'accent, et il suit donc les trente-huit palettes au lieu d'en imposer une
+   trente-neuvième.
+
+   `mask` sans préfixe SUFFIT AUJOURD'HUI mais pas partout : Safari a demandé
+   `-webkit-mask` jusqu'à sa version 15.4, et le site tourne sur des téléphones
+   qu'on ne met pas à jour. Les deux sont donc écrites, la préfixée d'abord —
+   un navigateur qui connaît les deux garde la dernière. */
 .tab__ico {
-  display: grid;
-  place-items: center;
   width: 22px;
   height: 22px;
-  border-radius: 7px;
-  background: var(--accent-wash);
-  color: var(--accent);
+  background-color: var(--accent);
+  -webkit-mask: url("../img/logo-maj-icone.png") center / contain no-repeat;
+  mask: url("../img/logo-maj-icone.png") center / contain no-repeat;
 }
-.tab[aria-selected="true"] .tab__ico { background: color-mix(in srgb, var(--accent) 24%, transparent); }
 
 .maj { display: flex; flex-direction: column; gap: var(--sp-4); max-width: 760px; }
+
+/* Le logo entier ouvre la page, le chapeau à côté. En colonne sous 420 px :
+   à cette largeur, 56 px de logo plus une gouttière ne laissent plus au texte
+   que la moitié de la ligne, et le chapeau se casse en mots isolés. */
+.maj__tete { display: flex; align-items: center; gap: var(--sp-3); }
+.maj__logo {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  background-color: var(--accent);
+  -webkit-mask: url("../img/logo-maj.png") center / contain no-repeat;
+  mask: url("../img/logo-maj.png") center / contain no-repeat;
+}
 .maj__chapeau { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--text-faint); }
+
+@media (max-width: 420px) {
+  .maj__tete { flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
+}
 
 .maj__version {
   display: flex;
@@ -5734,3 +5765,33 @@ body::before {
     border-color: var(--accent);
   }
 }
+
+/* La précision d'un succès : laquelle, où on en est, et le pourcentage.
+
+   Une seule ligne, et un seul succès la porte aujourd'hui — « Région bouclée ».
+   Son avancement est un pourcentage, et un pourcentage ne dit pas DE QUOI il
+   parle : « 78 % » se lit tout autrement quand on sait que c'est Kalos et qu'il
+   reste cinquante-trois cases. Les trois informations sont donc côte à côte,
+   séparées par des points, dans l'ordre où on se les demande. */
+.succes__precision {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.succes__precision-nom { color: var(--accent); font-weight: 800; }
+/* Les séparateurs sont dessinés plutôt qu'écrits : un « · » entre deux `span`
+   aurait demandé un nœud de texte de plus par intervalle, et se serait mal
+   comporté au retour à la ligne. */
+.succes__precision-compte::before,
+.succes__precision-reste::before,
+.succes__precision-pct::before { content: "·"; margin-right: 8px; color: var(--text-ghost); }
+.succes__precision-reste { color: var(--text-muted); }
+.succes__precision-pct { color: var(--gold); font-weight: 800; }
+
+/* Dans le pop-up d'un cosmétique verrouillé, la même ligne sous le résumé. */
+.verrou__succes-texte .succes__precision { margin-top: 4px; }

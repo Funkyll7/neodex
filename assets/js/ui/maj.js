@@ -73,9 +73,18 @@ export function renderMaj(racine) {
     racine,
     el(
       "div.maj",
+      // LE LOGO ENTIER, ET NON CELUI DE L'ONGLET. Ce sont deux fichiers pour
+      // un seul dessin : celui-ci garde le mot qu'il porte, illisible à la
+      // taille d'une icône mais net à cinquante-six pixels. C'est aussi la
+      // seule image de la page, et elle dit de quoi on parle avant la
+      // première ligne.
       el(
-        "p.maj__chapeau",
-        t("Ce que le site sait faire de plus, version après version. Les plus marquantes sont signalées.")
+        "header.maj__tete",
+        el("span.maj__logo", { "aria-hidden": "true" }),
+        el(
+          "p.maj__chapeau",
+          t("Ce que le site sait faire de plus, version après version. Les plus marquantes sont signalées.")
+        )
       ),
       VERSIONS.map(version)
     )

@@ -31,6 +31,7 @@ import { succesCourants } from "./theme.js";
 import { sectionRecompenses } from "./recompenses.js";
 import { retourFerme } from "./retour.js";
 import { THEMES } from "./themes-list.js";
+import { precisionDuSucces } from "./succes-detail.js";
 
 /** La palette qu'un succès déverrouille, s'il en déverrouille une. */
 const themeDe = (cle) => THEMES.find((th) => th.verrou === cle);
@@ -205,6 +206,11 @@ export function initPageSucces() {
           theme ? el("span.succes__palette", t("Palette")) : null
         ),
         el("span.succes__resume", t(s.resume)),
+        // La PRECISION, quand le succes en a une. Aujourd hui « Region
+        // bouclee » est le seul : son pourcentage ne disait pas de quelle
+        // region il parlait ni combien de cases il restait, ce qui est
+        // pourtant tout ce qu on veut savoir devant lui.
+        precisionDuSucces(s),
         el(
           "div.succes__jauge",
           {

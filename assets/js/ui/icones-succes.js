@@ -49,7 +49,6 @@ export const ICONES = {
      a colorer, et donc a accorder aux trente-huit palettes. Retrace en un seul
      chemin a regle `evenodd`, il prend `currentColor` comme les quarante-cinq
      autres. */
-  maj: "M12 1.6a10.4 10.4 0 1 0 0 20.8 10.4 10.4 0 0 0 0-20.8Zm0 3.9 5.1 5.6h-3v3.6h-4.2v-3.6h-3L12 5.5Zm-4.4 11.2h8.8v2.1H7.6v-2.1Z",
   /* --- cocher, compter --- */
   case: "M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5zM8 12l2.8 2.8L16.5 9",
   grille: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13.5 16.8l2 2 4.2-4.2",
@@ -131,13 +130,14 @@ export const ICONES = {
  * trait est un anneau minuscule qui se bouche à l'affichage. Ces trois-là sont
  * donc peintes, et c'est la seule exception à la règle du trait.
  */
-export const PLEINES = new Set(["coeur", "etoile", "eclair", "maj"]);
+export const PLEINES = new Set(["coeur", "etoile", "eclair"]);
 
-/* Les traces qui EVIDENT une forme dans une autre. Sans `evenodd`, la fleche et
-   le trait de la mise a jour se rempliraient comme le disque et l icone serait
-   une pastille noire. Une seule pour l instant, mais nommee plutot que traitee
-   au cas par cas : la prochaine se contentera d entrer dans cet ensemble. */
-export const EVIDEES = new Set(["maj"]);
+/* Les traces qui EVIDENT une forme dans une autre : sans `evenodd`, le creux se
+   remplirait comme le plein et l icone serait une pastille pleine. L ensemble
+   est vide depuis que la mise a jour porte le logo fourni plutot qu un trace,
+   mais il reste nomme : la regle vaut pour la prochaine, et la retrouver
+   couterait plus cher que de la garder. */
+export const EVIDEES = new Set();
 
 const REPLI = "etoile";
 

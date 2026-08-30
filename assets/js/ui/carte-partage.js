@@ -483,6 +483,9 @@ export function dessinerCarte(ctx, options = {}) {
       comptes: { complete: complets, total: dataset.species.length },
       carnet,
       questDone: store.state.questDone,
+      regions: Object.fromEntries(
+        Object.entries(dataset.generations).map(([n, g]) => [n, g.region || g.label])
+      ),
     })
   );
 
