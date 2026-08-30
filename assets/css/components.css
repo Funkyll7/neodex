@@ -4838,7 +4838,11 @@ body::before {
    change pas la place que l'élément occupe, et sans ce calcul le cadre gardait
    la hauteur de la maquette en grand, avec huit cents pixels de vide dessous. */
 .verrou__loupe {
-  width: 100%;
+  /* Largeur et hauteur sont posees par `ajusterLoupe`, qui les calcule sur la
+     maquette reduite : le cadre epouse son contenu au lieu de le contenir. Le
+     `margin` le centre dans ce qui reste. */
+  margin: 0 auto;
+  max-width: 100%;
   overflow: hidden;
   border-radius: var(--r-md);
   /* Le plafond que `ajusterLoupe` lit pour choisir son echelle : au-dela, la

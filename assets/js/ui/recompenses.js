@@ -527,12 +527,30 @@ function ajusterLoupe(racine) {
   // Pas de borne à 1 vers le haut : une maquette de 420 px flotterait au
   // milieu d'un cadre de 680, et l'agrandir reste net puisque tout y est du
   // DOM, sauf les sprites.
+  // La largeur disponible se mesure sur le PARENT et non sur la loupe : on
+  // s'apprête à donner à celle-ci la taille exacte de la maquette réduite, et
+  // se mesurer soi-même aurait fait rétrécir un peu plus à chaque appel.
+  const dispo = loupe.parentElement ? loupe.parentElement.clientWidth : loupe.clientWidth;
   const plafond = parseFloat(getComputedStyle(loupe).maxHeight);
   const rapport = Math.min(
-    loupe.clientWidth / ecran.offsetWidth,
+    dispo / ecran.offsetWidth,
     (Number.isFinite(plafond) ? plafond : Infinity) / ecran.offsetHeight
   );
+
+  // LE CADRE PREND LA TAILLE DE CE QU'IL CONTIENT, largeur comprise.
+  //
+  // Il ne prenait que la hauteur, et c'était un défaut visible : dès que la
+  // contrainte de HAUTEUR l'emportait — ce qui est le cas de la maquette
+  // téléphone, haute de neuf cents pixels —, la maquette réduite devenait plus
+  // étroite que son cadre. Comme elle est mise à l'échelle depuis son coin haut
+  // gauche, elle se collait à gauche et laissait à sa droite un rectangle noir
+  // aussi large qu'elle. Ça ressemblait à une place laissée libre ; ce n'était
+  // qu'un cadre trop grand.
+  //
+  // Le cadre épouse donc les deux dimensions, et se centre — voir `margin:
+  // 0 auto` dans la feuille de styles.
   ecran.style.transform = `scale(${rapport})`;
+  loupe.style.width = `${Math.round(ecran.offsetWidth * rapport)}px`;
   loupe.style.height = `${Math.round(ecran.offsetHeight * rapport)}px`;
 }
 
@@ -550,15 +568,28 @@ function ajusterLoupe(racine) {
  * l'application, repeint par la palette prévisualisée.
  */
 function maquetteDePage() {
-  // LARGE OU ÉTROITE SELON L'ÉCRAN QU'ON A. Montrer une maquette d'ordinateur
-  // à quelqu'un qui tient un téléphone répond à côté : la colonne de gauche
-  // n'existe pas chez lui, elle est un tiroir, et la grille fait deux vignettes
-  // de front et non cinq. Réduite pour tenir dans le pop-up, cette maquette-là
-  // tombait en plus à 37 % — illisible.
+  // LARGE OU ÉTROITE SELON LA FORME DU CADRE, et c'est le deuxième essai.
   //
-  // La maquette étroite fait 420 px de large et se réduit à peine ; c'est la
-  // page que la personne a sous les yeux, à la taille où elle se lit encore.
-  const etroit = window.matchMedia("(max-width: 720px)").matches;
+  // Le premier suivait l'appareil : téléphone → maquette téléphone. L'intention
+  // était juste — montrer une maquette d'ordinateur à quelqu'un qui tient un
+  // téléphone répond à côté —, mais elle ratait le cas d'une fenêtre étroite et
+  // BASSE, celle d'un ordinateur portable au navigateur réduit. Le cadre y est
+  // alors en paysage, la maquette téléphone en portrait, et une forme portrait
+  // dans un cadre paysage est bornée par la hauteur : elle sortait large de
+  // deux cent cinquante pixels au milieu d'un cadre qui en fait cinq cents,
+  // avec un rectangle vide aussi grand qu'elle à côté.
+  //
+  // On regarde donc la forme de la place disponible. Un cadre plus large que
+  // haut appelle une maquette d'ordinateur, un cadre plus haut que large une
+  // maquette de téléphone — et comme la place disponible suit la fenêtre, un
+  // vrai téléphone reçoit toujours sa maquette de téléphone.
+  //
+  // Les nombres viennent de la feuille de styles : largeur du pop-up large,
+  // ses marges, et le plafond de hauteur de la loupe. Les recopier ici est le
+  // prix d'une décision qui doit être prise AVANT que l'élément existe.
+  const largeurCadre = Math.min(window.innerWidth - 32, 720) - 34;
+  const hauteurCadre = Math.min(window.innerHeight * 0.54, 520);
+  const etroit = largeurCadre <= hauteurCadre;
 
   const stat = (nom, pct) =>
     el(
