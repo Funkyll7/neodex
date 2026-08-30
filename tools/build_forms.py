@@ -71,6 +71,29 @@ GEN_LAST_ID = {1: 151, 2: 251, 3: 386, 4: 493, 5: 649, 6: 721, 7: 809, 8: 905, 9
 # n'ont pas d'entree propre dans HOME, on ne les recense donc pas.
 SKIP_SUFFIXES = ("-totem", "-totem-alola", "-totem-busted", "-totem-disguised")
 
+# QUAND LE NOM DE POKEAPI NE DIT PAS CE QU'IL FAUT SAVOIR.
+#
+# Trois formes se distinguent par leur TALENT et par rien d'autre : leur
+# apparence est celle d'une forme ordinaire, et PokeAPI les nomme comme telles.
+# « Forme 10 % » ne disait donc pas laquelle des deux on regardait, et le
+# Rocabot a Tempo Perso — le seul qui evolue en Lougaroc Crepusculaire —
+# s'affichait sous l'etiquette « Autre forme », qui ne dit rien du tout.
+#
+# On ne corrige que le libelle, jamais l'identifiant ni les sprites : la table
+# est indexee par la cle PokeAPI, et une cle qui disparaitrait du jeu de donnees
+# ferait simplement une entree morte ici.
+NOMS_FORCES = {
+    "zygarde-10-power-construct": {
+        "name": "Zygarde Forme 10 % Système Alpha",
+        "label": "10 % · Système Alpha",
+    },
+    "zygarde-50-power-construct": {
+        "name": "Zygarde Forme 50 % Système Alpha",
+        "label": "50 % · Système Alpha",
+    },
+    "rockruff-own-tempo": {"label": "Tempo Perso"},
+}
+
 # Categories affichees par le site, dans l'ordre des sections de la fiche.
 KIND_ORDER = ["alola", "galar", "hisui", "paldea", "mega", "primal", "gmax", "cap", "battle", "other"]
 KIND_LABELS = {
@@ -276,8 +299,12 @@ def build(use_cache, offline):
                 "id": pid,
                 "species": species_id,
                 "key": identifier,
-                "name": label.get("pokemon_name") or species_fr.get(species_id, identifier),
-                "label": label.get("form_name") or KIND_LABELS[kind],
+                "name": NOMS_FORCES.get(identifier, {}).get("name")
+                or label.get("pokemon_name")
+                or species_fr.get(species_id, identifier),
+                "label": NOMS_FORCES.get(identifier, {}).get("label")
+                or label.get("form_name")
+                or KIND_LABELS[kind],
                 "kind": kind,
                 "types": [type_fr.get(tid, "?") for _, tid in raw_types],
                 "stats": [raw_stats.get(sid, 0) for sid in STAT_ORDER],

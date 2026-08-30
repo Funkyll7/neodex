@@ -731,8 +731,8 @@
    }
   },
   {
-   "id": 10118,
-   "key": "zygarde-10-power-construct",
+   "id": 10181,
+   "key": "zygarde-10",
    "name": "Zygarde Forme 10 %",
    "label": "Forme 10 %",
    "kind": "other",
@@ -758,10 +758,37 @@
    }
   },
   {
+   "id": 10118,
+   "key": "zygarde-10-power-construct",
+   "name": "Zygarde Forme 10 % Système Alpha",
+   "label": "10 % · Système Alpha",
+   "kind": "other",
+   "types": [
+    "Dragon",
+    "Sol"
+   ],
+   "stats": [
+    54,
+    100,
+    71,
+    61,
+    85,
+    115
+   ],
+   "battleOnly": 0,
+   "since": "sun-moon",
+   "sprites": {
+    "home": 1,
+    "homeShiny": 1,
+    "art": 1,
+    "artShiny": 1
+   }
+  },
+  {
    "id": 10119,
    "key": "zygarde-50-power-construct",
-   "name": "Zygarde Forme 50 %",
-   "label": "Forme 50 %",
+   "name": "Zygarde Forme 50 % Système Alpha",
+   "label": "50 % · Système Alpha",
    "kind": "other",
    "types": [
     "Dragon",

@@ -46,6 +46,15 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "4.5",
+    date: "2026-08-30",
+    titre: "Deux talents qui font une forme",
+    notes: [
+      ["ajout", "Zygarde Forme 10 % ordinaire : seule celle au Système Alpha était recensée, et rien ne le disait."],
+      ["amelioration", "Les formes qui ne se distinguent que par leur talent le disent enfin : Système Alpha chez Zygarde, Tempo Perso chez Rocabot."],
+    ],
+  },
+  {
     version: "4.4",
     date: "2026-08-30",
     titre: "Un coucher de soleil, et cinq réparations",
