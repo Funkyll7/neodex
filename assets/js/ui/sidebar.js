@@ -4,6 +4,7 @@
  * data/reference/games.json le fait apparaitre ici sans toucher au code.
  */
 
+import { retourFerme } from "./retour.js";
 import { el, fill, setOptions } from "../core/dom.js";
 import { STATUS_FILTERS, FORM_FILTERS, GO_FILTERS } from "../domain/filters.js";
 // Les libelles vivent dans des tableaux de module, evalues UNE fois a
@@ -337,6 +338,17 @@ function createTiroir() {
     document.body.classList.toggle("nav-open", ouvre);
   }
 
+  /**
+   * Le balayage Retour doit refermer le tiroir, pas quitter le site.
+   *
+   * C'etait le dernier panneau qui n'empilait pas d'entree d'historique — la
+   * fiche mobile le faisait depuis longtemps, la carte de partage, la page des
+   * succes et le menu de customisation depuis peu. Celui-ci s'ouvre pourtant
+   * plus souvent que les quatre autres reunis, et depuis une application
+   * installee, « quitter » veut dire fermer.
+   */
+  let liberer = null;
+
   function poser(etat) {
     if (etat === ouvert()) return;
     // Bloquer le defilement du corps peut faire remonter la page : on note ou
@@ -344,8 +356,19 @@ function createTiroir() {
     if (etat) defilement = window.scrollY;
     bouton.setAttribute("aria-expanded", String(etat));
     sync();
-    if (etat) barre.scrollTop = 0;
-    else window.scrollTo({ top: defilement, behavior: "auto" });
+    if (etat) {
+      barre.scrollTop = 0;
+      // Seulement en tiroir : sur grand ecran la barre est une colonne, elle ne
+      // s'ouvre ni ne se ferme, et empiler une entree n'aurait rien a depiler.
+      if (mobile.matches) liberer = retourFerme(() => poser(false));
+    } else {
+      window.scrollTo({ top: defilement, behavior: "auto" });
+      if (liberer) {
+        const f = liberer;
+        liberer = null;
+        f();
+      }
+    }
   }
 
   bouton.addEventListener("click", () => poser(!ouvert()));

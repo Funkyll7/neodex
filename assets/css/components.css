@@ -3406,12 +3406,13 @@
    « ★ Complet » sous son nom — et une variable garde les deux d'accord sans
    qu'on ait à y penser. */
 :root { --marque: "\2605"; }
-:root[data-marque="coche"]    { --marque: "\2714"; }
-:root[data-marque="eclat"]    { --marque: "\2726"; }
-:root[data-marque="hexagone"] { --marque: "\2B22"; }
-:root[data-marque="fleur"]    { --marque: "\2740"; }
-:root[data-marque="gemme"]    { --marque: "\25C6"; }
-:root[data-marque="couronne"] { --marque: "\265B"; }
+[data-marque="etoile"]   { --marque: "\2605"; }
+[data-marque="coche"]    { --marque: "\2714"; }
+[data-marque="eclat"]    { --marque: "\2726"; }
+[data-marque="hexagone"] { --marque: "\2B22"; }
+[data-marque="fleur"]    { --marque: "\2740"; }
+[data-marque="gemme"]    { --marque: "\25C6"; }
+[data-marque="couronne"] { --marque: "\265B"; }
 
 .card__marque::before { content: var(--marque); }
 
@@ -3420,6 +3421,18 @@
 /* Ils ne touchent QUE les vignettes terminées. Un cadre sur les 1025 aurait
    fait un damier, et surtout n'aurait plus rien récompensé : c'est la
    complétion qu'on décore, pas la grille. */
+/* « Aucun » doit vraiment ne RIEN mettre.
+   Il n'existait pas comme règle, et c'était un bug silencieux : la bordure dorée
+   n'est pas posée par le cadre « Classique », elle est posée par `.card--complete`
+   lui-même, tout en haut de ce fichier. Sans règle pour l'annuler, choisir
+   « Aucun » retombait donc sur le style de base — c'est-à-dire, à l'œil, sur
+   Classique. On rend ici la bordure neutre : le lavis doré et la pastille de
+   complétion restent, seul le cadre disparaît. */
+[data-cadre="aucun"] .card--complete {
+  border-color: var(--border);
+  box-shadow: none;
+}
+
 /* « Classique » prend la COULEUR DE COMPLÉTION du thème, `--gold`, et la ligne
    intérieure prend l'autre bout de son dégradé.
 
@@ -3440,16 +3453,57 @@
    couleur. Elles ne se confondent pas pour autant — l'une est un trait d'un
    pixel, l'autre un disque plein —, et sur les palettes qui séparent les deux,
    comme Boussole avec son sable et son rose, on lit enfin deux rôles. */
-:root[data-cadre="or"] .card--complete {
+[data-cadre="or"] .card--complete {
   border-color: var(--gold);
   box-shadow:
     0 0 0 1px var(--gold),
     inset 0 0 0 2px color-mix(in srgb, var(--gold-soft) 30%, transparent);
 }
-:root[data-cadre="laurier"] .card--complete {
-  border-color: #7bbf72;
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, #7bbf72 24%, transparent);
+
+/* LES QUATRE AUTRES CADRES ONT ÉTÉ REDESSINÉS.
+   Ils étaient tous bâtis pareil — une `border-color` et un ou deux `inset` — et
+   quatre variations d'un même trait d'un pixel, ça ne fait pas quatre cadres,
+   ça fait un cadre en quatre couleurs. Néon ne se distinguait plus de
+   Classique, Couronne non plus.
+
+   Chacun a donc maintenant une STRUCTURE propre, pas seulement une teinte :
+   Laurier est un anneau qui s'ouvre en haut, Néon un tube lumineux qui déborde
+   des deux côtés du trait, Couronne un bandeau crénelé posé sur l'arête
+   supérieure. On peut les nommer les yeux fermés. */
+
+/* Laurier — une couronne de laurier, donc un anneau OUVERT.
+
+   Le dégradé conique part de midi et tourne dans le sens des aiguilles : à
+   0°, en haut au centre, il est presque transparent — c'est l'ouverture de la
+   couronne ; il monte en puissance sur les deux flancs ; à 180°, en bas au
+   centre, il est le plus clair — c'est le nœud du ruban. Le tracé du bord
+   raconte alors la forme, et pas seulement la couleur.
+
+   Le vert est écrit en dur, comme avant : c'est un laurier, il n'a pas à
+   changer de teinte avec la palette. Le halo intérieur, lui, donne l'épaisseur
+   du feuillage sans avoir à épaissir le trait. */
+[data-cadre="laurier"] .card--complete {
+  border-width: 2px;
+  border-color: transparent;
+  background:
+    linear-gradient(160deg, var(--gold-wash), transparent 62%) padding-box,
+    var(--tuile-voile) padding-box,
+    linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
+    conic-gradient(from 0deg,
+      color-mix(in srgb, #7bbf72 10%, transparent) 0deg,
+      #6aae63 34deg,
+      #4f9c57 88deg,
+      #7bbf72 140deg,
+      #a8e096 180deg,
+      #7bbf72 220deg,
+      #4f9c57 272deg,
+      #6aae63 326deg,
+      color-mix(in srgb, #7bbf72 10%, transparent) 360deg) border-box;
+  box-shadow:
+    inset 0 0 0 1px rgba(123, 191, 114, .22),
+    inset 0 0 9px rgba(79, 156, 87, .18);
 }
+
 /* Le prisme : un dégradé SUR le trait de bordure, et qui suit les coins ronds.
 
    `border-image` était le chemin court, et il a un défaut rédhibitoire ici : il
@@ -3461,7 +3515,7 @@
    vignette par-dessus en `padding-box`, donc jusqu'au bord INTÉRIEUR. Il ne
    reste visible du dégradé que l'épaisseur du trait — et les deux plans sont
    découpés par le même `border-radius`. */
-:root[data-cadre="prisme"] .card--complete {
+[data-cadre="prisme"] .card--complete {
   border-color: transparent;
   background:
     linear-gradient(160deg, var(--gold-wash), transparent 62%) padding-box,
@@ -3469,16 +3523,64 @@
     conic-gradient(from 210deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2, #ff6b6b) border-box;
   box-shadow: none;
 }
-:root[data-cadre="neon"] .card--complete {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent), 0 0 14px var(--accent-glow);
-}
-:root[data-cadre="couronne"] .card--complete {
-  border-color: var(--gold);
+
+/* Néon — un tube de verre, pas un trait de couleur.
+
+   Ce qui fait lire « néon » n'est pas la teinte, c'est la façon dont la lumière
+   se répand : un cœur presque blanc, parce qu'un tube allumé sature le capteur
+   en son centre, et de la couleur seulement autour. D'où le trait peint en
+   `--accent` éclairci de blanc, l'anneau coloré collé dessus, et les DEUX
+   halos, un serré et un large, qui donnent la retombée.
+
+   Le `inset` est la moitié qui manquait à l'ancienne version : un vrai tube
+   éclaire aussi VERS L'INTÉRIEUR. Sans lui le bord brillait, la vignette
+   restait éteinte, et de loin ça ressemblait à Classique en bleu. */
+[data-cadre="neon"] .card--complete {
+  border-width: 2px;
+  border-color: transparent;
+  background:
+    linear-gradient(160deg, var(--gold-wash), transparent 62%) padding-box,
+    var(--tuile-voile) padding-box,
+    linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
+    linear-gradient(
+      color-mix(in srgb, var(--accent) 55%, #fff),
+      color-mix(in srgb, var(--accent) 55%, #fff)) border-box;
   box-shadow:
-    inset 0 0 0 3px color-mix(in srgb, var(--gold) 34%, transparent),
-    inset 0 0 0 4px color-mix(in srgb, var(--gold) 12%, transparent),
-    0 0 0 1px var(--gold);
+    0 0 0 1px var(--accent),
+    0 0 8px var(--accent-glow),
+    0 0 20px var(--accent-glow),
+    inset 0 0 12px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* Couronne — les pointes sont sur l'arête du haut.
+
+   Une couronne se reconnaît par ses créneaux, et par rien d'autre : un cadre
+   doré uniforme, si épais soit-il, reste un cadre doré. La bande supérieure
+   porte donc un motif à répétition — dent pleine, creux atténué, tous les
+   huit pixels — pendant que les trois autres côtés restent lisses. Les coins
+   arrondis rognent les deux dents extrêmes, et c'est tant mieux : ça arrondit
+   le bandeau comme le cercle d'une vraie couronne.
+
+   Le creux est un or à 25 % et non du transparent : à travers, on verrait le
+   fond de la grille, et la bordure semblerait cassée plutôt que dentelée.
+
+   Les deux `inset` dorés qui suivent sont l'ourlet intérieur — c'est ce qui
+   sépare une couronne d'un simple liseré épais. */
+[data-cadre="couronne"] .card--complete {
+  border-width: 3px;
+  border-color: transparent;
+  background:
+    linear-gradient(160deg, var(--gold-wash), transparent 62%) padding-box,
+    var(--tuile-voile) padding-box,
+    linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
+    repeating-linear-gradient(90deg,
+      var(--gold) 0 4px,
+      color-mix(in srgb, var(--gold) 25%, transparent) 4px 8px) top / 100% 4px no-repeat border-box,
+    linear-gradient(var(--gold), var(--gold)) border-box;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--gold) 46%, transparent),
+    inset 0 0 0 3px color-mix(in srgb, var(--gold) 14%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--gold) 55%, transparent);
 }
 
 /* ----------------------------- Les motifs -------------------------------- */
@@ -3499,29 +3601,34 @@ body::before {
   pointer-events: none;
   background: none;
 }
-:root[data-motif="grille"] body::before {
+[data-motif="grille"] body::before,
+[data-motif="grille"] .verrou__motif {
   background-image:
     repeating-linear-gradient(0deg, var(--border) 0 1px, transparent 1px 34px),
     repeating-linear-gradient(90deg, var(--border) 0 1px, transparent 1px 34px);
   opacity: .5;
 }
-:root[data-motif="eclats"] body::before {
+[data-motif="eclats"] body::before,
+[data-motif="eclats"] .verrou__motif {
   background-image:
     radial-gradient(circle at 20% 30%, var(--accent-wash) 0 2px, transparent 3px),
     radial-gradient(circle at 70% 65%, var(--accent-wash) 0 2px, transparent 3px),
     radial-gradient(circle at 45% 85%, var(--accent-wash) 0 1.5px, transparent 3px);
   background-size: 190px 190px, 240px 240px, 150px 150px;
 }
-:root[data-motif="vagues"] body::before {
+[data-motif="vagues"] body::before,
+[data-motif="vagues"] .verrou__motif {
   background-image: repeating-radial-gradient(circle at 50% 120%, transparent 0 38px, var(--border) 38px 39px);
   opacity: .55;
 }
-:root[data-motif="poussiere"] body::before {
+[data-motif="poussiere"] body::before,
+[data-motif="poussiere"] .verrou__motif {
   background-image: radial-gradient(circle, var(--text-ghost) 0 1px, transparent 1.5px);
   background-size: 26px 26px;
   opacity: .14;
 }
-:root[data-motif="aurore"] body::before {
+[data-motif="aurore"] body::before,
+[data-motif="aurore"] .verrou__motif {
   background-image:
     radial-gradient(60% 45% at 15% 0%, var(--accent-wash) 0%, transparent 70%),
     radial-gradient(55% 40% at 90% 20%, color-mix(in srgb, var(--pair) 14%, transparent) 0%, transparent 72%),
@@ -3595,9 +3702,26 @@ body::before {
 .recomp__apercu--marque[data-marque="gemme"]::before    { content: "\25C6"; }
 .recomp__apercu--marque[data-marque="couronne"]::before { content: "\265B"; }
 
-/* Les aperçus de cadre reprennent le traitement réel, en réduction. */
-.recomp__apercu[data-cadre="or"]       { border-color: var(--gold-soft); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--gold) 28%, transparent); }
-.recomp__apercu[data-cadre="laurier"]  { border-color: #7bbf72; box-shadow: inset 0 0 0 2px color-mix(in srgb, #7bbf72 24%, transparent); }
+/* Les aperçus de cadre reprennent le traitement réel, en réduction.
+
+   Vingt pixels de côté, c'est peu, et la réduction n'est donc pas fidèle au
+   pixel : les halos sont resserrés, les créneaux de la couronne ramenés à
+   3 px de pas pour qu'il en reste plus de deux. Ce qui est conservé, c'est ce
+   qui permet de les distinguer les uns des autres dans la liste — l'anneau
+   ouvert du laurier, la retombée du néon, la dentelure de la couronne. */
+.recomp__apercu[data-cadre="aucun"]    { border-color: var(--border); }
+.recomp__apercu[data-cadre="or"]       { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), inset 0 0 0 2px color-mix(in srgb, var(--gold-soft) 30%, transparent); }
+.recomp__apercu[data-cadre="laurier"] {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
+    conic-gradient(from 0deg,
+      color-mix(in srgb, #7bbf72 10%, transparent) 0deg,
+      #6aae63 34deg, #4f9c57 88deg, #7bbf72 140deg, #a8e096 180deg,
+      #7bbf72 220deg, #4f9c57 272deg, #6aae63 326deg,
+      color-mix(in srgb, #7bbf72 10%, transparent) 360deg) border-box;
+  box-shadow: inset 0 0 5px rgba(79, 156, 87, .2);
+}
 /* Même montage à deux plans que la vignette, pour la même raison : l'aperçu a
    ses coins arrondis, `border-image` les aurait carrés. */
 .recomp__apercu[data-cadre="prisme"] {
@@ -3606,8 +3730,29 @@ body::before {
     linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
     conic-gradient(from 210deg, #ff6b6b, #ffd43b, #38d9a9, #4dabf7, #da77f2, #ff6b6b) border-box;
 }
-.recomp__apercu[data-cadre="neon"]     { border-color: var(--accent); box-shadow: 0 0 7px var(--accent-glow); }
-.recomp__apercu[data-cadre="couronne"] { border-color: var(--gold); box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--gold) 34%, transparent); }
+.recomp__apercu[data-cadre="neon"] {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
+    linear-gradient(
+      color-mix(in srgb, var(--accent) 55%, #fff),
+      color-mix(in srgb, var(--accent) 55%, #fff)) border-box;
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 7px var(--accent-glow),
+    inset 0 0 6px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.recomp__apercu[data-cadre="couronne"] {
+  border-width: 2px;
+  border-color: transparent;
+  background:
+    linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
+    repeating-linear-gradient(90deg,
+      var(--gold) 0 1.5px,
+      color-mix(in srgb, var(--gold) 25%, transparent) 1.5px 3px) top / 100% 2px no-repeat border-box,
+    linear-gradient(var(--gold), var(--gold)) border-box;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 40%, transparent);
+}
 
 .recomp__apercu[data-motif="grille"]    { background-image: repeating-linear-gradient(0deg, var(--border-strong) 0 1px, transparent 1px 5px), repeating-linear-gradient(90deg, var(--border-strong) 0 1px, transparent 1px 5px); }
 .recomp__apercu[data-motif="eclats"]    { background-image: radial-gradient(circle at 30% 35%, var(--accent) 0 1.5px, transparent 2px), radial-gradient(circle at 72% 70%, var(--accent) 0 1.5px, transparent 2px); }
@@ -3974,3 +4119,229 @@ body::before {
 }
 .courbe__cle--cases::before { background: var(--gold); }
 .courbe__cle--especes::before { background: repeating-linear-gradient(90deg, var(--gold-soft) 0 5px, transparent 5px 9px); }
+
+/* ============== L'aperçu d'une récompense verrouillée ==================== */
+
+/* Un pop-up, et non le bandeau qui descendait avant. Le bandeau nommait le
+   succès manquant et disparaissait au bout de six secondes ; il répondait à
+   « pourquoi c'est fermé », jamais à « est-ce que ça vaut le coup ». Or on
+   parcourt cette liste pour choisir la prochaine chasse, et ce choix se fait
+   à l'œil.
+
+   Il monte au-dessus du menu de customisation, d'où on l'ouvre — 96 contre 92.
+   Sans ça, il se serait affiché DERRIÈRE la liste qu'on vient de toucher. */
+.verrou-fond {
+  position: fixed;
+  inset: 0;
+  z-index: 96;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(0, 0, 0, .76);
+  backdrop-filter: blur(5px);
+}
+.verrou {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  width: min(100%, 380px);
+  max-height: 100%;
+  padding: var(--sp-4);
+  overflow-y: auto;
+  border-radius: var(--r-lg);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .55);
+}
+
+.verrou__tete { display: flex; align-items: flex-start; gap: var(--sp-2); }
+.verrou__cadenas { font-size: 18px; line-height: 1.2; }
+.verrou__identite { flex: 1 1 auto; min-width: 0; }
+.verrou__nom {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+}
+.verrou__type { margin: 0; font-size: 11px; color: var(--text-faint); }
+.verrou__fermer {
+  flex: 0 0 auto;
+  width: 28px; height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-sunken);
+  color: var(--text-faint);
+  font-size: 13px;
+  cursor: pointer;
+}
+.verrou__fermer:hover { color: var(--text); border-color: var(--border-strong); }
+
+/* ------------------------------- la scène -------------------------------- */
+
+/* Le fond de la scène est `--bg`, celui de la PAGE, et non `--bg-raised` comme
+   la boîte qui l'entoure. C'est ce qui fait qu'un cadre y rend ce qu'il rendra
+   vraiment : posé sur le fond de la boîte, plus clair, tous les cadres
+   paraissaient plus doux qu'ils ne le sont sur la grille. */
+.verrou__scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 190px;
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  overflow: hidden;
+}
+.verrou__scene--plein { min-height: 120px; }
+.verrou__scene--sons { min-height: 96px; }
+
+/* La vignette de démonstration est clonée de la grille : elle arrive avec son
+   curseur, ses boutons et ses transitions. On la fige — c'est un aperçu, pas
+   une vignette de plus à cocher. */
+.verrou__tuile {
+  width: 172px;
+  max-width: 100%;
+  cursor: default;
+  pointer-events: none;
+  transform: none;
+}
+.verrou__tuile .card__select { cursor: default; }
+
+/* La trame se peint DERRIÈRE la vignette, comme derrière l'application. Les
+   dégradés eux-mêmes viennent des règles `[data-motif="…"]` plus haut : elles
+   servent à la fois `body::before` et cette scène, pour qu'un motif retouché
+   ne puisse pas diverger de son aperçu. */
+/* `inset: 0` ne suffit pas ici : la scene est une GRILLE, et un enfant
+   absolument positionne dans une grille se cale sur sa zone, pas sur le bloc
+   entier — la trame sortait haute de 166 px et large de 24. D`ou les deux
+   `stretch` et les dimensions explicites, qui la ramenent sur toute la scene. */
+.verrou__motif {
+  position: absolute;
+  inset: 0;
+  justify-self: stretch;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.verrou__scene--motif .verrou__tuile { position: relative; z-index: 1; }
+
+/* Le titre, montré là où il apparaîtra : sous le nom du site. */
+.verrou__marque { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.verrou__marque-nom {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+.verrou__marque-sous {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Le bandeau de la carte de partage, en large. */
+/* `place-items: center` sur la scene fait retrecir ses enfants a leur contenu,
+   et le bandeau est vide : il sortait large de zero. `justify-self: stretch`
+   annule le centrage horizontal pour lui seul. */
+.verrou__bande {
+  justify-self: stretch;
+  width: 100%;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+}
+.verrou__gros { width: 64px; height: 64px; border-radius: 12px; }
+
+/* Deux écoutes plutôt qu'une : le tic d'une case, entendu des milliers de
+   fois, et la fanfare d'un succès, entendue rarement. Un jeu de notes se juge
+   sur les deux — c'est agréable ou fatigant selon la fréquence. */
+.verrou__ecoutes { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: center; }
+.verrou__ecoute {
+  padding: 9px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--bg-sunken);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.verrou__ecoute:hover { border-color: var(--accent); color: var(--accent); }
+.verrou__ecoute:active { transform: scale(.97); }
+.verrou__note { margin: var(--sp-2) 0 0; font-size: 11px; color: var(--text-faint); text-align: center; }
+
+/* ---------------------------- ce qu'il faut ------------------------------ */
+
+.verrou__voie { display: flex; flex-direction: column; gap: 7px; }
+.verrou__quoi {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+}
+.verrou__absent { margin: 0; font-size: 12px; color: var(--text-faint); }
+.verrou__succes { display: flex; align-items: flex-start; gap: var(--sp-2); }
+.verrou__icone { flex: 0 0 auto; color: var(--accent); line-height: 0; }
+.verrou__succes-texte { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.verrou__succes-titre {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+}
+.verrou__rang {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+}
+.verrou__succes-resume { font-size: 11px; line-height: 1.45; color: var(--text-faint); }
+
+/* La jauge compte autant que le chiffre : « 312 / 500 » demande une division
+   mentale, une barre aux deux tiers se lit sans calcul. C'est elle qui fait la
+   différence entre « un jour peut-être » et « tiens, j'y suis presque ». */
+.verrou__jauge {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+.verrou__jauge-plein {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+}
+.verrou__chiffres {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.verrou__pct { color: var(--accent); }
+
+/* Sur un écran étroit la boîte prend toute la largeur, et la scène rétrécit :
+   c'est là qu'on parcourt la liste au doigt, et une vignette de 172 px tenait
+   mal à côté de ses marges. */
+@media (max-width: 420px) {
+  .verrou-fond { padding: var(--sp-3); align-items: flex-end; }
+  .verrou { max-height: 92vh; }
+  .verrou__scene { min-height: 168px; padding: var(--sp-3); }
+  .verrou__tuile { width: 148px; }
+}

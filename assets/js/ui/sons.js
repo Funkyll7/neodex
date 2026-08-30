@@ -200,8 +200,48 @@ export function jouer(nom) {
   const maintenant = Date.now();
   if (maintenant - (dernierAppel.get(nom) || 0) < recette.pause) return;
 
+  // Le limiteur n'est armé QUE si la note est réellement partie. Un son sauté
+  // faute de voix libre ne doit pas condamner les 400 ms suivantes : la
+  // prochaine tentative doit pouvoir aboutir tout de suite.
+  if (emettre(nom, jeu())) dernierAppel.set(nom, maintenant);
+}
+
+/**
+ * Fait entendre un son AVEC UN AUTRE JEU que celui qui est choisi.
+ *
+ * Écrit pour l'aperçu des récompenses verrouillées : on ne peut pas juger
+ * « Cristal » sur son nom, et on ne peut pas non plus le sélectionner pour
+ * l'essayer puisqu'il est justement fermé. Il fallait donc un chemin qui joue
+ * une recette sous un jeu quelconque, sans rien écrire dans les préférences.
+ *
+ * Sans limiteur, contrairement à `jouer` : on appuie sur « Écouter » exprès, et
+ * refuser le deuxième appui parce qu'il suit le premier de trop près se lirait
+ * comme un bouton cassé.
+ *
+ * Rend `false` si rien n'a pu sortir — sons coupés, Web Audio absent —, ce qui
+ * permet à l'appelant de le dire plutôt que de laisser croire à un silence.
+ */
+export function jouerAvec(cleDuJeu, nom) {
+  if (!sonsActifs()) return false;
+  return emettre(nom, JEUX[cleDuJeu] || JEUX.doux);
+}
+
+/**
+ * Le corps commun : fabrique les notes d'une recette sous un jeu donné.
+ *
+ * Séparé de `jouer` pour que l'aperçu puisse emprunter le même chemin. Tout ce
+ * qui relève de la POLITIQUE — les sons sont-ils allumés, le limiteur
+ * autorise-t-il celui-ci — reste chez les appelants ; ici il ne reste que la
+ * synthèse et les garde-fous techniques.
+ *
+ * @returns {boolean} vrai si les notes sont parties.
+ */
+function emettre(nom, j) {
+  const recette = PALETTE[nom];
+  if (!recette) return false;
+
   const ctx = audio();
-  if (!ctx) return;
+  if (!ctx) return false;
   // Un contexte peut naître SUSPENDU. Il suffit que le premier son de la visite
   // parte hors d'un geste — un retour de synchronisation, un succès qui
   // s'annonce — et le navigateur refuse de l'ouvrir. Le navigateur en suspend
@@ -214,12 +254,10 @@ export function jouer(nom) {
   if (ctx.state === "suspended") ctx.resume().catch(() => {});
   // Au-delà de huit notes en vol, le mélange devient du bruit. On préfère en
   // sauter une plutôt que d'empiler.
-  if (voix >= 8) return;
-  dernierAppel.set(nom, maintenant);
+  if (voix >= 8) return false;
 
   const t = ctx.currentTime;
   const ecart = recette.ecart || 0;
-  const j = jeu();
   recette.notes.forEach((frequence, i) => {
     note(ctx, {
       frequence: frequence * j.ton,
@@ -237,4 +275,6 @@ export function jouer(nom) {
       forme: j.forme || recette.forme,
     });
   });
+
+  return true;
 }

@@ -30,6 +30,9 @@ import { t } from "../core/i18n.js";
 import { lirePrefs, ecrirePrefs } from "../core/prefs.js";
 import { TYPES, RECOMPENSES, choixValide, evaluerRecompenses } from "../domain/recompenses.js";
 import { iconeSvg } from "./icones-succes.js";
+import { RARETES } from "../domain/succes.js";
+import { retourFerme } from "./retour.js";
+import { jouerAvec } from "./sons.js";
 
 /** Les types posés en attribut sur `<html>`, et peints par le CSS seul. */
 const ATTRIBUTS = ["marque", "cadre", "motif", "mascottes"];
@@ -247,7 +250,7 @@ function option(type, r, choisi) {
       title: titre,
       "aria-label": titre,
       dataset: { type: type.cle, valeur: r.cle },
-      onclick: r.ouvert ? () => poserChoix(type.cle, r.cle) : () => annoncerVerrou(r),
+      onclick: r.ouvert ? () => poserChoix(type.cle, r.cle) : () => ouvrirApercu(type.cle, r),
     },
     apercu(type.cle, r),
     el("span.recomp__label", t(r.nom)),
@@ -263,34 +266,293 @@ function conditionDe(r) {
 }
 
 /**
- * Dit ce qu'il manque, au clic sur un cadenas.
+ * L'APERÇU D'UNE RÉCOMPENSE VERROUILLÉE.
  *
- * Un bandeau plutôt qu'une infobulle : l'infobulle existe déjà — c'est le
- * `title` —, mais elle demande de survoler, ce qu'un téléphone ne sait pas
- * faire. Or c'est justement sur téléphone qu'on parcourt cette liste au doigt.
+ * Avant, un clic sur un cadenas faisait descendre un bandeau qui nommait le
+ * succès manquant. C'était la moitié de la réponse. On regarde une liste de
+ * cosmétiques fermés pour décider LEQUEL on a envie d'aller chercher, et ce
+ * choix se fait à l'œil : « Néon » et « Couronne » sont deux mots, la pastille
+ * de vingt pixels à côté n'en dit guère plus, et rien là-dedans ne donne envie
+ * de courir après l'un plutôt que l'autre.
  *
- * Il reprend la mise en forme du bandeau de déverrouillage, et ce n'est pas de
- * l'économie : les deux disent la même chose à deux moments opposés — « voilà
- * ce que tu viens d'obtenir » et « voilà ce qu'il te faut ». Les rendre
- * identiques à l'œil, c'est dire qu'ils parlent du même sujet.
+ * Le pop-up montre donc la chose EN GRAND et à sa vraie échelle, avec, dessous,
+ * ce qu'il faut faire pour l'ouvrir et où l'on en est.
+ *
+ * ────────────────────────────────────────────────────────────────────────
+ * COMMENT ON PRÉVISUALISE SANS DUPLIQUER LE STYLE.
+ *
+ * Tous ces cosmétiques sont peints par le CSS depuis un attribut posé sur
+ * `<html>` : `[data-cadre="neon"] .card--complete { … }`. Réécrire ces
+ * déclarations une seconde fois pour le pop-up aurait créé exactement le piège
+ * qu'on veut éviter — un aperçu qui ne ressemble plus à la chose, parce que
+ * l'un des deux a été retouché et pas l'autre.
+ *
+ * Les sélecteurs ont donc perdu leur `:root`. `[data-cadre="neon"]` accroche
+ * toujours `<html>`, et accroche AUSSI la petite scène du pop-up quand on lui
+ * pose le même attribut. Une seule écriture, deux endroits peints.
+ *
+ * La vignette de démonstration, elle, est CLONÉE de la grille : c'est une vraie
+ * carte terminée, avec son sprite et sa pastille. Aucune maquette n'aurait été
+ * aussi fidèle, et surtout aucune n'aurait suivi les évolutions de la vraie.
+ * ────────────────────────────────────────────────────────────────────────
  */
-function annoncerVerrou(r) {
-  document.querySelector(".verrou-bandeau")?.remove();
-  const s = r.source;
+function ouvrirApercu(type, r) {
+  document.querySelector(".verrou-fond")?.remove();
 
-  const bandeau = el(
-    "div.succes-bandeau.verrou-bandeau",
-    { role: "status", "aria-live": "polite" },
-    el("span.bandeau__titre", `🔒 ${t(r.nom)}`),
+  const s = r.source;
+  const fond = el("div.verrou-fond", {
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-label": `${t(r.nom)} — ${t("verrouillé")}`,
+  });
+
+  // Le geste Retour du téléphone doit refermer ce pop-up, pas quitter le site :
+  // c'est la même règle que pour la fiche, la page des succès et le tiroir des
+  // filtres. `liberer` dépile l'entrée si on ferme par un autre chemin.
+  let liberer = null;
+  const fermer = () => {
+    fond.remove();
+    document.removeEventListener("keydown", surTouche);
+    if (liberer) {
+      const f = liberer;
+      liberer = null;
+      f();
+    }
+  };
+  const surTouche = (e) => {
+    if (e.key === "Escape") fermer();
+  };
+
+  fond.append(
     el(
-      "p.succes__liste",
-      s ? `${t("Il faut le succès")} « ${t(s.titre)} »` : t("Cette récompense n'est pas encore accessible.")
-    ),
-    s ? el("span.bandeau__suite", `${t(s.resume)} — ${s.fait} / ${s.total}`) : null
+      "div.verrou",
+      {
+        // Un clic DANS la boîte ne doit pas la fermer, alors qu'un clic sur le
+        // voile derrière doit le faire. Sans cette interception, essayer le son
+        // « Cristal » refermait le pop-up au premier appui.
+        onclick: (e) => e.stopPropagation(),
+      },
+      el(
+        "div.verrou__tete",
+        el("span.verrou__cadenas", { "aria-hidden": "true" }, "🔒"),
+        el(
+          "div.verrou__identite",
+          el("h3.verrou__nom", t(r.nom)),
+          el("p.verrou__type", t(nomDuType(type)))
+        ),
+        el("button.verrou__fermer", {
+          type: "button",
+          "aria-label": t("Fermer"),
+          textContent: "✕",
+          onclick: fermer,
+        })
+      ),
+      sceneDe(type, r),
+      voieDe(s)
+    )
   );
 
-  document.body.append(bandeau);
-  setTimeout(() => bandeau.remove(), 6000);
+  fond.addEventListener("click", fermer);
+  document.addEventListener("keydown", surTouche);
+  document.body.append(fond);
+  liberer = retourFerme(fermer);
+  fond.querySelector(".verrou__fermer")?.focus();
+}
+
+/** Le libellé du type, pour la ligne sous le nom de la récompense. */
+function nomDuType(cle) {
+  return (TYPES.find((x) => x.cle === cle) || {}).nom || "";
+}
+
+/**
+ * La scène : la récompense montrée pour de vrai.
+ *
+ * Un cas par type, parce qu'il n'y a rien de commun entre un cadre de vignette
+ * et un jeu de notes. Ce qui EST commun, c'est la règle : on montre la chose à
+ * sa taille d'usage, jamais une miniature — c'est déjà ce que fait la pastille
+ * de la liste, et c'est précisément parce qu'elle ne suffisait pas qu'on ouvre
+ * ce pop-up.
+ */
+function sceneDe(type, r) {
+  if (type === "titre") {
+    // Un titre est du texte, et sa seule mise en scène possible est l'endroit
+    // où il apparaîtra : la ligne sous le nom du site, en haut de la colonne.
+    return el(
+      "div.verrou__scene.verrou__scene--plein",
+      el(
+        "div.verrou__marque",
+        el("span.verrou__marque-nom", "Funkylldex"),
+        el("span.verrou__marque-sous", t(r.texte || r.nom))
+      )
+    );
+  }
+
+  if (type === "cadre" || type === "marque") {
+    // L'attribut est posé SUR la scène : les règles de `components.css`, qui
+    // n'exigent plus `:root`, peignent alors la vignette clonée à l'intérieur
+    // exactement comme elles peindraient la grille.
+    return el("div.verrou__scene", { dataset: { [type]: r.cle } }, tuileDemo());
+  }
+
+  if (type === "motif") {
+    // La trame se pose derrière l'application entière : la montrer seule, sur
+    // un carré vide, ne dirait pas à quel point elle est discrète. On pose donc
+    // une vignette par-dessus, qui donne l'échelle et le contraste réels.
+    return el(
+      "div.verrou__scene.verrou__scene--motif",
+      { dataset: { motif: r.cle } },
+      el("span.verrou__motif", { "aria-hidden": "true" }),
+      tuileDemo()
+    );
+  }
+
+  if (type === "banniere") {
+    // Le bandeau ne vit que sur la carte de partage, qui est un canvas : il n'y
+    // a pas de version DOM à cloner. La bande large reprend le dégradé de la
+    // pastille — même règle CSS, autre format.
+    return el(
+      "div.verrou__scene.verrou__scene--plein",
+      el("span.recomp__apercu.verrou__bande", { dataset: { banniere: r.cle } })
+    );
+  }
+
+  if (type === "sons") return sceneSonore(r);
+
+  return el(
+    "div.verrou__scene.verrou__scene--plein",
+    el("span.recomp__apercu.verrou__gros", { dataset: { [type]: r.cle } })
+  );
+}
+
+/**
+ * Un jeu de notes ne se REGARDE pas.
+ *
+ * D'où deux boutons plutôt qu'une image : le tic d'une case, qu'on entendra des
+ * milliers de fois, et la fanfare d'un succès, qu'on entendra rarement et qui
+ * porte tout le caractère du jeu. Les juger séparément est le seul moyen de
+ * savoir si « Rétro » amuse ou fatigue.
+ *
+ * `jouerAvec` joue sous un jeu QUELCONQUE sans rien écrire dans les
+ * préférences — sans quoi essayer un timbre verrouillé aurait demandé de le
+ * choisir, ce qui est justement impossible.
+ */
+function sceneSonore(r) {
+  const dire = (nom) => () => {
+    if (!jouerAvec(r.cle, nom)) {
+      // Rien n'est sorti : les sons sont coupés, ou le navigateur n'a pas de
+      // Web Audio. Le dire vaut mieux que laisser croire à un timbre muet.
+      note.textContent = t("Les sons sont coupés dans les réglages.");
+    }
+  };
+  const note = el("p.verrou__note");
+
+  return el(
+    "div.verrou__scene.verrou__scene--sons",
+    el(
+      "div.verrou__ecoutes",
+      el("button.verrou__ecoute", {
+        type: "button",
+        textContent: `▶ ${t("Une case cochée")}`,
+        onclick: dire("case"),
+      }),
+      el("button.verrou__ecoute", {
+        type: "button",
+        textContent: `▶ ${t("Un succès")}`,
+        onclick: dire("succes"),
+      })
+    ),
+    note
+  );
+}
+
+/**
+ * Une vraie vignette terminée, prise dans la grille.
+ *
+ * Clonée et non fabriquée : la vignette a une douzaine de sous-éléments — le
+ * numéro, les puces de type, la pastille, l'aura colorée du premier type — et
+ * une maquette qui en oublie un montre un cadre autour de quelque chose qui
+ * n'est pas la vignette qu'on aura.
+ *
+ * On retire ce qui est interactif : les bascules rapides et le bouton
+ * d'ouverture de fiche n'ont rien à faire dans un aperçu, et un bouton dans un
+ * bouton casse la navigation au clavier.
+ *
+ * REPLI. Rien n'est terminé au tout début, ou la seule vignette complète est
+ * hors de l'écran donc VIDÉE de son contenu par la virtualisation. On rend
+ * alors une vignette nue : elle porte le cadre et la pastille, ce qui est
+ * exactement ce qu'on venait voir.
+ */
+function tuileDemo() {
+  const modele = [...document.querySelectorAll(".card--complete")].find((n) =>
+    n.querySelector(".card__img")
+  );
+
+  if (!modele) {
+    return el(
+      "div.card.card--complete.verrou__tuile",
+      el("span.card__top", el("span.card__num", "000")),
+      el("span.card__art"),
+      el("span.card__name", t("Exemple"))
+    );
+  }
+
+  const copie = modele.cloneNode(true);
+  copie.classList.add("verrou__tuile");
+  copie.removeAttribute("id");
+  copie.querySelector(".card__toggles")?.remove();
+  for (const bouton of copie.querySelectorAll("button")) {
+    bouton.setAttribute("tabindex", "-1");
+    bouton.setAttribute("aria-hidden", "true");
+    bouton.disabled = true;
+  }
+  return copie;
+}
+
+/**
+ * Ce qu'il faut faire, et où l'on en est.
+ *
+ * La jauge compte autant que le chiffre. « 312 / 500 » demande une division
+ * mentale pour savoir si c'est proche ; une barre aux deux tiers se lit sans
+ * calcul, et c'est elle qui fait la différence entre « un jour peut-être » et
+ * « tiens, j'y suis presque ».
+ */
+function voieDe(s) {
+  if (!s) {
+    return el(
+      "div.verrou__voie",
+      el("p.verrou__absent", t("Cette récompense n'est pas encore accessible."))
+    );
+  }
+
+  const pct = s.total > 0 ? Math.min(100, Math.round((s.fait / s.total) * 100)) : 0;
+
+  return el(
+    "div.verrou__voie",
+    el("p.verrou__quoi", t("Il faut le succès")),
+    el(
+      "div.verrou__succes",
+      el("span.verrou__icone", { "aria-hidden": "true" }, iconeSvg(s.icone, 24)),
+      el(
+        "div.verrou__succes-texte",
+        el(
+          "span.verrou__succes-titre",
+          t(s.titre),
+          el("span.verrou__rang", t(RARETES[s.rang - 1] || ""))
+        ),
+        el("span.verrou__succes-resume", t(s.resume))
+      )
+    ),
+    el(
+      "div.verrou__jauge",
+      { role: "progressbar", "aria-valuenow": String(pct), "aria-valuemin": "0", "aria-valuemax": "100" },
+      el("span.verrou__jauge-plein", { style: { width: `${pct}%` } })
+    ),
+    el(
+      "p.verrou__chiffres",
+      el("span.verrou__fait", `${s.fait} / ${s.total}`),
+      el("span.verrou__pct", `${pct} %`)
+    )
+  );
 }
 
 /**

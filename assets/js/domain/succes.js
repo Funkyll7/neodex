@@ -327,7 +327,11 @@ export const SUCCES = [
     rang: 3,
     titre: "Région bouclée",
     court: "1 génération",
-    resume: "Terminer une génération entière.",
+    // « Terminer une génération » était ambigu, et l'ambiguïté coûtait cher : on
+    // peut avoir attrapé les 72 Pokémon de Kalos et n'être qu'à 78 % de ses
+    // CASES, parce qu'il reste les chromatiques, les formes et les variantes
+    // cosmétiques. Le résumé dit maintenant ce qui est compté.
+    resume: "Cocher toutes les cases d'une génération — chromatiques et formes comprises.",
     famille: "Régions",
     icone: "drapeau",
     theme: "cartouche",
@@ -353,7 +357,7 @@ export const SUCCES = [
     rang: 4,
     titre: "Trois régions",
     court: "3 générations",
-    resume: "Terminer trois générations entières.",
+    resume: "Cocher toutes les cases de trois générations.",
     famille: "Régions",
     icone: "carte",
     mesure: (b) => ({ fait: generations(b).filter((g) => g.done === g.total).length, total: 3 }),
@@ -363,7 +367,7 @@ export const SUCCES = [
     rang: 5,
     titre: "Tour du monde",
     court: "9 générations",
-    resume: "Terminer toutes les générations.",
+    resume: "Cocher toutes les cases des neuf générations.",
     famille: "Régions",
     icone: "globe",
     mesure: (b) => {
