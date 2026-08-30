@@ -88,10 +88,7 @@
      même valeur sur « --gold » et sur « --accent », si bien qu'aucune ne change
      d'un pixel. Boussole est la seule à les séparer : chez elle la complétion
      est sable et l'interaction est rose, et il fallait de quoi l'écrire. */
-  --gold-wash: var(--accent-wash);
-  --gold-glow: var(--accent-glow);
-  --gold-border: var(--accent-border);
-  --gold-ink: var(--accent-ink);
+
   --pair: #6fb7ff;
   --female: #ff8fd0;
   --danger: #ff6b6b;
@@ -122,8 +119,6 @@
   --avail-event-lock: #4d90d5;
 }
 
-/* ----------------------------- THEME SOMBRE ------------------------------ */
-:root,
 /* LES PALETTES SONT AUSSI PEINTES HORS DE `<html>`.
    Chaque selecteur de theme est double : `:root[data-theme="X"]` habille la
    page, `[data-theme-apercu="X"]` habille la petite scene du pop-up qui montre
@@ -132,10 +127,52 @@
    L attribut est distinct de `data-theme` a dessein : les cartes du menu le
    portent deja, et generaliser aurait repeint les trente-huit vignettes du
    selecteur, chacune dans sa propre palette. */
+
 /* Le halo est vide par defaut : trente-trois palettes gardent leur aplat, et
    `base.css` retombe de toute facon sur `none` si la variable manque. */
+/* Le doré de la COMPLÉTION, décliné comme l'accent l'est déjà : un voile, un
+   halo, une bordure, une encre. Ces quatre-là renvoient à l'accent par défaut,
+   et c'est exact partout — les trente-deux autres palettes posent la même
+   valeur sur « --gold » et sur « --accent », si bien qu'aucune ne change d'un
+   pixel. Boussole est la seule à les séparer : chez elle la complétion est
+   sable et l'interaction est rose, et il fallait de quoi l'écrire.
+
+   ILS SONT REDONNÉS À LA PORTÉE D'APERÇU, et pas seulement à `:root`. Un `var()`
+   écrit dans une propriété personnalisée est résolu sur l'élément qui la
+   DÉCLARE : posés sur la seule racine, ces quatre-là arrivaient dans la maquette
+   d'un thème verrouillé avec l'accent de la palette COURANTE déjà substitué. Le
+   lavis d'une vignette terminée y était donc de la mauvaise couleur, sans que
+   rien ne le signale. Redéclarés ici, ils se résolvent une seconde fois dans la
+   maquette, contre la palette qu'elle montre.
+
+   Même piège que `--marque-fond` dans `components.css`, réglé autrement : là-bas
+   il n'y avait qu'un seul point d'usage et le repli a pu y descendre ; ici il y
+   en a des dizaines. */
+:root,
+[data-theme-apercu] {
+  --gold-wash: var(--accent-wash);
+  --gold-glow: var(--accent-glow);
+  --gold-border: var(--accent-border);
+  --gold-ink: var(--accent-ink);
+  /* Même raison : l'échelle de rareté se mélange à `--text`, qui change de
+     palette en palette. Elle ne sert nulle part dans une maquette aujourd'hui,
+     mais la laisser figée aurait été un piège à retardement. */
+  --rarete-1: color-mix(in srgb, #737f96 74%, var(--text));
+  --rarete-2: color-mix(in srgb, #2f9e44 74%, var(--text));
+  --rarete-3: color-mix(in srgb, #4180ef 74%, var(--text));
+  --rarete-4: color-mix(in srgb, #9560f0 74%, var(--text));
+  --rarete-5: color-mix(in srgb, #c98500 74%, var(--text));
+}
 :root { --fond-halo: none; }
 
+/* ----------------------------- THEME SOMBRE ------------------------------ */
+/* `:root` NU EN TETE DE LISTE : c est ce qui fait du sombre le theme par
+   defaut, avant meme que `ui/theme.js` ait pose son attribut. Il avait ete
+   perdu — une insertion malheureuse s etait glissee ENTRE lui et le reste du
+   selecteur, coupant la regle en deux : la page sans `data-theme` n avait plus
+   aucune couleur. Elle n a jamais ete vue parce que l attribut est pose au
+   demarrage, mais un chargement lent ou un stockage bloque l aurait montree. */
+:root,
 :root[data-theme="dark"], [data-theme-apercu="dark"] {
   color-scheme: dark;
 
@@ -1078,10 +1115,6 @@
    deuxième est toujours nettement plus sombre que la première. */
 
 :root,
-/* Le halo est vide par defaut : trente-trois palettes gardent leur aplat, et
-   `base.css` retombe de toute facon sur `none` si la variable manque. */
-:root { --fond-halo: none; }
-
 :root[data-theme="dark"], [data-theme-apercu="dark"] { --teinte-1: #ffcb05; --teinte-2: #b06f00; --teinte-3: #4dabf7; }
 :root[data-theme="light"], [data-theme-apercu="light"] { --teinte-1: #c98f00; --teinte-2: #7a5200; --teinte-3: #3d7fd6; }
 /* Boussole est la seule des « Base » à nommer des Pokémon : le sable de la

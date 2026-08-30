@@ -5398,12 +5398,30 @@ body::before {
    Elle s'appelait « Étoile », et c'était un nom faux : son signe se choisit
    ailleurs dans la même liste, et les six autres marques le portent aussi. Ce
    qui la définit, c'est de n'avoir aucune couleur à elle. */
-:root {
-  --marque-fond: linear-gradient(145deg, color-mix(in srgb, var(--gold-soft) 78%, #fff), var(--gold-soft));
-  --marque-anneau: var(--gold-soft);
-  --marque-encre: var(--marque-ink);
-  --marque-halo: color-mix(in srgb, var(--gold-soft) 45%, transparent);
-}
+/* AUCUNE VALEUR PAR DEFAUT SUR `:root`, et c est un piege qui a mordu.
+
+   Elles y etaient : `--marque-fond: linear-gradient(..., var(--gold-soft))`.
+   Ca marchait partout SAUF dans l apercu d une palette verrouillee, ou la
+   marque Classique restait obstinement de la couleur du theme COURANT au lieu
+   de prendre celle du theme montre.
+
+   La raison tient a une regle du langage qu on oublie facilement : le `var()`
+   ecrit dans une propriete personnalisee est resolu sur l element qui la
+   DECLARE, pas sur celui qui la lit. Declaree sur `:root`, `--marque-fond`
+   arrivait donc aux vignettes de l apercu avec le `--gold-soft` de la racine
+   deja substitue — l orange de Sombre —, alors que ces vignettes voyaient bien
+   le `--gold-soft` de Cartouche dans leur propre cascade.
+
+   Les defauts sont donc ecrits ici, EN REPLI DE `var()`, dans la declaration
+   qui s en sert. La substitution se fait alors sur la vignette, qui hérite du
+   bon theme. Les six marques colorees, elles, peuvent rester declarees ou elles
+   veulent : leurs valeurs sont des couleurs litterales, sans `var()` a
+   resoudre.
+
+   Meme famille de piege que le `background: var(--fond-halo) fixed` de
+   `base.css`, ou le mot-cle ne se collait qu a la derniere couche. Une valeur
+   qui traverse une propriete personnalisee ne se comporte pas comme une valeur
+   ecrite sur place. */
 
 /* Coche — cent Pokémon terminés. Un sceau : anneau vert franc, cœur pâle. */
 [data-marque="coche"] {
@@ -5496,12 +5514,16 @@ body::before {
 .recomp__apercu--marque {
   border: 2.5px solid transparent;
   background:
-    var(--marque-fond) padding-box,
-    var(--marque-anneau) border-box;
-  color: var(--marque-encre);
+    var(--marque-fond, linear-gradient(145deg, color-mix(in srgb, var(--gold-soft) 78%, #fff), var(--gold-soft))) padding-box,
+    var(--marque-anneau, var(--gold-soft)) border-box;
+  color: var(--marque-encre, var(--marque-ink));
 }
-.card--complete::after { box-shadow: 0 2px 7px var(--marque-halo); }
-.recomp__apercu--marque { box-shadow: 0 1px 5px var(--marque-halo); }
+.card--complete::after {
+  box-shadow: 0 2px 7px var(--marque-halo, color-mix(in srgb, var(--gold-soft) 45%, transparent));
+}
+.recomp__apercu--marque {
+  box-shadow: 0 1px 5px var(--marque-halo, color-mix(in srgb, var(--gold-soft) 45%, transparent));
+}
 
 /* L'étoile n'a pas d'anneau : sur elle, `--marque-anneau` vaut `transparent` et
    le trait laisserait voir la vignette au travers. On le lui rend plein de son
