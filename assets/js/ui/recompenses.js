@@ -159,9 +159,32 @@ export function optionsDuType(type, etat, choix) {
   const liste = (etat || evaluerRecompenses(succesSource(), c)).filter((r) => r.type === type.cle);
   return el(
     "div.recomp__options",
-    { role: "group", "aria-label": t(type.nom) },
+    // `data-type` sert à retrouver ce conteneur pour le repeindre quand un
+    // succès tombe. On ne peut pas le chercher par son libellé : celui-ci est
+    // traduit, et le sélecteur aurait cessé de fonctionner en anglais.
+    { role: "group", "aria-label": t(type.nom), dataset: { type: type.cle } },
     liste.map((r) => option(type, r, c[type.cle] === r.cle))
   );
+}
+
+/**
+ * Repeint les options, quand ce qui est débloqué a changé.
+ *
+ * Le menu est construit UNE fois, au démarrage, avant même que les données
+ * soient là : `evaluerRecompenses` n'avait alors aucun succès à lire et
+ * verrouillait tout. Sans ce rafraîchissement, les quarante et une options
+ * restaient closes pour la durée de la visite — y compris les dix-sept déjà
+ * gagnées.
+ */
+export function redessinerOptions() {
+  const conteneurs = document.querySelectorAll(".recomp__options[data-type]");
+  if (!conteneurs.length) return;
+  const choix = choixCourant();
+  const etat = evaluerRecompenses(succesSource(), choix);
+  for (const ancien of conteneurs) {
+    const type = TYPES.find((x) => x.cle === ancien.dataset.type);
+    if (type) ancien.replaceWith(optionsDuType(type, etat, choix));
+  }
 }
 
 /**
@@ -188,25 +211,65 @@ const succesSource = () => source();
  * vivant est le pire des deux.
  */
 function option(type, r, choisi) {
-  const titre = r.ouvert
-    ? t(r.nom)
-    : `${t(r.nom)} — ${r.source ? `${t(r.source.titre)} · ${r.source.fait} / ${r.source.total}` : t("verrouillé")}`;
+  const titre = r.ouvert ? t(r.nom) : `${t(r.nom)} — ${conditionDe(r)}`;
 
   return el(
     "button.recomp__opt",
     {
       type: "button",
-      disabled: !r.ouvert,
+      // `aria-disabled` et NON `disabled` : un bouton vraiment désactivé
+      // n'accepte aucun clic, donc aucun moyen de demander pourquoi. Or c'est
+      // exactement la question qu'on se pose devant un cadenas. Il reste donc
+      // cliquable, et son clic répond.
+      "aria-disabled": String(!r.ouvert),
       "aria-pressed": String(choisi),
       title: titre,
       "aria-label": titre,
       dataset: { type: type.cle, valeur: r.cle },
-      onclick: r.ouvert ? () => poserChoix(type.cle, r.cle) : null,
+      onclick: r.ouvert ? () => poserChoix(type.cle, r.cle) : () => annoncerVerrou(r),
     },
     apercu(type.cle, r),
     el("span.recomp__label", t(r.nom)),
     r.ouvert ? null : el("span.recomp__cadenas", { "aria-hidden": "true" }, "🔒")
   );
+}
+
+/** « Le succès qu'il faut, et où l'on en est » — ou le constat, à défaut. */
+function conditionDe(r) {
+  if (!r.source) return t("verrouillé");
+  const s = r.source;
+  return `${t(s.titre)} · ${s.fait} / ${s.total}`;
+}
+
+/**
+ * Dit ce qu'il manque, au clic sur un cadenas.
+ *
+ * Un bandeau plutôt qu'une infobulle : l'infobulle existe déjà — c'est le
+ * `title` —, mais elle demande de survoler, ce qu'un téléphone ne sait pas
+ * faire. Or c'est justement sur téléphone qu'on parcourt cette liste au doigt.
+ *
+ * Il reprend la mise en forme du bandeau de déverrouillage, et ce n'est pas de
+ * l'économie : les deux disent la même chose à deux moments opposés — « voilà
+ * ce que tu viens d'obtenir » et « voilà ce qu'il te faut ». Les rendre
+ * identiques à l'œil, c'est dire qu'ils parlent du même sujet.
+ */
+function annoncerVerrou(r) {
+  document.querySelector(".verrou-bandeau")?.remove();
+  const s = r.source;
+
+  const bandeau = el(
+    "div.succes-bandeau.verrou-bandeau",
+    { role: "status", "aria-live": "polite" },
+    el("span.bandeau__titre", `🔒 ${t(r.nom)}`),
+    el(
+      "p.succes__liste",
+      s ? `${t("Il faut le succès")} « ${t(s.titre)} »` : t("Cette récompense n'est pas encore accessible.")
+    ),
+    s ? el("span.bandeau__suite", `${t(s.resume)} — ${s.fait} / ${s.total}`) : null
+  );
+
+  document.body.append(bandeau);
+  setTimeout(() => bandeau.remove(), 6000);
 }
 
 /**

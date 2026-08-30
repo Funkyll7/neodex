@@ -109,6 +109,11 @@ export const ICONES = {
      n'est pas centrée sur son dessin — le rouage tombait haut et à gauche dans
      son rond, quel que soit le centrage appliqué au bouton. Un tracé n'a pas ce
      défaut, et il ressemble enfin au trophée d'à côté. */
+  /* Une note, pour la section des sons du menu de customisation. Aucune des
+     quarante-deux autres ne disait « ceci s'entend » — l'étincelle du
+     chromatique avait été essayée, et se lisait comme un effet visuel. */
+  note: "M9 18.5a2.75 2.75 0 1 1 0-5.5 2.75 2.75 0 0 1 0 5.5zM11.75 15.75V4.5l8-1.5v10.25M19.75 16a2.75 2.75 0 1 1-5.5 0 2.75 2.75 0 0 1 5.5 0zM11.75 8.5l8-1.5",
+
   roue: "M12 15.4a3.4 3.4 0 1 1 0-6.8 3.4 3.4 0 0 1 0 6.8zM10.4 2.9a1 1 0 0 1 1-.9h1.2a1 1 0 0 1 1 .9l.2 1.9 2 .8 1.5-1.2a1 1 0 0 1 1.3.1l.9.9a1 1 0 0 1 .1 1.3l-1.2 1.5.8 2 1.9.2a1 1 0 0 1 .9 1v1.2a1 1 0 0 1-.9 1l-1.9.2-.8 2 1.2 1.5a1 1 0 0 1-.1 1.3l-.9.9a1 1 0 0 1-1.3.1l-1.5-1.2-2 .8-.2 1.9a1 1 0 0 1-1 .9h-1.2a1 1 0 0 1-1-.9l-.2-1.9-2-.8-1.5 1.2a1 1 0 0 1-1.3-.1l-.9-.9a1 1 0 0 1-.1-1.3l1.2-1.5-.8-2-1.9-.2a1 1 0 0 1-.9-1v-1.2a1 1 0 0 1 .9-1l1.9-.2.8-2-1.2-1.5a1 1 0 0 1 .1-1.3l.9-.9a1 1 0 0 1 1.3-.1l1.5 1.2 2-.8z",
 };
 

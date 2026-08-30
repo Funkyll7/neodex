@@ -92,6 +92,14 @@ export function majDecor(theme) {
   // navigateur ne télécharge chaque artwork qu'une fois.
   poser(document.getElementById("sidebar"), "decor-flanc", ids, figures);
   poser(document.getElementById("nav-toggle"), "decor-barre", ids, figures);
+  // L'écran de chargement, troisième surface — et la première qu'on voit.
+  //
+  // Elle a ceci de particulier qu'elle n'existe que quelques centaines de
+  // millisecondes, et qu'elle est peinte AVANT les données : `initTheme()`
+  // tourne en tête de `main.js`, bien avant `boot()`. C'est justement ce qui
+  // permet d'y montrer le trio — le thème, lui, est connu dès la première
+  // ligne, il vient des préférences.
+  poser(document.getElementById("boot"), "decor-boot", ids, figures);
 }
 
 /**

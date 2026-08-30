@@ -3630,3 +3630,112 @@ body::before {
 }
 .custo__compte { font-size: 11px; font-weight: 700; letter-spacing: 0; color: var(--text-ghost); }
 .themes__panels { display: flex; flex-direction: column; gap: var(--sp-4); }
+
+/* Une section repliable. Le marqueur natif est remplace par un chevron pose en
+   fin de ligne : celui du navigateur se colle au texte, a gauche, et se
+   desaligne des titres qui n ont pas de compte a droite. */
+.custo__section > summary { cursor: pointer; list-style: none; }
+.custo__section > summary::-webkit-details-marker { display: none; }
+.custo__titre { position: relative; padding-right: 20px; }
+.custo__titre::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-70%) rotate(45deg);
+  opacity: .7;
+}
+.custo__section[open] > .custo__titre::after { transform: translateY(-20%) rotate(-135deg); }
+.custo__section > summary:hover { color: var(--text); }
+.custo__section > :not(summary) { margin-top: 8px; }
+
+/* Une option verrouillee reste cliquable — son clic dit ce qu il manque — donc
+   `aria-disabled` et non `disabled`. Le curseur doit dire les deux choses a la
+   fois : ce n est pas un choix, mais il se passe quelque chose. */
+.recomp__opt[aria-disabled="true"] { opacity: .45; cursor: help; }
+.recomp__opt[aria-disabled="true"]:hover { opacity: .62; }
+
+/* Le bandeau du cadenas reprend celui du deverrouillage, au filet pres : le
+   premier annonce une reussite, le second une condition. Meme forme, autre
+   couleur — c est ce qui les distingue sans les separer. */
+.verrou-bandeau { border-left-color: var(--text-faint); }
+.verrou-bandeau .bandeau__titre { color: var(--text-soft); }
+
+/* L en-tete du menu suit le defilement. La boite fait 674 px deplie ; sans
+   cela, refermer demandait de remonter jusqu en haut, ou d atteindre le voile
+   sur les cotes — ce qui n existe pas sur un telephone, ou la boite occupe
+   toute la largeur. */
+.custo__entete {
+  position: sticky;
+  top: calc(-1 * var(--sp-4));
+  z-index: 3;
+  margin: calc(-1 * var(--sp-4)) calc(-1 * var(--sp-4)) 0;
+  padding: var(--sp-4) var(--sp-4) 10px;
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Le trio sur l ecran de chargement. Il ne dure qu une seconde, mais c est la
+   premiere image du site : le theme choisi s y annonce avant meme la grille. */
+.decor-boot { display: none; }
+.decor-boot[data-n="1"],
+.decor-boot[data-n="3"] {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-top: 4px;
+}
+.decor-boot .decor__sprite { width: 52px; margin-inline: -6px; }
+.decor-boot[data-n="3"] .decor__sprite:nth-child(2) { width: 62px; }
+.decor-boot[data-n="3"] .decor__sprite:nth-child(1) { transform: scaleX(-1); }
+.decor-boot[data-n="1"] .decor__sprite { width: 76px; }
+@media (prefers-reduced-motion: no-preference) {
+  .decor-boot .decor__sprite { animation: boot-arrivee .5s ease-out 1 both; }
+  .decor-boot .decor__sprite:nth-child(2) { animation-delay: .07s; }
+  .decor-boot .decor__sprite:nth-child(3) { animation-delay: .14s; }
+  @keyframes boot-arrivee {
+    from { opacity: 0; transform: translateY(9px) scale(.9); }
+  }
+}
+
+/* --------- Ce qui distingue les huit sections du menu l une de l autre ----- */
+
+/* Huit titres en majuscules grises se ressemblaient tous, et il fallait lire
+   pour trouver le bon. Chacun porte son icone et sa teinte, fixes — comme les
+   crans de rarete, et pour la meme raison : un repere qui change de couleur
+   selon la palette n est plus un repere. */
+.custo__section {
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--teinte) 6%, var(--bg-inset));
+  border: 1px solid color-mix(in srgb, var(--teinte) 20%, transparent);
+}
+.custo__section[open] { background: color-mix(in srgb, var(--teinte) 9%, var(--bg-inset)); }
+.custo__titre { display: flex; align-items: center; gap: 7px; color: var(--text-soft); }
+.custo__ico {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  color: var(--teinte);
+  background: color-mix(in srgb, var(--teinte) 16%, transparent);
+}
+.custo__compte { margin-left: auto; }
+/* Le sous-titre d une famille de palettes : un cran plus bas que le titre de
+   section, puisqu il est DANS une section et non a cote. */
+.custo__sous-titre {
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+}
+.custo__sous-titre .custo__compte { font-size: 10px; }
+.custo__sous-titre:first-child { margin-top: 0; }

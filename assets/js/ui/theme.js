@@ -13,7 +13,8 @@ import { sansAccents } from "../core/data.js";
 import { evaluerSucces } from "../domain/succes.js";
 import { majDecor } from "./decor-theme.js";
 import { TYPES } from "../domain/recompenses.js";
-import { optionsDuType, poserSourceDesSucces } from "./recompenses.js";
+import { optionsDuType, poserSourceDesSucces, redessinerOptions } from "./recompenses.js";
+import { iconeSvg } from "./icones-succes.js";
 import { retourFerme } from "./retour.js";
 import { t } from "../core/i18n.js";
 import { jouer } from "./sons.js";
@@ -217,8 +218,12 @@ function buildPicker() {
     familles.get(theme.groupe).push(theme);
   }
 
-  const panneaux = el("div.themes__panels");
-
+  // UNE SEULE section pour les trente-huit palettes, et les six familles en
+  // sous-titres à l'intérieur. Six sections repliables côte à côte mettaient
+  // les palettes sur le même plan que « Bandeau de la carte » — six entrées de
+  // menu pour une seule chose à choisir, contre une par chose pour les sept
+  // autres. Le menu se lit maintenant : huit lignes, huit décisions.
+  const familiales = [];
   for (const [titre, liste] of familles) {
     // Le TEXTE se traduit, la CLÉ non. `cle` vient de `idDeFamille(titre)` et
     // sert d'identifiant DOM ; elle est aussi écrite en dur ailleurs —
@@ -227,14 +232,12 @@ function buildPicker() {
     // et ce sélecteur, muet, aurait cessé de repeindre les récompenses dans
     // cette langue-là.
     const cle = idDeFamille(titre);
-    panneaux.append(
-      el(
-        "section.custo__section",
-        el("h4.custo__titre", t(titre), el("span.custo__compte", String(liste.length))),
-        el("div.themes__panel", { dataset: { famille: cle } }, liste.map(carte))
-      )
+    familiales.push(
+      el("h5.custo__sous-titre", t(titre), el("span.custo__compte", String(liste.length))),
+      el("div.themes__panel", { dataset: { famille: cle } }, liste.map(carte))
     );
   }
+  const panneaux = el("div.custo__corps", familiales);
 
   // Le menu s'appelle « Customisation » et ne contient plus que des couleurs :
   // les palettes sont son PREMIER onglet, les six autres types de cosmétiques
@@ -283,15 +286,61 @@ function menuDeCustomisation(interieur) {
   // visible, un seul défilement. Sept sections de plus à faire défiler coûtent
   // moins qu'un seul niveau de plus à explorer.
   const sections = TYPES.map((type) =>
-    el(
-      "section.custo__section",
-      el("h4.custo__titre", t(type.nom)),
-      el("p.recomp__aide", t(type.aide)),
-      optionsDuType(type)
-    )
+    section(type.cle, t(type.nom), null, el("div.custo__corps", el("p.recomp__aide", t(type.aide)), optionsDuType(type)))
   );
 
-  return el("div.custo-boite", entete, el("div.custo", interieur, sections));
+  return el(
+    "div.custo-boite",
+    entete,
+    el("div.custo", section("theme", t("Thèmes"), "38", interieur, { ouvert: true }), sections)
+  );
+}
+
+/**
+ * Ce qui distingue les huit sections l'une de l'autre.
+ *
+ * Huit titres en majuscules grises se ressemblaient tous, et il fallait lire
+ * pour trouver la bonne — dans un menu dont le seul usage est de choisir vite.
+ * Chacune porte donc son icône et sa teinte, prises dans le jeu qui sert déjà
+ * aux succès : rien de neuf à dessiner, et le vocabulaire du site reste le
+ * même d'un panneau à l'autre.
+ *
+ * Les teintes ne sont pas celles du thème, elles sont FIXES — comme les cinq
+ * crans de rareté, et pour la même raison : un repère qui change de couleur
+ * selon la palette n'est plus un repère.
+ */
+const ALLURE = {
+  theme: { icone: "palette", teinte: "#a371f7" },
+  titre: { icone: "ruban", teinte: "#f0a30a" },
+  marque: { icone: "etoile", teinte: "#4dabf7" },
+  cadre: { icone: "case", teinte: "#38d9a9" },
+  motif: { icone: "grille", teinte: "#ff9f43" },
+  banniere: { icone: "drapeau", teinte: "#f783ac" },
+  sons: { icone: "note", teinte: "#7ee7ff" },
+  mascottes: { icone: "duo", teinte: "#a9e34b" },
+};
+
+/**
+ * Une section repliable.
+ *
+ * `<details>` natif, et non une bascule écrite à la main : il connaît déjà le
+ * clavier, l'état ouvert / fermé pour un lecteur d'écran, et la recherche dans
+ * la page — Ctrl-F ouvre un `<details>` fermé qui contient le mot cherché, ce
+ * qu'aucune reconstitution en JavaScript ne fait.
+ */
+function section(cle, titre, compte, contenu, { ouvert = false } = {}) {
+  const allure = ALLURE[cle] || ALLURE.theme;
+  return el(
+    "details.custo__section",
+    { open: ouvert, dataset: { custo: cle }, "--teinte": allure.teinte },
+    el(
+      "summary.custo__titre",
+      el("span.custo__ico", iconeSvg(allure.icone, 15)),
+      titre,
+      compte ? el("span.custo__compte", compte) : null
+    ),
+    contenu
+  );
 }
 
 /** « Légendaires » -> « legendaires » : un identifiant sur pour aria-controls. */
@@ -476,6 +525,12 @@ export function majSucces(bilan) {
 
 /** Repeint le panneau des récompenses, s'il est construit. */
 function redessinerRecompenses() {
+  // Les six autres familles de cosmétiques, d'abord. Le menu est construit UNE
+  // fois, au démarrage, avant que les données existent : `evaluerRecompenses`
+  // n'avait alors aucun succès à lire et verrouillait les quarante et une
+  // options. Sans cet appel, elles le restaient pour toute la visite.
+  redessinerOptions();
+
   const panneau = document.querySelector('.themes__panel[data-famille="recompenses"]');
   if (!panneau) return;
   fill(panneau, THEMES.filter((theme) => idDeFamille(theme.groupe) === "recompenses").map(carte));

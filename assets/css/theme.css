@@ -930,3 +930,60 @@
   --gold-border: #5a5344; --gold-ink: #1a1610;
   --tuile-voile: linear-gradient(135deg, rgba(255, 207, 77, .20) 22%, rgba(232, 226, 208, .16) 55%, rgba(212, 87, 78, .20) 82%);
 }
+
+/* =================== Les trois couleurs des vingt autres ================== */
+
+/* Les dix-huit palettes de Légendaires et de Starters portent chacune ses trois
+   couleurs signature, tirées du Pokémon qui lui donne son nom. Les vingt autres
+   n'en avaient aucune, et le menu ne pouvait donc en montrer que pour la moitié
+   de sa liste — ce qui se lit comme un oubli plutôt que comme une différence.
+
+   Elles n'ont pas de Pokémon d'où les tirer. On les tire donc de ce qu'elles
+   sont : une gamme monochrome pour les six « Couleurs » — le ton, son ombre,
+   sa lumière —, les couleurs de la récompense pour les cinq palettes gagnées,
+   et pour la famille « Pixels » la rampe de l'écran qu'elle imite.
+
+   Elles ne servent qu'à des surfaces décoratives : les trois pastilles d'une
+   carte du menu, et le dégradé à trois arrêts de la barre de progression. Aucun
+   texte ne repose dessus, elles n'ont donc pas de contrainte de lecture — mais
+   elles doivent rester distinctes entre elles, et c'est pour cela que la
+   deuxième est toujours nettement plus sombre que la première. */
+
+:root,
+:root[data-theme="dark"] { --teinte-1: #ffcb05; --teinte-2: #b06f00; --teinte-3: #4dabf7; }
+:root[data-theme="light"] { --teinte-1: #c98f00; --teinte-2: #7a5200; --teinte-3: #3d7fd6; }
+/* Boussole est la seule des « Base » à nommer des Pokémon : le sable de la
+   complétion, le rose de l'interaction, et l'ocre chaud qui les relie. */
+:root[data-theme="boussole"] { --teinte-1: #e8c9a0; --teinte-2: #f174d3; --teinte-3: #ff9c6b; }
+
+/* --- Couleurs : le ton, son ombre, sa lumière --- */
+:root[data-theme="rubis"]     { --teinte-1: #f2586c; --teinte-2: #8f1f30; --teinte-3: #ffb3bd; }
+:root[data-theme="ambre"]     { --teinte-1: #ff9f2e; --teinte-2: #9c5200; --teinte-3: #ffd9a0; }
+:root[data-theme="emeraude"]  { --teinte-1: #45cf8d; --teinte-2: #17694a; --teinte-3: #a8f0cd; }
+:root[data-theme="turquoise"] { --teinte-1: #36ced8; --teinte-2: #12666e; --teinte-3: #a6eff3; }
+:root[data-theme="saphir"]    { --teinte-1: #5b8dff; --teinte-2: #22459c; --teinte-3: #b3caff; }
+:root[data-theme="amethyste"] { --teinte-1: #a97dff; --teinte-2: #5a3399; --teinte-3: #d9c6ff; }
+
+/* --- Récompenses : les couleurs de ce qu'elles célèbrent --- */
+/* Aube : le premier millier de cases, donc un lever de soleil — braise, or, et
+   le violet qui reste de la nuit. */
+:root[data-theme="aube"]      { --teinte-1: #ff9a5c; --teinte-2: #b8471a; --teinte-3: #7a5cff; }
+/* Prisme : cent chromatiques. Trois arrêts d'un spectre, et rien d'autre. */
+:root[data-theme="prisme"]    { --teinte-1: #7ee7ff; --teinte-2: #b28dff; --teinte-3: #ff9ad5; }
+/* Cartouche : une génération entière, donc l'écran d'une console — le vert de
+   phosphore, son ombre, sa lueur. */
+:root[data-theme="cartouche"] { --teinte-1: #9ef01a; --teinte-2: #4a7d0a; --teinte-3: #dff7a8; }
+/* Duo : toutes les paires ♂ / ♀. Le bleu et le rose sont ceux des boutons de
+   genre, aux valeurs exactes — ce sont les seules couleurs du site qu'on ne
+   touche pas, et une palette qui en célèbre l'usage ne va pas les approcher. */
+:root[data-theme="duo"]       { --teinte-1: #6fb7ff; --teinte-2: #ff8fd0; --teinte-3: #ff7a6b; }
+/* Couronne : le Pokédex entier. De l'or, son creux, et son éclat. */
+:root[data-theme="couronne"]  { --teinte-1: #ffcf4d; --teinte-2: #a5751a; --teinte-3: #fff0b8; }
+
+/* --- Pixels : la rampe de l'écran imité --- */
+:root[data-theme="pixels"]         { --teinte-1: #9bbc0f; --teinte-2: #306230; --teinte-3: #e0f8d0; }
+:root[data-theme="pixels-ambre"]   { --teinte-1: #ffb000; --teinte-2: #7a5200; --teinte-3: #ffe0a0; }
+:root[data-theme="pixels-cyan"]    { --teinte-1: #38e8ff; --teinte-2: #12707f; --teinte-3: #b8f6ff; }
+:root[data-theme="pixels-magenta"] { --teinte-1: #ff5cc8; --teinte-2: #8a2166; --teinte-3: #ffb8e6; }
+:root[data-theme="pixels-sang"]    { --teinte-1: #ff4d4d; --teinte-2: #8a1414; --teinte-3: #ffb0b0; }
+:root[data-theme="pixels-encre"]   { --teinte-1: #8ea3c8; --teinte-2: #34435e; --teinte-3: #cfd9ec; }
