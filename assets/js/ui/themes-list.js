@@ -104,12 +104,12 @@ export const THEMES = [
   //
   // Chaque carte montre un Pokemon de la teinte de son accent : c'est la seule
   // famille ou le sprite ne nomme pas le theme, il l'illustre.
-  { value: "pixels", label: "Console", groupe: "Pixels", bandeau: "#141024", pastille: "#8be04e", sprites: "pixel", sprite: 25, degrade: ["#8be04e", "#d2f08a"] },
-  { value: "pixels-ambre", label: "Ambré", groupe: "Pixels", bandeau: "#1a1206", pastille: "#ffb340", sprites: "pixel", sprite: 4, degrade: ["#ffb340", "#ffd694"] },
-  { value: "pixels-cyan", label: "Cathode", groupe: "Pixels", bandeau: "#061418", pastille: "#3fd8e8", sprites: "pixel", sprite: 131, degrade: ["#3fd8e8", "#9cebf4"] },
-  { value: "pixels-magenta", label: "Néon", groupe: "Pixels", bandeau: "#170a18", pastille: "#f45fd0", sprites: "pixel", sprite: 151, degrade: ["#f45fd0", "#ffa9e6"] },
-  { value: "pixels-sang", label: "Braise", groupe: "Pixels", bandeau: "#170808", pastille: "#ff6a4d", sprites: "pixel", sprite: 6, degrade: ["#ff6a4d", "#ffab93"] },
-  { value: "pixels-encre", label: "Encre", groupe: "Pixels", bandeau: "#0b0f1a", pastille: "#7f9cff", sprites: "pixel", sprite: 130, degrade: ["#7f9cff", "#b9c8ff"] },
+  { value: "pixels", label: "Console", groupe: "Pixels", bandeau: "#141024", pastille: "#8be04e", sprites: "pixel", sprite: 25, degrade: ["#8be04e", "#ffd23f"] },
+  { value: "pixels-ambre", label: "Ambré", groupe: "Pixels", bandeau: "#1a1206", pastille: "#ffb340", sprites: "pixel", sprite: 4, degrade: ["#ffb340", "#ff6a3d"] },
+  { value: "pixels-cyan", label: "Cathode", groupe: "Pixels", bandeau: "#061418", pastille: "#3fd8e8", sprites: "pixel", sprite: 131, degrade: ["#3fd8e8", "#b9a6ff"] },
+  { value: "pixels-magenta", label: "Néon", groupe: "Pixels", bandeau: "#170a18", pastille: "#f45fd0", sprites: "pixel", sprite: 151, degrade: ["#f45fd0", "#9b8cff"] },
+  { value: "pixels-sang", label: "Braise", groupe: "Pixels", bandeau: "#170808", pastille: "#ff6a4d", sprites: "pixel", sprite: 6, degrade: ["#ff6a4d", "#ffc244"] },
+  { value: "pixels-encre", label: "Encre", groupe: "Pixels", bandeau: "#0b0f1a", pastille: "#7f9cff", sprites: "pixel", sprite: 130, degrade: ["#7f9cff", "#5fd8c4"] },
 
   // --- Récompenses : on ne les choisit pas, on les gagne ---------------------
   // `verrou` porte la clé du succès qui les ouvre — voir domain/succes.js, qui
