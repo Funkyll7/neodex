@@ -568,13 +568,13 @@ function paint(node, species, ctx) {
         : el(gmax === "owned" ? "span.card__gmax.card__gmax--on" : "span.card__gmax", {
             title: gmax === "owned" ? t("Forme Gigamax obtenue") : t("Forme Gigamax manquante"),
           }),
-      // L''ornement des cadres  Laurier  et  Couronne  : une vraie couronne
-      // posee sur la tete du Pokemon, un vrai laurier qui l''entoure.
+      // L'ornement des cadres  Laurier  et  Couronne  : une vraie couronne
+      // posee sur la tete du Pokemon, un vrai laurier qui l'entoure.
       //
-      // DANS LA ZONE DU SPRITE et non sur la vignette entiere, parce que c''est
-      // le Pokemon qu''on couronne. Pose ailleurs, l''ornement tombait sur le
+      // DANS LA ZONE DU SPRITE et non sur la vignette entiere, parce que c'est
+      // le Pokemon qu'on couronne. Pose ailleurs, l'ornement tombait sur le
       // numero, sur les puces de type ou sur la pastille de completion — il
-      // n''avait plus rien a decorer, il genait.
+      // n'avait plus rien a decorer, il genait.
       //
       // Pose pour les 1025 et non pour les seules terminees : la completion
       // change en cochant une case, et un element a ajouter au vol aurait

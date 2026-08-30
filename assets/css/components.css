@@ -1451,6 +1451,7 @@
   z-index: 3;
   width: 22px; height: 22px;
   display: grid; place-items: center;
+  padding-bottom: calc(-2 * var(--marque-dy));
   border-radius: 50%;
   background: linear-gradient(145deg, color-mix(in srgb, var(--gold-soft) 78%, #fff), var(--gold-soft));
   /* Une encre À ELLE, et non `--accent-ink`. Celle-ci est taillée pour
@@ -2363,8 +2364,8 @@
    ce qui en fait un cosmétique CACHÉ. Elle emprunte les couleurs du thème
    courant, comme n'importe quelle surface neutre du site. */
 .thopt--verrou {
-  /* Cliquable depuis qu''un clic ouvre l''apercu de la palette : le curseur doit
-     le dire, sans quoi la carte a l''air morte et personne n''essaie. */
+  /* Cliquable depuis qu'un clic ouvre l'apercu de la palette : le curseur doit
+     le dire, sans quoi la carte a l'air morte et personne n'essaie. */
   cursor: pointer;
   background: var(--bg-inset);
   border-style: dashed;
@@ -3408,15 +3409,40 @@
    « ★ Complet » sous son nom — et une variable garde les deux d'accord sans
    qu'on ait à y penser. */
 :root { --marque: "\2605"; }
-[data-marque="etoile"]   { --marque: "\2605"; }
-[data-marque="coche"]    { --marque: "\2714"; }
-[data-marque="eclat"]    { --marque: "\2726"; }
-[data-marque="hexagone"] { --marque: "\2B22"; }
-[data-marque="fleur"]    { --marque: "\2740"; }
-[data-marque="gemme"]    { --marque: "\25C6"; }
-[data-marque="couronne"] { --marque: "\265B"; }
+/* LE GLYPHE N'EST PAS CENTRE PAR SA BOITE, il l'est par son ENCRE.
 
-.card__marque::before { content: var(--marque); }
+   `place-items: center` centre la boite de ligne, et la boite de ligne d'une
+   police se cale sur la ligne de base, pas sur le dessin. Resultat mesure : les
+   sept signes tombaient tous 1,5 a 3 pixels TROP BAS dans leur pastille — a
+   44 px, ce qui fait de 3,4 a 6,8 pourcents du cadratin.
+
+   `--marque-dy` porte la correction, en em pour qu'elle suive la taille. Elle
+   n'est pas la meme partout : la couronne descend moins que les autres, la
+   fleur davantage, parce que leurs dessins ne sont pas calibres pareil dans
+   la police. Les valeurs sont MESUREES — chaque signe rendu dans une image,
+   puis sa boite d'encre relevee au pixel — et non estimees.
+
+   Elle s'applique par un `padding-bottom` du DOUBLE : le contenu se recentre
+   alors dans une boite raccourcie par le bas, ce qui le remonte de la moitie.
+   Un 	ransform aurait deplace la pastille elle-meme, qui EST le
+   pseudo-element. */
+:root                    { --marque-dy: -.057em; }
+[data-marque="etoile"]   { --marque: "\2605"; --marque-dy: -.057em; }
+[data-marque="coche"]    { --marque: "\2714"; --marque-dy: -.057em; }
+[data-marque="eclat"]    { --marque: "\2726"; --marque-dy: -.057em; }
+[data-marque="hexagone"] { --marque: "\2B22"; --marque-dy: -.057em; }
+[data-marque="fleur"]    { --marque: "\2740"; --marque-dy: -.068em; }
+[data-marque="gemme"]    { --marque: "\25C6"; --marque-dy: -.045em; }
+[data-marque="couronne"] { --marque: "\265B"; --marque-dy: -.034em; }
+
+/* En ligne, dans « ★ Complet » : pas de boite a raccourcir, mais rien non plus
+   a deplacer d'autre que le signe. Un `translate` suffit, et `inline-block`
+   le rend transformable. */
+.card__marque::before {
+  content: var(--marque);
+  display: inline-block;
+  transform: translateY(var(--marque-dy));
+}
 
 /* ----------------------------- Les cadres -------------------------------- */
 
@@ -3689,6 +3715,7 @@ body::before {
 .recomp__apercu--marque {
   display: grid;
   place-items: center;
+  padding-bottom: calc(-2 * var(--marque-dy));
   border: none;
   background: var(--accent);
   color: var(--accent-ink);
@@ -4414,8 +4441,8 @@ body::before {
   .verrou__page-tuiles .verrou__tuile { width: 128px; }
 }
 
-/* La scene d''un theme verrouille : la tranche de page porte deja son propre
-   rembourrage, et le fond vient de `--bg` de la palette prévisualisée — c''est
+/* La scene d'un theme verrouille : la tranche de page porte deja son propre
+   rembourrage, et le fond vient de `--bg` de la palette prévisualisée — c'est
    `[data-theme-apercu]` pose sur la scene qui le resout. */
 .verrou__scene--theme { padding: 0; }
 /* ------------------ Le portrait, dans l'en-tête de la fiche -------------- */
@@ -4484,8 +4511,8 @@ body::before {
 .detail__sub,
 .detail__chips { padding-right: calc(34% + 10px); }
 
-/* La ligne d''avancement, elle, est une PASTILLE : elle a son propre fond, et
-   du rembourrage a droite l''aurait etiree de trente-quatre pour cent — le
+/* La ligne d'avancement, elle, est une PASTILLE : elle a son propre fond, et
+   du rembourrage a droite l'aurait etiree de trente-quatre pour cent — le
    fond jaune de  Tout obtenu  partait alors jusque sous le portrait, deux fois
    plus long que la version grise. Un plafond de largeur donne le meme
    resultat sans toucher a la pastille : elle continue de se serrer autour de
@@ -4571,15 +4598,43 @@ body::before {
    Gigamax, tous deux collés au bord DROIT. */
 [data-cadre="couronne"] .card--complete .card__ornement {
   display: block;
-  top: -4px;
+  /* REMONTEE DE QUATRE PIXELS apres mesure des sprites. Les rendus 3D
+     remplissent bien plus leur cadre que les sprites en pixels : marge
+     superieure moyenne de 12 % contre 15 %, et plusieurs — Miaouss de Galar,
+     Palkia, Terapagos — n'en ont aucune. La couronne descendait alors sur le
+     visage au lieu de se poser dessus. A -8 px elle mord de deux pixels dans
+     la rangee du numero, dont le MILIEU est vide : celle-ci pose son numero a
+     gauche et ses puces a droite, rien au centre. */
+  top: -8px;
   left: 50%;
   width: 42px;
   height: 29px;
   transform: translateX(-50%);
-  background-image: linear-gradient(180deg, var(--couronne-clair) 0%, var(--couronne) 55%, var(--couronne-ombre) 100%);
+  /* QUATRE COUCHES SOUS UN SEUL MASQUE. Le masque ne donne que la decoupe : ce
+     qu'on peint dessous peut donc etre aussi detaille qu'on veut, sans
+     toucher au dessin. Trois joyaux dans le bandeau — rubis, saphir,
+     emeraude, chacun avec son eclat blanc —, puis la rampe metallique : un
+     blanc chaud au sommet, l'or au milieu, un reflet plus sombre aux deux
+     tiers, l'ombre en bas. C'est ce reflet a 64 % qui fait le metal ; sans
+     lui, un degrade a trois arrets fait du plastique. */
+  background-image:
+    radial-gradient(circle 3.4px at 29% 79%, #ffffff 0 26%, #e0553f 28% 100%, transparent 100%),
+    radial-gradient(circle 3.8px at 50% 83%, #ffffff 0 24%, #4a9be8 26% 100%, transparent 100%),
+    radial-gradient(circle 3.4px at 71% 79%, #ffffff 0 26%, #4fbf6a 28% 100%, transparent 100%),
+    linear-gradient(180deg,
+      #fff6cf 0%,
+      var(--couronne-clair) 20%,
+      var(--couronne) 48%,
+      var(--couronne-ombre) 64%,
+      var(--couronne) 78%,
+      var(--couronne-ombre) 100%);
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70'%3E%3Cg fill='black'%3E%3Cpath d='M5 13 C 17 29, 27 37, 35 39 L50 8 L65 39 C 73 37, 83 29, 95 13 L86 50 L14 50 Z'/%3E%3Ccircle cx='5' cy='11' r='5'/%3E%3Ccircle cx='50' cy='7' r='5.6'/%3E%3Ccircle cx='95' cy='11' r='5'/%3E%3Cpath d='M11 46 C 30 55, 70 55, 89 46 L87 63 C 68 70, 32 70, 13 63 Z'/%3E%3C/g%3E%3C/svg%3E");
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70'%3E%3Cg fill='black'%3E%3Cpath d='M5 13 C 17 29, 27 37, 35 39 L50 8 L65 39 C 73 37, 83 29, 95 13 L86 50 L14 50 Z'/%3E%3Ccircle cx='5' cy='11' r='5'/%3E%3Ccircle cx='50' cy='7' r='5.6'/%3E%3Ccircle cx='95' cy='11' r='5'/%3E%3Cpath d='M11 46 C 30 55, 70 55, 89 46 L87 63 C 68 70, 32 70, 13 63 Z'/%3E%3C/g%3E%3C/svg%3E");
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .5));
+  /* Le contour noir DETACHE l'ornement du sprite qu'il touche. Sans lui, un
+     or pose sur un Pokemon jaune — Pikachu, Leviator chromatique, Elektek —
+     se fondait dedans et la couronne disparaissait. Le motif est celui des
+     autres emblemes de la vignette, plus une ombre portee pour le relief. */
+  filter: var(--contour-noir) drop-shadow(0 1.5px 2.5px rgba(0, 0, 0, .55));
 }
 
 /* Le laurier ENTOURE le Pokémon : un anneau presque fermé, ouvert en haut,
@@ -4604,10 +4659,26 @@ body::before {
 [data-cadre="laurier"] .card--complete .card__ornement {
   display: block;
   inset: -2px 22px;
-  background-image: linear-gradient(180deg, var(--laurier-clair) 0%, var(--laurier) 58%, var(--laurier-ombre) 100%);
+  /* UN DEGRADE CONIQUE, ET C'EST TOUT LE GAIN DE DETAIL. Les dix-huit
+     feuilles sont posees en couronne, a 16,7 degres l'une de l'autre : un
+     degrade conique dont les bandes font exactement 16,7 degres tombe donc
+     UNE couleur par feuille. On obtient l'alternance clair / sombre d'un
+     vrai feuillage — celle du modele fourni — sans avoir a dessiner deux
+     masques ni a doubler l'element.
+     L'origine a 181,7 degres cale les bandes sur les feuilles : le conique
+     compte depuis midi, les feuilles depuis trois heures, d'ou le quart de
+     tour, moins la demi-bande qui centre la premiere.
+     La lueur radiale par-dessus donne le volume : une couronne eclairee d'en
+     haut, plus sombre en bas. */
+  background-image:
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, .30), rgba(255, 255, 255, 0) 62%),
+    radial-gradient(circle at 50% 96%, rgba(0, 0, 0, .34), rgba(0, 0, 0, 0) 58%),
+    repeating-conic-gradient(from 181.7deg,
+      var(--laurier-clair) 0deg 16.7deg,
+      var(--laurier-ombre) 16.7deg 33.4deg);
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 3 110 95'%3E%3Cg fill='black'%3E%3Cpath d='M46.8 87.9 A37 37 0 0 1 38.6 15.8' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M53.2 87.9 A37 37 0 0 0 61.4 15.8' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(43.7,86.5) rotate(154) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(33.8,83.2) rotate(171) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(25.3,77.2) rotate(187) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(18.8,68.9) rotate(204) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(15.0,59.2) rotate(221) scale(1.00)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(14.1,48.8) rotate(238) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(16.2,38.6) rotate(254) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(21.2,29.4) rotate(271) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(28.6,22.0) rotate(288) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(56.3,86.5) rotate(26) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(66.2,83.2) rotate(9) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(74.7,77.2) rotate(-7) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(81.2,68.9) rotate(-24) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(85.0,59.2) rotate(-41) scale(1.00)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(85.9,48.8) rotate(-58) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(83.8,38.6) rotate(-74) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(78.8,29.4) rotate(-91) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(71.4,22.0) rotate(-108) scale(0.78)'/%3E%3C/g%3E%3C/svg%3E");
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 3 110 95'%3E%3Cg fill='black'%3E%3Cpath d='M46.8 87.9 A37 37 0 0 1 38.6 15.8' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M53.2 87.9 A37 37 0 0 0 61.4 15.8' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(43.7,86.5) rotate(154) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(33.8,83.2) rotate(171) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(25.3,77.2) rotate(187) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(18.8,68.9) rotate(204) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(15.0,59.2) rotate(221) scale(1.00)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(14.1,48.8) rotate(238) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(16.2,38.6) rotate(254) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(21.2,29.4) rotate(271) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(28.6,22.0) rotate(288) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(56.3,86.5) rotate(26) scale(0.78)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(66.2,83.2) rotate(9) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(74.7,77.2) rotate(-7) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(81.2,68.9) rotate(-24) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(85.0,59.2) rotate(-41) scale(1.00)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(85.9,48.8) rotate(-58) scale(0.98)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(83.8,38.6) rotate(-74) scale(0.94)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(78.8,29.4) rotate(-91) scale(0.87)'/%3E%3Cpath d='M0 0 C 5.5 -5.4, 14 -6.2, 21 0 C 14 6.2, 5.5 5.4, 0 0 Z' transform='translate(71.4,22.0) rotate(-108) scale(0.78)'/%3E%3C/g%3E%3C/svg%3E");
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .4));
+  filter: var(--contour-noir) drop-shadow(0 1.5px 2.5px rgba(0, 0, 0, .45));
 }
 
 /* Les familles Pixels sont monochromes par construction — c'est tout leur

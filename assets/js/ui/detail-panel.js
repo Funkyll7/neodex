@@ -325,10 +325,10 @@ function head(species, ctx) {
       species.types.map((type) => typeChip(type, ctx.dataset.types[type] || "#8b8b8b", "lg"))
     ),
     el("p.detail__progress", { dataset: { role: "progress" } }, ""),
-    // Le portrait occupe le vide a droite de l''en-tete — la place laissee par
-    // le nom, la sous-ligne et les puces de type, qui s''arretent tous au
-    // premier tiers. Il est REMPLI par `fillHead`, comme l''etiquette et la
-    // ligne d''avancement : il suit l''etat chromatique, et l''en-tete se met a
+    // Le portrait occupe le vide a droite de l'en-tete — la place laissee par
+    // le nom, la sous-ligne et les puces de type, qui s'arretent tous au
+    // premier tiers. Il est REMPLI par `fillHead`, comme l'etiquette et la
+    // ligne d'avancement : il suit l'etat chromatique, et l'en-tete se met a
     // jour sans etre reconstruit.
     el("span.detail__portrait", { dataset: { role: "portrait" }, "aria-hidden": "true" }),
     boutonHorsAtteinte(species, ctx)
@@ -437,10 +437,10 @@ function fillHead(node, species, ctx) {
   majBoutonHors(node.querySelector('[data-role="hors"]'), species, ctx);
 
   // Le portrait suit le chromatique, comme la vignette de la grille : la fiche
-  // d''un shiny obtenu doit montrer le shiny, sinon elle contredit l''etiquette
-  // qui l''annonce juste au-dessus. `aria-hidden` sur le conteneur, `alt` vide
-  // ici : le nom de l''espece est deja lu deux lignes plus haut, et l''entendre
-  // une troisieme fois n''apprend rien.
+  // d'un shiny obtenu doit montrer le shiny, sinon elle contredit l'etiquette
+  // qui l'annonce juste au-dessus. `aria-hidden` sur le conteneur, `alt` vide
+  // ici : le nom de l'espece est deja lu deux lignes plus haut, et l'entendre
+  // une troisieme fois n'apprend rien.
   const portrait = node.querySelector('[data-role="portrait"]');
   if (portrait) {
     portrait.replaceChildren(
