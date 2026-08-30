@@ -2363,7 +2363,9 @@
    ce qui en fait un cosmétique CACHÉ. Elle emprunte les couleurs du thème
    courant, comme n'importe quelle surface neutre du site. */
 .thopt--verrou {
-  cursor: default;
+  /* Cliquable depuis qu''un clic ouvre l''apercu de la palette : le curseur doit
+     le dire, sans quoi la carte a l''air morte et personne n''essaie. */
+  cursor: pointer;
   background: var(--bg-inset);
   border-style: dashed;
   border-color: var(--border-strong);
@@ -3574,13 +3576,13 @@
     var(--tuile-voile) padding-box,
     linear-gradient(var(--bg-sunken), var(--bg-sunken)) padding-box,
     repeating-linear-gradient(90deg,
-      var(--gold) 0 4px,
-      color-mix(in srgb, var(--gold) 25%, transparent) 4px 8px) top / 100% 4px no-repeat border-box,
-    linear-gradient(var(--gold), var(--gold)) border-box;
+      var(--couronne) 0 4px,
+      color-mix(in srgb, var(--couronne-ombre) 55%, transparent) 4px 8px) top / 100% 4px no-repeat border-box,
+    linear-gradient(var(--couronne-ombre), var(--couronne-ombre)) border-box;
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--gold) 46%, transparent),
-    inset 0 0 0 3px color-mix(in srgb, var(--gold) 14%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--gold) 55%, transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--couronne) 46%, transparent),
+    inset 0 0 0 3px color-mix(in srgb, var(--couronne) 14%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--couronne-ombre) 70%, transparent);
 }
 
 /* ----------------------------- Les motifs -------------------------------- */
@@ -4410,4 +4412,272 @@ body::before {
 @media (max-width: 420px) {
   .verrou__carte { max-height: 38vh; }
   .verrou__page-tuiles .verrou__tuile { width: 128px; }
+}
+
+/* La scene d''un theme verrouille : la tranche de page porte deja son propre
+   rembourrage, et le fond vient de `--bg` de la palette prévisualisée — c''est
+   `[data-theme-apercu]` pose sur la scene qui le resout. */
+.verrou__scene--theme { padding: 0; }
+/* ------------------ Le portrait, dans l'en-tête de la fiche -------------- */
+
+/* Il occupe le vide à droite. Le numéro, le nom, la sous-ligne, les puces de
+   type et la ligne d'avancement s'arrêtent tous au premier tiers de la largeur ;
+   il restait donc, sous les flèches et l'étiquette, un rectangle vide de la
+   hauteur de quatre lignes. Le Pokémon y va.
+
+   EN POSITION ABSOLUE, et c'est le point. Dans le flux il aurait poussé le
+   bouton « Hors d'atteinte » vers le bas et rallongé l'en-tête d'une centaine de
+   pixels — sur téléphone, autant de moins pour les cases, qui sont ce qu'on
+   vient faire. Là il ne coûte rien : il remplit une place qui existait déjà.
+
+   Il s'arrête au-dessus du bouton (`bottom`) et sous la première ligne (`top`),
+   les deux seules choses qui occupent déjà cette colonne. `object-fit: contain`
+   le laisse choisir sa taille dans ce cadre plutôt que de l'étirer. */
+.detail__head { position: relative; }
+.detail__portrait {
+  position: absolute;
+  right: 12px;
+  /* Sous la premiere ligne (numero, fleches, etiquette) et AU-DESSUS du bouton
+     « Hors d atteinte ». Les deux bornes ont ete mesurees : a 34 px du bas, le
+     portrait mordait le bouton de dix pixels sur un ecran de telephone. */
+  top: 44px;
+  bottom: 46px;
+  width: 34%;
+  max-width: 124px;
+  display: grid;
+  place-items: center;
+  /* Sous le texte, et sourd au doigt : le nom et les puces de type gardent la
+     priorité si la fiche est très étroite, et un appui à côté du bouton ne doit
+     pas tomber sur une image. */
+  z-index: 0;
+  pointer-events: none;
+}
+.detail__portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* La même ombre portée que sur la grille : sans elle, un Pokémon clair posé
+     sur un en-tête clair (Électrik, Glace) perd ses contours. */
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, .4));
+  image-rendering: auto;
+}
+/* Le texte repasse devant. `position: relative` sans décalage : c'est le moyen
+   le plus court de créer un contexte d'empilement pour ces cinq éléments. */
+.detail__head-row,
+.detail__name,
+.detail__sub,
+.detail__chips,
+.detail__progress,
+.detail__hors { position: relative; z-index: 1; }
+
+/* LE TEXTE S ARRETE AVANT LE PORTRAIT, il ne passe pas dessous.
+
+   Le `z-index` ci-dessus suffisait a le rendre lisible — il passe devant —,
+   mais « lisible par-dessus un Pokemon » n est pas lisible : un nom long comme
+   « Motisma-Lavage » traversait le sprite de part en part. La reserve de droite
+   vaut la largeur du portrait plus une gouttiere ; le nom se coupe donc au bon
+   endroit, comme un texte a cote d une image.
+
+   La premiere ligne en est exemptee : l etiquette y est deja calee a droite,
+   au-dessus du portrait. Le bouton aussi, pour la meme raison en dessous. */
+.detail__name,
+.detail__sub,
+.detail__chips,
+.detail__progress { padding-right: calc(34% + 10px); }
+
+/* Sous 400 px, le nom d'un Pokémon long — « Ectoplasma », « Motisma-Lavage » —
+   passe sur deux lignes et vient chercher la colonne de droite. Le portrait
+   recule plutôt que de passer dessous : il est décoratif, le nom ne l'est pas. */
+@media (max-width: 400px) {
+  .detail__portrait { width: 30%; max-width: 96px; opacity: .9; }
+}
+
+/* -------------- Les ornements : un vrai laurier, une vraie couronne -------- */
+
+/* LE PROBLÈME QUE ÇA RÈGLE. « Couronne » était un liseré doré et « Laurier » un
+   liseré vert : deux traits, deux couleurs, aucune couronne et aucun laurier.
+   Et sur les trente-six palettes où `--gold` et `--accent` valent la même
+   chose, le liseré doré de Couronne tombait exactement sur celui de Classique
+   et sur celui de Néon. Trois récompenses, un seul dessin.
+
+   La forme règle les deux d'un coup. Une couronne se reconnaît à sa silhouette
+   avant sa couleur, un laurier aussi ; posés sur la vignette, ils ne peuvent
+   plus se confondre avec quoi que ce soit — ni entre eux, ni avec un cadre de
+   couleur.
+
+   MASQUE ET NON IMAGE. Un SVG en `background-image` fige sa couleur dans le
+   fichier : il aurait fallu trente-huit data-URI, un par palette, ou renoncer à
+   ce que la couronne suive le thème. En `mask-image`, le SVG ne donne que la
+   DÉCOUPE ; la couleur vient de `background-color`, donc d'une variable, donc
+   du thème. Un seul dessin, autant de couleurs qu'on veut.
+
+   `-webkit-mask` en plus de `mask` : Safari a demandé le préfixe jusqu'à la
+   version 15.4, et une couronne qui ne s'affiche pas est pire qu'un liseré. */
+:root {
+  /* L'or d'une couronne et le vert d'un laurier ne suivent pas la palette, pas
+     plus que le vert du laurier ne la suivait avant : ce sont des objets, pas
+     des accents d'interface. Ils sont écrits ici plutôt qu'en dur pour qu'une
+     palette puisse les reprendre à son compte — voir les familles Pixels, où
+     un or franc aurait crevé le monochrome. */
+  --couronne: #f5c542;
+  --couronne-ombre: #a5751a;
+  --laurier: #7bbf72;
+}
+
+.card__ornement {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+/* La couronne se pose SUR l'arête du haut, à cheval sur le bord, comme une
+   couronne sur une tête. Décalée à gauche du centre : le coin haut-droit porte
+   déjà la pastille de complétion, et les deux se seraient touchées. */
+[data-cadre="couronne"] .card--complete .card__ornement {
+  display: block;
+  top: -11px;
+  left: 50%;
+  width: 46px;
+  height: 26px;
+  transform: translateX(-64%);
+  background-color: var(--couronne);
+  /* Trois pointes, trois perles, un bandeau : la silhouette la plus courte qui
+     se lise encore comme une couronne à vingt-six pixels de haut. */
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 26'%3E%3Cpath fill='black' d='M3 24 L3 8 L11.5 15 L23 3 L34.5 15 L43 8 L43 24 Z'/%3E%3Ccircle fill='black' cx='3' cy='6' r='3'/%3E%3Ccircle fill='black' cx='23' cy='2' r='3.4'/%3E%3Ccircle fill='black' cx='43' cy='6' r='3'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 26'%3E%3Cpath fill='black' d='M3 24 L3 8 L11.5 15 L23 3 L34.5 15 L43 8 L43 24 Z'/%3E%3Ccircle fill='black' cx='3' cy='6' r='3'/%3E%3Ccircle fill='black' cx='23' cy='2' r='3.4'/%3E%3Ccircle fill='black' cx='43' cy='6' r='3'/%3E%3C/svg%3E");
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .55));
+}
+
+/* Le laurier encadre la vignette : deux branches qui montent des coins du bas
+   et s'ouvrent en haut, exactement comme la couronne de laurier que le cadre
+   dessinait déjà en dégradé conique. Les deux se répondent — le trait donne
+   l'anneau, l'ornement donne les feuilles. */
+[data-cadre="laurier"] .card--complete .card__ornement {
+  display: block;
+  inset: -4px;
+  background-color: var(--laurier);
+  opacity: .85;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 116' preserveAspectRatio='none'%3E%3Cg fill='black'%3E%3Cpath d='M22 108 C 9 92, 7 58, 21 26' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(13,92) rotate(-52)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(9,74) rotate(-64)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(8,56) rotate(-74)'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(11,39) rotate(-86)'/%3E%3Cellipse cx='0' cy='0' rx='8' ry='3.6' transform='translate(17,25) rotate(-100)'/%3E%3C/g%3E%3Cg fill='black' transform='translate(100,0) scale(-1,1)'%3E%3Cpath d='M22 108 C 9 92, 7 58, 21 26' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(13,92) rotate(-52)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(9,74) rotate(-64)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(8,56) rotate(-74)'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(11,39) rotate(-86)'/%3E%3Cellipse cx='0' cy='0' rx='8' ry='3.6' transform='translate(17,25) rotate(-100)'/%3E%3C/g%3E%3Cpath fill='black' d='M42 110 h16 v3 h-16 z M46 104 h8 v3 h-8 z'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 116' preserveAspectRatio='none'%3E%3Cg fill='black'%3E%3Cpath d='M22 108 C 9 92, 7 58, 21 26' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(13,92) rotate(-52)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(9,74) rotate(-64)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(8,56) rotate(-74)'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(11,39) rotate(-86)'/%3E%3Cellipse cx='0' cy='0' rx='8' ry='3.6' transform='translate(17,25) rotate(-100)'/%3E%3C/g%3E%3Cg fill='black' transform='translate(100,0) scale(-1,1)'%3E%3Cpath d='M22 108 C 9 92, 7 58, 21 26' stroke='black' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(13,92) rotate(-52)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(9,74) rotate(-64)'/%3E%3Cellipse cx='0' cy='0' rx='9.5' ry='4.2' transform='translate(8,56) rotate(-74)'/%3E%3Cellipse cx='0' cy='0' rx='9' ry='4' transform='translate(11,39) rotate(-86)'/%3E%3Cellipse cx='0' cy='0' rx='8' ry='3.6' transform='translate(17,25) rotate(-100)'/%3E%3C/g%3E%3Cpath fill='black' d='M42 110 h16 v3 h-16 z M46 104 h8 v3 h-8 z'/%3E%3C/svg%3E");
+}
+
+/* Les familles Pixels sont monochromes par construction — c'est tout leur
+   sujet. Un or franc et un vert de laurier y auraient crevé l'illusion aussi
+   sûrement qu'une photo dans un jeu Game Boy : les deux ornements reprennent
+   donc l'encre de la palette. */
+:root[data-theme^="pixels"], [data-theme-apercu^="pixels"] {
+  --couronne: var(--accent);
+  --couronne-ombre: var(--accent);
+  --laurier: var(--accent);
+}
+
+/* ------------- La maquette d'écran, pour prévisualiser une palette --------- */
+
+/* Le pop-up des palettes est le seul qui soit large. Les sept autres
+   récompenses tiennent sur un objet — un cadre, une marque, un bandeau — qu'on
+   juge en le regardant seul ; une palette est un RAPPORT entre un fond, une
+   colonne, une barre et quinze vignettes, et ce rapport ne se voit qu'en
+   montrant l'écran entier. */
+.verrou--large { width: min(100%, 720px); }
+
+/* La loupe : un cadre qui rogne, et rien d'autre. Sa hauteur est posée par
+   `ajusterLoupe` après insertion — une mise à l'échelle par `transform` ne
+   change pas la place que l'élément occupe, et sans ce calcul le cadre gardait
+   la hauteur de la maquette en grand, avec huit cents pixels de vide dessous. */
+.verrou__loupe {
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-md);
+}
+/* La largeur est posée par le JS — 860 px pour un écran d'ordinateur, 420 pour
+   un téléphone —, parce que c'est elle qui décide de la mise en page à
+   l'intérieur, et qu'elle doit valoir celle de l'écran qu'on a vraiment.
+   `width: max-content` la laisse suivre celle de `.verrou__appli`. */
+.verrou__ecran {
+  width: max-content;
+  transform-origin: top left;
+}
+.verrou__appli {
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  gap: 14px;
+  padding: 14px;
+  background: var(--fond-halo, none), var(--bg);
+}
+/* La version téléphone : une seule colonne, la barre de progression en haut
+   comme dans la vraie application, et deux vignettes de front. */
+.verrou__appli--etroit { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+.verrou__appli--etroit .verrou__grille { grid-template-columns: repeat(2, 1fr); }
+.verrou__appli--etroit .verrou__colonne { gap: 8px; padding: 11px; }
+.verrou__colonne {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+}
+/* Les trois compteurs de la colonne. Sans ces règles ils sortaient collés —
+   « 1 024cases312espèces87chromatiques » sur une seule ligne : trois `span`
+   dans un conteneur sans disposition, chacun contenant un `b` et un `i` en
+   ligne. Ils sont maintenant empilés, chiffre au-dessus, libellé dessous. */
+.verrou__page-chiffres { display: flex; gap: 12px; flex-wrap: wrap; }
+.verrou__page-stat { display: flex; flex-direction: column; line-height: 1.15; }
+.verrou__page-stat b {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+}
+.verrou__page-stat i {
+  font-style: normal;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+}
+
+.verrou__stat { display: flex; flex-direction: column; gap: 4px; }
+.verrou__stat-nom { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+.verrou__pastilles { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+.verrou__pastille {
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+  color: var(--text-faint);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.verrou__pastille--active {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+/* La même grille que la vraie, à la même largeur de colonne : c'est ce qui fait
+   que la maquette ressemble à la page et non à une planche d'échantillons. */
+.verrou__grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
+  gap: 10px;
+  align-content: start;
+}
+.verrou__grille .verrou__tuile { width: auto; }
+
+.verrou__page-jauge--grosse { height: 9px; }
+
+/* Sur un écran étroit le pop-up prend toute la largeur, et la maquette se
+   réduit d'autant : `ajusterLoupe` s'en charge seul, il n'y a rien à dire ici
+   sinon rendre la boîte plus haute pour que l'écran réduit tienne en entier. */
+@media (max-width: 720px) {
+  .verrou--large { width: 100%; }
 }

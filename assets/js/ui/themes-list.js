@@ -123,9 +123,11 @@ export const THEMES = [
   // Toutes sont bi- ou tricolores, ce qu'aucune autre famille ne fait : elles
   // séparent la couleur de ce qu'on TERMINE de celle de ce qu'on TOUCHE, et
   // les font se rencontrer dans le voile des vignettes. Voir theme.css.
-  { value: "aube", label: "Aube", groupe: "Récompenses", bandeau: "#0c0e1a", pastille: "#ff9a5c", verrou: "mille-cases", sprite: 637, degrade: ["#6ea8ff", "#a8c9ff"] },
-  { value: "prisme", label: "Prisme", groupe: "Récompenses", bandeau: "#0a0c14", pastille: "#7ee7ff", verrou: "cent-chromatiques", sprite: 800, degrade: ["#ff8ad8", "#ffe08a"] },
-  { value: "cartouche", label: "Cartouche", groupe: "Récompenses", bandeau: "#15151b", pastille: "#9ef01a", verrou: "une-generation", sprite: 137, degrade: ["#c8b6ff", "#e2d8ff"] },
-  { value: "duo", label: "Duo", groupe: "Récompenses", bandeau: "#0c1414", pastille: "#ff7a6b", verrou: "toutes-les-paires", sprite: [29, 32], degrade: ["#3fd6c0", "#8ae8db"] },
-  { value: "couronne", label: "Couronne", groupe: "Récompenses", bandeau: "#12100c", pastille: "#ffcf4d", verrou: "pokedex-entier", sprite: 889, degrade: ["#e8e2d0", "#d4574e"] },
+  { value: "aube", label: "Aube", groupe: "Récompenses", bandeau: "#0c0e1a", pastille: "#ff9a5c", verrou: "mille-cases", sprite: 637, degrade: ["#ff9a5c", "#6ea8ff"] },
+  { value: "prisme", label: "Prisme", groupe: "Récompenses", bandeau: "#0a0c14", pastille: "#7ee7ff", verrou: "cent-chromatiques", sprite: 800, degrade: ["#7ee7ff", "#ff8ad8"] },
+  { value: "cartouche", label: "Cartouche", groupe: "Récompenses", bandeau: "#15151b", pastille: "#9ef01a", verrou: "une-generation", sprite: 137, degrade: ["#9ef01a", "#c8b6ff"] },
+  // Compagnol et Famignol : le Pokémon Couple et sa famille. Deux sprites et
+  // non un, comme les starters — c'est un thème de paires.
+  { value: "duo", label: "Duo", groupe: "Récompenses", bandeau: "#17131c", pastille: "#f5e3c0", verrou: "toutes-les-paires", sprite: [924, 925], degrade: ["#d9a066", "#f2b8c6"] },
+  { value: "couronne", label: "Couronne", groupe: "Récompenses", bandeau: "#12100c", pastille: "#ffcf4d", verrou: "pokedex-entier", sprite: 889, degrade: ["#ffcf4d", "#d4574e"] },
 ];

@@ -13,7 +13,7 @@ import { sansAccents } from "../core/data.js";
 import { evaluerSucces } from "../domain/succes.js";
 import { majDecor } from "./decor-theme.js";
 import { TYPES } from "../domain/recompenses.js";
-import { compteDuType, optionsDuType, poserSourceDesSucces, redessinerOptions } from "./recompenses.js";
+import { compteDuType, optionsDuType, ouvrirApercuTheme, poserSourceDesSucces, redessinerOptions } from "./recompenses.js";
 import { iconeSvg } from "./icones-succes.js";
 import { retourFerme } from "./retour.js";
 import { t } from "../core/i18n.js";
@@ -166,7 +166,11 @@ function initBouton() {
   // est un but en soi. Sur les sept autres on essaie plusieurs options a la
   // suite, et refermer a chaque essai rendrait le menu inutilisable.
   picker.addEventListener("click", (event) => {
-    if (event.target.closest(".thopt")) ouvrir(false);
+    const carte = event.target.closest(".thopt");
+    // Sauf les verrouillées : leur clic ouvre l'aperçu de la palette, et
+    // refermer le menu par-dessous laisserait le pop-up seul au milieu de la
+    // grille, sans rien où revenir.
+    if (carte && !carte.classList.contains("thopt--verrou")) ouvrir(false);
   });
 }
 
@@ -402,7 +406,7 @@ function carte(theme) {
     (succes && succes.obtenu) ||
     document.documentElement.dataset.theme === theme.value;
 
-  if (!ouvert) return carteFermee(succes);
+  if (!ouvert) return carteFermee(theme, succes);
 
   return el(
     "button.thopt",
@@ -443,7 +447,7 @@ function carte(theme) {
  * Le titre porte le succes, ce qu'il demande et l'avancement chiffre. Une carte
  * fait 85 px : le compte tient sous le nom, le reste passe par l'infobulle.
  */
-function carteFermee(succes) {
+function carteFermee(theme, succes) {
   if (!succes) return el("button.thopt.thopt--verrou", { type: "button", disabled: true },
     el("span.thopt__art", el("span.thopt__cadenas")), el("span.thopt__name", "?"));
 
@@ -453,10 +457,16 @@ function carteFermee(succes) {
     "button.thopt.thopt--verrou",
     {
       type: "button",
-      disabled: true,
+      // `aria-disabled` et NON `disabled`, comme les sept autres familles de
+      // cosmétiques depuis qu'elles ont leur aperçu : un bouton vraiment
+      // désactivé n'accepte aucun clic, donc aucun moyen de demander à quoi
+      // ressemble la palette qu'on va chercher. Il reste cliquable, et son
+      // clic répond.
+      "aria-disabled": "true",
       title: titre,
       "aria-label": `${t("Thème à débloquer")} — ${t(succes.resume)} — ${compte}`,
-      dataset: { succes: succes.cle },
+      dataset: { succes: succes.cle, verrou: theme.value },
+      onclick: () => ouvrirApercuTheme(theme, succes),
     },
     el("span.thopt__art", el("span.thopt__cadenas")),
     el("span.thopt__name", t(succes.titre)),

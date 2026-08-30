@@ -22,7 +22,31 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  background: var(--bg);
+  /* DEUX COUCHES, dont une presque toujours vide.
+
+     `--fond-halo` est un voile de couleur pose derriere toute la page : deux ou
+     trois taches tres diluees, aux teintes de la palette. Trente-trois themes
+     sur trente-huit le laissent a `none` et gardent leur aplat ; les cinq
+     palettes de recompense s en servent, parce qu elles doivent etre les plus
+     belles du lot et qu un aplat, si juste soit-il, reste un aplat.
+
+     `fixed` et non pas defilant : un halo qui glisse sous mille vignettes se
+     lit comme une texture qui bouge, ce qui donne le mal de mer.
+
+     Il ne touche AUCUN contraste. Les panneaux, les vignettes et les champs
+     sont opaques — ils peignent `--bg-raised`, `--bg-sunken` ou `--bg-inset`
+     par-dessus. Seul le fond nu le laisse voir, et rien n y est ecrit. */
+  background-image: var(--fond-halo, none);
+  background-color: var(--bg);
+  /* EN QUATRE DECLARATIONS ET NON EN UNE. Le raccourci `background: var(--halo)
+     fixed, var(--bg)` a l air de dire la meme chose et ne la dit pas : la
+     variable contient PLUSIEURS degrades separes par des virgules, la
+     substitution est textuelle, et `fixed` ne se collait donc qu au dernier des
+     trois. Les deux premieres taches defilaient — exactement ce qu on voulait
+     eviter. Ecrit a part, l ancrage vaut pour toutes les couches. */
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
   color: var(--text);
   font-family: var(--font-body);
   font-size: 14px;

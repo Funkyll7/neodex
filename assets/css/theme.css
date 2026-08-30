@@ -114,7 +114,19 @@
 
 /* ----------------------------- THEME SOMBRE ------------------------------ */
 :root,
-:root[data-theme="dark"] {
+/* LES PALETTES SONT AUSSI PEINTES HORS DE `<html>`.
+   Chaque selecteur de theme est double : `:root[data-theme="X"]` habille la
+   page, `[data-theme-apercu="X"]` habille la petite scene du pop-up qui montre
+   un theme verrouille. Une seule ecriture des couleurs, deux endroits peints —
+   un theme retouche ne peut donc pas diverger de son apercu.
+   L attribut est distinct de `data-theme` a dessein : les cartes du menu le
+   portent deja, et generaliser aurait repeint les trente-huit vignettes du
+   selecteur, chacune dans sa propre palette. */
+/* Le halo est vide par defaut : trente-trois palettes gardent leur aplat, et
+   `base.css` retombe de toute facon sur `none` si la variable manque. */
+:root { --fond-halo: none; }
+
+:root[data-theme="dark"], [data-theme-apercu="dark"] {
   color-scheme: dark;
 
   --bg: #0a0d17;
@@ -166,7 +178,7 @@
 }
 
 /* ------------------------------ THEME CLAIR ------------------------------ */
-:root[data-theme="light"] {
+:root[data-theme="light"], [data-theme-apercu="light"] {
   color-scheme: light;
 
   --bg: #f2f4f9;
@@ -285,7 +297,7 @@
    Le rose est un cran plus pâle que le magenta du thème Néon : assez proche
    pour qu'on reconnaisse la même famille, assez retenu pour ne pas hurler
    à côté du sable. */
-:root[data-theme="boussole"] {
+:root[data-theme="boussole"], [data-theme-apercu="boussole"] {
   color-scheme: dark;
   --bg: #14100d; --bg-raised: #201a15; --bg-sunken: #181310; --bg-inset: #26201a; --bg-hover: #2f2820;
   --border: #362c23; --border-strong: #4c4033;
@@ -338,7 +350,7 @@
    ========================================================================== */
 
 /* Rubis — le rouge profond de la pierre sur un charbon qui garde sa chaleur. */
-:root[data-theme="rubis"] {
+:root[data-theme="rubis"], [data-theme-apercu="rubis"] {
   color-scheme: dark;
   --bg: #150c0f; --bg-raised: #211519; --bg-sunken: #1a1013; --bg-inset: #26191d; --bg-hover: #2f2025;
   --border: #3a2329; --border-strong: #4d2f36;
@@ -348,7 +360,7 @@
 }
 
 /* Ambre — la résine chaude : orange sur un brun fumé, sans une once de bleu. */
-:root[data-theme="ambre"] {
+:root[data-theme="ambre"], [data-theme-apercu="ambre"] {
   color-scheme: dark;
   --bg: #13100a; --bg-raised: #201a12; --bg-sunken: #181410; --bg-inset: #251e15; --bg-hover: #2e251a;
   --border: #3a2e1d; --border-strong: #4e3e27;
@@ -358,7 +370,7 @@
 }
 
 /* Émeraude — le vert de la gemme, posé sur une nuit qui tire déjà au vert. */
-:root[data-theme="emeraude"] {
+:root[data-theme="emeraude"], [data-theme-apercu="emeraude"] {
   color-scheme: dark;
   --bg: #091310; --bg-raised: #12201b; --bg-sunken: #0d1815; --bg-inset: #16261f; --bg-hover: #1c2f27;
   --border: #1f382c; --border-strong: #2c5040;
@@ -368,7 +380,7 @@
 }
 
 /* Turquoise — l'eau peu profonde : cyan franc sur un bleu-vert éteint. */
-:root[data-theme="turquoise"] {
+:root[data-theme="turquoise"], [data-theme-apercu="turquoise"] {
   color-scheme: dark;
   --bg: #06141a; --bg-raised: #0e2229; --bg-sunken: #091a20; --bg-inset: #12292f; --bg-hover: #17333a;
   --border: #173a45; --border-strong: #22525f;
@@ -378,7 +390,7 @@
 }
 
 /* Saphir — le bleu roi sur une nuit d'encre, la teinte la plus classique du lot. */
-:root[data-theme="saphir"] {
+:root[data-theme="saphir"], [data-theme-apercu="saphir"] {
   color-scheme: dark;
   --bg: #080d1c; --bg-raised: #10182f; --bg-sunken: #0b1123; --bg-inset: #141d38; --bg-hover: #1a2544;
   --border: #1f2c50; --border-strong: #2c3e70;
@@ -388,7 +400,7 @@
 }
 
 /* Améthyste — le violet de la pierre brute sur un fond prune. */
-:root[data-theme="amethyste"] {
+:root[data-theme="amethyste"], [data-theme-apercu="amethyste"] {
   color-scheme: dark;
   --bg: #100b1a; --bg-raised: #1c1429; --bg-sunken: #150f21; --bg-inset: #211830; --bg-hover: #291f3b;
   --border: #2e2145; --border-strong: #40305e;
@@ -438,7 +450,7 @@
    dégradé se ressemblaient alors à quarante-six unités près : une barre de
    progression d'une seule couleur, et un cadre qu'on ne distinguait pas de la
    pastille qu'il entoure. */
-:root[data-theme="kanto"] {
+:root[data-theme="kanto"], [data-theme-apercu="kanto"] {
   color-scheme: dark;
   --bg: #0f1015; --bg-raised: #191a20; --bg-sunken: #131419; --bg-inset: #1d1e25; --bg-hover: #23242c;
   --border: #322c35; --border-strong: #4a4050;
@@ -452,7 +464,7 @@
    bordures vertes — l'arc-en-ciel de l'oiseau est là, dans le trait qui
    entoure chaque carte. C'est ce vert sur brun qui empêche de le confondre
    avec Ambre. */
-:root[data-theme="johto"] {
+:root[data-theme="johto"], [data-theme-apercu="johto"] {
   color-scheme: dark;
   --bg: #140f09; --bg-raised: #211a12; --bg-sunken: #191410; --bg-inset: #261f16; --bg-hover: #2f271b;
   --border: #2f4030; --border-strong: #435a3d;
@@ -465,7 +477,7 @@
 /* Hoenn — Kyogre : l'abysse. Le fond descend presque au noir tandis que les
    panneaux remontent en plein bleu : c'est le thème où l'écart entre le fond
    et les surfaces est le plus large, comme une lumière sous l'eau. */
-:root[data-theme="hoenn"] {
+:root[data-theme="hoenn"], [data-theme-apercu="hoenn"] {
   color-scheme: dark;
   --bg: #030913; --bg-raised: #0c1c33; --bg-sunken: #061020; --bg-inset: #10233d; --bg-hover: #152c4b;
   --border: #163050; --border-strong: #204570;
@@ -479,7 +491,7 @@
    thèmes sombres et les bordures les plus visibles — du métal, pas de la
    nuit. L'accent est un platine désaturé : c'est le seul thème du lot qui
    n'a pas de couleur à proprement parler. */
-:root[data-theme="sinnoh"] {
+:root[data-theme="sinnoh"], [data-theme-apercu="sinnoh"] {
   color-scheme: dark;
   /* Ses cinq surfaces sont les plus CLAIRES du fichier : le fond de survol
      atteint #2f374a, là où les autres thèmes sombres plafonnent vers #182038.
@@ -507,7 +519,7 @@
    Il reprend l'encre, les ombres, l'atténuation des sprites et les couleurs
    de disponibilité du thème Clair : sur du blanc, les réglages du thème
    sombre ne tiennent pas. */
-:root[data-theme="unys"] {
+:root[data-theme="unys"], [data-theme-apercu="unys"] {
   color-scheme: light;
   --bg: #f6f2ea; --bg-raised: #fffdf9; --bg-sunken: #fbf8f2; --bg-inset: #efe9dd; --bg-hover: #eae2d3;
   --border: #e2dacb; --border-strong: #cabfa9;
@@ -534,7 +546,7 @@
 /* Kalos — Xerneas : le prisme. Nuit indigo, bordures franchement bleues, et
    une barre de progression qui part de l'or pour finir en cyan — les bois du
    cerf font exactement ça. */
-:root[data-theme="kalos"] {
+:root[data-theme="kalos"], [data-theme-apercu="kalos"] {
   color-scheme: dark;
   --bg: #0a0c1e; --bg-raised: #151932; --bg-sunken: #0e1126; --bg-inset: #1a1e3b; --bg-hover: #212648;
   --border: #282e5c; --border-strong: #38407c;
@@ -550,7 +562,7 @@
 /* Alola — Solgaleo : midi sur le lagon. Le fond est froid et vert d'eau,
    l'accent est un blanc chaud d'incandescence : accent chaud sur fond froid,
    c'est l'inverse exact de Turquoise, qui part de la même mer. */
-:root[data-theme="alola"] {
+:root[data-theme="alola"], [data-theme-apercu="alola"] {
   color-scheme: dark;
   /* Même cas que Sinnoh : surfaces claires, échelle héritée trop sombre —
      `--text-ghost` y tombe à 4,06 sur `--bg-hover`, sous le seuil AA. Relevée,
@@ -568,7 +580,7 @@
 /* Galar — Zacian : le cramoisi de la crinière et l'or de la lame, posés sur
    un acier bleu-nuit parfaitement neutre. Rubis fait du rouge sur du rouge ;
    ici le rouge est seul au milieu du froid. */
-:root[data-theme="galar"] {
+:root[data-theme="galar"], [data-theme-apercu="galar"] {
   color-scheme: dark;
   --bg: #0d121b; --bg-raised: #181f2d; --bg-sunken: #111622; --bg-inset: #1c2334; --bg-hover: #232c40;
   --border: #2a3446; --border-strong: #3b4860;
@@ -581,7 +593,7 @@
 /* Paldéa — Koraidon et Miraidon : l'Écarlate et le Violet réunis. Fond noir
    violacé, bordures violettes, accent écarlate — les deux mascottes se
    partagent l'écran au lieu qu'on ait à en choisir une. */
-:root[data-theme="paldea"] {
+:root[data-theme="paldea"], [data-theme-apercu="paldea"] {
   color-scheme: dark;
   --bg: #09070f; --bg-raised: #13101d; --bg-sunken: #0d0a15; --bg-inset: #171324; --bg-hover: #1e182e;
   --border: #33234e; --border-strong: #472f6c;
@@ -606,7 +618,7 @@
 
 /* Kanto — Bulbizarre, Salamèche, Carapuce : le vert-gris de Bourg Palette,
    le bulbe en accent, la flamme dans le dégradé, l'eau dans les bordures. */
-:root[data-theme="starters-kanto"] {
+:root[data-theme="starters-kanto"], [data-theme-apercu="starters-kanto"] {
   color-scheme: dark;
   --teinte-1: #6cc86a; --teinte-2: #ffbe87; --teinte-3: #8fd0f7;
   --bg: #0a100c; --bg-raised: #151d17; --bg-sunken: #0f1611; --bg-inset: #19221b; --bg-hover: #202b22;
@@ -619,7 +631,7 @@
 /* Johto — Germignon, Héricendre, Kaiminus : un fond de cendre encore tiède,
    la flamme d'Héricendre en accent, la feuille dans le dégradé, la mâchoire
    bleue de Kaiminus dans les bordures. */
-:root[data-theme="starters-johto"] {
+:root[data-theme="starters-johto"], [data-theme-apercu="starters-johto"] {
   color-scheme: dark;
   --teinte-1: #a6c520; --teinte-2: #ff8a3c; --teinte-3: #3f96d4;
   --bg: #110f0c; --bg-raised: #1d1a16; --bg-sunken: #151310; --bg-inset: #221e19; --bg-hover: #2a251f;
@@ -631,7 +643,7 @@
 
 /* Hoenn — Arcko, Poussifeu, Gobou : basalte et mer. Fond bleu-vert froid,
    accent cyan, et des bordures orange brûlé — le volcan cerne l'océan. */
-:root[data-theme="starters-hoenn"] {
+:root[data-theme="starters-hoenn"], [data-theme-apercu="starters-hoenn"] {
   color-scheme: dark;
   --teinte-1: #22b073; --teinte-2: #e87614; --teinte-3: #4cc6e8;
   --bg: #061315; --bg-raised: #0e2124; --bg-sunken: #09191b; --bg-inset: #12282a; --bg-hover: #173234;
@@ -644,7 +656,7 @@
 /* Sinnoh — Tortipouss, Ouisticram, Tiplouf : la neige de Frimapic. Fond
    gris-bleu et surfaces claires, le vert olive de la carapace en accent, le
    bleu glacé de Tiplouf dans les bordures. */
-:root[data-theme="starters-sinnoh"] {
+:root[data-theme="starters-sinnoh"], [data-theme-apercu="starters-sinnoh"] {
   color-scheme: dark;
   /* Même cas que Sinnoh, dont il reprend les surfaces. 6,33 / 5,44 / 4,65. */
   --text-muted: #aebcdc; --text-faint: #a5aec8; --text-ghost: #97a0bf;
@@ -659,7 +671,7 @@
 /* Unys — Vipélierre, Gruikui, Moustillon : le béton de Volucité, gris pur et
    sans température. La coquille de Moustillon en accent, la vigne dans le
    dégradé, la brique de Gruikui dans les bordures. */
-:root[data-theme="starters-unys"] {
+:root[data-theme="starters-unys"], [data-theme-apercu="starters-unys"] {
   color-scheme: dark;
   --bg: #0f0f11; --bg-raised: #1a1a1d; --bg-sunken: #131315; --bg-inset: #1e1e22; --bg-hover: #26262b;
   --border: #47291f; --border-strong: #5f382a;
@@ -672,7 +684,7 @@
 /* Kalos — Marisson, Feunnec, Grenousse : la pierre lavande d'Illumis au
    crépuscule. Le doré de Feunnec en accent, la bogue de Marisson dans le
    dégradé, le bleu de Grenousse dans les bordures. */
-:root[data-theme="starters-kalos"] {
+:root[data-theme="starters-kalos"], [data-theme-apercu="starters-kalos"] {
   color-scheme: dark;
   --bg: #100f16; --bg-raised: #1b1a23; --bg-sunken: #14131b; --bg-inset: #1f1e29; --bg-hover: #272632;
   --border: #2a3a6a; --border-strong: #3a4f8c;
@@ -687,7 +699,7 @@
    dégradé, l'eau claire dans les bordures.
    Comme Reshiram, il reprend l'encre, les ombres, les sprites et les couleurs
    de disponibilité du thème Clair — sur du blanc, rien d'autre ne tient. */
-:root[data-theme="starters-alola"] {
+:root[data-theme="starters-alola"], [data-theme-apercu="starters-alola"] {
   color-scheme: light;
   --bg: #eef5f4; --bg-raised: #ffffff; --bg-sunken: #f5faf9; --bg-inset: #e6eeee; --bg-hover: #dde8e9;
   --border: #cfdfe1; --border-strong: #a9c6cb;
@@ -709,7 +721,7 @@
    surfaces se détachent à peine du fond — c'est le thème le plus plat du
    lot — et le bleu de Larméléon perce cette grisaille, avec la flamme de
    Flambino en bordure. */
-:root[data-theme="starters-galar"] {
+:root[data-theme="starters-galar"], [data-theme-apercu="starters-galar"] {
   color-scheme: dark;
   --bg: #101410; --bg-raised: #171c17; --bg-sunken: #131813; --bg-inset: #1a1f1a; --bg-hover: #202520;
   --border: #4a2226; --border-strong: #663039;
@@ -723,7 +735,7 @@
 /* Paldéa — Poussacha, Chochodile, Coiffeton : la terre d'ocre et les
    oliviers. Le feu de Chochodile en accent, le vert olive dans le dégradé,
    l'eau turquoise dans les bordures. */
-:root[data-theme="starters-paldea"] {
+:root[data-theme="starters-paldea"], [data-theme-apercu="starters-paldea"] {
   color-scheme: dark;
   --bg: #12110a; --bg-raised: #1e1c12; --bg-sunken: #17150e; --bg-inset: #232016; --bg-hover: #2b271b;
   --border: #1d4a45; --border-strong: #2b6660;
@@ -742,7 +754,7 @@
 /* Pixels — l'écran d'une console à cristaux liquides : un violet de nuit, un
    vert d'affichage, et des sprites dessinés à la main plutôt que des rendus
    3D. Voir `spritePixelBase` dans config.js pour la source des images. */
-:root[data-theme="pixels"] {
+:root[data-theme="pixels"], [data-theme-apercu="pixels"] {
   color-scheme: dark;
   --bg: #141024; --bg-raised: #1e1836; --bg-sunken: #181228; --bg-inset: #241d3e; --bg-hover: #2c2449;
   --border: #33452c; --border-strong: #48633e;
@@ -778,7 +790,7 @@
    3D bien plus grands, qui supportent des fonds plus clairs. */
 
 /* Ambré — le vieil écran monochrome, celui des terminaux d'avant la couleur. */
-:root[data-theme="pixels-ambre"] {
+:root[data-theme="pixels-ambre"], [data-theme-apercu="pixels-ambre"] {
   color-scheme: dark;
   --bg: #1a1206; --bg-raised: #251b0c; --bg-sunken: #1f1609; --bg-inset: #2b2010; --bg-hover: #352815;
   --border: #4a3418; --border-strong: #66491f;
@@ -788,7 +800,7 @@
 }
 
 /* Cathode — le turquoise d'un tube cathodique, froid et un peu électrique. */
-:root[data-theme="pixels-cyan"] {
+:root[data-theme="pixels-cyan"], [data-theme-apercu="pixels-cyan"] {
   color-scheme: dark;
   --bg: #061418; --bg-raised: #0d2026; --bg-sunken: #09191e; --bg-inset: #10262d; --bg-hover: #153038;
   --border: #1d3d4a; --border-strong: #2a5a6b; --gold: #3fd8e8; --gold-soft: #b9a6ff;
@@ -797,7 +809,7 @@
 }
 
 /* Néon — l'enseigne de nuit : magenta saturé sur un violet presque noir. */
-:root[data-theme="pixels-magenta"] {
+:root[data-theme="pixels-magenta"], [data-theme-apercu="pixels-magenta"] {
   color-scheme: dark;
   --bg: #170a18; --bg-raised: #241130; --bg-sunken: #1c0d22; --bg-inset: #2b1638; --bg-hover: #351c44;
   --border: #3d1a4a; --border-strong: #582a6b; --gold: #f45fd0; --gold-soft: #9b8cff;
@@ -806,7 +818,7 @@
 }
 
 /* Braise — le rouge d'un feu qui couve, sur un charbon qui ne s'éteint pas. */
-:root[data-theme="pixels-sang"] {
+:root[data-theme="pixels-sang"], [data-theme-apercu="pixels-sang"] {
   color-scheme: dark;
   --bg: #170808; --bg-raised: #241010; --bg-sunken: #1c0b0b; --bg-inset: #2b1414; --bg-hover: #351a19;
   --border: #4a2418; --border-strong: #6b3524; --gold: #ff6a4d; --gold-soft: #ffc244;
@@ -815,7 +827,7 @@
 }
 
 /* Encre — le bleu d'un écran resté allumé dans une pièce sombre. */
-:root[data-theme="pixels-encre"] {
+:root[data-theme="pixels-encre"], [data-theme-apercu="pixels-encre"] {
   color-scheme: dark;
   --bg: #0b0f1a; --bg-raised: #141a2b; --bg-sunken: #0e1424; --bg-inset: #1a2236; --bg-hover: #212b43;
   --border: #1d3a44; --border-strong: #2a5560; --gold: #7f9cff; --gold-soft: #5fd8c4;
@@ -873,39 +885,52 @@
 
    Résolu sur les 26 surfaces de la famille, tuile voilée comprise :
    text 8,53 > soft 7,62 > muted 6,21 > faint 5,32 > ghost 4,53. */
-:root[data-theme="aube"],
-:root[data-theme="prisme"],
-:root[data-theme="cartouche"],
-:root[data-theme="duo"],
-:root[data-theme="couronne"] {
+:root[data-theme="aube"], [data-theme-apercu="aube"],
+:root[data-theme="prisme"], [data-theme-apercu="prisme"],
+:root[data-theme="cartouche"], [data-theme-apercu="cartouche"],
+:root[data-theme="duo"], [data-theme-apercu="duo"],
+:root[data-theme="couronne"], [data-theme-apercu="couronne"] {
   --text-soft: #d9e5ff;
   --text-muted: #c8d0e1;
   --text-faint: #b9c0d3;
   --text-ghost: #adb1c1;
 }
 
-/* Aube — la nuit indigo prise de biais par un lever orange. Deux couleurs qui
-   ne se mélangent jamais : le froid tient le fond, le chaud ne sert qu'à ce
-   qu'on touche. */
-:root[data-theme="aube"] {
+/* Aube — la nuit indigo prise de biais par un lever orange.
+
+   Trois couleurs et non deux depuis cette version : le violet du zénith répond
+   à l'orange du bas, et le fond a cessé d'être un noir bleuté pour devenir un
+   vrai indigo. Le froid tient toujours le fond, le chaud ne sert toujours qu'à
+   ce qu'on touche — mais entre les deux il y a maintenant un ciel. */
+:root[data-theme="aube"], [data-theme-apercu="aube"] {
   color-scheme: dark;
-  --bg: #0c0e1a; --bg-raised: #161a2b; --bg-sunken: #101322; --bg-inset: #1c2136; --bg-hover: #232941;
-  --border: #232a45; --border-strong: #333d63;
-  --gold: #6ea8ff; --gold-soft: #a8c9ff;
+  --bg: #0d1024; --bg-raised: #191e3a; --bg-sunken: #12162e; --bg-inset: #1f2647; --bg-hover: #272f55;
+  --border: #283061; --border-strong: #3d4a85;
+  --gold: #6ea8ff; --gold-soft: #ff9a5c;
   --accent: #ff9a5c; --accent-ink: #2a1000;
   --accent-glow: rgba(255, 154, 92, .42); --accent-wash: rgba(255, 154, 92, .12); --accent-border: #5c3722;
   --gold-wash: rgba(110, 168, 255, .13); --gold-glow: rgba(110, 168, 255, .42);
   --gold-border: #2c4270; --gold-ink: #04122b;
-  --tuile-voile: linear-gradient(135deg, rgba(255, 154, 92, .20), rgba(110, 168, 255, .22));
+  --tuile-voile: linear-gradient(135deg, rgba(255, 154, 92, .20) 12%, rgba(178, 132, 255, .18) 52%, rgba(110, 168, 255, .22) 88%);
+  /* Le lever de soleil : l'orange rase le bas à gauche, le violet occupe le
+     zénith, le bleu tient le coin opposé. C'est l'ordre d'un vrai ciel à
+     l'aube, et c'est ce qui empêche les trois taches de se lire comme trois
+     taches. */
+  --fond-halo:
+    radial-gradient(80% 55% at 8% 104%, rgba(255, 154, 92, .20), transparent 70%),
+    radial-gradient(70% 50% at 78% -6%, rgba(150, 110, 255, .18), transparent 72%),
+    radial-gradient(90% 60% at 108% 62%, rgba(110, 168, 255, .13), transparent 74%);
 }
 
-/* Prisme — la récompense de la chasse au chromatique, donc trois couleurs et
-   non deux : c'est la seule palette du site où la barre de progression change
-   franchement de teinte sur sa longueur, du rose vers l'or. */
-:root[data-theme="prisme"] {
+/* Prisme — la récompense de la chasse au chromatique, donc le spectre entier.
+
+   C'est la seule palette du site où la barre de progression change franchement
+   de teinte sur sa longueur, du rose vers l'or ; le fond suit désormais la même
+   logique, avec quatre taches qui font le tour du cercle chromatique. */
+:root[data-theme="prisme"], [data-theme-apercu="prisme"] {
   color-scheme: dark;
-  --bg: #0a0c14; --bg-raised: #141824; --bg-sunken: #0e1119; --bg-inset: #1a1f2e; --bg-hover: #212739;
-  --border: #202739; --border-strong: #2f3a55;
+  --bg: #0b0c1c; --bg-raised: #171a30; --bg-sunken: #101227; --bg-inset: #1e2240; --bg-hover: #262b4d;
+  --border: #262c50; --border-strong: #3a4372;
   --gold: #ff8ad8; --gold-soft: #ffe08a;
   --accent: #7ee7ff; --accent-ink: #04222b;
   --accent-glow: rgba(126, 231, 255, .42); --accent-wash: rgba(126, 231, 255, .12); --accent-border: #23485c;
@@ -915,52 +940,88 @@
      des vignettes n'en laisse voir que la tranche centrale — voir l'aura de
      components.css, où la même contrainte a d'abord été manquée. */
   --tuile-voile: linear-gradient(135deg, rgba(126, 231, 255, .22) 20%, rgba(255, 138, 216, .20) 50%, rgba(255, 224, 138, .20) 80%);
+  --fond-halo:
+    radial-gradient(62% 45% at 4% 4%, rgba(126, 231, 255, .17), transparent 70%),
+    radial-gradient(58% 42% at 96% 12%, rgba(255, 138, 216, .17), transparent 70%),
+    radial-gradient(66% 46% at 88% 96%, rgba(255, 224, 138, .15), transparent 72%),
+    radial-gradient(60% 44% at 10% 92%, rgba(150, 255, 190, .13), transparent 72%);
 }
 
 /* Cartouche — le plastique gris d'une cartouche et l'étiquette vert acide.
-   Récompense d'une génération bouclée, donc une palette qui sent la console. */
-:root[data-theme="cartouche"] {
+
+   Récompense d'une génération bouclée, donc une palette qui sent la console.
+   Le gris s'est teinté de violet, et l'ambre d'un boîtier jauni est venu se
+   poser en bas : une cartouche de vingt ans n'est jamais restée grise. */
+:root[data-theme="cartouche"], [data-theme-apercu="cartouche"] {
   color-scheme: dark;
-  --bg: #15151b; --bg-raised: #20212a; --bg-sunken: #191a21; --bg-inset: #262833; --bg-hover: #2e3040;
-  --border: #2d2f3d; --border-strong: #414458;
-  --gold: #c8b6ff; --gold-soft: #e2d8ff;
+  --bg: #16161f; --bg-raised: #232430; --bg-sunken: #1a1b25; --bg-inset: #2a2c3b; --bg-hover: #333549;
+  --border: #333546; --border-strong: #4a4d66;
+  --gold: #c8b6ff; --gold-soft: #ffc45c;
   --accent: #9ef01a; --accent-ink: #101f05;
   --accent-glow: rgba(158, 240, 26, .40); --accent-wash: rgba(158, 240, 26, .11); --accent-border: #3d5418;
   --gold-wash: rgba(200, 182, 255, .13); --gold-glow: rgba(200, 182, 255, .40);
   --gold-border: #453a6b; --gold-ink: #150a2e;
-  --tuile-voile: linear-gradient(135deg, rgba(158, 240, 26, .17), rgba(200, 182, 255, .22));
+  --tuile-voile: linear-gradient(135deg, rgba(158, 240, 26, .17) 14%, rgba(255, 196, 92, .14) 50%, rgba(200, 182, 255, .22) 88%);
+  --fond-halo:
+    radial-gradient(72% 50% at 92% 6%, rgba(158, 240, 26, .13), transparent 70%),
+    radial-gradient(70% 50% at 6% 40%, rgba(200, 182, 255, .15), transparent 72%),
+    radial-gradient(84% 54% at 50% 108%, rgba(255, 186, 92, .12), transparent 72%);
 }
 
-/* Duo — corail et turquoise, deux teintes de force égale qui ne cèdent pas
-   l'une à l'autre. Récompense des paires ♂ / ♀, d'où le nom.
-   Elles sont volontairement LOIN du bleu et du rose des boutons de sexe :
-   ceux-là ne changent jamais de teinte, et une palette qui s'en approchait
-   aurait fait disparaître les deux glyphes dans le décor. */
-:root[data-theme="duo"] {
-  color-scheme: dark;
-  --bg: #0c1414; --bg-raised: #142020; --bg-sunken: #0f1a1a; --bg-inset: #1a2828; --bg-hover: #213131;
-  --border: #1e3030; --border-strong: #2c4444;
-  --gold: #3fd6c0; --gold-soft: #8ae8db;
-  --accent: #ff7a6b; --accent-ink: #2a0703;
-  --accent-glow: rgba(255, 122, 107, .42); --accent-wash: rgba(255, 122, 107, .12); --accent-border: #5c2a24;
-  --gold-wash: rgba(63, 214, 192, .13); --gold-glow: rgba(63, 214, 192, .42);
-  --gold-border: #1e5850; --gold-ink: #032420;
-  --tuile-voile: linear-gradient(135deg, rgba(255, 122, 107, .20), rgba(63, 214, 192, .20));
-}
+/* Duo — Compagnol, le Pokémon Couple, et sa palette entière.
 
-/* Couronne — la dernière, celle du Pokédex entier. Or, ivoire et rouge
-   profond : trois teintes, et la seule palette du site dont le fond est
-   franchement brun plutôt que noir teinté. */
-:root[data-theme="couronne"] {
+   Corail et turquoise avant, et c'était une erreur d'origine : deux teintes
+   choisies pour « faire paire », sans rien derrière. Le Pokémon existe pourtant
+   — la catégorie de Compagnol s'appelle littéralement « Couple », et le succès
+   qui ouvre ce thème est celui des paires ♂ / ♀. La palette vient donc
+   maintenant de lui : l'ivoire du pelage, le caramel des oreilles, le rose
+   poudré de leur intérieur, et la nuit tiède d'un grenier où deux souris
+   tiennent ensemble.
+
+   QUATRE COULEURS ET NON DEUX, et c'est ce qui manquait le plus : l'ancienne
+   version n'en montrait qu'une à la fois selon l'écran, d'où l'impression
+   d'unicolore.
+
+   Le rose reste LOIN du rose des boutons ♀. Ceux-ci ne changent jamais de
+   teinte — c'est une règle du site —, et un rose de palette trop proche aurait
+   fait disparaître le glyphe dans le décor. Celui-ci est poudré et chaud, le
+   leur est magenta et froid ; et il ne sert de toute façon qu'au second bout du
+   dégradé, jamais à côté des deux glyphes. */
+:root[data-theme="duo"], [data-theme-apercu="duo"] {
   color-scheme: dark;
-  --bg: #12100c; --bg-raised: #1d1a13; --bg-sunken: #16140f; --bg-inset: #24201a; --bg-hover: #2c2820;
-  --border: #2c2820; --border-strong: #453e30;
+  --bg: #17131c; --bg-raised: #241e2d; --bg-sunken: #1b1621; --bg-inset: #2d2637; --bg-hover: #382f44;
+  --border: #362d42; --border-strong: #4d4160;
+  --gold: #d9a066; --gold-soft: #f2b8c6;
+  --accent: #f5e3c0; --accent-ink: #2a1f0d;
+  --accent-glow: rgba(245, 227, 192, .38); --accent-wash: rgba(245, 227, 192, .11); --accent-border: #5a4c33;
+  --gold-wash: rgba(217, 160, 102, .13); --gold-glow: rgba(217, 160, 102, .40);
+  --gold-border: #6b4a29; --gold-ink: #2a1a08;
+  --tuile-voile: linear-gradient(135deg, rgba(245, 227, 192, .18) 10%, rgba(217, 160, 102, .17) 48%, rgba(242, 184, 198, .19) 88%);
+  --fond-halo:
+    radial-gradient(70% 50% at 6% 6%, rgba(245, 227, 192, .13), transparent 70%),
+    radial-gradient(72% 50% at 96% 30%, rgba(242, 184, 198, .16), transparent 72%),
+    radial-gradient(80% 54% at 40% 106%, rgba(217, 160, 102, .15), transparent 72%);
+}
+/* Couronne — la dernière, celle du Pokédex entier.
+
+   Or, ivoire et rouge profond, et la seule palette du site dont le fond est
+   franchement brun plutôt que noir teinté. Le brun a été poussé vers l'acajou,
+   et un violet impérial est venu tenir le haut : trois couleurs qui se
+   partagent une salle du trône plutôt qu'un seul or qui l'occupe entière. */
+:root[data-theme="couronne"], [data-theme-apercu="couronne"] {
+  color-scheme: dark;
+  --bg: #16110d; --bg-raised: #241d15; --bg-sunken: #1a1510; --bg-inset: #2c241b; --bg-hover: #362c21;
+  --border: #362d22; --border-strong: #524634;
   --gold: #e8e2d0; --gold-soft: #d4574e;
   --accent: #ffcf4d; --accent-ink: #2a1e00;
   --accent-glow: rgba(255, 207, 77, .42); --accent-wash: rgba(255, 207, 77, .12); --accent-border: #5c4a18;
   --gold-wash: rgba(232, 226, 208, .12); --gold-glow: rgba(232, 226, 208, .38);
   --gold-border: #5a5344; --gold-ink: #1a1610;
   --tuile-voile: linear-gradient(135deg, rgba(255, 207, 77, .20) 22%, rgba(232, 226, 208, .16) 55%, rgba(212, 87, 78, .20) 82%);
+  --fond-halo:
+    radial-gradient(78% 52% at 50% -8%, rgba(255, 207, 77, .17), transparent 70%),
+    radial-gradient(66% 48% at 4% 88%, rgba(212, 87, 78, .16), transparent 72%),
+    radial-gradient(66% 48% at 100% 76%, rgba(150, 106, 214, .12), transparent 74%);
 }
 
 /* =================== Les trois couleurs des vingt autres ================== */
@@ -982,40 +1043,44 @@
    deuxième est toujours nettement plus sombre que la première. */
 
 :root,
-:root[data-theme="dark"] { --teinte-1: #ffcb05; --teinte-2: #b06f00; --teinte-3: #4dabf7; }
-:root[data-theme="light"] { --teinte-1: #c98f00; --teinte-2: #7a5200; --teinte-3: #3d7fd6; }
+/* Le halo est vide par defaut : trente-trois palettes gardent leur aplat, et
+   `base.css` retombe de toute facon sur `none` si la variable manque. */
+:root { --fond-halo: none; }
+
+:root[data-theme="dark"], [data-theme-apercu="dark"] { --teinte-1: #ffcb05; --teinte-2: #b06f00; --teinte-3: #4dabf7; }
+:root[data-theme="light"], [data-theme-apercu="light"] { --teinte-1: #c98f00; --teinte-2: #7a5200; --teinte-3: #3d7fd6; }
 /* Boussole est la seule des « Base » à nommer des Pokémon : le sable de la
    complétion, le rose de l'interaction, et l'ocre chaud qui les relie. */
-:root[data-theme="boussole"] { --teinte-1: #e8c9a0; --teinte-2: #f174d3; --teinte-3: #ff9c6b; }
+:root[data-theme="boussole"], [data-theme-apercu="boussole"] { --teinte-1: #e8c9a0; --teinte-2: #f174d3; --teinte-3: #ff9c6b; }
 
 /* --- Couleurs : le ton, son ombre, sa lumière --- */
-:root[data-theme="rubis"]     { --teinte-1: #f2586c; --teinte-2: #8f1f30; --teinte-3: #ffb3bd; }
-:root[data-theme="ambre"]     { --teinte-1: #ff9f2e; --teinte-2: #9c5200; --teinte-3: #ffd9a0; }
-:root[data-theme="emeraude"]  { --teinte-1: #45cf8d; --teinte-2: #17694a; --teinte-3: #a8f0cd; }
-:root[data-theme="turquoise"] { --teinte-1: #36ced8; --teinte-2: #12666e; --teinte-3: #a6eff3; }
-:root[data-theme="saphir"]    { --teinte-1: #5b8dff; --teinte-2: #22459c; --teinte-3: #b3caff; }
-:root[data-theme="amethyste"] { --teinte-1: #a97dff; --teinte-2: #5a3399; --teinte-3: #d9c6ff; }
+:root[data-theme="rubis"], [data-theme-apercu="rubis"]     { --teinte-1: #f2586c; --teinte-2: #8f1f30; --teinte-3: #ffb3bd; }
+:root[data-theme="ambre"], [data-theme-apercu="ambre"]     { --teinte-1: #ff9f2e; --teinte-2: #9c5200; --teinte-3: #ffd9a0; }
+:root[data-theme="emeraude"], [data-theme-apercu="emeraude"]  { --teinte-1: #45cf8d; --teinte-2: #17694a; --teinte-3: #a8f0cd; }
+:root[data-theme="turquoise"], [data-theme-apercu="turquoise"] { --teinte-1: #36ced8; --teinte-2: #12666e; --teinte-3: #a6eff3; }
+:root[data-theme="saphir"], [data-theme-apercu="saphir"]    { --teinte-1: #5b8dff; --teinte-2: #22459c; --teinte-3: #b3caff; }
+:root[data-theme="amethyste"], [data-theme-apercu="amethyste"] { --teinte-1: #a97dff; --teinte-2: #5a3399; --teinte-3: #d9c6ff; }
 
 /* --- Récompenses : les couleurs de ce qu'elles célèbrent --- */
 /* Aube : le premier millier de cases, donc un lever de soleil — braise, or, et
    le violet qui reste de la nuit. */
-:root[data-theme="aube"]      { --teinte-1: #ff9a5c; --teinte-2: #b8471a; --teinte-3: #7a5cff; }
+:root[data-theme="aube"], [data-theme-apercu="aube"]      { --teinte-1: #ff9a5c; --teinte-2: #b8471a; --teinte-3: #7a5cff; }
 /* Prisme : cent chromatiques. Trois arrêts d'un spectre, et rien d'autre. */
-:root[data-theme="prisme"]    { --teinte-1: #7ee7ff; --teinte-2: #b28dff; --teinte-3: #ff9ad5; }
+:root[data-theme="prisme"], [data-theme-apercu="prisme"]    { --teinte-1: #7ee7ff; --teinte-2: #b28dff; --teinte-3: #ff9ad5; }
 /* Cartouche : une génération entière, donc l'écran d'une console — le vert de
    phosphore, son ombre, sa lueur. */
-:root[data-theme="cartouche"] { --teinte-1: #9ef01a; --teinte-2: #4a7d0a; --teinte-3: #dff7a8; }
+:root[data-theme="cartouche"], [data-theme-apercu="cartouche"] { --teinte-1: #9ef01a; --teinte-2: #4a7d0a; --teinte-3: #dff7a8; }
 /* Duo : toutes les paires ♂ / ♀. Le bleu et le rose sont ceux des boutons de
    genre, aux valeurs exactes — ce sont les seules couleurs du site qu'on ne
    touche pas, et une palette qui en célèbre l'usage ne va pas les approcher. */
-:root[data-theme="duo"]       { --teinte-1: #6fb7ff; --teinte-2: #ff8fd0; --teinte-3: #ff7a6b; }
+:root[data-theme="duo"], [data-theme-apercu="duo"]       { --teinte-1: #f5e3c0; --teinte-2: #d9a066; --teinte-3: #f2b8c6; }
 /* Couronne : le Pokédex entier. De l'or, son creux, et son éclat. */
-:root[data-theme="couronne"]  { --teinte-1: #ffcf4d; --teinte-2: #a5751a; --teinte-3: #fff0b8; }
+:root[data-theme="couronne"], [data-theme-apercu="couronne"]  { --teinte-1: #ffcf4d; --teinte-2: #a5751a; --teinte-3: #fff0b8; }
 
 /* --- Pixels : la rampe de l'écran imité --- */
-:root[data-theme="pixels"]         { --teinte-1: #9bbc0f; --teinte-2: #306230; --teinte-3: #e0f8d0; }
-:root[data-theme="pixels-ambre"]   { --teinte-1: #ffb000; --teinte-2: #7a5200; --teinte-3: #ffe0a0; }
-:root[data-theme="pixels-cyan"]    { --teinte-1: #38e8ff; --teinte-2: #12707f; --teinte-3: #b8f6ff; }
-:root[data-theme="pixels-magenta"] { --teinte-1: #ff5cc8; --teinte-2: #8a2166; --teinte-3: #ffb8e6; }
-:root[data-theme="pixels-sang"]    { --teinte-1: #ff4d4d; --teinte-2: #8a1414; --teinte-3: #ffb0b0; }
-:root[data-theme="pixels-encre"]   { --teinte-1: #8ea3c8; --teinte-2: #34435e; --teinte-3: #cfd9ec; }
+:root[data-theme="pixels"], [data-theme-apercu="pixels"]         { --teinte-1: #9bbc0f; --teinte-2: #306230; --teinte-3: #e0f8d0; }
+:root[data-theme="pixels-ambre"], [data-theme-apercu="pixels-ambre"]   { --teinte-1: #ffb000; --teinte-2: #7a5200; --teinte-3: #ffe0a0; }
+:root[data-theme="pixels-cyan"], [data-theme-apercu="pixels-cyan"]    { --teinte-1: #38e8ff; --teinte-2: #12707f; --teinte-3: #b8f6ff; }
+:root[data-theme="pixels-magenta"], [data-theme-apercu="pixels-magenta"] { --teinte-1: #ff5cc8; --teinte-2: #8a2166; --teinte-3: #ffb8e6; }
+:root[data-theme="pixels-sang"], [data-theme-apercu="pixels-sang"]    { --teinte-1: #ff4d4d; --teinte-2: #8a1414; --teinte-3: #ffb0b0; }
+:root[data-theme="pixels-encre"], [data-theme-apercu="pixels-encre"]   { --teinte-1: #8ea3c8; --teinte-2: #34435e; --teinte-3: #cfd9ec; }

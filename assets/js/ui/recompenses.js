@@ -297,13 +297,55 @@ function conditionDe(r) {
  * ────────────────────────────────────────────────────────────────────────
  */
 function ouvrirApercu(type, r) {
+  montrerVerrou({ nom: t(r.nom), sousTitre: t(nomDuType(type)), scene: sceneDe(type, r), succes: r.source });
+}
+
+/**
+ * L'APERÇU D'UN THÈME VERROUILLÉ.
+ *
+ * Les cinq palettes de récompense se cachaient entièrement : le menu n'en
+ * montrait qu'un cadenas et le succès à faire, et la carte était `disabled`,
+ * donc muette au clic. C'était cohérent avec une idée — « la couleur est la
+ * surprise, la condition ne l'est pas » — et cette idée est ici abandonnée,
+ * demandée par l'usage : une surprise dont on ignore à quoi elle ressemble ne
+ * fait courir personne, et les sept autres familles de cosmétiques montrent
+ * maintenant ce qu'elles donnent. Un thème n'avait aucune raison de rester le
+ * seul mystère du lot.
+ *
+ * @param {Object} theme  l'entrée de `ui/themes-list.js`
+ * @param {Object} succes le succès qui l'ouvre, déjà évalué
+ */
+export function ouvrirApercuTheme(theme, succes) {
+  montrerVerrou({
+    nom: t(theme.label),
+    sousTitre: t("Palette du site"),
+    scene: sceneTheme(theme),
+    succes,
+    // LE SEUL POP-UP LARGE, et il le faut. Les sept autres récompenses tiennent
+    // sur un objet — un cadre, une marque, un bandeau — qu'on juge en le
+    // regardant seul. Une palette n'est pas un objet : elle est le rapport
+    // entre un fond, une colonne, une barre et quinze vignettes, et ce rapport
+    // ne se voit qu'en montrant l'écran entier.
+    large: true,
+  });
+}
+
+/**
+ * La coquille commune : voile, boîte, en-tête, scène, condition.
+ *
+ * Sortie du corps de `ouvrirApercu` quand les thèmes sont venus s'y ajouter.
+ * Les deux appelants ne partagent que la scène et le nom ; tout le reste — les
+ * quatre chemins de fermeture, l'entrée d'historique, le piège du clic
+ * intérieur — est délicat et n'avait pas à exister en double.
+ */
+function montrerVerrou({ nom, sousTitre, scene, succes, large = false }) {
   document.querySelector(".verrou-fond")?.remove();
 
-  const s = r.source;
+  const s = succes;
   const fond = el("div.verrou-fond", {
     role: "dialog",
     "aria-modal": "true",
-    "aria-label": `${t(r.nom)} — ${t("verrouillé")}`,
+    "aria-label": `${nom} — ${t("verrouillé")}`,
   });
 
   // Le geste Retour du téléphone doit refermer ce pop-up, pas quitter le site :
@@ -312,7 +354,7 @@ function ouvrirApercu(type, r) {
   let liberer = null;
   const fermer = () => {
     fond.remove();
-    document.removeEventListener("keydown", surTouche);
+    document.removeEventListener("keydown", surTouche, true);
     if (liberer) {
       const f = liberer;
       liberer = null;
@@ -320,12 +362,20 @@ function ouvrirApercu(type, r) {
     }
   };
   const surTouche = (e) => {
-    if (e.key === "Escape") fermer();
+    if (e.key !== "Escape") return;
+    // EN CAPTURE, ET ON ARRÊTE TOUT. Le menu de customisation écoute Échap lui
+    // aussi, sur `document` : sans cet arrêt, une seule pression fermait les
+    // deux panneaux et renvoyait sur la grille, alors qu'on voulait revenir à
+    // la liste. L'écouteur est posé en phase de capture pour passer AVANT le
+    // sien, et `stopImmediatePropagation` coupe la propagation entière.
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    fermer();
   };
 
   fond.append(
     el(
-      "div.verrou",
+      "div.verrou" + (large ? ".verrou--large" : ""),
       {
         // Un clic DANS la boîte ne doit pas la fermer, alors qu'un clic sur le
         // voile derrière doit le faire. Sans cette interception, essayer le son
@@ -337,8 +387,8 @@ function ouvrirApercu(type, r) {
         el("span.verrou__cadenas", { "aria-hidden": "true" }, "🔒"),
         el(
           "div.verrou__identite",
-          el("h3.verrou__nom", t(r.nom)),
-          el("p.verrou__type", t(nomDuType(type)))
+          el("h3.verrou__nom", nom),
+          el("p.verrou__type", sousTitre)
         ),
         el("button.verrou__fermer", {
           type: "button",
@@ -347,14 +397,17 @@ function ouvrirApercu(type, r) {
           onclick: fermer,
         })
       ),
-      sceneDe(type, r),
+      scene,
       voieDe(s)
     )
   );
 
   fond.addEventListener("click", fermer);
-  document.addEventListener("keydown", surTouche);
+  document.addEventListener("keydown", surTouche, true);
   document.body.append(fond);
+  // APRÈS l'insertion, et pas avant : la loupe se règle sur une largeur
+  // mesurée, et un élément hors du document n'en a pas.
+  ajusterLoupe(fond);
   liberer = retourFerme(fermer);
   fond.querySelector(".verrou__fermer")?.focus();
 }
@@ -407,16 +460,7 @@ function sceneDe(type, r) {
       "div.verrou__scene.verrou__scene--motif",
       { dataset: { motif: r.cle } },
       el("span.verrou__motif", { "aria-hidden": "true" }),
-      el(
-        "div.verrou__page",
-        el(
-          "div.verrou__page-tete",
-          el("span.verrou__page-nom", "Funkylldex"),
-          el("span.verrou__page-pct", "64 %")
-        ),
-        el("div.verrou__page-jauge", el("span")),
-        el("div.verrou__page-tuiles", tuileDemo(0), tuileDemo(1))
-      )
+      trancheDePage()
     );
   }
 
@@ -484,6 +528,158 @@ function dessinerLaCarte(banniere) {
     // ouvre l'aperçu, on préfère la bande large à un pop-up qui ne s'ouvre pas.
     return null;
   }
+}
+
+/**
+ * Un thème verrouillé, montré sur une tranche de page.
+ *
+ * C'est le même montage que pour les cadres, poussé d'un cran : l'attribut
+ * `data-theme-apercu` porte la palette entière, et TOUT ce qu'il y a dedans —
+ * le fond, le texte, la barre, les deux vignettes avec leur cadre et leur
+ * pastille — se repeint tout seul. `assets/css/theme.css` déclare chaque
+ * palette sur ce sélecteur en plus de `:root`, donc les couleurs ne sont
+ * écrites qu'une fois.
+ *
+ * L'attribut est distinct de `data-theme`, et il fallait qu'il le soit : les
+ * trente-huit cartes du menu portent déjà `data-theme`, et un sélecteur
+ * généralisé les aurait repeintes chacune dans sa propre palette.
+ */
+function sceneTheme(theme) {
+  return el(
+    "div.verrou__scene.verrou__scene--theme",
+    { "data-theme-apercu": theme.value },
+    // Deux éléments emboîtés, et c'est tout le mécanisme de la loupe : la
+    // maquette est construite à sa VRAIE largeur — 860 px, celle d'un écran
+    // d'ordinateur — puis réduite par `transform` jusqu'à tenir dans le
+    // pop-up. `ajusterLoupe`, appelé après insertion, calcule le rapport et
+    // rend au cadre la hauteur qui va avec.
+    el("div.verrou__loupe", el("div.verrou__ecran", maquetteDePage()))
+  );
+}
+
+/**
+ * Ramène la maquette pleine largeur à la taille du pop-up.
+ *
+ * ELLE EST CONSTRUITE EN GRAND PUIS RÉDUITE, et non construite en petit.
+ * Fabriquer directement une version miniature aurait demandé une deuxième
+ * feuille de styles — des tailles de police, des marges et des rayons choisis
+ * pour cette taille-là — c'est-à-dire une seconde vérité à tenir d'accord avec
+ * la première. Réduite, la maquette est la VRAIE page : les proportions, les
+ * contrastes et les épaisseurs sont ceux qu'on aura, au facteur d'échelle
+ * près. C'est précisément ce qu'on vient regarder.
+ *
+ * `transform` et non `zoom` : `zoom` ferait exactement ce qu'on veut en une
+ * ligne, et Firefox ne l'a repris qu'en 2024. Le prix de `transform`, c'est de
+ * devoir rendre sa hauteur au parent — une mise à l'échelle ne change pas la
+ * place que l'élément occupe dans le flux.
+ */
+function ajusterLoupe(racine) {
+  const loupe = racine.querySelector(".verrou__loupe");
+  const ecran = racine.querySelector(".verrou__ecran");
+  if (!loupe || !ecran) return;
+  // La maquette étroite est déjà proche de la largeur du pop-up : on la laisse
+  // grandir un peu plutôt que de la borner à 1, sans quoi une maquette de
+  // 420 px flotterait au milieu d'un cadre de 680.
+  const rapport = loupe.clientWidth / ecran.offsetWidth;
+  ecran.style.transform = `scale(${rapport})`;
+  loupe.style.height = `${Math.round(ecran.offsetHeight * rapport)}px`;
+}
+
+/**
+ * L'application entière, en maquette : la colonne de gauche et la grille.
+ *
+ * Une tranche ne suffisait pas. Le pop-by ne montrait que deux vignettes, et
+ * une palette ne se juge pas sur deux vignettes : ce qu'on veut savoir, c'est
+ * ce que donne l'ÉCRAN — la colonne sombre à côté de la grille claire, la
+ * barre de progression au milieu, quinze vignettes qui se répètent. C'est là
+ * qu'une palette est belle ou ne l'est pas.
+ *
+ * Les vignettes sont clonées de la vraie grille, donc avec leur sprite, leur
+ * cadre et leur pastille ; tout le reste est du décor fidèle aux classes de
+ * l'application, repeint par la palette prévisualisée.
+ */
+function maquetteDePage() {
+  // LARGE OU ÉTROITE SELON L'ÉCRAN QU'ON A. Montrer une maquette d'ordinateur
+  // à quelqu'un qui tient un téléphone répond à côté : la colonne de gauche
+  // n'existe pas chez lui, elle est un tiroir, et la grille fait deux vignettes
+  // de front et non cinq. Réduite pour tenir dans le pop-up, cette maquette-là
+  // tombait en plus à 37 % — illisible.
+  //
+  // La maquette étroite fait 420 px de large et se réduit à peine ; c'est la
+  // page que la personne a sous les yeux, à la taille où elle se lit encore.
+  const etroit = window.matchMedia("(max-width: 720px)").matches;
+
+  const stat = (nom, pct) =>
+    el(
+      "div.verrou__stat",
+      el("span.verrou__stat-nom", nom),
+      el("div.verrou__page-jauge", el("span", { style: { width: `${pct}%` } }))
+    );
+
+  return el(
+    "div.verrou__appli" + (etroit ? ".verrou__appli--etroit" : ""),
+    { style: { width: etroit ? "420px" : "860px" } },
+    el(
+      "aside.verrou__colonne",
+      el(
+        "div.verrou__page-tete",
+        el("span.verrou__page-nom", "Funkylldex"),
+        el("span.verrou__page-pct", "64 %")
+      ),
+      el("div.verrou__page-jauge.verrou__page-jauge--grosse", el("span", { style: { width: "64%" } })),
+      el(
+        "div.verrou__page-chiffres",
+        [
+          ["1 024", t("cases")],
+          ["312", t("espèces")],
+          ["87", t("chromatiques")],
+        ].map(([n, quoi]) => el("span.verrou__page-stat", el("b", n), el("i", quoi)))
+      ),
+      stat(t("Génération") + " I", 88),
+      stat(t("Génération") + " II", 41),
+      stat(t("Génération") + " III", 12),
+      el(
+        "div.verrou__pastilles",
+        [t("Tout"), t("Capturé"), t("Manquant")].map((mot, i) =>
+          el("span.verrou__pastille" + (i === 0 ? ".verrou__pastille--active" : ""), mot)
+        )
+      )
+    ),
+    el(
+      "div.verrou__grille",
+      // Six vignettes en étroit, douze en large : dans les deux cas de quoi
+      // remplir l'écran et le faire déborder d'une rangée, ce qui est ce qui
+      // fait qu'une grille ressemble à une grille.
+      ...(etroit ? [0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).map((i) =>
+        tuileDemo(i)
+      )
+    )
+  );
+}
+
+/**
+ * Une tranche de l'application : marque, barre de progression, deux vignettes.
+ *
+ * C'est la version courte, pour les MOTIFS. Une trame n'est pas une palette :
+ * ce qu'on lui demande, c'est de ne pas gêner, et deux vignettes posées dessus
+ * suffisent à le dire. La maquette entière aurait été une réponse trop longue
+ * à une question courte.
+ *
+ * Les deux vignettes gardent leur largeur de grille et débordent volontiers :
+ * une grille coupée par le bord ressemble à une page, deux vignettes centrées
+ * ne ressemblent à rien.
+ */
+function trancheDePage() {
+  return el(
+    "div.verrou__page",
+    el(
+      "div.verrou__page-tete",
+      el("span.verrou__page-nom", "Funkylldex"),
+      el("span.verrou__page-pct", "64 %")
+    ),
+    el("div.verrou__page-jauge", el("span", { style: { width: "64%" } })),
+    el("div.verrou__page-tuiles", tuileDemo(0), tuileDemo(1))
+  );
 }
 
 /**

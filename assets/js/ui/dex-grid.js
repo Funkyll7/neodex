@@ -459,6 +459,21 @@ function garnir(node, species, ctx) {
       ),
       el("span.card__foot")
     ),
+    // L''ornement des cadres  Laurier  et  Couronne  : un vrai laurier, une
+    // vraie couronne, decoupes dans un masque SVG et colores par le CSS.
+    //
+    // UN ELEMENT REEL ET NON UN PSEUDO, et ce n''est pas un caprice. Les deux
+    // pseudos de la vignette sont pris — `::after` par la pastille de
+    // completion, `::before` par l''etiquette  range  —, et ceux des
+    // sous-elements ne servent a rien ici : `.card__select` porte
+    // `content-visibility: auto`, donc `contain: paint`, qui ROGNE tout ce qui
+    // depasse. Or la couronne doit justement deborder par le haut.
+    //
+    // Il est pose pour les 1025 vignettes et non pour les seules terminees :
+    // la completion change en cochant une case, et un element a ajouter au vol
+    // aurait demande de reconstruire la vignette a chaque fois. Vide et
+    // `display: none` par defaut, il ne coute rien.
+    el("span.card__ornement", { "aria-hidden": "true" }),
     el("div.card__toggles", quickToggles(species, ctx, color))
   );
 
