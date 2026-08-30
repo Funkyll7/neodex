@@ -5381,11 +5381,28 @@ body::before {
    gagné, et la seule qui doive suivre les trente-huit palettes : elle
    accompagne la barre de progression, dont elle prend le second bout. Lui
    donner une couleur à elle l'aurait détachée du reste du site. */
+/* « Classique » — celle qu'on porte sans rien avoir gagné, et la SEULE qui suive
+   les trente-huit palettes. Elle prend `--gold-soft`, le second bout du dégradé
+   de progression du thème : le même ton que la barre, éclairci vers le haut à
+   gauche comme un disque qui prend la lumière. C'est le dessin qu'elle a
+   toujours eu, et il est rendu tel quel.
+
+   ELLE N'A PAS D'ANNEAU, contrairement aux six autres. Un essai lui en donnait
+   un en `--gold` — les deux bouts du dégradé, comme le cadre du même nom. Sur
+   le papier c'était cohérent ; à l'écran, un liséré d'une seconde couleur sur
+   une pastille de vingt-deux pixels ne se lit pas comme une matière, il se lit
+   comme un cerne. Son anneau reprend donc la couleur du dégradé, ce qui le rend
+   invisible — et c'est mieux qu'un cas particulier écrit ailleurs, puisque la
+   couture disparaît d'elle-même au lieu d'être annulée par une règle de plus.
+
+   Elle s'appelait « Étoile », et c'était un nom faux : son signe se choisit
+   ailleurs dans la même liste, et les six autres marques le portent aussi. Ce
+   qui la définit, c'est de n'avoir aucune couleur à elle. */
 :root {
   --marque-fond: linear-gradient(145deg, color-mix(in srgb, var(--gold-soft) 78%, #fff), var(--gold-soft));
+  --marque-anneau: var(--gold-soft);
   --marque-encre: var(--marque-ink);
-  --marque-halo: rgba(0, 0, 0, .42);
-  --marque-anneau: transparent;
+  --marque-halo: color-mix(in srgb, var(--gold-soft) 45%, transparent);
 }
 
 /* Coche — cent Pokémon terminés. Un sceau : anneau vert franc, cœur pâle. */
@@ -5489,17 +5506,6 @@ body::before {
 /* L'étoile n'a pas d'anneau : sur elle, `--marque-anneau` vaut `transparent` et
    le trait laisserait voir la vignette au travers. On le lui rend plein de son
    propre fond, ce qui revient à ne pas en avoir. */
-/* PAS DE `[data-marque="etoile"] .recomp__apercu--marque` ICI, et le piege
-   valait d etre nomme : `<html>` porte lui aussi `data-marque`, donc ce
-   selecteur attrapait les SEPT pastilles du menu des que l etoile etait la
-   marque choisie — les six autres y perdaient leur anneau, et le menu montrait
-   sept disques identiques. La pastille du menu porte sa propre marque en
-   attribut : c est sur elle qu il faut viser, pas sur un ancetre. */
-[data-marque="etoile"] .card--complete::after,
-.recomp__apercu--marque[data-marque="etoile"] {
-  background: var(--marque-fond) border-box;
-}
-
 /* ================= Les titres rares portent leur couleur ================== */
 
 /* DOUZE TITRES, ET ILS SE LISAIENT TOUS PAREIL. « Dresseur » s'obtient à cent

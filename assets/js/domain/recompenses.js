@@ -138,7 +138,12 @@ export const RECOMPENSES = [
   { cle: "maitre", type: "titre", nom: "Maître du Pokédex", succes: "pokedex-entier" },
 
   /* --------------------------- Marques (le ★) ---------------------------- */
-  { cle: "etoile", type: "marque", nom: "Étoile", succes: null },
+  // La CLE reste « etoile » alors que le nom ne l est plus, exactement comme le
+  // cadre du meme nom : elle est ecrite dans les preferences de quiconque porte
+  // cette marque, et la renommer aurait remis tout le monde sur autre chose. Le
+  // nom, lui, etait faux — cette marque est la seule qui prenne la couleur du
+  // theme, et c est ce qui la definit, pas son signe.
+  { cle: "etoile", type: "marque", nom: "Classique", succes: null },
   { cle: "coche", type: "marque", nom: "Coche", succes: "cent-complets" },
   { cle: "eclat", type: "marque", nom: "Éclat", succes: "cinq-cents-chromatiques" },
   { cle: "hexagone", type: "marque", nom: "Hexagone", succes: "toutes-regionales" },
