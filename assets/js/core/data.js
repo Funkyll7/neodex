@@ -517,7 +517,19 @@ function cosmeticGroup(group, species, goSet, goShinySet) {
        * casquette, que le jeu de sprites ne nomme pas par motif.
        */
       sprite: raw.nosprite ? null : String(raw.sprite || `${species.id}-${raw.key}`),
-      spriteSet: group.spriteSet || "home",
+      /**
+       * LE JEU DE SPRITES SE DECIDE PAR VARIANTE, PAS PAR GROUPE.
+       *
+       * Il ne se decidait que par groupe, et les Pikachu en faisaient les
+       * frais : les huit casquettes ONT un rendu HOME, les six Cosplayeur n'en
+       * ont pas — mesure faite image par image. Un seul drapeau pour les
+       * quatorze imposait donc le sprite 2D aux huit qui meritaient le 3D,
+       * dans les boites comme dans la grille.
+       *
+       * Le groupe reste le defaut, ce qui garde les dix-sept autres inchanges ;
+       * la variante peut le contredire quand elle seule fait exception.
+       */
+      spriteSet: raw.spriteSet || group.spriteSet || "home",
       slot: isBase ? "om" : `x${species.id}-${raw.key}`,
       shinySlot: isBase ? "sm" : `y${species.id}-${raw.key}`,
       shinyEntry: !group.info && !noShiny,

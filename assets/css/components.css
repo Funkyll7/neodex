@@ -2237,7 +2237,27 @@
      longueur du compteur. */
   .toolbar::after { content: ""; order: 3; flex-basis: 100%; height: 0; }
   .toolbar .select--inline { order: 4; flex: 1 1 auto; min-width: 0; }
+  /* LE SÉLECTEUR DE DISPOSITION PREND TOUTE LA LARGEUR.
+
+     Il la partageait avec le menu des types, et les trois libellés se
+     retrouvaient serrés dans le tiers de ligne qui restait — « Familles »
+     touchait ses deux bords. Ce sont pourtant trois boutons qu'on tape, pas un
+     réglage qu'on laisse tranquille : ils méritent la ligne entière.
+
+     `flex-basis: 100%` suffit à l'isoler, sans coupure explicite avant ni
+     après : aucun autre élément ne peut tenir à côté d'une base pleine
+     largeur, donc le menu reste au-dessus et « Lire des captures » passe
+     dessous, chacun sur sa ligne. */
   .toolbar .segmented { order: 5; flex: 0 0 auto; }
+  /* Les deux SÉLECTEURS DE DISPOSITION seulement, et pas `.toolbar .segmented`
+     en bloc : celui-ci attraperait aussi « Auto / Normal / ✦ Shiny », qui
+     partage très bien sa ligne avec le menu des types et n'a rien demandé. */
+  .toolbar #mode-toggle,
+  .toolbar #go-mode-toggle { flex: 1 0 100%; }
+  /* Trois tiers égaux, et non trois largeurs de mot : un bouton dont la taille
+     dépend de son libellé fait sauter la cible d'une langue à l'autre. */
+  .toolbar #mode-toggle button,
+  .toolbar #go-mode-toggle button { flex: 1 1 0; min-width: 0; }
   /* La recherche perd un peu de rembourrage : elle partage sa ligne. */
   /* Meme raison que `.sync__input` : sous 16 px, iOS zoome et ne revient pas. */
   .search__input { padding: 11px 12px 11px 34px; font-size: 16px; }

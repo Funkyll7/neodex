@@ -123,26 +123,43 @@ export function createSidebar(ctx) {
   // un seul groupe evite un second controle qui n apparaitrait qu a moitie du
   // temps, et fait lire les trois etats comme ce qu ils sont : trois facons de
   // regarder le meme Pokedex.
-  const modeToggle = document.getElementById("mode-toggle");
-  if (modeToggle) {
+  /**
+   * Un groupe de trois boutons, pour un Pokedex.
+   *
+   * DEUX POKEDEX, LE MEME GESTE. Le Pokedex GO se remplit boite par boite comme
+   * l autre, et on y cherche ses trous de la meme facon ; lui refuser le
+   * rangement aurait laisse deux barres d outils presque jumelles dont une
+   * seule sait faire le travail. Les libelles sont donc identiques, seul le
+   * titre de « Boites » change — GO ne range pas comme HOME.
+   *
+   * `cle` dit quel etat le groupe pilote, et c est tout ce qui differe : les
+   * deux dispositions vivent separement, parce que regarder ses boites de HOME
+   * ne dit rien de la facon dont on veut regarder GO.
+   */
+  function poserSegments(id, cle, titreBoites) {
+    const racine = document.getElementById(id);
+    if (!racine) return;
     fill(
-      modeToggle,
+      racine,
       [
         ["grille", "Grille", "La liste, filtrable et triable"],
-        ["boites", "Boîtes", "Le rangement de HOME, trente par boîte"],
+        ["boites", "Boîtes", titreBoites],
         ["familles", "Familles", "Les boîtes, rangées par lignée d'évolution"],
       ].map(([value, label, title]) =>
         el("button", {
           type: "button",
           title: t(title),
-          "aria-pressed": String((store.state.mode || "grille") === value),
+          "aria-pressed": String((store.state[cle] || "grille") === value),
           dataset: { mode: value },
-          onclick: () => store.set({ mode: value }),
+          onclick: () => store.set({ [cle]: value }),
           textContent: t(label),
         })
       )
     );
   }
+
+  poserSegments("mode-toggle", "mode", "Le rangement de HOME, trente par boîte");
+  poserSegments("go-mode-toggle", "goMode", "Le rangement en boîtes, trente par boîte");
 
   /* ----------------------------- ecouteurs ---------------------------- */
 
@@ -262,10 +279,14 @@ export function createSidebar(ctx) {
     // La disposition suit le meme chemin que la vue : `syncActive` est appelee
     // a chaque changement de filtre, la ou `render()` refait les compteurs sur
     // mille vingt-cinq especes et coute bien trop cher pour trois boutons.
-    const modeToggle = document.getElementById("mode-toggle");
-    if (modeToggle) {
-      const mode = store.state.mode || "grille";
-      for (const button of modeToggle.children) {
+    for (const [id, cle] of [
+      ["mode-toggle", "mode"],
+      ["go-mode-toggle", "goMode"],
+    ]) {
+      const racine = document.getElementById(id);
+      if (!racine) continue;
+      const mode = store.state[cle] || "grille";
+      for (const button of racine.children) {
         button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
       }
     }

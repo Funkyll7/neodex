@@ -499,10 +499,18 @@
                 title="Cocher des cases à partir de captures d'écran de Pokémon HOME filtrées sur GO">
           <span class="toolbar__lire-ico" aria-hidden="true"></span> Lire des captures
         </button>
+        <!-- Les trois memes dispositions que dans le Pokedex HOME, et pour la
+             meme raison : la grille repond a « ou est Machin », les boites
+             repondent a « ou sont mes trous ». Le Pokedex GO se remplit de la
+             meme facon, il merite le meme outil. -->
+        <div class="segmented" id="go-mode-toggle" role="group" aria-label="Disposition"></div>
         <p class="toolbar__count" id="go-count" aria-live="polite"></p>
       </div>
 
       <div id="go-grid" class="grid grid--go" role="list"></div>
+      <!-- Les boites du Pokedex GO. Elles remplacent la grille comme celles de
+           HOME remplacent la sienne : jamais les deux a la fois. -->
+      <div id="go-livingdex" class="livingdex" hidden></div>
       <div id="go-empty" class="empty" hidden>
         <span class="empty__ball" aria-hidden="true"></span>
         <p class="empty__title">Aucun Pokémon ne correspond</p>

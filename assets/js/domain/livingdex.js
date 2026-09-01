@@ -119,24 +119,133 @@ export function rangerEnBoites(especes) {
  * Les espèces qu'aucune chaîne ne nomme — un jeu de données amputé, une
  * référence qui vieillit — forment chacune leur propre ligne. On préfère une
  * ligne d'un seul membre à une espèce qui disparaît de sa collection.
+ *
+ * CHAQUE MEMBRE PORTE SES PROPRES CASES. La ligne les portait seule, et la vue
+ * les redistribuait en comparant `k.espece === espece` — un filtre par membre,
+ * donc un parcours de toutes les cases de la lignée par membre. Surtout, ce
+ * découpage ne savait pas se faire ailleurs : le Pokédex GO range plusieurs
+ * boîtes sous une même espèce — Miaouss de Kanto, d'Alola et de Galar — et
+ * comparer l'espèce les aurait fondues en un seul bloc de six cases sans nom.
  */
 export function rangerEnFamilles(especes, chaines) {
   const parId = new Map(especes.map((e) => [e.id, e]));
+  return lignerParFamille(
+    [...parId.values()],
+    chaines,
+    (espece) => espece.id,
+    (espece) => [{ espece, entree: null, cases: casesDe(espece) }]
+  );
+}
+
+/* ===================================================================== */
+/*                          LE MÊME, POUR GO                             */
+/* ===================================================================== */
+
+/**
+ * Les cases cochables d'une entrée du Pokédex GO.
+ *
+ * DEUX CASES AU PLUS, ET SOUVENT UNE SEULE. Le Pokédex GO ne connaît ni les
+ * sexes, ni les Méga, ni les Gigamax : une boîte y vaut « attrapé » et, quand
+ * le jeu l'a sorti, « chromatique ». Recopier `casesDe` aurait fabriqué quatre
+ * cases dont deux n'existent nulle part.
+ *
+ * UNE ENTRÉE PAS ENCORE SORTIE N'A AUCUNE CASE. Ce n'est pas un trou qu'on
+ * pourrait combler, c'est un Pokémon que le jeu ne propose pas — le compter
+ * comme manquant aurait fait porter aux boîtes une centaine de cases
+ * impossibles, exactement le piège que les espèces sans chromatique tendent
+ * dans l'autre Pokédex. La grille continue de les montrer, elle, parce que
+ * savoir ce qui manque AU JEU fait partie de ce qu'on vient y chercher.
+ */
+export function casesDeGo(entree) {
+  if (!entree.released) return [];
+  const commun = {
+    espece: entree.species,
+    entree,
+    // Le sujet dit quelle image dessiner, et les trois valeurs sont celles de
+    // `casesDe` : la vue n'a donc rien à savoir du Pokédex dont vient la case.
+    sujet: entree.form ? "forme" : entree.variant ? "cosmetique" : "espece",
+    forme: entree.form || null,
+    variant: entree.variant || null,
+    // Pas de ♂ / ♀ dans GO : la pastille de sexe ne se pose jamais ici.
+    genre: null,
+  };
+  const cases = [{ ...commun, slot: entree.slot, chromatique: false }];
+  if (entree.shiny) cases.push({ ...commun, slot: entree.shinySlot, chromatique: true });
+  return cases;
+}
+
+/**
+ * Le rangement en boîtes du Pokédex GO.
+ *
+ * L'ordre est celui de la grille GO : le numéro national, et les formes d'une
+ * espèce juste après elle. C'est celui dans lequel le jeu lui-même les range.
+ */
+export function rangerGoEnBoites(entrees) {
+  const cases = entrees.flatMap(casesDeGo);
+  const boites = [];
+  for (let i = 0; i < cases.length; i += PAR_BOITE) {
+    const lot = cases.slice(i, i + PAR_BOITE);
+    while (lot.length < PAR_BOITE) lot.push(null);
+    boites.push({ numero: boites.length + 1, cases: lot });
+  }
+  return boites;
+}
+
+/**
+ * Les entrées GO, une lignée par ligne.
+ *
+ * UN MEMBRE PAR BOÎTE, PAS PAR ESPÈCE. Le Miaouss de Kanto, celui d'Alola et
+ * celui de Galar sont trois boîtes du jeu ; les fondre sous un seul « Miaouss »
+ * aurait affiché six cases sans dire laquelle appartient à quoi.
+ */
+export function rangerGoEnFamilles(entrees, chaines) {
+  const parEspece = new Map();
+  for (const entree of entrees) {
+    if (!casesDeGo(entree).length) continue;
+    const id = entree.species.id;
+    if (!parEspece.has(id)) parEspece.set(id, []);
+    parEspece.get(id).push(entree);
+  }
+  return lignerParFamille(
+    [...parEspece.values()],
+    chaines,
+    (lot) => lot[0].species.id,
+    (lot) => lot.map((entree) => ({ espece: entree.species, entree, cases: casesDeGo(entree) }))
+  );
+}
+
+/**
+ * Le squelette commun aux deux rangements par famille.
+ *
+ * Il ne connaît ni les espèces ni les entrées : `numero` lui dit à quel numéro
+ * national rattacher un élément, `membrer` lui dit quoi en tirer. C'est tout ce
+ * qui différait entre les deux versions, et les écrire deux fois aurait laissé
+ * deux tris et deux gestions du reliquat à garder d'accord.
+ */
+function lignerParFamille(elements, chaines, numero, membrer) {
+  const parId = new Map(elements.map((x) => [numero(x), x]));
   const placees = new Set();
   const lignes = [];
 
+  const ligne = (elems) => {
+    const membres = elems.flatMap(membrer);
+    return { membres, cases: membres.flatMap((m) => m.cases) };
+  };
+
   for (const chaine of chaines) {
-    const membres = chaine.map((id) => parId.get(id)).filter(Boolean);
-    if (!membres.length) continue;
-    for (const m of membres) placees.add(m.id);
-    lignes.push({ membres, cases: membres.flatMap(casesDe) });
+    const elems = chaine.map((id) => parId.get(id)).filter(Boolean);
+    if (!elems.length) continue;
+    for (const e of elems) placees.add(numero(e));
+    lignes.push(ligne(elems));
   }
-  for (const espece of parId.values()) {
-    if (placees.has(espece.id)) continue;
-    lignes.push({ membres: [espece], cases: casesDe(espece) });
+  for (const [id, elem] of parId) {
+    if (placees.has(id)) continue;
+    lignes.push(ligne([elem]));
   }
   // Rangées par le premier numéro : la liste se parcourt comme le Pokédex.
-  return lignes.sort((a, b) => a.membres[0].id - b.membres[0].id);
+  return lignes
+    .filter((l) => l.membres.length)
+    .sort((a, b) => a.membres[0].espece.id - b.membres[0].espece.id);
 }
 
 /**

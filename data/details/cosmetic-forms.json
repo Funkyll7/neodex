@@ -1,10 +1,9 @@
 {
- "_comment": "Formes cosmetiques : celles que PokeAPI n'expose pas comme des entrees /pokemon distinctes (elles n'ont pas d'id > 10000) et que tools/build_forms.py ne peut donc pas generer. Ecrit a la main. Cle = numero national. Champs d'un groupe : title, base (la variante qui EST la forme par defaut de l'espece — elle reutilise les cases om/sm au lieu d'avoir les siennes), where, note, layout ('compact' | 'wide'), fold (replie par defaut), info (1 = aucune case a cocher), spriteSet ('classic' = sprites/pokemon/ au lieu des sprites HOME), gm/nogm (jeux, sinon suit l'espece). Champs d'une variante : key (suffixe du sprite PokeAPI), name, short (libelle de la grille), where, noshiny (1 = verrouille chromatique), nosprite (1 = aucun sprite propre, on retombe sur l'espece).",
+ "_comment": "Formes cosmetiques : celles que PokeAPI n'expose pas comme des entrees /pokemon distinctes (elles n'ont pas d'id > 10000) et que tools/build_forms.py ne peut donc pas generer. Ecrit a la main. Cle = numero national. Champs d'un groupe : title, base (la variante qui EST la forme par defaut de l'espece — elle reutilise les cases om/sm au lieu d'avoir les siennes), where, note, layout ('compact' | 'wide'), fold (replie par defaut), info (1 = aucune case a cocher), spriteSet ('classic' = sprites/pokemon/ au lieu des sprites HOME ; posable aussi sur une variante, qui prime alors sur le groupe), gm/nogm (jeux, sinon suit l'espece). Champs d'une variante : key (suffixe du sprite PokeAPI), name, short (libelle de la grille), where, noshiny (1 = verrouille chromatique), nosprite (1 = aucun sprite propre, on retombe sur l'espece).",
  "groups": {
   "25": {
    "title": "Casquettes et tenues de Pikachu",
    "layout": "wide",
-   "spriteSet": "classic",
    "where": "Toutes ces tenues viennent de distributions officielles : aucune ne se rencontre en jeu. Les casquettes rejouent celles de Sacha dans chaque région, la série Cosplayeur vient des Concours de Hoenn dans Rubis Oméga / Saphir Alpha.",
    "note": "Trois régimes différents. Les six Pikachu Cosplayeur des Concours de Hoenn ne peuvent ni évoluer, ni être échangés, ni quitter Rubis Oméga / Saphir Alpha : ils n'entrent pas dans HOME, il n'y a rien à cocher. Les sept casquettes régionales n'ont été distribuées qu'en version normale, leur case chromatique reste barrée. Seul le Pikachu Casquette Partenaire a un chromatique distribué : un chromatique qui ne change aucune couleur, mais qui déclenche bien les particules.",
    "forms": [
@@ -76,6 +75,7 @@
      "name": "Pikachu Rockeur",
      "short": "Rockeur",
      "sprite": "10080",
+     "spriteSet": "classic",
      "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Robustesse.",
      "noentry": 1
     },
@@ -84,6 +84,7 @@
      "name": "Pikachu Lady",
      "short": "Lady",
      "sprite": "10081",
+     "spriteSet": "classic",
      "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Grâce.",
      "noentry": 1
     },
@@ -92,6 +93,7 @@
      "name": "Pikachu Star",
      "short": "Star",
      "sprite": "10082",
+     "spriteSet": "classic",
      "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Beauté.",
      "noentry": 1
     },
@@ -100,6 +102,7 @@
      "name": "Pikachu Docteur",
      "short": "Docteur",
      "sprite": "10083",
+     "spriteSet": "classic",
      "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Intelligence.",
      "noentry": 1
     },
@@ -108,6 +111,7 @@
      "name": "Pikachu Catcheur",
      "short": "Catcheur",
      "sprite": "10084",
+     "spriteSet": "classic",
      "where": "Concours Rubis Oméga / Saphir Alpha, catégorie Sang-froid.",
      "noentry": 1
     },
@@ -116,6 +120,7 @@
      "name": "Pikachu Cosplayeur",
      "short": "Cosplayeur",
      "sprite": "10085",
+     "spriteSet": "classic",
      "where": "Pikachu Cosplayeur de base, remis avant le premier Concours de Hoenn.",
      "noentry": 1
     }

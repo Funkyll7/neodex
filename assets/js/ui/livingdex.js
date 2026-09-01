@@ -20,19 +20,31 @@
  */
 
 import { el, fill } from "../core/dom.js";
-import { t, nomEspece, nomForme, nomCosmetique } from "../core/i18n.js";
+import { t, nomEspece, nomForme, nomCosmetique, nomEntreeGo } from "../core/i18n.js";
 import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
-import { rangerEnBoites, rangerEnFamilles, compter } from "../domain/livingdex.js";
+import {
+  rangerEnBoites,
+  rangerEnFamilles,
+  rangerGoEnBoites,
+  rangerGoEnFamilles,
+  compter,
+} from "../domain/livingdex.js";
 
 /**
  * Dessine la vue.
  *
+ * UNE SEULE VUE POUR LES DEUX POKÉDEX. Les cases de GO ont exactement la forme
+ * de celles de HOME — un sujet, un créneau, une teinte —, et c'est le
+ * rangement, en amont, qui diffère. Écrire une seconde vue aurait dupliqué la
+ * case, la boîte, la lignée et leurs trois états pour ne changer que la source.
+ *
  * @param {HTMLElement} racine
- * @param {Object} ctx `{ especes, chaines, collection, ordre, surChoix }`
+ * @param {Object} ctx `{ dex, especes, entrees, chaines, collection, ordre, surChoix }`
  */
 export function renderLivingDex(racine, ctx) {
   if (!racine) return;
-  const { especes, chaines, collection, ordre, surChoix } = ctx;
+  const { dex = "home", especes, entrees, chaines, collection, ordre, surChoix } = ctx;
+  const go = dex === "go";
 
   // UNE CASE DE LA VUE EST UNE CASE DE LA COLLECTION. Pas d'agrégat, pas de
   // « au moins une des deux » : on lit exactement le créneau que la case porte,
@@ -41,12 +53,12 @@ export function renderLivingDex(racine, ctx) {
 
   racine.dataset.ordre = ordre;
   if (ordre === "famille") {
-    const lignes = rangerEnFamilles(especes, chaines);
+    const lignes = go ? rangerGoEnFamilles(entrees, chaines) : rangerEnFamilles(especes, chaines);
     fill(racine, lignes.map((ligne) => ligneDeFamille(ligne, pris, surChoix)));
     return;
   }
 
-  const boites = rangerEnBoites(especes);
+  const boites = go ? rangerGoEnBoites(entrees) : rangerEnBoites(especes);
   fill(
     racine,
     boites.map((boite) => {
@@ -80,7 +92,7 @@ function ligneDeFamille(ligne, pris, surChoix) {
     "section.lignee" + (c.manquantes === 0 ? ".lignee--faite" : ""),
     el(
       "header.lignee__tete",
-      el("h3.lignee__nom", nomEspece(ligne.membres[0])),
+      el("h3.lignee__nom", nomEspece(ligne.membres[0].espece)),
       el("span.lignee__compte", `${c.faites} / ${c.total}`)
     ),
     el(
@@ -90,21 +102,35 @@ function ligneDeFamille(ligne, pris, surChoix) {
       // gouttière plus large que celle qui sépare les deux cases d'un même
       // Pokémon : c'est ce qui fait lire « Bulbizarre, puis Herbizarre » plutôt
       // qu'une file de six vignettes.
-      ligne.membres.map((espece) =>
+      //
+      // Le membre apporte SES cases, il ne les cherche plus dans celles de la
+      // lignée : c'est ce qui permet aux trois Miaouss du Pokédex GO d'être
+      // trois membres nommés plutôt qu'un bloc de six cases anonymes.
+      ligne.membres.map((membre) =>
         el(
           "div.lignee__membre",
-          el("div.lignee__paire", ligne.cases
-            .filter((k) => k.espece === espece)
-            .map((k) => caseOuVide(k, pris, surChoix))),
-          el("span.lignee__nom-membre", nomEspece(espece))
+          el("div.lignee__paire", membre.cases.map((k) => caseOuVide(k, pris, surChoix))),
+          el("span.lignee__nom-membre", nomDeMembre(membre))
         )
       )
     )
   );
 }
 
+/**
+ * Le nom sous un membre d'une lignée.
+ *
+ * Le Pokédex GO range des BOÎTES et non des espèces : sous une case de Miaouss
+ * d'Alola il faut lire « Miaouss d'Alola », pas « Miaouss ». `nomEntreeGo` sait
+ * déjà le composer — c'est celui que la grille GO affiche.
+ */
+function nomDeMembre(membre) {
+  return membre.entree ? nomEntreeGo(membre.entree) : nomEspece(membre.espece);
+}
+
 /** Le nom de ce que porte une case : l'espèce, sa variante ou sa forme. */
 function nomDe(k) {
+  if (k.entree) return nomEntreeGo(k.entree);
   const genre = k.genre === "f" ? " ♀" : k.genre === "m" ? " ♂" : "";
   if (k.sujet === "forme") return nomForme(k.forme) + genre;
   if (k.sujet === "cosmetique") return nomCosmetique(k.variant.name);

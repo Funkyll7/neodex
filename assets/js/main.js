@@ -47,7 +47,7 @@ import { nomEspece, nomForme, t } from "./core/i18n.js";
 
 const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view", "mode"];
 /** Les filtres du Pokedex GO, qui ne pilotent que sa grille a lui. */
-const GO_KEYS = ["goSearch", "goGen", "goStatus", "goType"];
+const GO_KEYS = ["goSearch", "goGen", "goStatus", "goType", "goMode"];
 
 migrateStorage();
 initTheme();
@@ -140,6 +140,10 @@ function start(dataset) {
     goSearch: "",
     goGen: "all",
     goType: "all",
+    // La disposition du Pokedex GO, separee de celle de HOME : regarder ses
+    // boites de HOME ne dit rien de la facon dont on veut regarder GO, et un
+    // reglage commun aurait fait basculer les deux d un seul clic.
+    goMode: "grille",
     goStatus: "all",
     ...loadFilters(),
     ...loadQuestState(),
@@ -885,7 +889,14 @@ function createFolds() {
  * n'est PAS gardee : c'est une intention du moment, la retrouver au retour
  * ferait croire a une liste vide.
  */
-const FILTRES_GARDES = ["type", "gen", "game", "form", "sort", "status", "view", "goGen", "goType", "goStatus", "tab"];
+const FILTRES_GARDES = [
+  "type", "gen", "game", "form", "sort", "status", "view",
+  "goGen", "goType", "goStatus", "tab",
+  // LES DEUX DISPOSITIONS SE GARDENT AUSSI. `mode` disait deja, en commentaire,
+  // qu on la retrouvait en revenant — elle ne figurait simplement pas ici, et
+  // chaque visite repartait donc en grille. `goMode` arrive avec la sienne.
+  "mode", "goMode",
+];
 /** Le dernier Pokemon consulte : rouvrir le site le retrouve ouvert. */
 const DERNIER = "selectedId";
 

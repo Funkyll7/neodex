@@ -1,4 +1,4 @@
-/**
+﻿/**
  * sw.js — cache hors ligne.
  *
  * Le site sert a cocher des cases pendant qu'on joue : sur telephone, dans le
@@ -40,7 +40,7 @@
    v19 : l'installation pre-cache enfin TOUS les modules, et non le seul
         main.js. La liste est lue dans les `modulepreload` d'index.html
         plutot que recopiee : une seule liste a tenir juste. */
-const VERSION = "funkylldex-v94";
+const VERSION = "funkylldex-v95";
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const SPRITES = `${VERSION}-sprites`;

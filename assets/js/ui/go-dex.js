@@ -31,11 +31,13 @@ import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { applyGoFilters } from "../domain/filters.js";
 import { goProgressOf } from "../domain/progress.js";
 import { dexNumber, typeInk } from "./common.js";
+import { renderLivingDex } from "./livingdex.js";
 import { nomEntreeGo, nomType, t, tn } from "../core/i18n.js";
 
 export function createGoDex(ctx) {
   const { store, collection, dataset } = ctx;
   const grid = document.getElementById("go-grid");
+  const boites = document.getElementById("go-livingdex");
   const empty = document.getElementById("go-empty");
   const sentinel = document.getElementById("go-sentinel");
   const counter = document.getElementById("go-count");
@@ -123,16 +125,51 @@ export function createGoDex(ctx) {
     return progress;
   }
 
-  return {
+  // Un objet nomme plutot qu un litteral rendu directement : `refresh` doit
+  // pouvoir rappeler `render`, et passer par `this` aurait lie le module a la
+  // facon dont l appelant l invoque.
+  const api = {
     /** Rendu complet : la liste filtrée a changé. */
     render() {
+      renderStats();
+      if (typeSelect.value !== store.state.goType) typeSelect.value = store.state.goType;
+
+      // GRILLE OU BOÎTES, JAMAIS LES DEUX — même règle que dans le Pokédex
+      // HOME, et pour la même raison : les deux dispositions montrent le même
+      // Pokédex, et les afficher ensemble aurait doublé un millier de sprites
+      // pour rien.
+      const mode = store.state.goMode || "grille";
+      const enBoites = mode !== "grille";
+      grid.hidden = enBoites;
+      if (boites) boites.hidden = !enBoites;
+
+      if (enBoites) {
+        // L'état vide et le compteur parlent de la GRILLE — d'un filtre qui ne
+        // laisse rien passer. Les boîtes ignorant les filtres, les laisser
+        // affichés aurait annoncé « 0 résultat » au-dessus de mille cases.
+        empty.hidden = true;
+        counter.textContent = "";
+        // LES BOÎTES IGNORENT LES FILTRES. Elles existent pour montrer les
+        // trous À LEUR PLACE ; en retirer les trois quarts parce qu'un filtre
+        // de type est actif aurait détruit le seul intérêt de la vue.
+        renderLivingDex(boites, {
+          dex: "go",
+          entrees: dataset.goEntries,
+          chaines: dataset.chaines,
+          collection,
+          ordre: mode === "familles" ? "famille" : "numero",
+          // Le clic COCHE, et il passe par le même chemin que les boutons de la
+          // grille : de quoi annuler, la note, la synchronisation.
+          surChoix: (id, slot) => ctx.onGoToggle(id, slot),
+        });
+        return;
+      }
+
       list = applyGoFilters(dataset.goEntries, store.state, collection);
       shown = 0;
       grid.replaceChildren();
       empty.hidden = list.length > 0;
       counter.textContent = `${list.length} ${tn(list.length, "résultat", "résultats")}`;
-      if (typeSelect.value !== store.state.goType) typeSelect.value = store.state.goType;
-      renderStats();
       appendPage();
       rearmer();
     },
@@ -146,6 +183,13 @@ export function createGoDex(ctx) {
      */
     refresh(id, slot) {
       renderStats();
+      // En boîtes, la vignette repeinte n'existe pas : c'est une case, et elle
+      // vit dans un arbre que `renderLivingDex` reconstruit d'un bloc. Même
+      // chemin que le Pokédex HOME, qui refait ses boîtes de la même façon.
+      if ((store.state.goMode || "grille") !== "grille") {
+        api.render();
+        return;
+      }
       const entry = list.find((e) => e.id === id && (e.slot === slot || e.shinySlot === slot));
       if (!entry) return;
       const node = grid.querySelector(`[data-key="${entry.key}"]`);
@@ -170,6 +214,8 @@ export function createGoDex(ctx) {
       rearmer();
     },
   };
+
+  return api;
 }
 
 /* -------------------------------- vignette ------------------------------- */
