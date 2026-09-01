@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-09-01T11:53:37.205Z",
+ "updatedAt": "2026-09-01T11:54:11.213Z",
  "source": "site Funkylldex",
  "marks": {
   "1": {
@@ -130,7 +130,8 @@
    "x25-hoenn-cap": 1,
    "x25-unova-cap": 1,
    "x25-sinnoh-cap": 1,
-   "x25-kalos-cap": 1
+   "x25-kalos-cap": 1,
+   "gn": 1
   },
   "26": {
    "om": 1,
