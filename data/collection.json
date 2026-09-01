@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-09-01T11:58:17.869Z",
+ "updatedAt": "2026-09-01T11:58:24.735Z",
  "source": "site Funkylldex",
  "marks": {
   "1": {
@@ -2662,7 +2662,8 @@
    "x669-blue": 1,
    "y669-blue": 1,
    "x669-white": 1,
-   "y669-white": 1
+   "y669-white": 1,
+   "gn": 1
   },
   "670": {
    "sm": 1,
