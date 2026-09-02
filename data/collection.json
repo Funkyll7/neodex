@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-09-02T14:07:51.193Z",
+ "updatedAt": "2026-09-02T14:08:11.249Z",
  "source": "site Funkylldex",
  "marks": {
   "1": {
@@ -219,7 +219,8 @@
   "42": {
    "om": 1,
    "sm": 1,
-   "of": 1
+   "of": 1,
+   "gn": 1
   },
   "43": {
    "om": 1,
