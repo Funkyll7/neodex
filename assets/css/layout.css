@@ -138,9 +138,17 @@
 /* ------------------------- Tablette et paysage --------------------------- */
 @media (max-width: 1180px) {
   .dex { grid-template-columns: minmax(0, 1fr); }
-  /* En une colonne la fiche passe sous la grille : on garde la liste en tete,
-     et ui/detail-panel.js fait defiler jusqu'a la fiche quand on choisit une
-     vignette. */
+  /* En une colonne la fiche passe SOUS la grille : on garde la liste en tete,
+     et choisir une vignette ne montre donc plus rien — la fiche est a plusieurs
+     milliers de pixels. C'est `ui/detail-panel.js` qui y emmene : il fait
+     defiler jusqu'a `.detail` entre 861 et 1180 px, c'est-a-dire ici meme et
+     tant que la feuille plein ecran (860 px) ne prend pas le relais.
+
+     Ce commentaire a longtemps decrit ce defilement comme acquis alors qu'il
+     n'avait jamais ete ecrit : sur cette plage de largeurs, cliquer une
+     vignette selectionnait bien l'espece mais paraissait sans effet. Le
+     `scroll-margin-top` ci-dessous, lui, l'attendait depuis le debut — il ne
+     servait a rien tant qu'aucun `scrollIntoView` ne visait la fiche. */
   .detail {
     position: static;
     max-height: none;

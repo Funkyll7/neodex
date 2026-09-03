@@ -46,6 +46,19 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "5.2",
+    date: "2026-09-03",
+    titre: "Ce qui manquait, ce qui clochait",
+    notes: [
+      ["ajout", "« Chasser celui-ci » dans la fiche : on choisit enfin sa chasse, au lieu de subir un tirage au sort."],
+      ["ajout", "Un appui long, un clic droit ou un Ctrl+clic ouvre la fiche depuis une case de boîte — le clic simple coche toujours."],
+      ["ajout", "Cet appareil porte un nom, et le journal dit « Reçu de : … » au lieu de « Reçu d'un autre appareil »."],
+      ["correction", "Deux onglets du même navigateur s'ignoraient : ils se préviennent, et le second n'écrase plus le travail du premier."],
+      ["correction", "Entre 861 et 1180 px de large, choisir une vignette semblait ne rien faire : la fiche s'ouvrait sous la grille sans qu'on y aille."],
+      ["correction", "Dans les réglages, cliquer le titre d'un interrupteur ne le basculait pas."],
+    ],
+  },
+  {
     version: "5.1",
     date: "2026-08-30",
     titre: "Les boîtes de HOME",

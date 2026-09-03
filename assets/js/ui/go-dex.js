@@ -161,6 +161,16 @@ export function createGoDex(ctx) {
           // Le clic COCHE, et il passe par le même chemin que les boutons de la
           // grille : de quoi annuler, la note, la synchronisation.
           surChoix: (id, slot) => ctx.onGoToggle(id, slot),
+          // Le second geste ouvre la fiche — et ON CHANGE D'ONGLET AVEC ELLE.
+          // Il n'existe pas de fiche propre au Pokédex GO : celle du Pokédex
+          // HOME est la seule, elle vit dans l'autre panneau, et se contenter
+          // de la sélectionner d'ici aurait mis à jour un panneau resté caché.
+          // Le geste n'aurait alors eu l'air de rien faire du tout.
+          //
+          // Une entrée GO porte le numéro national de son espèce, y compris
+          // pour les formes régionales : la fiche ouverte est bien celle du
+          // Pokémon qu'on tient sous le doigt.
+          surFiche: (id) => store.set({ tab: "dex", selectedId: id }),
         });
         return;
       }

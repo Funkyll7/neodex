@@ -229,7 +229,9 @@ export class Collection {
     if (Object.keys(next).length) this.local[key] = next;
     else this.local[key] = {};
     writeLocal(this.local);
-    if (this.surEcritureLocale) this.surEcritureLocale();
+    // « local » : c'est NOUS qui venons de cocher. Voir `resetLocal` pour ce
+    // que cette etiquette decide.
+    if (this.surEcritureLocale) this.surEcritureLocale("local");
     return next;
   }
 
@@ -379,11 +381,53 @@ export class Collection {
     }
     this.local = local;
     writeLocal(this.local);
-    if (this.surEcritureLocale) this.surEcritureLocale();
+    // « depot » et non « local » : ce qui vient de bouger, c'est l'ANCETRE, et
+    // il ne vit que dans cette page. Un onglet voisin prevenu ici relirait un
+    // `local` vide contre sa propre `base` restee en arriere, et verrait ses
+    // cases en attente disparaitre. Voir `resetLocal`.
+    if (this.surEcritureLocale) this.surEcritureLocale("depot");
 
     // Un RAPPORT et non un booleen : « Mis a jour depuis le depot » ne disait
     // pas QUOI, et c est justement ce qu on veut savoir en rentrant chez soi.
     // Il reste faux quand rien n a bouge, donc aucun appelant ne change.
+    return rapportDeChangement(avant, this.toExport("comparaison").marks, this.dataset);
+  }
+
+  /**
+   * Relit la couche locale TELLE QU'ELLE EST DANS LE STOCKAGE, et dit ce qui a
+   * bouge.
+   *
+   * Sert quand un autre onglet du meme navigateur vient d'ecrire.
+   * `localStorage` est commun a tous les onglets, mais `this.local` n'en est
+   * qu'une copie, prise au chargement, que rien ne rafraichit : deux onglets,
+   * deux copies qui divergent. Et le degat ne se limite pas a l'affichage — le
+   * prochain `toggle()` d'ici reecrirait NOTRE copie perimee par-dessus la
+   * leur, effacant la case cochee a cote. Voir core/jumeaux.js pour le signal
+   * qui declenche cette relecture.
+   *
+   * NI ECRITURE NI NOTIFICATION, et les deux absences sont voulues. Ce n'est pas
+   * une modification, c'est une RELECTURE de ce que le stockage contient deja :
+   * reecrire n'aurait rien change au contenu mais aurait reveille les voisins,
+   * donc fait rebondir le signal d'un onglet a l'autre sans fin ; et prevenir
+   * `surEcritureLocale` aurait fait noter au journal, comme cochees ici, des
+   * cases cochees ailleurs.
+   *
+   * `this.base` n'est PAS touche : l'ancetre de la fusion a trois voies est ce
+   * que le DEPOT contenait a la derniere lecture, et un onglet voisin n'est pas
+   * le depot. Y toucher aurait fait passer pour « deja envoye » ce qui attend
+   * encore de partir.
+   *
+   * @returns {object|null} le rapport des cases qui ont bouge, `null` si rien —
+   *   meme convention que `adopterDistant`, pour la meme raison.
+   */
+  relireCoucheLocale() {
+    const avant = this.toExport("comparaison").marks;
+    this.local = readLocal();
+    // Le voisin peut tourner sur une version plus ancienne du site — un onglet
+    // ouvert depuis des jours, servi par le cache hors ligne — et donc ecrire
+    // encore des cases heritees. On les convertit en memoire sans les
+    // reecrire : cette methode ne touche pas au stockage.
+    if (this.dataset) migrateLayer(this.local, this.dataset);
     return rapportDeChangement(avant, this.toExport("comparaison").marks, this.dataset);
   }
 
@@ -463,7 +507,7 @@ export class Collection {
     // Le fichier importe peut dater d'avant la migration des cases heritees.
     if (this.dataset) migrateLayer(this.local, this.dataset);
     writeLocal(this.local);
-    if (this.surEcritureLocale) this.surEcritureLocale();
+    if (this.surEcritureLocale) this.surEcritureLocale("local");
   }
 
   /**
@@ -478,13 +522,29 @@ export class Collection {
     if (this.dataset) migrateLayer(this.base, this.dataset);
     this.local = {};
     writeLocal(this.local);
-    if (this.surEcritureLocale) this.surEcritureLocale();
+    // « depot », meme raison que dans `adopterDistant` : l'ancetre a bouge.
+    if (this.surEcritureLocale) this.surEcritureLocale("depot");
   }
 
-  /** Oublie les modifications locales et revient au fichier de reference. */
+  /**
+   * Oublie les modifications locales et revient au fichier de reference.
+   *
+   * IL PREVIENT, LUI AUSSI. C'etait le seul point d'ecriture de la couche
+   * locale a ne pas le faire — `toggle`, `replaceLocal`, `commitLocal` et
+   * `adopterDistant` appellent tous le crochet. L'oubli ne se voyait pas tant
+   * que personne n'ecoutait ; depuis que les onglets jumeaux le font, il coute
+   * cher : le voisin gardait en memoire une couche locale qu'on vient
+   * d'effacer, et sa prochaine coche la reecrivait ENTIERE dans le stockage.
+   * Les cases qu'on croyait avoir remises a zero ressuscitaient sans un mot.
+   *
+   * L'ETIQUETTE EST « local » parce que c'est bien de cette page que vient le
+   * geste, et parce que le voisin doit relire le stockage — c'est exactement
+   * ce que `local` declenche chez lui.
+   */
   resetLocal() {
     this.local = {};
     localStorage.removeItem(CONFIG.storage.marks);
+    if (this.surEcritureLocale) this.surEcritureLocale("local");
   }
 }
 

@@ -2268,6 +2268,10 @@
     "Remettre dans le décompte": "Count it again",
     "Sortir cette espèce du décompte, sans toucher à ses cases.": "Take this species out of the count, without touching its boxes.",
     "Cette espèce est sortie du décompte. Ses cases sont conservées.": "This species is out of the count. Its boxes are kept.",
+    "Chasser celui-ci": "Hunt this one",
+    "Reprendre la chasse": "Resume the hunt",
+    "Ouvrir l'onglet Quêtes et commencer la chasse à son chromatique.": "Open the Quests tab and start hunting its shiny.",
+    "Une chasse est déjà ouverte sur cette espèce : reprendre son compteur.": "A hunt is already open on this species: go back to its counter.",
     "Mise hors d'atteinte": "Marked out of reach",
     "Remise dans le décompte": "Counted again",
     "Il faut le succès": "Requires the achievement",
@@ -2332,6 +2336,7 @@
     "Boîtes": "Boxes",
     "Familles": "Families",
     "Boîte": "Box",
+    "appui long ou clic droit pour ouvrir la fiche": "long press or right-click to open the entry",
     "La liste, filtrable et triable": "The list, filterable and sortable",
     "Le rangement de HOME, trente par boîte": "HOME's storage, thirty to a box",
     "Le rangement en boîtes, trente par boîte": "Boxed storage, thirty to a box",
@@ -2465,6 +2470,7 @@
     "Hier": "Yesterday",
     "Envoyé au dépôt": "Sent to the repository",
     "Reçu d'un autre appareil": "Received from another device",
+    "Reçu de": "Received from",
     "Rien pour l'instant. Ce journal se remplit dès que tu coches une case, et à chaque changement venu d'un autre appareil.": "Nothing yet. This log fills up as soon as you check a box, and with every change coming from another device.",
     "modifications": "changes",
     "Vider": "Clear",
@@ -2688,6 +2694,11 @@
     "Un retour discret à chaque case cochée, plus marqué pour un chromatique.": "A discreet cue on every box you tick, a louder one for a shiny.",
     "Mode compact": "Compact mode",
     "Des vignettes réduites au sprite, au numéro et aux cases : on en voit trois fois plus d'un coup d'œil.": "Thumbnails cut back to the sprite, the number and the boxes: three times as many at a glance.",
+    "Nom de cet appareil": "This device's name",
+    "Il accompagne chaque envoi vers le dépôt : les autres appareils liront « Reçu de » suivi de ce nom dans leur journal. Vide, il se devine tout seul.": "It travels with every save to the repository: your other devices will read “Received from” followed by this name in their log. Left empty, it is guessed for you.",
+    "téléphone": "phone",
+    "tablette": "tablet",
+    "ordinateur": "computer",
     "Ces réglages restent dans ce navigateur : ils ne suivent pas ta collection d'un appareil à l'autre.": "These settings stay in this browser: they do not follow your collection from one device to another.",
     "Annulé": "Undone",
     "encore": "still",
@@ -3132,6 +3143,7 @@
     "Colle un jeton GitHub à portée limitée pour que tes cases cochées\n          partent directement dans le dépôt, sans exporter.": "Paste a fine-grained GitHub token so your ticked boxes\n          go straight to the repository, with no export step.",
     "Emplacements et méthodes sourcés sur Poképédia (FR) et Bulbapedia (EN). Sprites : PokeAPI. Sprites en pixels du thème « Pixels » : PokeAPI, le": "Locations and methods sourced from Poképédia (FR) and Bulbapedia (EN). Sprites: PokeAPI. Pixel sprites for the « Pixels » theme: PokeAPI, the",
     ", et — pour les Méga-Évolutions de Méga-Dimension, que personne d'autre ne couvre —": ", and — for the Mega Dimension Mega Evolutions nobody else covers —",
-    ", ainsi que d'autres membres de la communauté. Tous dessinés à la main par des fans.": ", along with other members of the community. All hand-drawn by fans."
+    ", ainsi que d'autres membres de la communauté. Tous dessinés à la main par des fans.": ", along with other members of the community. All hand-drawn by fans.",
+    "Mis à jour depuis un autre onglet.": "Updated from another tab."
   }
 }

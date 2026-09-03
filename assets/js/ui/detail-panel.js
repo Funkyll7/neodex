@@ -20,7 +20,8 @@ import { el, fill } from "../core/dom.js";
 import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
 import { completionOf } from "../domain/completion.js";
-import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl } from "./common.js";
+import { chassesOuvertes } from "../domain/quetes.js";
+import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl, defilementDoux } from "./common.js";
 import { nomEspece, nomCategorie, nomCosmetique, nomForme, lieuEspece, noteDonnees, texteChasse, deuxPoints, enAnglais, t, tn } from "../core/i18n.js";
 import { embleme } from "./symboles-jeux.js";
 
@@ -29,12 +30,72 @@ export function createDetailPanel(ctx) {
   const sheet = createSheet(root, ctx);
   let shownId = null;
 
+  /**
+   * LA PLAGE OU LA FICHE EST LOIN ET OU RIEN N'Y EMMENE.
+   *
+   * Les deux bornes sortent de assets/css/layout.css, et il faut qu'elles en
+   * sortent — elles decrivent une disposition, pas un gout :
+   *   - a 1180 px, `@media (max-width: 1180px)` fait passer `.dex` en UNE
+   *     colonne et `.detail` en `position: static`. La fiche quitte le cote de
+   *     la grille et se retrouve SOUS elle, a plusieurs milliers de pixels ;
+   *   - a 860 px, la feuille plein ecran prend le relais (voir `createSheet`) :
+   *     la fiche remonte par-dessus la grille, il n'y a plus rien a faire
+   *     defiler.
+   * Entre les deux, personne ne s'occupait de l'utilisateur : choisir une
+   * vignette selectionnait bien l'espece, mais la fiche restait tout en bas et
+   * le clic paraissait mort.
+   *
+   * `matchMedia` et non une lecture de `innerWidth` : le site suit deja le
+   * redimensionnement, et une largeur relevee une seule fois se serait
+   * desynchronisee du CSS au premier changement d'orientation.
+   */
+  const ficheSousLaGrille = window.matchMedia("(min-width: 861px) and (max-width: 1180px)");
+
+  /**
+   * Emmener a la fiche, quand rien d'autre ne le fait.
+   *
+   * `block: "start"` pose le haut de la fiche en haut de l'ecran ; la marge
+   * vient du `scroll-margin-top` que layout.css porte deja sur `.detail`. Il
+   * attendait ce defilement : sans lui, il ne servait a rien.
+   *
+   * `defilementDoux()` respecte « mouvement reduit » : un defilement pilote en
+   * JavaScript reste doux quoi qu'en dise le CSS, c'est a l'appelant de
+   * demander autre chose.
+   */
+  function allerALaFiche() {
+    if (!ficheSousLaGrille.matches) return;
+    root.scrollIntoView({ block: "start", behavior: defilementDoux() });
+  }
+
   // Un seul ecouteur pour toutes les cases de la fiche, pose une fois pour
   // toutes : aucun bouton ne porte plus son propre `onclick`.
   root.addEventListener("click", (event) => {
     const button = event.target.closest("[data-slot]");
     if (!button || !root.contains(button)) return;
     ctx.onToggle(Number(button.dataset.species), button.dataset.slot);
+  });
+
+  // « Chasser celui-ci » : meme ecoute deleguee que les cases, et pour la meme
+  // raison — l'en-tete est reconstruit a chaque changement de Pokemon.
+  //
+  // Et c'est ICI que le clic doit etre traite, pas dans le bouton lui-meme :
+  // partir vers l'onglet Quetes demande de refermer la feuille mobile, sans
+  // quoi elle resterait posee par-dessus la quete qu'on vient d'ouvrir. `sheet`
+  // ne vit que dans cette portee.
+  root.addEventListener("click", (event) => {
+    const bouton = event.target.closest('[data-role="chasse"]');
+    if (!bouton || !root.contains(bouton)) return;
+    const species = ctx.dataset.byId.get(Number(bouton.dataset.species));
+    if (!species) return;
+
+    // Le jeu est choisi MAINTENANT et non a la construction du bouton : le
+    // filtre de jeu peut avoir change depuis — il ne reconstruit pas la fiche —
+    // et une chasse peut s'etre ouverte entre-temps.
+    const jeu = ctx.planner.jeuPourChasser(species, contexteDeChasse(ctx));
+    if (!jeu) return;
+
+    sheet.close();
+    ctx.store.set({ tab: "quest", quest: { id: species.id, game: jeu } });
   });
 
   return {
@@ -95,7 +156,7 @@ export function createDetailPanel(ctx) {
 
       fill(
         root,
-        head(species, ctx, c1),
+        head(species, ctx),
         collectionSection(species, ctx),
         cosmeticSection(species, ctx),
         cosmeticNotes(species, ctx),
@@ -118,7 +179,15 @@ export function createDetailPanel(ctx) {
       // Choisir une vignette sur telephone ouvre la feuille par-dessus la
       // grille, au lieu de faire descendre la page de plusieurs milliers de
       // pixels jusqu'a la fiche.
-      if (reveal && !sameSpecies) sheet.open();
+      //
+      // Les deux gestes s'excluent par construction : la feuille n'existe qu'a
+      // 860 px et en dessous, le defilement de 861 a 1180. Sur ces trois cent
+      // vingt pixels de largeur — les seuls du site ou cliquer une vignette ne
+      // montrait rien —, c'est le defilement qui repond.
+      if (reveal && !sameSpecies) {
+        sheet.open();
+        allerALaFiche();
+      }
     },
   };
 }
@@ -331,7 +400,11 @@ function head(species, ctx) {
     // ligne d'avancement : il suit l'etat chromatique, et l'en-tete se met a
     // jour sans etre reconstruit.
     el("span.detail__portrait", { dataset: { role: "portrait" }, "aria-hidden": "true" }),
-    boutonHorsAtteinte(species, ctx)
+    // Les deux boutons de l'en-tete sur UNE rangee, et non l'un sous l'autre :
+    // le portrait ci-dessus s'arrete a une hauteur fixe au-dessus du bas de
+    // l'en-tete, calculee pour une seule ligne de boutons. Empiles, ils
+    // auraient rallonge l'en-tete et le portrait serait passe par-dessus.
+    el("div.detail__actions", boutonChasser(species, ctx), boutonHorsAtteinte(species, ctx))
   );
   fillHead(node, species, ctx);
   return node;
@@ -376,6 +449,71 @@ function majBoutonHors(bouton, species, ctx) {
   bouton.title = mis
     ? t("Cette espèce est sortie du décompte. Ses cases sont conservées.")
     : t("Sortir cette espèce du décompte, sans toucher à ses cases.");
+}
+
+/**
+ * « Chasser celui-ci » : ouvrir l'onglet Quetes SUR CETTE ESPECE.
+ *
+ * Il n'existait jusqu'ici aucun moyen de choisir ce qu'on chasse. Les seuls
+ * points qui posaient une quete etaient deux tirages au sort et la reprise
+ * d'une chasse deja ouverte : un onglet entier, avec son compteur, son objectif
+ * et son carnet synchronise, ne s'ouvrait que sur le Pokemon que le hasard
+ * voulait bien proposer. « Je veux chasser celui-la » n'avait pas de bouton.
+ *
+ * LE CHOIX DU JEU N'EST PAS ICI. C'est une regle de jeu — filtre actif, chasse
+ * en cours, meilleur taux — et elle vit dans `HuntPlanner.jeuPourChasser()`.
+ * Cette fonction ne fait que demander s'il en existe un.
+ *
+ * Le bouton n'existe PAS DU TOUT quand la chasse n'a pas de sens : aucun
+ * chromatique n'existe, ou aucun jeu ne permet de le chasser. Pas un bouton
+ * desactive : ce n'est pas une action momentanement indisponible, c'est une
+ * action qui n'a aucun sens pour cette espece, et un bouton grise aurait
+ * laisse croire qu'il manque une condition a remplir.
+ */
+function boutonChasser(species, ctx) {
+  if (species.noShiny) return null;
+  if (!ctx.planner.jeuPourChasser(species, contexteDeChasse(ctx))) return null;
+
+  // Aucun `onclick` : le clic est traite par l'ecoute deleguee de
+  // `createDetailPanel`, seule a pouvoir refermer la feuille mobile.
+  const bouton = el("button.detail__chasse", {
+    type: "button",
+    dataset: { role: "chasse", species: species.id },
+  });
+  majBoutonChasser(bouton, species, ctx);
+  return bouton;
+}
+
+/** L'etat courant dont depend le choix du jeu. Voir `jeuPourChasser()`. */
+function contexteDeChasse(ctx) {
+  return {
+    jeuActif: ctx.store.state.game,
+    ouvertes: chassesOuvertes(ctx.collection.quetes),
+  };
+}
+
+/**
+ * Remet le bouton d'accord avec l'etat de l'espece.
+ *
+ * Appele aussi par `fillHead()`, donc a chaque case cochee : cocher le
+ * chromatique dans la fiche doit faire disparaitre le bouton sur-le-champ, sans
+ * attendre une reconstruction. D'ou `hidden` plutot qu'un retrait du noeud —
+ * l'en-tete n'est pas reconstruit sur ce chemin-la.
+ */
+function majBoutonChasser(bouton, species, ctx) {
+  if (!bouton) return;
+  const obtenu = ctx.collection.isShiny(species.id);
+  bouton.hidden = obtenu;
+  if (obtenu) return;
+
+  // Une chasse ouverte sur cette espece : le bouton ne propose plus d'en
+  // commencer une, il ramene a celle qui compte deja. Le libelle doit le dire,
+  // sinon on croit repartir de zero et on n'ose pas cliquer.
+  const reprise = chassesOuvertes(ctx.collection.quetes).has(species.id);
+  bouton.textContent = reprise ? t("Reprendre la chasse") : t("Chasser celui-ci");
+  bouton.title = reprise
+    ? t("Une chasse est déjà ouverte sur cette espèce : reprendre son compteur.")
+    : t("Ouvrir l'onglet Quêtes et commencer la chasse à son chromatique.");
 }
 
 /**
@@ -435,6 +573,7 @@ function fillHead(node, species, ctx) {
   tag.className = owned ? "detail__tag detail__tag--owned" : "detail__tag";
 
   majBoutonHors(node.querySelector('[data-role="hors"]'), species, ctx);
+  majBoutonChasser(node.querySelector('[data-role="chasse"]'), species, ctx);
 
   // Le portrait suit le chromatique, comme la vignette de la grille : la fiche
   // d'un shiny obtenu doit montrer le shiny, sinon elle contredit l'etiquette

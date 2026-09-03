@@ -244,6 +244,49 @@ export class HuntPlanner {
     return tied[Math.floor(Math.random() * tied.length)].game;
   }
 
+  /**
+   * Le jeu dans lequel proposer de chasser cette espece — le « Chasser
+   * celui-ci » de la fiche.
+   *
+   * Trois sources, dans cet ordre, et l'ordre EST la regle :
+   *
+   *   1. LA CHASSE DEJA OUVERTE, s'il y en a une. Son jeu s'impose, pour la
+   *      raison exacte qui le fait s'imposer dans `roll()` : le compteur de
+   *      rencontres est range par paire espece-jeu. Rouvrir la meme espece dans
+   *      un autre jeu ouvrirait une seconde chasse a zero, et les rencontres
+   *      deja comptees resteraient sous une entree qu'on ne retrouve plus.
+   *   2. LE FILTRE DE JEU ACTIF, quand il designe un jeu ou la chasse a un sens.
+   *      Qui a filtre son Pokedex sur Ecarlate/Violet chasse dans
+   *      Ecarlate/Violet ; lui proposer Or/Argent parce que le taux y est
+   *      meilleur repondrait a une question qu'il n'a pas posee. Aucun test
+   *      special pour « all » : ce n'est le code d'aucun jeu, la recherche dans
+   *      `questGames()` l'ecarte donc toute seule.
+   *   3. LE MEILLEUR TAUX sinon — `bestGame()`, qui classe deja les jeux et
+   *      tire au sort entre les ex aequo.
+   *
+   * `null` quand aucun jeu ne permet la chasse : verrouille partout, ou
+   * disponibilite jamais renseignee. L'appelant n'affiche alors pas le bouton,
+   * plutot que d'emmener vers une quete impossible.
+   *
+   * @param {object} species
+   * @param {object} [options]
+   * @param {string} [options.jeuActif] le filtre de jeu du Pokedex, « all » compris.
+   * @param {Map<number, {jeu: string}>} [options.ouvertes] chasses deja
+   *   commencees, indexees par espece. Voir `chassesOuvertes()` de domain/quetes.js.
+   * @returns {string|null} un code de jeu
+   */
+  jeuPourChasser(species, { jeuActif = "all", ouvertes = null } = {}) {
+    const dejaOuverte = ouvertes && ouvertes.get(species.id);
+    if (dejaOuverte) return dejaOuverte.jeu;
+
+    const possibles = this.questGames(species);
+    if (!possibles.length) return null;
+    if (possibles.some((game) => game.code === jeuActif)) return jeuActif;
+
+    const meilleur = this.bestGame(species);
+    return meilleur ? meilleur.code : null;
+  }
+
   /** Especes eligibles a une quete : celles dont la disponibilite est renseignee. */
   questPool(collection) {
     const pool = [];

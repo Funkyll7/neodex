@@ -9,6 +9,7 @@
 import { CONFIG } from "./config.js";
 import { createStore, debounce } from "./core/store.js";
 import { el, fill } from "./core/dom.js";
+import { ouvrirCanalJumeaux } from "./core/jumeaux.js";
 import { loadDataset } from "./core/data.js";
 import { Collection } from "./domain/collection.js";
 import { GitHubSync } from "./domain/sync.js";
@@ -20,7 +21,7 @@ import { bilanDesSucces } from "./domain/succes.js";
 import { initTheme, majSucces, retraduirePalette } from "./ui/theme.js";
 import { jouer } from "./ui/sons.js";
 import { initParametres, appliquerParametres, poserContexteParametres } from "./ui/parametres.js";
-import { suivreCollection } from "./domain/journal.js";
+import { suivreCollection, autourDUneAdoption } from "./domain/journal.js";
 import { versionCourante } from "./domain/maj.js";
 import { renderMaj } from "./ui/maj.js";
 import { renderLivingDex } from "./ui/livingdex.js";
@@ -395,6 +396,108 @@ function start(dataset) {
   }
   createFolds();
 
+  /* ------------------------- les onglets jumeaux ------------------------- */
+
+  /*
+   * Deux onglets du meme navigateur partagent `localStorage` — et s'ignoraient
+   * completement. On cochait dans l'un, l'autre continuait d'afficher l'ancien
+   * etat, puis effacait la case au clic suivant en reecrivant sa propre copie
+   * perimee. Le canal ne transporte qu'un SIGNAL : l'etat, lui, est deja dans le
+   * stockage, et celui qui recoit va l'y relire. Voir core/jumeaux.js.
+   */
+  const jumeaux = ouvrirCanalJumeaux(() => adopterLeJumeau());
+
+  // On ENCHAINE au lieu de remplacer. `suivreCollection` a pose son propre
+  // rappel sur `surEcritureLocale` quelques lignes plus haut — c'est par la que
+  // le journal apprend qu'une salve est en cours —, et la collection n'offre
+  // qu'un seul crochet. L'ecraser aurait rendu le journal muet, sans que rien
+  // ne le signale.
+  const noterLaSalve = collection.surEcritureLocale;
+  collection.surEcritureLocale = (origine) => {
+    if (noterLaSalve) noterLaSalve(origine);
+
+    /*
+     * ON N'ANNONCE QUE NOS PROPRES COCHES, jamais une adoption du depot.
+     *
+     * La collection tient DEUX couches : `base`, l'ancetre lu dans le depot, et
+     * `local`, ce qui l'en ecarte. Seule la seconde vit dans `localStorage` —
+     * la premiere n'existe que dans la page, chargee au demarrage depuis
+     * data/collection.json.
+     *
+     * Un envoi reussi appelle donc `adopterDistant` : `base` avance, `local`
+     * est vide, et le stockage se retrouve a zero. Annoncer ca au voisin le
+     * faisait relire un `local` VIDE tout en gardant sa `base` restee en
+     * arriere : la soustraction des deux couches perdait d'un coup toutes les
+     * cases en attente, qui se decochaient a l'ecran sous ses yeux. Le
+     * correctif des onglets jumeaux produisait ainsi, tout seul, exactement le
+     * symptome qu'il devait supprimer.
+     *
+     * Le voisin n'a de toute facon rien a apprendre dans ce cas : la reunion de
+     * ses deux couches est INCHANGEE par un envoi — les memes cases, rangees
+     * autrement. Il remettra ses couches d'aplomb a sa prochaine lecture du
+     * depot, qui est le seul endroit qui fasse autorite sur `base`.
+     *
+     * C'est aussi ce qui evite un renvoi sans fin : deux onglets qui se
+     * relaieraient leurs adoptions se seraient repondu indefiniment.
+     */
+    if (origine !== "depot") jumeaux.annoncer();
+  };
+
+  /**
+   * Un onglet voisin a ecrit : on relit le stockage et on se redessine.
+   *
+   * TOUT SE JOUE DANS `autourDUneAdoption`, et c'est le point delicat du
+   * correctif. `domain/journal.js` note les modifications LOCALES en comparant
+   * un instantane a l'etat courant : adopter l'etat du voisin sans precaution
+   * aurait fait deux degats d'un coup. La salve en cours ici — nos propres cases,
+   * pas encore ecrites — aurait ete comparee a un etat contenant deja celles du
+   * voisin, donc perdue ; et la salve SUIVANTE aurait rattrape les cases du
+   * voisin comme si on venait de les cocher. L'enveloppe vide la premiere avant
+   * l'adoption et repose l'instantane apres : les deux trous sont bouches
+   * ensemble, et on ne peut pas en oublier un.
+   *
+   * ON REND `null` A DESSEIN, alors qu'on a bien un rapport sous la main : c'est
+   * ce qui empeche l'enveloppe d'ecrire une entree « reception » dans le
+   * journal. Une telle entree serait fausse deux fois. Le journal vit dans les
+   * preferences, donc dans le meme `localStorage` : les deux onglets ecrivent
+   * dans LE MEME journal, et le voisin y notera ces cases lui-meme, comme
+   * locales — ce qu'elles sont, puisqu'elles ont ete cochees sur cet appareil.
+   * Les noter ici en plus les aurait doublees. Et pire : le voisin regroupe sa
+   * salve, une seule entree pour trente cases, quand nous recevons un signal par
+   * case — trente entrees « reception » pour la meme boite de HOME.
+   */
+  function adopterLeJumeau() {
+    let rapport = null;
+    autourDUneAdoption(collection, () => {
+      rapport = collection.relireCoucheLocale();
+      return null;
+    });
+    if (!rapport) return;
+
+    // Le chemin complet : le voisin a pu cocher n'importe quoi, y compris la
+    // fiche ouverte ici ou une boite du Pokedex GO. Meme raison qu'au retour sur
+    // l'onglet, quelques lignes plus bas.
+    onCollectionChange();
+
+    // Le meme bandeau que la synchronisation, dans la meme colonne : c'est deja
+    // la qu'on lit « Mis à jour depuis le dépôt ». Le statut `jumeau` n'a pas de
+    // regle CSS, et n'en aura pas — il retombe donc sur le gris discret de
+    // `.sync__state`, ce qui est exactement le ton voulu : ce n'est ni un succes
+    // a feter ni une erreur. Sans rapport joint, volontairement : le panneau de
+    // detail s'ouvre tout seul quand un rapport arrive, et se le faire ouvrir a
+    // chaque case cochee dans l'onglet d'a cote serait insupportable.
+    //
+    // MAIS PAS PAR-DESSUS UNE ERREUR. Le bandeau est unique et le dernier qui
+    // parle gagne : « Échec de l'envoi », le seul message qui demande une
+    // action, se faisait effacer par une case cochée dans l'onglet d'à côté.
+    // Une nouvelle qui n'appelle aucun geste ne doit pas couvrir celle qui en
+    // appelle un — l'erreur reste donc affichée, et la relecture a bien eu
+    // lieu de toute façon.
+    if (sync.state.status !== "error") {
+      sync.emit("jumeau", t("Mis à jour depuis un autre onglet."));
+    }
+  }
+
   // Sur telephone, on quitte l'onglet plus souvent qu'on ne le ferme : c'est
   // le moment sur : on ecrit sans attendre la fin du delai de regroupement.
   document.addEventListener("visibilitychange", () => {
@@ -598,6 +701,11 @@ function start(dataset) {
       // Le clic COCHE. Il passe par `ctx.onToggle`, le meme chemin que les
       // boutons de la grille : de quoi annuler, la note, la synchronisation.
       surChoix: (id, slot) => ctx.onToggle(id, slot),
+      // Le SECOND geste — clic droit, appui long, Ctrl + clic — ouvre la fiche,
+      // et il passe par `onSelect`, exactement comme une vignette de la grille :
+      // meme selection, meme feuille qui monte sur telephone, et meme reponse
+      // quand la fiche affichee est deja celle-la.
+      surFiche: (id) => ctx.onSelect(id),
     });
   }
 

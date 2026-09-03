@@ -147,6 +147,13 @@ export const CONFIG = {
     spot: "funkylldex.spot.v1",
     saveFold: "funkylldex.savefold.v1",
     token: "funkylldex.github.v1",
+    /**
+     * Le phare des onglets jumeaux. Ne contient aucun etat : juste de quoi
+     * CHANGER de valeur, pour que l'evenement `storage` se declenche chez les
+     * voisins. Voir core/jumeaux.js — c'est aussi le nom du `BroadcastChannel`,
+     * qui reste le transport prefere quand il existe.
+     */
+    jumeaux: "funkylldex.jumeaux.v1",
   },
 
   /** Anciennes cles, relues une fois pour reprendre ce qui s'y trouve. */

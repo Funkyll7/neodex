@@ -17,6 +17,8 @@
 
 import { CONFIG } from "../config.js";
 import { autourDUneAdoption } from "./journal.js";
+import { sourceAvecAppareil, appareilDistant } from "./source.js";
+import { nomDeCetAppareil } from "../core/appareil.js";
 // Les messages d'etat sont lus par l'utilisateur : ils suivent la langue. Les
 // `reason`, elles, restent en francais — ce sont des messages de commit git,
 // ecrits dans l'historique du depot, pas a l'ecran.
@@ -31,6 +33,14 @@ const API = "https://api.github.com";
  * couvre. Une collection complete tourne autour de 50 Ko encodee.
  */
 const KEEPALIVE_MAX_BYTES = 60 * 1024;
+
+/**
+ * Ce qui a ecrit le fichier : le site, par opposition a un export manuel
+ * (« export navigateur ») ou a un outil. Cette valeur etait ecrite en dur aux
+ * deux endroits qui appellent `toExport` ci-dessous ; le nom de l appareil s y
+ * ajoute desormais, et une constante evitait d avoir a se souvenir des deux.
+ */
+const SOURCE_DU_SITE = "site Funkylldex";
 
 
 /**
@@ -111,7 +121,11 @@ export class GitHubSync {
       // et le premier envoi apres la connexion ecrasait le depot — cases comme
       // carnet. On adopte ce qu on vient de lire.
       const distant = await this.fetchRemote();
-      autourDUneAdoption(this.collection, () => this.collection.adopterDistant(distant.marks));
+      autourDUneAdoption(
+        this.collection,
+        () => this.collection.adopterDistant(distant.marks),
+        appareilDistant(distant.source, nomDeCetAppareil())
+      );
       this.collection.adopterQuetes(distant.quetes);
     } catch (error) {
       this.token = "";
@@ -200,7 +214,13 @@ export class GitHubSync {
 
   async write(reason, retry = true, keepalive = false, marksImposees = null) {
     this.emit("busy", t("Enregistrement sur GitHub…"));
-    let payload = this.collection.toExport("site Funkylldex", marksImposees);
+    // QUI ECRIT, en plus de QUOI. Le nom de cet appareil est relu a chaque
+    // envoi et non retenu au demarrage : on peut le changer dans les reglages
+    // en cours de session, et l envoi suivant doit porter le nouveau. C est la
+    // SEULE chose que ce correctif ajoute au chemin d ecriture — une chaine
+    // composee, dans un champ qui existait deja. Voir `domain/source.js`.
+    const source = sourceAvecAppareil(SOURCE_DU_SITE, nomDeCetAppareil());
+    let payload = this.collection.toExport(source, marksImposees);
     const body = {
       message: `Collection : ${reason}`,
       content: encodeBase64(`${JSON.stringify(payload, null, 1)}\n`),
@@ -225,9 +245,13 @@ export class GitHubSync {
         // le chemin de conflit, la refaire n'apporterait rien.
         const distant = await this.fetchRemote();
         if (!marksImposees) {
-          autourDUneAdoption(this.collection, () => this.collection.adopterDistant(distant.marks));
+          autourDUneAdoption(
+            this.collection,
+            () => this.collection.adopterDistant(distant.marks),
+            appareilDistant(distant.source, nomDeCetAppareil())
+          );
           this.collection.adopterQuetes(distant.quetes);
-          payload = this.collection.toExport("site Funkylldex");
+          payload = this.collection.toExport(source);
           body.content = encodeBase64(`${JSON.stringify(payload, null, 1)}\n`);
         }
       }
@@ -350,8 +374,16 @@ export class GitHubSync {
 
     // `adopterDistant` et non `commitLocal` : le depot ne contient pas encore
     // ce qui est coche ici, vider la couche locale le perdrait.
-    const rapport = autourDUneAdoption(this.collection, () =>
-      this.collection.adopterDistant(distant.marks)
+    //
+    // ET D OU CA VIENT : le fichier qu on vient de lire porte, dans son champ
+    // `source`, le nom de l appareil qui l a ecrit. C est le chemin par lequel
+    // « Recu d un autre appareil » devient « Recu de : telephone de Kyllian ».
+    // Un fichier ecrit par une version anterieure, ou par un appareil sans nom,
+    // rend `null` ici — et l entree garde alors l ancien libelle.
+    const rapport = autourDUneAdoption(
+      this.collection,
+      () => this.collection.adopterDistant(distant.marks),
+      appareilDistant(distant.source, nomDeCetAppareil())
     );
     this.collection.adopterQuetes(distant.quetes);
     if (rapport) this.emit("ok", resumeDuRapport(rapport), rapport);

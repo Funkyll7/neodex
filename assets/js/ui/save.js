@@ -18,6 +18,8 @@ import { ouvrirMur } from "./mur.js";
 import { ouvrirReste } from "./reste.js";
 import { ouvrirChangements } from "./changements.js";
 import { autourDUneAdoption } from "../domain/journal.js";
+import { appareilDistant } from "../domain/source.js";
+import { nomDeCetAppareil } from "../core/appareil.js";
 import { poserApercuCarte } from "./recompenses.js";
 
 export function createSaveControls(ctx) {
@@ -218,8 +220,17 @@ function createSyncControls(ctx) {
       // d'a cote d'« Enregistrer », donc le reflexe juste apres un echec
       // d'envoi — c'est-a-dire exactement quand la couche locale porte tout ce
       // qui n'a pas pu partir. `sync.js` faisait deja le bon appel, ici seul.
-      const rapport = autourDUneAdoption(ctx.collection, () =>
-        ctx.collection.adopterDistant((remote && remote.marks) || {})
+      //
+      // Le nom de l'appareil expediteur voyage avec, comme sur le chemin
+      // automatique de `domain/sync.js`. Sans cette ligne, « Recharger » aurait
+      // ecrit au journal une entree anonyme la ou la relecture automatique en
+      // ecrit une nommee — deux libelles differents pour le meme evenement,
+      // selon qu'on a appuye sur le bouton ou attendu. La REGLE d'extraction
+      // reste dans `domain/`, on ne fait que l'appeler.
+      const rapport = autourDUneAdoption(
+        ctx.collection,
+        () => ctx.collection.adopterDistant((remote && remote.marks) || {}),
+        appareilDistant(remote && remote.source, nomDeCetAppareil())
       );
       ctx.onCollectionChange();
       // Le rapport dit CE QUI est arrive. « Collection rechargee » laissait

@@ -15,6 +15,24 @@
  *               la confondre avec un manque aurait fait porter au Pokédex une
  *               centaine de cases qu'on ne peut pas remplir.
  *
+ * UN SECOND GESTE POUR LA FICHE, PARCE QUE LE CLIC EST PRIS. Le clic coche — la
+ * décision est expliquée là où elle s'applique, sur `caseOuVide`, et elle reste
+ * la bonne. Elle avait pourtant une conséquence qu'on n'avait pas vue : aucune
+ * des quatre vues qui passent par ce module — les boîtes et les lignées, dans
+ * le Pokédex HOME comme dans le Pokédex GO — n'offrait le moindre moyen
+ * d'OUVRIR la fiche d'un Pokémon. On savait dire « il manque », jamais « c'est
+ * lequel, celui-là ». Trois gestes s'ajoutent donc, et aucun ne retire rien au
+ * clic :
+ *
+ *   clic droit          sur ordinateur, à la place du menu du navigateur ;
+ *   appui long          au doigt, ~450 ms sans que le doigt dérive ;
+ *   Ctrl / Cmd + clic   pour qui a déjà les mains sur le clavier.
+ *
+ * ET LE GESTE EST ÉCRIT SUR LA CASE. Un geste caché n'existe pas : ni le clic
+ * droit ni l'appui long ne laissent la moindre trace à l'écran, et rien d'autre
+ * dans la vue ne pouvait les annoncer. Ils partent donc dans le `title` et dans
+ * l'`aria-label` de chaque case, seuls endroits que la case possède en propre.
+ *
  * ON NE CHARGE PAS DEUX MILLE IMAGES D'UN COUP : `loading="lazy"` les laisse
  * arriver au fil du défilement, exactement comme la grille.
  */
@@ -38,12 +56,17 @@ import {
  * rangement, en amont, qui diffère. Écrire une seconde vue aurait dupliqué la
  * case, la boîte, la lignée et leurs trois états pour ne changer que la source.
  *
+ * DEUX SORTIES ET NON UNE. `surChoix(id, slot)` coche la case visée ;
+ * `surFiche(id)` ouvre la fiche de l'espèce, et c'est l'appelant qui sait où
+ * cette fiche vit — dans le panneau de droite pour HOME, dans un AUTRE onglet
+ * pour GO. La vue, elle, se contente de reconnaître les gestes.
+ *
  * @param {HTMLElement} racine
- * @param {Object} ctx `{ dex, especes, entrees, chaines, collection, ordre, surChoix }`
+ * @param {Object} ctx `{ dex, especes, entrees, chaines, collection, ordre, surChoix, surFiche }`
  */
 export function renderLivingDex(racine, ctx) {
   if (!racine) return;
-  const { dex = "home", especes, entrees, chaines, collection, ordre, surChoix } = ctx;
+  const { dex = "home", especes, entrees, chaines, collection, ordre, surChoix, surFiche } = ctx;
   const go = dex === "go";
 
   // UNE CASE DE LA VUE EST UNE CASE DE LA COLLECTION. Pas d'agrégat, pas de
@@ -54,7 +77,7 @@ export function renderLivingDex(racine, ctx) {
   racine.dataset.ordre = ordre;
   if (ordre === "famille") {
     const lignes = go ? rangerGoEnFamilles(entrees, chaines) : rangerEnFamilles(especes, chaines);
-    fill(racine, lignes.map((ligne) => ligneDeFamille(ligne, pris, surChoix)));
+    fill(racine, lignes.map((ligne) => ligneDeFamille(ligne, pris, surChoix, surFiche)));
     return;
   }
 
@@ -73,7 +96,11 @@ export function renderLivingDex(racine, ctx) {
             `${c.faites} / ${c.total}`
           )
         ),
-        el("div.boite__grille", { role: "list" }, boite.cases.map((k) => caseOuVide(k, pris, surChoix)))
+        el(
+          "div.boite__grille",
+          { role: "list" },
+          boite.cases.map((k) => caseOuVide(k, pris, surChoix, surFiche))
+        )
       );
     })
   );
@@ -86,7 +113,7 @@ export function renderLivingDex(racine, ctx) {
  * Bulbizarre » : la lignée d'Évoli en compte neuf, celle de Tarsal quatre dont
  * deux terminaisons — aucun mot ne les nomme mieux que leur base.
  */
-function ligneDeFamille(ligne, pris, surChoix) {
+function ligneDeFamille(ligne, pris, surChoix, surFiche) {
   const c = compter(ligne.cases, pris);
   return el(
     "section.lignee" + (c.manquantes === 0 ? ".lignee--faite" : ""),
@@ -109,7 +136,10 @@ function ligneDeFamille(ligne, pris, surChoix) {
       ligne.membres.map((membre) =>
         el(
           "div.lignee__membre",
-          el("div.lignee__paire", membre.cases.map((k) => caseOuVide(k, pris, surChoix))),
+          el(
+            "div.lignee__paire",
+            membre.cases.map((k) => caseOuVide(k, pris, surChoix, surFiche))
+          ),
           el("span.lignee__nom-membre", nomDeMembre(membre))
         )
       )
@@ -146,6 +176,149 @@ function imageDe(k) {
 }
 
 /**
+ * Le temps qu'il faut tenir pour que ce soit un appui long, en millisecondes.
+ *
+ * 450 ms : bien au-dessus de l'effleurement qui voulait cocher, et JUSTE en
+ * dessous des ~500 ms où Android sort son propre menu contextuel. L'ordre
+ * compte — le nôtre arrive le premier, et le `contextmenu` du système, quand il
+ * arrive derrière, trouve le travail déjà fait et n'a plus qu'à se taire.
+ */
+const APPUI_LONG_MS = 450;
+
+/**
+ * Ce qu'un doigt a le droit de bouger sans cesser d'être un appui.
+ *
+ * Dix pixels : un doigt posé sur du verre tremble toujours un peu, et une vue
+ * de deux mille huit cents cases se parcourt justement en glissant dessus. Sans
+ * cette tolérance, ou bien le moindre frémissement annulait l'appui, ou bien
+ * chaque défilement ouvrait une fiche au hasard.
+ */
+const DERIVE_MAX_PX = 10;
+
+/**
+ * Les trois gestes qui ouvrent la fiche, posés sur une case.
+ *
+ * DEUX SONT GRATUITS, LE TROISIÈME SE MESURE. Le clic droit et Ctrl / Cmd +
+ * clic, le navigateur les distingue déjà du clic simple : il n'y a qu'à les
+ * écouter. L'appui long, lui, n'existe pas — il faut le reconnaître, et c'est
+ * là que sont tous les pièges :
+ *
+ *   - le doigt qui DÉRIVE ne demandait rien, il faisait défiler la page.
+ *     Au-delà de dix pixels le compte s'arrête ;
+ *   - le doigt qui se LÈVE avant l'échéance voulait cocher. Même arrêt, et le
+ *     clic part normalement ;
+ *   - le doigt qui a TENU a déjà obtenu sa fiche. Le clic que le navigateur
+ *     émet parfois derrière cocherait la case par-dessus : on l'avale.
+ *
+ * LES ÉVÉNEMENTS POINTER ET NON TOUCH. Ils portent la souris, le doigt et le
+ * stylet sous un seul nom — donc un seul chemin à écrire —, et surtout
+ * `pointercancel` dit ce qu'aucun événement touch ne sait dire : « le
+ * navigateur me reprend ce geste pour défiler ». C'est exactement le cas qu'il
+ * fallait attraper.
+ *
+ * LES TROIS ÉCOUTEURS D'ANNULATION VIVENT SUR LA FENÊTRE, et seulement le temps
+ * de l'appui. Posés sur la case, ils auraient coûté trois écouteurs de plus sur
+ * chacune des deux mille huit cents cases de la vue ; surtout, ils auraient
+ * raté le doigt qui glisse HORS de la case avant de se lever, c'est-à-dire le
+ * défilement le plus banal. Un `AbortController` les retire tous les trois d'un
+ * geste, sans avoir à garder trois références de fonctions.
+ *
+ * @param {Function} ouvrir  ouvre la fiche de l'espèce de cette case
+ * @param {Function} cocher  coche (ou décoche) cette case
+ */
+function gestesDeFiche(ouvrir, cocher) {
+  // L'état est celui de CETTE case, dans cette fermeture. Une case doit savoir
+  // que c'est elle qu'on tient, et son écouteur de clic doit savoir ce que
+  // l'appui long vient de faire une fraction de seconde plus tôt.
+  let minuteur = null;
+  let veille = null;
+  let ouverteParAppui = false;
+
+  function oublier() {
+    if (minuteur !== null) clearTimeout(minuteur);
+    minuteur = null;
+    if (veille) veille.abort();
+    veille = null;
+  }
+
+  return {
+    /**
+     * Le clic droit remplace le menu du navigateur. `preventDefault` d'abord :
+     * sans lui on obtiendrait la fiche ET « Enregistrer l'image sous… » posé
+     * par-dessus, ce qui n'est un service pour personne.
+     */
+    oncontextmenu: (event) => {
+      event.preventDefault();
+      // SUR TÉLÉPHONE, CE `contextmenu` EST LA FIN DE L'APPUI LONG — pas un
+      // geste de plus. Les deux ordres d'arrivée existent selon l'appareil :
+      // notre minuteur d'abord (la fiche est déjà ouverte, on ne la rouvre
+      // pas), ou le sien d'abord (un doigt est encore posé : c'est nous qui
+      // ouvrons, et le minuteur n'aura plus à le faire). Dans les deux cas le
+      // drapeau reste levé pour avaler le clic que certains navigateurs
+      // émettent quand même derrière.
+      //
+      // À la souris, aucun des deux n'est vrai : le drapeau ne se lève pas, et
+      // il ne traîne donc pas jusqu'au clic gauche suivant.
+      const dejaOuverte = ouverteParAppui;
+      const doigtPose = minuteur !== null;
+      oublier();
+      if (dejaOuverte || doigtPose) ouverteParAppui = true;
+      if (!dejaOuverte) ouvrir();
+    },
+
+    onpointerdown: (event) => {
+      // Un nouvel appui repart de zéro, quel que soit le bouton : le drapeau ne
+      // doit jamais survivre au geste qui l'a levé, sinon le clic suivant se
+      // ferait avaler pour rien.
+      oublier();
+      ouverteParAppui = false;
+      // L'APPUI LONG EST UN GESTE DE DOIGT. À la souris, tenir le bouton une
+      // demi-seconde est un clic lent — pas une demande de fiche —, et cocher
+      // une case au ralenti est très exactement ce qu'on fait quand on vise une
+      // case de 26 px. La souris a déjà ses deux chemins à elle.
+      if (event.pointerType === "mouse" || event.button !== 0) return;
+
+      const x = event.clientX;
+      const y = event.clientY;
+      veille = new AbortController();
+      const options = { signal: veille.signal };
+      window.addEventListener(
+        "pointermove",
+        (e) => {
+          if (Math.hypot(e.clientX - x, e.clientY - y) > DERIVE_MAX_PX) oublier();
+        },
+        options
+      );
+      window.addEventListener("pointerup", oublier, options);
+      window.addEventListener("pointercancel", oublier, options);
+
+      minuteur = setTimeout(() => {
+        oublier();
+        ouverteParAppui = true;
+        ouvrir();
+      }, APPUI_LONG_MS);
+    },
+
+    onclick: (event) => {
+      // Ctrl / Cmd + clic, pour qui a déjà les mains sur le clavier. Sur Mac,
+      // Ctrl + clic est un clic droit : il sera passé par `oncontextmenu` et ce
+      // clic-ci n'arrivera même pas. C'est Cmd qui y répond là-bas.
+      if (event.ctrlKey || event.metaKey) {
+        ouvrir();
+        return;
+      }
+      // L'appui long a déjà ouvert la fiche : ce clic-ci est son résidu, et le
+      // laisser passer cocherait la case qu'on voulait seulement consulter.
+      if (ouverteParAppui) {
+        ouverteParAppui = false;
+        return;
+      }
+      cocher();
+    },
+  };
+}
+
+/**
  * Une case.
  *
  * LE CLIC COCHE, il n'ouvre pas la fiche. C'était l'inverse au premier jet, et
@@ -154,22 +327,35 @@ function imageDe(k) {
  * devient donc une surface de saisie, exactement comme les boutons de la
  * grille, et elle passe par le même chemin : `onToggle` enregistre de quoi
  * annuler, joue la note et déclenche la synchronisation.
+ *
+ * LA FICHE N'EST DONC PAS PERDUE, ELLE EST DEUXIÈME. Voir `gestesDeFiche` pour
+ * les trois gestes qui la rouvrent, et l'en-tête du module pour la raison.
  */
-function caseOuVide(k, pris, surChoix) {
+function caseOuVide(k, pris, surChoix, surFiche) {
   if (!k) return el("span.ldx.ldx--absente", { "aria-hidden": "true" });
 
   const nom = nomDe(k);
   const quoi = k.chromatique ? t("Shiny") : t("Normal");
   const obtenu = pris(k);
+  // LE GESTE EST DIT, SUR CHAQUE CASE. Un clic droit et un appui long ne
+  // laissent aucune trace à l'écran : sans cette phrase dans l'infobulle et
+  // dans le nom accessible, la fiche resterait inatteignable depuis les boîtes
+  // pour quiconque n'a pas lu ailleurs qu'elle existe — c'est-à-dire pour tout
+  // le monde. C'est le seul endroit que la case possède en propre ; un mode
+  // d'emploi posé au-dessus des boîtes, lui, se lit une fois et s'oublie.
+  const geste = t("appui long ou clic droit pour ouvrir la fiche");
   return el(
     `button.ldx${obtenu ? ".ldx--pris" : ".ldx--manque"}${k.chromatique ? ".ldx--shiny" : ""}`,
     {
       type: "button",
       role: "listitem",
-      title: `${nom} · ${quoi}`,
+      title: `${nom} · ${quoi} — ${geste}`,
       "aria-pressed": String(obtenu),
-      "aria-label": `${nom}, ${quoi}`,
-      onclick: () => surChoix && surChoix(k.espece.id, k.slot),
+      "aria-label": `${nom}, ${quoi}, ${geste}`,
+      ...gestesDeFiche(
+        () => surFiche && surFiche(k.espece.id),
+        () => surChoix && surChoix(k.espece.id, k.slot)
+      ),
     },
     imageDe(k),
     // LE SEXE À GAUCHE, LA TEINTE À DROITE, et seulement quand ils distinguent

@@ -27,6 +27,8 @@
 import { el, fill } from "../core/dom.js";
 import { t } from "../core/i18n.js";
 import { reglage, poserReglage } from "../core/prefs.js";
+import { nomDeCetAppareil, nomDeduit, poserNomDeCetAppareil } from "../core/appareil.js";
+import { LONGUEUR_MAX } from "../domain/source.js";
 import { jouer, sonsActifs, basculerSons } from "./sons.js";
 import { iconeSvg } from "./icones-succes.js";
 import { ouvrirJournal } from "./journal.js";
@@ -110,6 +112,7 @@ export function initParametres() {
       panneau,
       el("h3.panel__label", t("Réglages de cet appareil")),
       ...REGLAGES.map((r) => ligne(r)),
+      champAppareil(),
       // LE JOURNAL EST UNE ACTION, PAS UN RÉGLAGE, d'où la ligne séparée sous
       // les bascules plutôt qu'une case de plus. Il vit ici quand même parce
       // que c'est le seul panneau qui parle de CET appareil, et que le journal
@@ -161,11 +164,95 @@ export function initParametres() {
       "div.param",
       entree,
       el(
+        // `for` et non `htmlFor` : `core/dom.js` ne connaît `htmlFor` ni comme
+        // propriété ni comme alias, il le poserait donc en ATTRIBUT — et un
+        // attribut « htmlfor » ne relie rien. Ces deux étiquettes, Sons et Mode
+        // compact, ne l'étaient plus depuis leur écriture : cliquer sur le
+        // titre ou sur l'explication ne cochait pas la case, alors que le
+        // commentaire de `.param__label` dans la feuille de style promet
+        // exactement l'inverse. Un mot à changer, et la promesse est tenue.
         "label.param__label",
-        { htmlFor: id },
+        { for: id },
         el("span.param__titre", t(r.titre)),
         el("span.param__aide", t(r.aide))
       )
+    );
+  }
+
+  /**
+   * Le nom de cet appareil : le seul réglage qui se TAPE au lieu de se cocher.
+   *
+   * MÊME MOULE QUE LES AUTRES, à la commande près : un `div.param`, un
+   * `label.param__label` qui porte le titre et son explication, et la commande
+   * qui va avec. Seule la direction change — le champ passe SOUS son étiquette
+   * au lieu d'être à côté, parce qu'un champ de saisie prend toute la largeur
+   * quand une case fait dix-sept pixels. D'où le modificateur `--texte`, et
+   * rien d'autre.
+   *
+   * IL N'ENTRE PAS DANS `REGLAGES`. Cette table décrit des bascules : `lire`
+   * rend un booléen, `poser` le renverse, `apercu` le fête. Un champ de texte
+   * n'a aucune de ces trois formes, et l'y faire entrer aurait demandé un
+   * quatrième champ « genre » consulté par `ligne()` — c'est-à-dire une
+   * abstraction inventée pour deux cas. Deux fonctions voisines coûtent moins
+   * cher à lire qu'une fonction qui se demande ce qu'elle est en train de faire.
+   *
+   * ON ENREGISTRE SUR `change` ET NON SUR `input`, donc à la sortie du champ ou
+   * à la touche Entrée. Écrire à chaque frappe aurait posé douze préférences
+   * pour « ordinateur du salon », et surtout : la valeur retenue est celle qu'on
+   * a fini d'écrire, jamais l'un de ses préfixes.
+   *
+   * PAS DE `dessiner()` APRÈS COUP, contrairement aux bascules. Elles se
+   * redessinent parce qu'un réglage peut refuser d'être changé et que
+   * l'affichage doit alors dire la vérité ; ici la vérité est déjà à l'écran —
+   * c'est ce que la personne vient de taper. Reconstruire le panneau lui aurait
+   * repris le focus au milieu d'une correction.
+   */
+  function champAppareil() {
+    const id = "param-appareil";
+    return el(
+      "div.param.param--texte",
+      el(
+        // `for` et non `htmlFor` — meme raison que pour les bascules plus haut,
+        // ou l.explication complete est ecrite.
+        "label.param__label",
+        { for: id },
+        el("span.param__titre", t("Nom de cet appareil")),
+        el(
+          "span.param__aide",
+          t("Il accompagne chaque envoi vers le dépôt : les autres appareils liront « Reçu de » suivi de ce nom dans leur journal. Vide, il se devine tout seul.")
+        )
+      ),
+      el("input.param__champ", {
+        type: "text",
+        id,
+        // La valeur EFFECTIVE, pas la préférence brute : tant que personne n'a
+        // choisi de nom, le champ montre celui qui est deviné — c'est-à-dire
+        // celui qui part réellement dans le dépôt. Un champ vide aurait laissé
+        // croire que rien n'était envoyé.
+        value: nomDeCetAppareil(),
+        // Ce qui reprendra la main si on efface tout. L'indication n'apparaît
+        // qu'à ce moment-là, et c'est exactement quand elle sert.
+        placeholder: nomDeduit(),
+        // La borne du FORMAT du fichier, pas une lubie d'affichage : voir
+        // `domain/source.js`. Elle est aussi appliquée à l'écriture, mais la
+        // poser ici évite de laisser taper trente caractères qui seraient
+        // coupés en silence.
+        maxLength: LONGUEUR_MAX,
+        autocomplete: "off",
+        spellcheck: "false",
+        // Pas d'évènement `funkylldex:parametres` : son `detail` annonce un
+        // booléen (`actif`), et un nom n'en est pas un. Personne n'écoute ce
+        // signal aujourd'hui ; lui faire porter deux formes différentes serait
+        // un piège tendu au premier qui s'y abonnera.
+        onchange: (event) => {
+          const retenu = poserNomDeCetAppareil(event.target.value);
+          // On réaffiche ce qui a été RETENU et non ce qui a été tapé : les
+          // espaces en trop ont sauté, et un champ vidé revient au nom deviné.
+          // Sans ce renvoi, le champ affirmerait un nom que le dépôt ne verra
+          // jamais.
+          event.target.value = retenu;
+        },
+      })
     );
   }
 

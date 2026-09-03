@@ -1218,8 +1218,10 @@
   .sync__help { font-size: 12.5px; }
   /* 16 px pile, et pas moins : sous ce seuil, Safari sur iOS zoome au moment
      ou le champ prend le focus — et ne dezoome JAMAIS ensuite. Le site restait
-     agrandi jusqu'a ce qu'on pince l'ecran pour revenir. */
+     agrandi jusqu'a ce qu'on pince l'ecran pour revenir. Le nom de l'appareil
+     se tape dans le meme telephone et paierait le meme prix. */
   .sync__input { font-size: 16px; padding: 13px var(--sp-3); }
+  .param__champ { font-size: 16px; padding: 11px 12px; }
   .btn-row .btn { padding: 13px 10px; }
 }
 
@@ -2987,6 +2989,28 @@
   color: var(--text-ghost);
 }
 
+/* Un réglage qui se TAPE — le nom de cet appareil. Le champ passe SOUS son
+   étiquette au lieu d'être à côté d'elle : une case fait dix-sept pixels et se
+   loge dans la marge, un champ de saisie veut toute la largeur du panneau, qui
+   n'en fait que 268. En colonne, donc, et c'est la seule chose que ce
+   modificateur change. */
+.param--texte { flex-direction: column; gap: 6px; }
+.param--texte .param__label { cursor: default; }
+/* Mêmes valeurs que `.sync__input`, à quelques pixels de rembourrage près : les
+   deux champs vivent dans la même colonne, à deux sections d'écart, et deux
+   dessins de champ différents dans une barre de 268 px se remarqueraient. */
+.param__champ {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-inset);
+  color: var(--text);
+  font-family: inherit; font-size: 12px; font-weight: 700;
+}
+.param__champ::placeholder { color: var(--text-ghost); font-weight: 600; }
+.param__champ:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
 /* ============================ Mode compact ================================
    Le nom, les types et la ligne de disponibilité disparaissent ; restent le
    sprite, le numéro, les pastilles d'état et les cases. C'est ce qu'on regarde
@@ -4211,13 +4235,65 @@ body::before {
   .thopt__name--degrade { background-image: none; -webkit-text-fill-color: currentColor; }
 }
 
+/* La rangée d'actions de l'en-tête : « Chasser celui-ci » et « Hors
+   d'atteinte », côte à côte et calés à droite.
+
+   UNE SEULE LIGNE, et c'est le point. Le portrait de l'en-tête s'arrête à une
+   hauteur fixe au-dessus du bas (`bottom: 46px`, mesurée pour une ligne de
+   boutons) : deux boutons empilés auraient rallongé l'en-tête et le portrait
+   serait passé par-dessus. `flex-wrap` reste là pour les écrans très étroits,
+   où deux pastilles ne tiennent plus côte à côte — le texte garde alors la
+   priorité sur le portrait, qui est décoratif.
+
+   `position: relative` sans décalage : le même moyen que pour les autres
+   lignes de l'en-tête de passer DEVANT le portrait. */
+.detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+/* « Chasser celui-ci » : ouvrir l'onglet Quêtes sur cette espèce.
+
+   Habillé comme les flèches ‹ › et l'étiquette d'état, c'est-à-dire en blanc
+   sur un voile sombre, et NON avec les jetons de thème comme son voisin : le
+   sol, ici, est le dégradé de type de l'en-tête, pas le fond de la page. C'est
+   la seule teinte qui reste lisible sur les dix-huit types et les
+   trente-huit thèmes. */
+.detail__chasse {
+  padding: 3px 9px;
+  border: 1px solid rgba(255, 255, 255, .32);
+  border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, .28);
+  color: #fff;
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.detail__chasse:hover { background: rgba(255, 255, 255, .26); border-color: rgba(255, 255, 255, .5); }
+/* Le bouton disparaît dès que le chromatique est coché, sans reconstruction de
+   la fiche — voir `majBoutonChasser()`. La règle est explicite pour que poser
+   un jour un `display` sur la classe ne ressuscite pas un bouton caché. */
+.detail__chasse[hidden] { display: none; }
+
 /* Le bouton « Hors d atteinte », dans l en-tete de la fiche. Discret quand il
    ne sert pas — un lien de plus qu un bouton —, franc quand l espece est mise
    de cote : c est alors une information sur la fiche, pas une action. */
 /* Poussé au bord droit de l'en-tête. `align-self` n'y pouvait rien —
    `.detail__head` est un bloc, pas un conteneur flex, et la propriété y est
    simplement ignorée. Un bouton est `inline-block` par défaut, donc une marge
-   automatique ne le déplace pas non plus : il faut d'abord en faire un bloc. */
+   automatique ne le déplace pas non plus : il faut d'abord en faire un bloc.
+   Depuis qu'il partage sa rangée avec « Chasser celui-ci », c'est elle qui
+   cale les deux à droite : la marge automatique et celle du haut sont reprises
+   juste en dessous, sinon l'auto aurait absorbé tout l'espace libre et renvoyé
+   son voisin à l'autre bout de l'en-tête. */
 .detail__hors {
   display: block;
   margin-left: auto;
@@ -4232,6 +4308,7 @@ body::before {
   font-weight: 700;
   cursor: pointer;
 }
+.detail__actions .detail__hors { margin-left: 0; margin-top: 0; }
 .detail__hors:hover { color: var(--text); border-color: var(--text-faint); }
 .detail__hors[data-actif="true"] {
   color: var(--marque-ink);
@@ -6416,6 +6493,15 @@ body::before {
   border-radius: var(--r-md);
   background: var(--bg-inset);
   cursor: pointer;
+  /* L'APPUI LONG OUVRE LA FICHE (voir ui/livingdex.js), et sans ces trois
+     lignes il ne nous parvient jamais : le même appui déclenche d'abord le menu
+     système du navigateur mobile — « Enregistrer l'image », la sélection du
+     texte alentour —, qui s'installe par-dessus la case et emporte le geste
+     avec lui. Une case n'a rien à copier ni à enregistrer : on ne perd rien à
+     les couper ici, et seulement ici. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .lignee .ldx { width: 42px; }
 .ldx__img { width: 84%; height: 84%; object-fit: contain; }

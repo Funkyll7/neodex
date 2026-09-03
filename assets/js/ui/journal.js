@@ -12,6 +12,18 @@
  * lui qu'on ouvre ce panneau — d'où la flèche, la couleur et le libellé qui les
  * séparent d'un coup d'œil.
  *
+ * ET DEPUIS PEU, LEQUEL. Une entrée reçue porte le nom de l'appareil qui a
+ * écrit dans le dépôt, quand ce nom y était — « Reçu de : téléphone de
+ * Kyllian ». C'est la moitié de la phrase qui manquait : qu'un changement
+ * vienne d'ailleurs, on s'en doutait ; d'où, non.
+ *
+ * UNE ENTRÉE SANS NOM GARDE L'ANCIEN LIBELLÉ, et ce n'est pas un repli de
+ * dernier recours — c'est le cas le plus fréquent du fichier. Tout l'historique
+ * déjà écrit est dans ce cas, et le restera : les centaines de commits
+ * antérieurs à cette version ne portaient aucun nom d'appareil, et un appareil
+ * qui n'en a pas choisi n'en écrit toujours pas. « Reçu d'un autre appareil »
+ * reste donc la phrase juste, et non un message d'erreur déguisé.
+ *
  * Un troisième sens traîne, « envoi », et il n'est plus jamais produit : les
  * entrées écrites par une version antérieure le portent, et elles décrivaient
  * exactement ce que « local » décrit aujourd'hui. Elles se lisent donc comme du
@@ -23,7 +35,7 @@
  */
 
 import { el, fill } from "../core/dom.js";
-import { t, langueCourante } from "../core/i18n.js";
+import { deuxPoints, t, langueCourante } from "../core/i18n.js";
 import { lireJournal, viderJournal, parJour } from "../domain/journal.js";
 import { ouvrirPopup } from "./popup.js";
 import { ligneEspece } from "./changements.js";
@@ -54,6 +66,23 @@ function heure(at) {
   return new Date(at).toLocaleTimeString(langueCourante(), { hour: "2-digit", minute: "2-digit" });
 }
 
+/**
+ * Le libellé d'une entrée reçue : avec l'expéditeur quand on le connaît.
+ *
+ * `deuxPoints` et non « Reçu de : » écrit en dur, parce que le français met une
+ * espace avant les deux-points et l'anglais non — la même raison qu'ailleurs
+ * dans le site, et la même fonction.
+ *
+ * LE TEST PORTE SUR LE TYPE et pas seulement sur la présence. Ce nom a traversé
+ * un fichier JSON téléchargé puis `localStorage`, deux endroits qu'une main ou
+ * une version future peut avoir remplis d'autre chose qu'une chaîne ; on ne
+ * compose une phrase qu'avec ce qui en est une.
+ */
+function libelleRecu(entree) {
+  const nom = typeof entree.app === "string" ? entree.app.trim() : "";
+  return nom ? deuxPoints(t("Reçu de"), nom) : t("Reçu d'un autre appareil");
+}
+
 /** Une entrée : son heure, son sens, son compte, et le détail de ses espèces. */
 function bloc(entree, dataset) {
   const recu = entree.sens === "reception";
@@ -63,7 +92,7 @@ function bloc(entree, dataset) {
   // lit comme du local — c est bien ce qu il etait.
   const fleche = recu ? "↓" : "✓";
   const libelle = recu
-    ? t("Reçu d'un autre appareil")
+    ? libelleRecu(entree)
     : entree.sens === "envoi"
       ? t("Envoyé au dépôt")
       : t("Coché sur cet appareil");

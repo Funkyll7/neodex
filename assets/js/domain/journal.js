@@ -65,8 +65,10 @@ export function lireJournal() {
  * @param {{especes: Array, gagnees: number, perdues: number}} rapport
  * @param {number} horodatage  passé par l'appelant — ce module ne lit pas
  *        l'heure lui-même, ce qui le rend testable sans horloge
+ * @param {string|null} [appareil]  le nom de l'appareil d'où vient un changement
+ *        reçu, quand le fichier distant le dit. Voir la clé `app` ci-dessous.
  */
-export function ajouterAuJournal(sens, rapport, horodatage) {
+export function ajouterAuJournal(sens, rapport, horodatage, appareil = null) {
   if (!rapport || !rapport.especes || !rapport.especes.length) return lireJournal();
 
   const entree = {
@@ -74,6 +76,20 @@ export function ajouterAuJournal(sens, rapport, horodatage) {
     sens,
     gagnees: rapport.gagnees,
     perdues: rapport.perdues,
+    // D'OÙ ÇA VIENT, quand on le sait — et la clé est courte pour la même
+    // raison que `g` et `p` plus bas : ce tableau est recopié en entier dans
+    // `localStorage` à chaque ajout, cent cinquante fois, et un nom de clé long
+    // s'y paie autant de fois.
+    //
+    // ABSENTE PLUTÔT QUE NULLE, et c'est le point à ne pas rater. Les entrées
+    // déjà écrites — plusieurs centaines — n'ont pas cette clé, et il n'est pas
+    // question d'aller les réécrire pour y poser un `null` : `ui/journal.js`
+    // doit de toute façon savoir lire une entrée qui ne dit pas d'où elle
+    // vient, puisque c'est le cas de tout l'historique existant ET de tout
+    // changement reçu d'un appareil qui n'a pas de nom. Une seule branche à
+    // l'affichage couvre donc les deux, et l'ancien libellé « Reçu d'un autre
+    // appareil » reste la réponse juste quand le nom manque.
+    ...(appareil ? { app: appareil } : {}),
     // Le NUMÉRO seul, pas l'espèce entière. L'objet espèce pèse des kilo-octets
     // — noms, types, formes, disponibilités — et il est déjà en mémoire, chargé
     // depuis `data/`. Le journal ne stocke donc que de quoi le retrouver.
@@ -187,8 +203,12 @@ function viderSalve(collection) {
  * mauvais cote. Enveloppee, l operation ne peut pas etre faite a moitie.
  *
  * @param {Function} adopter  fait l adoption et rend son rapport, ou `null`
+ * @param {string|null} [appareil]  le nom de l appareil d ou vient ce qu on
+ *   adopte, quand l appelant a pu le lire dans le fichier distant. Facultatif
+ *   a dessein : l adoption d un onglet jumeau ou d un fichier importe n a pas
+ *   d expediteur a nommer, et une entree sans nom garde l ancien libelle.
  */
-export function autourDUneAdoption(collection, adopter) {
+export function autourDUneAdoption(collection, adopter, appareil = null) {
   // 1. Ce qui attendait est BIEN A NOUS. Sans ce vidage, une salve en cours au
   //    moment ou le depot repond serait comparee a un etat qui contient deja
   //    les cases distantes, et nos propres coches auraient disparu du journal.
@@ -196,7 +216,7 @@ export function autourDUneAdoption(collection, adopter) {
 
   // 2. L adoption elle-meme, qui rend son rapport ou `null`.
   const rapport = adopter();
-  if (rapport) ajouterAuJournal("reception", rapport, Date.now());
+  if (rapport) ajouterAuJournal("reception", rapport, Date.now(), appareil);
 
   // 3. Le nouvel etat devient la reference. Sans cette reprise, la salve
   //    suivante aurait note les cases distantes une seconde fois, comme si on
