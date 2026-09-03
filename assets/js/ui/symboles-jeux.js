@@ -222,14 +222,30 @@ export function embleme(code, taille = 15) {
  *
  * L'IMAGE EST INFORMATIVE, ET SON `alt` EST DONC RENSEIGNÉ — c'est ce qui la
  * distingue des emblèmes de jeu ci-dessus, qui sont décoratifs et portent un
- * `alt` vide. L'emblème d'Épée/Bouclier a son nom écrit en toutes lettres à
- * deux pixels de là ; le nom du DLC, lui, n'est écrit NULLE PART ailleurs dans
- * la ligne. Le laisser décoratif aurait donc retiré l'information à qui n'y
- * voit pas, alors même qu'elle est le seul intérêt de cette image.
+ * `alt` vide. Mais elle ne porte pas le NOM du DLC : depuis que le tableau
+ * de disponibilité lui donne une sous-ligne à elle, ce nom est écrit en toutes
+ * lettres juste à côté, et le mettre aussi dans l'`alt` le ferait entendre deux
+ * fois d'affilée. L'appelant y met donc ce que cette vignette EST — « Contenu
+ * téléchargeable » —, et les deux se lisent à la suite comme la phrase qu'ils
+ * forment.
  *
- * L'appelant fournit le libellé déjà traduit et déjà composé : la traduction et
+ * IL Y A MIS UNE QUALIFICATION, UN TEMPS — « Nécessite le DLC » —, du temps où
+ * une sous-ligne n'existait que pour les espèces exclusives d'un contenu : la
+ * phrase était alors vraie à tous les coups. Elle ne l'est plus depuis que les
+ * quatre contenus ont leur ligne sur toutes les fiches. Le même logo se pose
+ * sous Épée / Bouclier pour un Pikachu que la cartouche donne — on ne
+ * « nécessite » rien —, et sous un contenu qui n'a pas l'espèce, où il aurait
+ * contredit le tiret écrit deux pixels plus loin. La leçon vaut pour la suite :
+ * l'`alt` d'une vignette dit ce qu'elle montre, la ligne dit ce qu'il faut en
+ * conclure.
+ *
+ * L'appelant fournit ce libellé déjà traduit et déjà composé : la traduction et
  * la ponctuation d'une phrase sont son affaire, pas celle d'une fabrique
  * d'images.
+ *
+ * `taille` ne fait que réserver la place avant le chargement : c'est la règle
+ * `.sym-dlc` qui fixe la taille finale, hauteur calée et largeur libre, parce
+ * que les quatre vignettes n'ont pas du tout la même forme.
  */
 export function logoDlc(code, libelle, taille = 17) {
   const img = document.createElement("img");

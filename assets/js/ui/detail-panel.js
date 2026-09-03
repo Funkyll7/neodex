@@ -1296,7 +1296,13 @@ function availabilitySection(species, { dataset }) {
     return section;
   }
 
-  const lignes = availabilityRows(species, dataset.games);
+  // Les DLC passent au domaine, et non au dessin : c'est lui qui decide qu'une
+  // espece apportee par un contenu telechargeable n'est PAS dans le jeu de
+  // base, et qui descend la presence d'un cran, en sous-ligne. Le panneau ne
+  // fait que lire ce qu'on lui rend. L'argument est facultatif — si
+  // data/reference/dlc.json venait a manquer, `dataset.dlc` vaut le tableau
+  // vide et le tableau redevient exactement celui d'avant.
+  const lignes = availabilityRows(species, dataset.games, dataset.dlc);
 
   section.append(
     el(
@@ -1313,19 +1319,44 @@ function availabilitySection(species, { dataset }) {
     el(
       "div.avail-bande",
       { role: "img", "aria-label": resumeDisponibilite(lignes) },
-      lignes.map((row) =>
-        el(
+      lignes.map((row) => {
+        // LA BANDE SE RABAT SUR LES SOUS-LIGNES QUI DISENT OUI, et c'est voulu.
+        //
+        // Depuis que le domaine bascule en absente la ligne d'un jeu dont seul
+        // le DLC apporte l'espece, `row` dit « pas dans Ecarlate / Violet » —
+        // vrai pour le tableau, qui detaille juste en dessous, mais faux pour
+        // une bande dont toute la question est « est-ce que je peux
+        // l'attraper quelque part ? ». Avec le DLC, oui. L'embleme garde donc
+        // sa couleur, et l'infobulle nomme le contenu qu'il faut posseder :
+        // rien n'est affirme qui ne soit dit.
+        //
+        // ON FILTRE SUR `present`, ET C'EST INDISPENSABLE depuis que le domaine
+        // range une sous-ligne sous chaque jeu a DLC, meme quand elle dit non.
+        // Prendre `dlcRows[0]` aveuglement, comme on le faisait quand une
+        // sous-ligne n'existait que pour dire oui, aurait maintenant eteint
+        // l'embleme d'Epee / Bouclier pour un Pikachu present dans la cartouche,
+        // au seul motif que la premiere de ses deux sous-lignes est un « non ».
+        //
+        // La ligne du jeu passe en premier : si elle dit oui, elle a raison
+        // toute seule et aucun DLC n'est a nommer. Sinon, la premiere sous-ligne
+        // qui dit oui suffit a la couleur — les DLC d'un meme jeu decrivent la
+        // meme presence dans le meme jeu, donc le meme etat —, et l'infobulle
+        // les nomme toutes, seul Drakkarmin (621) en ayant deux.
+        const apportent = row.present ? [] : row.dlcRows.filter((sous) => sous.present);
+        const vu = row.present ? row : apportent[0] || row;
+        const parDlc = apportent.map((sous) => t(sous.dlc.name)).join(" · ");
+        return el(
           "span",
           {
-            class: row.present ? "avail-bande__jeu avail-bande__jeu--on" : "avail-bande__jeu",
-            "--c": row.color || "transparent",
-            title: `${t(row.game.name)} — ${t(row.presenceLabel)}${
-              row.present ? ` · ${t("Shiny")} ${t(row.shinyLabel)}` : ""
+            class: vu.present ? "avail-bande__jeu avail-bande__jeu--on" : "avail-bande__jeu",
+            "--c": vu.color || "transparent",
+            title: `${t(row.game.name)}${parDlc ? ` (${parDlc})` : ""} — ${t(vu.presenceLabel)}${
+              vu.present ? ` · ${t("Shiny")} ${t(vu.shinyLabel)}` : ""
             }`,
           },
           embleme(row.game.code, 18)
-        )
-      )
+        );
+      })
     ),
     el(
       "div.games",
@@ -1335,70 +1366,125 @@ function availabilitySection(species, { dataset }) {
         el("span", t("Présence")),
         el("span.games__cell--shiny", t("Shiny"))
       ),
-      lignes.map((row) =>
+      // VINGT-SEPT LIGNES : UNE PAR JEU, ET SOUS TROIS D'ENTRE ELLES, UNE
+      // SOUS-LIGNE PAR CONTENU TÉLÉCHARGEABLE — quelle que soit l'espèce.
+      //
+      // On rend un tableau [ligne, sous-lignes…] : `el()` aplatit ses enfants,
+      // les sous-lignes sont donc des SŒURS de leur ligne, dans le même
+      // conteneur `.games`. C'est tout l'intérêt — elles héritent de la grille
+      // de `.games__row`, donc les colonnes « Présence » et « Shiny » d'une
+      // sous-ligne tombent exactement sous celles de sa ligne. Imbriquées dans
+      // la cellule du jeu, elles auraient eu leur propre largeur et il aurait
+      // fallu réaligner à la main, à jamais.
+      //
+      // LE NOMBRE DE LIGNES NE SE DÉCIDE PAS ICI. Le panneau boucle sur ce que
+      // le domaine lui rend, sans jamais compter les DLC ni savoir quels jeux
+      // en ont : un cinquième contenu, ou le découpage de la Zone Zéro en ses
+      // deux moitiés, ne demanderait pas une ligne de ce fichier.
+      lignes.map((row) => [
         el(
           "div",
           {
-            class: row.present ? "games__row games__row--on" : "games__row",
+            // DEUX QUALITÉS INDÉPENDANTES, ET UNE LIGNE PEUT AVOIR LES DEUX.
+            // `--on` dit « la réponse est oui » et colore la ligne ; `--mere`
+            // dit « des sous-lignes suivent » et efface le trait du bas pour
+            // que le jeu et ses DLC se lisent d'un seul bloc. Un Pikachu dans
+            // Épée / Bouclier porte les deux — présent dans la cartouche ET
+            // suivi de ses deux DLC. L'ancienne cascade de ternaires n'en
+            // donnait qu'une, et le trait du bas serait resté sous la ligne du
+            // jeu, coupant en deux le bloc qu'on veut donner à lire.
+            class: [
+              "games__row",
+              row.present && "games__row--on",
+              row.dlcRows.length && "games__row--mere",
+            ]
+              .filter(Boolean)
+              .join(" "),
             "--c": row.color || "transparent",
           },
           el(
             "div.games__ident",
-            // L'emblème du jeu devant son nom : dans un tableau de vingt-trois
+            // L'emblème du jeu devant son nom : dans un tableau de vingt-sept
             // lignes, la forme se repère bien plus vite que le texte.
             embleme(row.game.code, 20),
-            // Le logo du DLC APRÈS celui du jeu, et jamais à sa place. La ligne
-            // dit toujours « Épée/Bouclier » — c'est vrai, l'espèce y est —, le
-            // petit logo ajoute la condition : « oui, mais avec ce contenu-là ».
-            // Remplacer l'emblème aurait dit autre chose, à savoir que le DLC
-            // est un jeu de plus, ce qu'il n'est pas : on ne l'achète pas seul
-            // et il ne s'ajoute ni aux compteurs, ni à la liste des présences.
-            //
-            // Les logos ne sortent que pour les espèces que le jeu de base n'a
-            // pas — `domain/dlc.js` rend un tableau vide pour toutes les
-            // autres. Trois jeux seulement ont des DLC, donc vingt lignes sur
-            // vingt-trois n'affichent jamais rien, et la plupart des espèces
-            // n'affichent rien du tout. C'est exactement l'intérêt de la
-            // chose : ce qui se voit est ce qui coûte un achat.
-            //
-            // Le libellé est composé ICI parce que composer une phrase est un
-            // travail d'affichage : `deuxPoints` met l'espace que le français
-            // demande devant les deux-points et l'ôte en anglais, et le nom du
-            // DLC passe par `t()` comme tout ce qui s'écrit — il vit dans la
-            // section « games » de data/i18n/en.json, avec les noms de jeux.
             el(
               "div.games__titre",
               el("div.games__name", t(row.game.name)),
               el("div.games__gen", `${t("Gén.")} ${row.game.gen}`)
-            ),
-            // LES LOGOS EN BOUT DE CELLULE, ET NON ENTRE L'EMBLÈME ET LE NOM.
-            //
-            // Ils étaient glissés juste après l'emblème, et ça cassait la
-            // colonne : sur les trois lignes qui en portent un, le nom du jeu
-            // partait vingt pixels plus à droite que sur les vingt autres, et
-            // quarante pour Drakkarmin qui en a deux. Vingt-trois lignes dont
-            // trois décalées se lisent comme une erreur, pas comme une
-            // information.
-            //
-            // Poussés à droite par `margin-left: auto`, ils laissent tous les
-            // noms commencer au même endroit — et ils respirent enfin, au lieu
-            // d'être collés au mot qui les suivait.
-            (() => {
-              const dlcs = dlcRequis(species, row.game.code, dataset.dlc);
-              if (!dlcs.length) return null;
-              return el(
-                "span.games__dlc",
-                dlcs.map((dlc) => logoDlc(dlc.code, deuxPoints(t("Nécessite le DLC"), t(dlc.name))))
-              );
-            })()
+            )
           ),
           // `presenceLabel` / `shinyLabel` viennent d'une table de module de
           // `availability.js`, figee a l'import : on les traduit ici, au point
-          // d'affichage.
+          // d'affichage. Le panneau ne decide de rien — quand un contenu
+          // telechargeable est REQUIS, le domaine a deja ramene ces deux
+          // libelles au tiret de l'absence ; quand le jeu de base donne
+          // l'espece, il les a laisses tels quels, sous-lignes ou pas.
           el("span.games__cell", t(row.presenceLabel)),
           el("span.games__cell.games__cell--shiny", t(row.shinyLabel))
-        )
-      )
+        ),
+        // LA SOUS-LIGNE, QUI PORTE DÉSORMAIS LA VÉRITÉ — ET QUI NE DISPARAÎT
+        // PLUS QUAND ELLE DIT NON.
+        //
+        // Un petit logo posé au bout de la cellule du jeu avait été tenté. Il
+        // se collait à la colonne « Présence » et l'écrasait, et à dix-huit
+        // pixels les quatre vignettes ne se distinguaient plus les unes des
+        // autres — surtout « MÉGA-DIMENSION », un logotype quatre fois et demie
+        // plus large que haut. Pire : il qualifiait une ligne qui continuait
+        // d'afficher « Disponible » pour un Pokémon que le jeu de base n'a pas.
+        //
+        // Une ligne à part règle les deux à la fois. Le logo a la place d'être
+        // lu, le nom du DLC est écrit en toutes lettres, et surtout la lecture
+        // redevient franche : le jeu de base dit « — », la sous-ligne dit
+        // « Disponible ». Ce qu'on vient chercher se lit ligne par ligne.
+        //
+        // ELLES SONT LÀ POUR TOUTES LES ESPÈCES, désormais, y compris pour dire
+        // non — voir `availabilityRows`, qui décide de leur nombre et de leur
+        // contenu. Le dessin n'a qu'une chose à faire de plus : ne pas peindre
+        // en vert celles qui disent non. D'où `--on`, posée sur la seule
+        // sous-ligne qui répond oui, et qui allume à elle seule le filet de
+        // gauche, la couleur du verdict et le nom en pleine encre. Sans elle,
+        // la sous-ligne reste au ton neutre des lignes vides du tableau : à
+        // vingt-sept lignes dont une vingtaine muettes, le « non » doit se
+        // taire pour que le « oui » s'entende.
+        row.dlcRows.map((sous) =>
+          el(
+            "div",
+            {
+              class: sous.present
+                ? "games__row games__row--dlc games__row--on"
+                : "games__row games__row--dlc",
+              "--c": sous.color || "transparent",
+            },
+            el(
+              "div.games__ident.games__ident--dlc",
+              // La flèche courbée dit le rattachement — « ceci dépend de la
+              // ligne du dessus » — là où l'indentation seule reste ambiguë sur
+              // un tableau qui s'étire. Purement décorative : le lecteur
+              // d'écran entend déjà de quoi il s'agit juste après.
+              el("span.games__fleche", { "aria-hidden": "true" }, "↳"),
+              // L'`alt` NOMME LA NATURE DE L'IMAGE, et rien de plus. Il disait
+              // « Nécessite le DLC » du temps où une sous-ligne n'existait que
+              // pour les espèces exclusives d'un contenu : la phrase était vraie
+              // à tous les coups. Elle ne l'est plus. Le même logo se pose
+              // maintenant sous Épée / Bouclier pour un Pikachu que la cartouche
+              // donne — on ne « nécessite » rien —, et sous un contenu qui n'a
+              // pas l'espèce du tout, où elle aurait carrément contredit le
+              // tiret écrit deux pixels plus loin. Le nom du DLC est déjà là,
+              // la présence est dite par sa colonne : l'`alt` n'a plus qu'à
+              // dire ce que cette vignette est. Il passe par t(), comme tout ce
+              // qui s'affiche.
+              logoDlc(sous.dlc.code, t("Contenu téléchargeable"), 24),
+              // Le nom du DLC vit dans la section « games » de
+              // data/i18n/en.json, avec les noms de jeux — `t()` y va tout
+              // seul. Pas de ligne « Gén. » ici : un DLC n'est pas une
+              // génération, et sa ligne mère l'a déjà dite.
+              el("div.games__titre", el("div.games__name", t(sous.dlc.name)))
+            ),
+            el("span.games__cell", t(sous.presenceLabel)),
+            el("span.games__cell.games__cell--shiny", t(sous.shinyLabel))
+          )
+        ),
+      ])
     ),
     el(
       "p.footnote",
@@ -1417,7 +1503,22 @@ function availabilitySection(species, { dataset }) {
  * en dessous pour le détail.
  */
 function resumeDisponibilite(lignes) {
-  const presents = lignes.filter((r) => r.present).length;
+  // Un jeu compte des lors qu'on peut y attraper l'espece — DLC compris.
+  // Depuis que le domaine bascule en absente la ligne d'un jeu dont seul le DLC
+  // apporte l'espece, compter le seul `present` aurait annonce « 0 jeu sur 23 »
+  // pour un Rayquaza qu'on attrape dans deux d'entre eux, moyennant un achat.
+  // La bande dit la meme chose que ce resume, et l'infobulle de chaque embleme
+  // nomme le contenu a posseder : rien ne se perd, tout se precise en dessous.
+  //
+  // ON REGARDE CE QUE LES SOUS-LIGNES DISENT, PAS COMBIEN IL Y EN A. Elles sont
+  // desormais la sous les trois jeux a DLC pour TOUTES les especes, y compris
+  // pour dire non : compter leur seule existence, comme on le faisait quand
+  // elles n'apparaissaient que pour dire oui, aurait ajoute trois jeux au total
+  // de n'importe quelle espece — y compris celles que ni Epee / Bouclier, ni
+  // Ecarlate / Violet, ni Legendes Z-A ne donnent, DLC compris.
+  const presents = lignes.filter(
+    (r) => r.present || r.dlcRows.some((sous) => sous.present)
+  ).length;
   return `${presents} ${tn(presents, "jeu", "jeux")} ${t("sur")} ${lignes.length}`;
 }
 
@@ -1426,6 +1527,25 @@ function resumeDisponibilite(lignes) {
 function huntSection(species, ctx) {
   const { dataset, planner } = ctx;
   const huntable = huntableGames(species, dataset.games);
+  /**
+   * Le nom du jeu, suivi du DLC qu'il faut posséder — quand il en faut un.
+   *
+   * LES DEUX BLOCS DE LA FICHE SE CONTREDISAIENT. Depuis que le tableau « Où le
+   * trouver » fait basculer la ligne d'un jeu en « indisponible » quand
+   * l'espèce n'y est que par un DLC, cette section-ci continuait d'annoncer
+   * « le meilleur taux se trouve dans Épée / Bouclier » à trois centimètres
+   * d'une ligne qui disait « — ». Les deux ont raison chacun de leur côté — la
+   * chasse EST possible, moyennant l'achat — mais lus ensemble ils se
+   * démentent.
+   *
+   * On nomme donc le contenu ici aussi. `huntableGames` n'est pas touchée :
+   * elle répond « peut-on y chasser », et la réponse reste oui. C'est
+   * l'ÉTIQUETTE qui manquait, pas le verdict.
+   */
+  const avecDlc = (game) => {
+    const dlcs = dlcRequis(species, game.code, dataset.dlc);
+    return dlcs.length ? `${t(game.name)} (${dlcs.map((d) => t(d.name)).join(" · ")})` : t(game.name);
+  };
   const locked = dataset.games.filter(
     (g) => species.games.has(g.code) && g.shinyOk !== false && species.shinyLocked.has(g.code)
   );
@@ -1440,7 +1560,7 @@ function huntSection(species, ctx) {
   );
 
   const why = huntable.length
-    ? whyText(species, huntable, planner)
+    ? whyText(species, huntable, planner, avecDlc)
     : species.noShiny
       ? noShinyReason(ctx)
       : (species.note ? noteDonnees(species.note) : null) ||
@@ -1456,7 +1576,7 @@ function huntSection(species, ctx) {
       badge,
       el("p.hunt__why", why),
       huntable.length ? el("div.hunt__sep") : null,
-      huntable.map((game) => gameMethod(species, game, planner)),
+      huntable.map((game) => gameMethod(species, game, planner, avecDlc)),
       locked.length
         ? el(
             "p.hunt__locked",
@@ -1489,14 +1609,14 @@ function huntSection(species, ctx) {
 }
 
 /** Une carte depliable par jeu : methode, taux, marche a suivre. */
-function gameMethod(species, game, planner) {
+function gameMethod(species, game, planner, avecDlc) {
   const method = planner.methodFor(game.code, species);
   return el(
     "details.method",
     { dataset: { key: `hunt-${game.code}` } },
     el(
       "summary.method__head",
-      el("span.method__game", t(game.name)),
+      el("span.method__game", avecDlc ? avecDlc(game) : t(game.name)),
       el("span.method__odds", method.odds || "—"),
       el("span.method__name", method.name)
     ),
@@ -1504,13 +1624,13 @@ function gameMethod(species, game, planner) {
   );
 }
 
-function whyText(species, huntable, planner) {
+function whyText(species, huntable, planner, avecDlc) {
   const best = huntable
     .map((game) => ({ game, method: planner.methodFor(game.code, species) }))
     .sort((a, b) => oddsOf(a.method.odds) - oddsOf(b.method.odds))[0];
   return (
     `${deuxPoints(
-      `${t("Le meilleur taux se trouve dans")} ${t(best.game.name)}`,
+      `${t("Le meilleur taux se trouve dans")} ${avecDlc ? avecDlc(best.game) : t(best.game.name)}`,
       `${best.method.name}, ${best.method.odds}`
     )}. ` +
     t("Déplie un jeu ci-dessous pour la marche à suivre exacte ; les taux tiennent compte du Charme Chroma quand le jeu le propose.")

@@ -46,6 +46,17 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "5.4",
+    date: "2026-09-03",
+    titre: "Chaque DLC sur sa ligne",
+    notes: [
+      ["ajout", "Les quatre DLC ont leur propre ligne sous leur jeu, visible sur toutes les fiches, et disent chacun s'ils apportent l'espèce ou non."],
+      ["amelioration", "Quand une espèce n'est obtenable que par un DLC, la ligne du jeu de base dit « indisponible » — elle annonçait « disponible » à tort."],
+      ["correction", "Huit légendaires du Repaire Dynamax manquaient à la Toundra Couronnée : Mewtwo, Lugia, Ho-Oh, Rayquaza, Dialga, Reshiram, Zekrom et Necrozma."],
+      ["correction", "« Le meilleur taux se trouve dans Épée / Bouclier » contredisait le tableau juste au-dessus : la chasse nomme le DLC elle aussi."],
+    ],
+  },
+  {
     version: "5.3",
     date: "2026-09-03",
     titre: "Les DLC comptent enfin",

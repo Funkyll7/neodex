@@ -207,18 +207,76 @@ MYTHIC_IN_GAME = {
 # sont donc explicitement retires du calcul de `wild`, a l'ecriture.
 
 # Repaire Dynamax de la Toundra Couronnee -> « swsh ».
-DYNAMAX_ADVENTURES = {
+#
+# UNE EXPEDITION, DEUX ROLES, DONC DEUX TABLES. Une expedition enchaine quatre
+# combats : les TROIS PREMIERS opposent des Pokemon ordinaires, le QUATRIEME un
+# legendaire, et on repart avec celui qu'on a attrape. Les deux roles donnent
+# donc la meme chose — « swsh » — mais ne se sourcent pas de la meme facon et ne
+# se relisent pas ensemble. Une seule table les melangeait ; le decoupage
+# ci-dessous ne change RIEN a la sortie du script (off_dex_additions() parcourt
+# les deux), il rend seulement chaque liste verifiable pour elle-meme.
+#
+# AUCUN RETRAIT dans cette passe, et c'en est un resultat, pas un oubli. Le
+# soupcon portait sur les six evolutions des starters de Hoenn : elles ne sont
+# pas boss du Repaire, donc pas dans la liste des legendaires. Elles y sont bien
+# presentes, mais comme adversaires des trois premiers combats — Serebii les
+# range en « Standard Opponents », Bulbapedia en « Rentable and encounterable »,
+# Pokepedia en « Pokemon d'emprunt et rencontrables ». Elles gardent « swsh » ;
+# c'est leur etiquette qui etait fausse, pas leur presence. Elles descendent
+# donc d'une table a l'autre, sans quitter le fichier.
+
+# 1) Les BOSS du quatrieme combat : les legendaires.
+#
+# 44 des 47 boss recenses. Les trois manquants sont Artikodin (144), Electhor
+# (145) et Sulfura (146), ABSENTS EXPRES — voir le bloc juste apres la table.
+DYNAMAX_ADVENTURES_BOSS = {
+    150,                                # Mewtwo
     243, 244, 245,                      # Raikou, Entei, Suicune
-    253, 254, 256, 257, 259, 260,       # evolutions des starters de Hoenn
-    380, 381, 382, 383,                 # Latias, Latios, Kyogre, Groudon
+    249, 250,                           # Lugia, Ho-Oh
+    380, 381, 382, 383, 384,            # Latias, Latios, Kyogre, Groudon, Rayquaza
     480, 481, 482,                      # Crehelf, Crefollet, Crefadet
-    484, 485, 487, 488,                 # Palkia, Heatran, Giratina, Cresselia
-    641, 642, 645, 646,                 # Boreas, Fulguris, Demeteros, Kyurem
+    483, 484, 485, 487, 488,            # Dialga, Palkia, Heatran, Giratina, Cresselia
+    641, 642, 643, 644, 645, 646,       # Boreas, Fulguris, Reshiram, Zekrom,
+                                        # Demeteros, Kyurem
     716, 717, 718,                      # Xerneas, Yveltal, Zygarde
     785, 786, 787, 788,                 # les quatre Tokos d'Alola
     791, 792,                           # Solgaleo, Lunala
     793, 794, 795, 796, 797, 798, 799,  # les sept Ultra-Chimeres de Soleil/Lune
+    800,                                # Necrozma
     805, 806,                           # Ama-Ama, Pierroteknik
+}
+
+# LES OISEAUX DE KANTO N'ENTRENT PAS ICI, ET C'EST VOLONTAIRE.
+#
+# Artikodin (144), Electhor (145) et Sulfura (146) sont bel et bien boss du
+# Repaire : ils completent les 47. Les inscrire dans la table ci-dessus ferait
+# pourtant PERDRE de l'information au lieu d'en gagner.
+#
+#   - « swsh » leur est deja acquis autrement : leurs formes de Galar errent
+#     dans les Terres Enneigees et sont au Pokedex 29, donc au socle calcule.
+#     Les ajouter ici ne pose aucun code neuf.
+#   - Et l'ajout serait destructeur : leur champ `wild` vaut aujourd'hui
+#     « rb y frlg hgss xy lgpe swsh », ou ce dernier code dit exactement cette
+#     rencontre errante. Or l'ecriture (voir plus bas, `c not in manual`) retire
+#     du calcul de `wild` tout code pose par une de ces trois tables. Les
+#     inscrire effacerait donc « swsh » de leur `wild` et ferait disparaitre du
+#     site la seule rencontre sauvage de legendaire de tout Epee/Bouclier.
+#
+# Gain nul d'un cote, perte reelle de l'autre : ils restent dehors. La liste des
+# 47 boss vit entiere dans data/reference/hunt.json (rules.dynamaxRaid), qui
+# pilote la methode de chasse au chromatique et n'a pas cette contrainte.
+
+# 2) Les ADVERSAIRES des trois premiers combats, part hors Pokedex.
+#
+# Le vivier des trois premiers combats compte plus de deux cents especes
+# ordinaires, mais presque toutes figurent deja a un Pokedex de Galar (27), de
+# l'Ile Solitaire (28) ou des Terres Enneigees (29) : le socle calcule les
+# couvre, elles n'ont rien a faire ici. Ne restent que ces six-la, seules a
+# manquer aux trois Pokedex — l'angle mort dans l'angle mort.
+DYNAMAX_ADVENTURES_OPPONENTS = {
+    253, 254,                           # Massko, Jungko
+    256, 257,                           # Galifeu, Brasegali
+    259, 260,                           # Flobio, Laggron
 }
 
 # Friandises legendaires de Jeffry Andise, apres le Disque Indigo -> « sv ».
@@ -257,9 +315,11 @@ OFF_DEX_EXTRAS = {
 
 
 def off_dex_additions():
-    """Les trois tables ci-dessus, fondues en un seul {espece: {jeux}}."""
+    """Les tables ci-dessus, fondues en un seul {espece: {jeux}}."""
     extras = {}
-    for sid in DYNAMAX_ADVENTURES:
+    # Les deux moities du Repaire Dynamax donnent le meme code : boss du
+    # quatrieme combat ou adversaire des trois premiers, on repart avec.
+    for sid in DYNAMAX_ADVENTURES_BOSS | DYNAMAX_ADVENTURES_OPPONENTS:
         extras.setdefault(sid, set()).add("swsh")
     for sid in SNACKSWORTH_TREATS:
         extras.setdefault(sid, set()).add("sv")

@@ -962,6 +962,92 @@
 .games__row--on .games__name { color: var(--text); }
 .games__row--on .games__cell { color: var(--c); }
 
+/* ── La sous-ligne d'un contenu téléchargeable ──────────────────────────────
+   Elle est SŒUR de la ligne de son jeu, pas fille : même conteneur, donc même
+   `display: grid` et mêmes colonnes. C'est tout l'intérêt du procédé — le
+   « Disponible » d'un DLC tombe exactement sous le « — » de son jeu de base, et
+   les deux se comparent d'un coup d'œil. Imbriquée dans la cellule du jeu, elle
+   aurait eu sa propre largeur, et il aurait fallu réaligner à la main.
+
+   ELLE EST LÀ POUR TOUTES LES ESPÈCES, et le plus souvent pour dire non : le
+   tableau fait vingt-sept lignes, toujours les mêmes, et la plupart des espèces
+   ne figurent au Pokédex d'aucun contenu, ou d'un seul sur quatre. Ces règles-ci
+   ne décrivent donc plus que sa STRUCTURE — l'indentation, la hauteur, les tailles
+   de texte — et son ton NEUTRE, celui d'une ligne vide du tableau. Le fond
+   teinté, le filet coloré et le nom en pleine encre ont déménagé dans
+   `.games__row--on`, que le panneau ne pose que sur la sous-ligne qui répond
+   oui.
+
+   C'ÉTAIT NÉCESSAIRE, ET PAS SEULEMENT PAR GOÛT. Les quatre lignes de DLC
+   auraient toutes crié, y compris les trois qui ne disent rien — mais surtout,
+   l'ancien `color: var(--c)` sur une sous-ligne muette aurait peint son « — »
+   avec `transparent`, la valeur que le panneau donne à `--c` faute de couleur
+   d'état : le tiret aurait été purement invisible, et la colonne trouée.
+
+   LE FOND EST CELUI DES CREUX DU SITE — `--bg-inset`, le même que la ligne
+   d'en-tête —, adouci de moitié. Il ne décore pas : c'est lui qui fait lire le
+   jeu et ses contenus comme UN BLOC. Sans lui, sur vingt-sept lignes dont la
+   plupart muettes, rien ne rattachait plus « Les Terres Enneigées » à
+   « Épée / Bouclier » qu'une douzaine de pixels d'indentation. */
+.games__row--dlc {
+  background: color-mix(in srgb, var(--bg-inset) 50%, transparent);
+  /* Un peu moins haute que sa ligne mère : la hiérarchie se voit aussi là. */
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+.games__row--dlc .games__name { font-size: 12px; }
+.games__row--dlc .games__cell { font-size: 11.5px; }
+
+/* LA SOUS-LIGNE QUI DIT OUI. Elle porte `.games__row--on`, exactement comme la
+   ligne d'un jeu qui a l'espèce, et en hérite le filet de gauche coloré, le nom
+   en pleine encre et le verdict à la couleur de l'état : un seul vocabulaire
+   pour les deux niveaux, plutôt qu'un dialecte de sous-ligne à tenir d'accord
+   avec lui pour toujours.
+   Seul le FOND est repris ici. Une ligne de jeu pose 15 % de sa couleur sur le
+   fond du tableau ; celle-ci pose 14 % sur le creux des sous-lignes, ce qui lui
+   donne la même présence — c'est bien elle qu'on vient chercher quand la ligne
+   du dessus dit « — » — sans effacer le creux qui la rattache à sa mère.
+   Deux classes contre une : elle l'emporte sans `!important`. */
+.games__row--dlc.games__row--on {
+  background: color-mix(in srgb, var(--c) 14%, var(--bg-inset));
+}
+
+/* Le logo d'un contenu qui n'apporte pas l'espèce s'efface à moitié. Il reste
+   reconnaissable — c'est lui qui identifie la ligne, et le nom écrit à côté est
+   en petit —, mais il cesse de disputer l'œil à celui de la sous-ligne voisine
+   qui, elle, dit oui. Sur une fiche entière, ces trois ou quatre vignettes
+   colorées étaient le seul bruit qui restait. */
+.games__row--dlc:not(.games__row--on) .sym-dlc { opacity: .5; }
+
+/* Le trait du dessous disparaît entre une ligne et ses sous-lignes : le groupe
+   se lit comme un bloc. Il reste sous la DERNIÈRE d'entre elles, qui ferme le
+   jeu — d'où le `:has()`, seul moyen de distinguer « suivie d'une sous-ligne »
+   de « dernière du groupe » sans faire compter le JavaScript. Le trait n'est
+   pas retiré mais rendu transparent : sa hauteur reste réservée, donc aucune
+   ligne du tableau ne se décale. */
+.games__row--mere,
+.games__row--dlc:has(+ .games__row--dlc) { border-bottom-color: transparent; }
+
+/* L'INDENTATION, posée sur la cellule du jeu et non sur la ligne : décaler la
+   ligne entière aurait emmené les colonnes « Présence » et « Shiny » avec elle,
+   et ruiné l'alignement qui fait tout l'intérêt de ce dessin. */
+.games__ident--dlc { padding-left: var(--sp-3); }
+
+/* La flèche courbée du rattachement. Discrète — c'est un signe de liaison, pas
+   une information —, mais pas fantôme : le lecteur doit la voir sans la lire.
+   Elle ne rétrécit jamais, sinon elle se replierait avant le nom du DLC. */
+.games__fleche {
+  flex: 0 0 auto;
+  /* Seize pixels et non treize : sous cette taille, la pointe du glyphe « ↳ »
+     disparaît et il ne reste qu'un angle droit, qui ne dit plus rien. */
+  font-size: 16px;
+  line-height: 1;
+  color: var(--text-muted);
+  /* Le glyphe « ↳ » est dessiné haut dans sa boîte : deux pixels vers le bas le
+     recentrent sur le logo qui le suit. */
+  transform: translateY(2px);
+}
+
 /* Bloc shiny hunt */
 .hunt {
   background: var(--bg-sunken);
@@ -1222,6 +1308,27 @@
   .games__cell,
   .games__gen,
   .games__head span { font-size: 11px; }
+
+  /* La sous-ligne d'un DLC, resserree. La colonne du nom ne fait plus que
+     deux cents pixels : l'indentation passe de douze a huit, et le logo de
+     vingt-quatre a vingt-deux, sinon « Les Terres Enneigees de la Couronne »
+     se replie sur trois lignes.
+     Les selecteurs sont doubles a dessein. Le bloc de base de ces regles vit
+     PLUS BAS dans le fichier que cette requete de media ; a specificite egale,
+     c'est lui qui l'emporterait, et l'ecart des ecrans etroits n'aurait jamais
+     lieu. Un cran de specificite en plus tranche, sans avoir a deplacer quoi
+     que ce soit. */
+  .games__row.games__row--dlc { padding-top: 6px; padding-bottom: 6px; }
+  .games__row--dlc .games__ident--dlc { padding-left: var(--sp-2); }
+  /* Le logo garde la priorité sur le repli du nom, et c'est un arbitrage
+     mesuré : à 375 px, la colonne du nom ne laisse que 93 px, et
+     « Méga-Dimension » en réclame 95. Le rendre tenir sur une ligne aurait
+     demandé de ramener son logotype sous cinquante pixels, c'est-à-dire à la
+     hauteur illisible dont on vient de le sortir — alors que juste au-dessus,
+     « Le Trésor Enfoui de la Zone Zéro » se replie de toute façon. Un nom sur
+     deux lignes ne coûte que de la hauteur ; un logo écrasé ne dit plus rien. */
+  .games__row--dlc .sym-dlc { height: 22px; max-width: 58px; }
+  .games__row--dlc .games__cell { font-size: 11px; }
 
   /* Cases a cocher : assez hautes pour un pouce. */
   .toggle { padding: 12px 4px; font-size: 12px; }
@@ -2875,22 +2982,18 @@
   /* 8 px et non 2 : l'emblème et le nom se touchaient presque. */
   gap: var(--sp-2);
   min-width: 0;
+  /* La grille ne met AUCUNE gouttière entre ses colonnes (`gap: 0`), et cette
+     cellule-ci occupe tout ce qui reste : un nom assez court pour tenir sur une
+     ligne mais assez long pour remplir la colonne venait donc coller le mot
+     « Disponible » de la colonne suivante — « Méga-DimensionDisponible », à
+     375 px. Huit pixels réservés ici les séparent toujours, sans toucher à
+     l'alignement des deux colonnes de droite. */
+  padding-right: var(--sp-2);
 }
-/* Le nom prend la place qui reste, ce qui repousse les logos de DLC au bout de
-   la cellule et laisse les vingt-trois noms commencer au même endroit. */
+/* Le nom prend la place qui reste, et il peut se replier : « Les Terres
+   Enneigées de la Couronne » sur une sous-ligne déjà indentée doit passer à la
+   ligne plutôt que pousser les colonnes de droite. */
 .games__titre { min-width: 0; flex: 1 1 auto; }
-.games__dlc {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex: 0 0 auto;
-  /* La ceinture et les bretelles : `flex: 1` sur le titre suffit tant qu'il
-     remplit la ligne, `margin-left: auto` tient aussi quand le nom est court. */
-  margin-left: auto;
-  /* Il ne colle ni au nom à sa gauche, ni à la colonne « Présence » à sa
-     droite : c'est cet écart qui manquait. */
-  padding-left: var(--sp-2);
-}
 
 /* Le logo d'un jeu. Carré, contenu dans sa boîte, et jamais déformé : les
    fichiers sont carrés mais un logo à venir pourrait ne pas l'être. */
@@ -2899,9 +3002,12 @@
   border-radius: 3px;
 }
 
-/* Le logo d'un contenu téléchargeable, glissé entre l'emblème du jeu et son
-   nom. Deux pixels de moins que l'emblème (18 contre 20) : il doit se lire
-   comme une PRÉCISION apportée au jeu, pas comme un second jeu.
+/* Le logo d'un contenu téléchargeable, sur la sous-ligne qui lui est réservée.
+   Plus GRAND que l'emblème du jeu (24 contre 20), et c'est assumé : il n'a plus
+   à se faire discret dans la marge d'une ligne qui parle d'autre chose, il est
+   le sujet de la sienne. À dix-huit pixels, serré contre la colonne
+   « Présence », les quatre vignettes ne se distinguaient plus les unes des
+   autres — ce qui ôtait tout intérêt à les montrer.
 
    Une plaque claire derrière, et ce n'est pas décoratif. Les quatre fichiers
    sont détourés sur du transparent et ont été dessinés pour un fond CLAIR ;
@@ -2931,26 +3037,30 @@
      Les quatre vignettes n'ont pas la même forme : la Toundra et l'Île sont
      presque carrées (rapports 1,07 et 0,89), mais « MEGA-DIMENSION » est un
      logotype d'une seule ligne, quatre fois et demie plus large que haut, et le
-     cartouche de la Zone Zéro deux fois. Enfermés dans un carré de 17 px, ces
-     deux-là ne faisaient plus que 3,8 et 7,9 px de haut — illisibles, alors
-     qu'ils portent la seule information de la ligne.
-     Le plafond de largeur existe pour que le plus large ne repousse pas le nom
-     du jeu : au-delà, `object-fit: contain` reprend la main. */
-  height: 18px;
+     cartouche de la Zone Zéro deux fois. Enfermés dans un carré, ces deux-là
+     seraient réduits au quart de la hauteur des deux autres — illisibles, alors
+     qu'ils portent la seule information de leur ligne.
+     À 24 px de haut, l'Île fait 21 px de large, la Toundra 26, la Zone Zéro 51
+     et Méga-Dimension 108. Le plafond de largeur n'existe donc que pour ce
+     dernier : au-delà, `object-fit: contain` reprend la main et le rend en
+     72 × 16, ce qui reste lisible pour un logotype d'une seule ligne. Sans ce
+     plafond, il mangerait la moitié de la cellule et le nom du DLC passerait à
+     la ligne pour rien. */
+  height: 24px;
   width: auto;
-  max-width: 46px;
+  max-width: 72px;
   padding: 1px;
   border-radius: 4px;
   background: rgba(255, 255, 255, .9);
   /* Le contour reprend celui des lignes du tableau : la plaque s'y pose sans
      y flotter. */
   box-shadow: 0 0 0 1px var(--border);
-  margin-left: 3px;
-  /* Le `alt` de cette image est une PHRASE — « Nécessite le DLC : … » —, parce
-     qu'elle porte une information que rien n'écrit à côté d'elle. Un fichier
-     manquant l'afficherait donc en toutes lettres, et comme la pastille ne se
-     rétrécit pas, la phrase pousserait le nom du jeu hors de sa colonne. Elle
-     reste dans ses dix-sept pixels ; le lecteur d'écran, lui, la lit entière. */
+  /* Le `alt` de cette image est une locution — « Contenu téléchargeable » —,
+     parce qu'elle nomme ce que la vignette montre, et que rien ne l'écrit à
+     côté d'elle. Un fichier manquant l'afficherait donc en toutes lettres, et
+     comme la pastille ne se rétrécit pas, elle pousserait le nom du DLC hors de
+     sa colonne. Elle reste dans sa boîte ; le lecteur d'écran, lui, la lit
+     entière. */
   overflow: hidden;
 }
 
