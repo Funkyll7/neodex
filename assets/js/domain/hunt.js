@@ -107,6 +107,32 @@ export class HuntPlanner {
     const game = this.data.gamesByCode.get(gameCode) || { gen: 5 };
     let base = traduire(this.ref.byGame[gameCode] || this.ref.fallback);
 
+    /*
+     * UNE METHODE QU ON NE VEUT PAS FAIRE NE DOIT PAS GAGNER LE CLASSEMENT.
+     *
+     * La reproduction par DV de la Gen. II affiche 1/64 — de tres loin le
+     * meilleur taux de toute la serie, cent vingt-huit fois la rencontre
+     * sauvage. `bestGame()` classant par taux, elle envoyait donc a peu pres
+     * TOUTE chasse vers Or/Argent ou Cristal, quel que soit le Pokemon.
+     *
+     * Or elle demande un parent porteur — le Leviator rouge du Lac Colere, ou
+     * un Metamorph a gene chromatique — et c est une chasse en soi que le
+     * proprietaire de ce Pokedex ne veut pas faire. Un taux imbattable qu on
+     * n ira jamais chercher n est pas un bon conseil, c est un mauvais.
+     *
+     * ON NE RETIRE PAS LE JEU POUR AUTANT : ses propres etapes le disent,
+     * « faute de parent porteur, il reste la rencontre sauvage en boucle ».
+     * C est donc CE taux-la, 1/8192, qui compte pour lui — le taux d apres.
+     * Or/Argent et Cristal restent chassables, ils cessent simplement de
+     * remporter le classement sur une methode qu on ecarte.
+     *
+     * Le drapeau vit dans data/reference/hunt.json, a cote de la methode : on
+     * en ecarterait une autre demain sans toucher a ce fichier.
+     */
+    if (base && base.ecartee) {
+      base = this.withEraOdds(traduire(this.ref.templates.wildFallback), game);
+    }
+
     // Poke Radar (Sinnoh, X/Y) : inoperant hors hautes herbes.
     if (this.grassOnly.has(gameCode) && !this.targetIsGrass(species, gameCode)) {
       base = this.withEraOdds(traduire(this.ref.templates.wildFallback), game);

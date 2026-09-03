@@ -19,11 +19,12 @@ import { CONFIG } from "../config.js";
 import { el, fill } from "../core/dom.js";
 import { spriteImg, formImg, cosmeticImg } from "../domain/sprites.js";
 import { availabilityRows, huntableGames } from "../domain/availability.js";
-import { completionOf } from "../domain/completion.js";
+import { dlcRequis } from "../domain/dlc.js";
+import { completionOf, resteUnChromatique } from "../domain/completion.js";
 import { chassesOuvertes } from "../domain/quetes.js";
 import { dexNumber, typeChip, pokepediaUrl, bulbapediaUrl, defilementDoux } from "./common.js";
 import { nomEspece, nomCategorie, nomCosmetique, nomForme, lieuEspece, noteDonnees, texteChasse, deuxPoints, enAnglais, t, tn } from "../core/i18n.js";
-import { embleme } from "./symboles-jeux.js";
+import { embleme, logoDlc } from "./symboles-jeux.js";
 
 export function createDetailPanel(ctx) {
   const root = document.getElementById("detail");
@@ -473,6 +474,10 @@ function majBoutonHors(bouton, species, ctx) {
 function boutonChasser(species, ctx) {
   if (species.noShiny) return null;
   if (!ctx.planner.jeuPourChasser(species, contexteDeChasse(ctx))) return null;
+  // Le bouton est CONSTRUIT même quand tout est pris, et c'est `majBoutonChasser`
+  // qui le masque juste après. Le refuser ici l'aurait rendu irrécupérable :
+  // décocher un chromatique dans la fiche ne reconstruit pas l'en-tête, et il
+  // n'y aurait plus eu de bouton à ré-afficher.
 
   // Aucun `onclick` : le clic est traite par l'ecoute deleguee de
   // `createDetailPanel`, seule a pouvoir refermer la feuille mobile.
@@ -502,9 +507,8 @@ function contexteDeChasse(ctx) {
  */
 function majBoutonChasser(bouton, species, ctx) {
   if (!bouton) return;
-  const obtenu = ctx.collection.isShiny(species.id);
-  bouton.hidden = obtenu;
-  if (obtenu) return;
+  bouton.hidden = !resteUnChromatique(species, ctx.collection);
+  if (bouton.hidden) return;
 
   // Une chasse ouverte sur cette espece : le bouton ne propose plus d'en
   // commencer une, il ramene a celle qui compte deja. Le libelle doit le dire,
@@ -1343,11 +1347,50 @@ function availabilitySection(species, { dataset }) {
             // L'emblème du jeu devant son nom : dans un tableau de vingt-trois
             // lignes, la forme se repère bien plus vite que le texte.
             embleme(row.game.code, 20),
+            // Le logo du DLC APRÈS celui du jeu, et jamais à sa place. La ligne
+            // dit toujours « Épée/Bouclier » — c'est vrai, l'espèce y est —, le
+            // petit logo ajoute la condition : « oui, mais avec ce contenu-là ».
+            // Remplacer l'emblème aurait dit autre chose, à savoir que le DLC
+            // est un jeu de plus, ce qu'il n'est pas : on ne l'achète pas seul
+            // et il ne s'ajoute ni aux compteurs, ni à la liste des présences.
+            //
+            // Les logos ne sortent que pour les espèces que le jeu de base n'a
+            // pas — `domain/dlc.js` rend un tableau vide pour toutes les
+            // autres. Trois jeux seulement ont des DLC, donc vingt lignes sur
+            // vingt-trois n'affichent jamais rien, et la plupart des espèces
+            // n'affichent rien du tout. C'est exactement l'intérêt de la
+            // chose : ce qui se voit est ce qui coûte un achat.
+            //
+            // Le libellé est composé ICI parce que composer une phrase est un
+            // travail d'affichage : `deuxPoints` met l'espace que le français
+            // demande devant les deux-points et l'ôte en anglais, et le nom du
+            // DLC passe par `t()` comme tout ce qui s'écrit — il vit dans la
+            // section « games » de data/i18n/en.json, avec les noms de jeux.
             el(
-              "div",
+              "div.games__titre",
               el("div.games__name", t(row.game.name)),
               el("div.games__gen", `${t("Gén.")} ${row.game.gen}`)
-            )
+            ),
+            // LES LOGOS EN BOUT DE CELLULE, ET NON ENTRE L'EMBLÈME ET LE NOM.
+            //
+            // Ils étaient glissés juste après l'emblème, et ça cassait la
+            // colonne : sur les trois lignes qui en portent un, le nom du jeu
+            // partait vingt pixels plus à droite que sur les vingt autres, et
+            // quarante pour Drakkarmin qui en a deux. Vingt-trois lignes dont
+            // trois décalées se lisent comme une erreur, pas comme une
+            // information.
+            //
+            // Poussés à droite par `margin-left: auto`, ils laissent tous les
+            // noms commencer au même endroit — et ils respirent enfin, au lieu
+            // d'être collés au mot qui les suivait.
+            (() => {
+              const dlcs = dlcRequis(species, row.game.code, dataset.dlc);
+              if (!dlcs.length) return null;
+              return el(
+                "span.games__dlc",
+                dlcs.map((dlc) => logoDlc(dlc.code, deuxPoints(t("Nécessite le DLC"), t(dlc.name))))
+              );
+            })()
           ),
           // `presenceLabel` / `shinyLabel` viennent d'une table de module de
           // `availability.js`, figee a l'import : on les traduit ici, au point

@@ -147,14 +147,125 @@ BDSP_MISSING = {151, 251, 385, 386, 489, 490, 491, 492, 493}
 # ils restent donc en « disponible » et non en « evenement ».
 MYTHIC_IN_GAME = {
     386: {"oras", "usum"},   # Deoxys : Episode Delta, puis failles d'Ultra-Chimie
-    493: {"pla"},            # Arceus : quete finale de Legendes Arceus
-    801: {"za"},             # Magearna : Dimension Hyperespace (DLC Mega-Dimension)
-    807: {"za"},             # Zeraora
+    489: {"pla"},            # Phione : requete 66 « La legende de la mer », Hisui
+    490: {"pla"},            # Manaphy : meme requete, grotte de Bordebrume
     491: {"za"},             # Darkrai
-    808: {"lgpe"},           # Meltan : Boite Mystere reliee a Pokemon GO
-    809: {"lgpe"},           # Melmetal
+    493: {"pla"},            # Arceus : quete finale de Legendes Arceus
+    647: {"swsh", "za"},     # Keldeo : Etang de Chamboulier, puis Pokedex Hyperespace
+    648: {"za"},             # Meloetta : Pokedex Hyperespace (DLC Mega-Dimension)
+    649: {"za"},             # Genesect
+    720: {"za"},             # Hoopa
+    721: {"za"},             # Volcanion
+    801: {"za"},             # Magearna : Dimension Hyperespace (DLC Mega-Dimension)
+    802: {"za"},             # Marshadow
+    807: {"za"},             # Zeraora
+    808: {"lgpe", "za"},     # Meltan : Boite Mystere reliee a Pokemon GO, puis Hyperespace
+    809: {"lgpe", "za"},     # Melmetal
     1025: {"sv"},            # Pecharunt : combat scenarise apres le Disque Indigo
 }
+
+# ---------------------------------------------------------------------------
+# Attrapables SANS etre recensees : l'angle mort des Pokedex regionaux
+# ---------------------------------------------------------------------------
+#
+# Tout ce fichier repose sur une equivalence : « presente au Pokedex regional
+# d'un jeu » = « s'obtient dans ce jeu ». Elle vaut pour l'ecrasante majorite
+# des especes, et c'est elle qui permet de situer 1025 Pokemon sans les saisir
+# un par un. Mais elle a un angle mort, et c'est toujours le meme : une espece
+# peut etre ATTRAPABLE dans un jeu sans y etre RECENSEE. PokeAPI dit alors vrai
+# et le calcul est faux — l'espece disparait purement et simplement du jeu.
+#
+# Le cas d'ecole est le Repaire Dynamax de la Toundra Couronnee (Dynamax
+# Adventures / Max Lair, Epee-Bouclier). On y capture une quarantaine de
+# legendaires d'anciennes generations : les chiens de Johto, les trios de Hoenn
+# et de Sinnoh, les Ultra-Chimeres d'Alola. Aucun ne figure au Pokedex de la
+# Toundra Couronnee, qui ne recense que la faune de la region — le Repaire est
+# une annexe, pas une zone. Ils manquaient donc TOUS a Epee/Bouclier.
+#
+# Meme mecanique ailleurs :
+#   - les friandises legendaires de Jeffry Andise, debloquees apres le scenario
+#     du Disque Indigo, ramenent 25 legendaires dans Ecarlate/Violet ;
+#   - le chasseur de Taupiqueur de l'Ile Solitaire de l'Armure offre un starter
+#     d'Alola au palier de 100 Taupiqueur ;
+#   - Keldeo s'obtient a l'Etang de Chamboulier de Couronneige, avec Cobaltium,
+#     Terrakium et Viridium dans l'equipe.
+# Aucun de ces Pokemon n'est au Pokedex du jeu qui le distribue.
+#
+# Ces tables sont donc la contrepartie assumee de l'approximation : la liste de
+# ce que les Pokedex regionaux ne peuvent pas dire. Elles s'ajoutent au socle
+# calcule, exactement comme MYTHIC_IN_GAME au-dessus corrige les fabuleux — et
+# comme elle, elles se relisent espece par espece.
+#
+# ELLES N'OUVRENT PAS LA RENCONTRE SAUVAGE, ET C'EST DELIBERE. Verifie sur
+# encounters.csv : PokeAPI possede des lignes de rencontre « sword-shield »
+# pour la TOTALITE des especes du Repaire. Sans precaution, les ajouter ici
+# aurait donc aussi rempli leur champ `wild`. Or une expedition du Repaire
+# demande de finir le DLC, d'entrer dans un repaire et d'enchainer quatre
+# combats : ce n'est pas une rencontre qu'on relance dehors en une soiree, ce
+# que `wild` promet au site (meme raison que NOT_WILD_METHODS plus haut, et
+# assets/js/domain/reste.js le redit cote interface). Les codes ajoutes ici
+# sont donc explicitement retires du calcul de `wild`, a l'ecriture.
+
+# Repaire Dynamax de la Toundra Couronnee -> « swsh ».
+DYNAMAX_ADVENTURES = {
+    243, 244, 245,                      # Raikou, Entei, Suicune
+    253, 254, 256, 257, 259, 260,       # evolutions des starters de Hoenn
+    380, 381, 382, 383,                 # Latias, Latios, Kyogre, Groudon
+    480, 481, 482,                      # Crehelf, Crefollet, Crefadet
+    484, 485, 487, 488,                 # Palkia, Heatran, Giratina, Cresselia
+    641, 642, 645, 646,                 # Boreas, Fulguris, Demeteros, Kyurem
+    716, 717, 718,                      # Xerneas, Yveltal, Zygarde
+    785, 786, 787, 788,                 # les quatre Tokos d'Alola
+    791, 792,                           # Solgaleo, Lunala
+    793, 794, 795, 796, 797, 798, 799,  # les sept Ultra-Chimeres de Soleil/Lune
+    805, 806,                           # Ama-Ama, Pierroteknik
+}
+
+# Friandises legendaires de Jeffry Andise, apres le Disque Indigo -> « sv ».
+# Chaque legendaire est reparti par version en solo, mais reste accessible dans
+# l'autre en quete de groupe : « sv » pour les deux, comme pour toute
+# exclusivite de version ailleurs dans ce fichier.
+SNACKSWORTH_TREATS = {
+    144, 145, 146,            # Artikodin, Electhor, Sulfura
+    243, 244, 245,            # Raikou, Entei, Suicune
+    249, 250,                 # Lugia, Ho-Oh
+    380, 381, 382, 383, 384,  # Latias, Latios, Kyogre, Groudon, Rayquaza
+    638, 639, 640,            # Cobaltium, Terrakium, Viridium
+    643, 644, 646,            # Reshiram, Zekrom, Kyurem
+    791, 792,                 # Solgaleo, Lunala
+    800,                      # Necrozma
+    891,                      # Wushours
+    896, 897,                 # Blizzeval, Spectreval
+}
+
+# Le reste, espece par espece : id -> jeux, meme forme que MYTHIC_IN_GAME.
+# Keldeo y figure ET dans MYTHIC_IN_GAME : etant fabuleux, il lui faut les
+# deux — cette table pour que « swsh » entre dans les jeux calcules, la
+# whitelist pour qu'il y compte comme jouable et non comme evenement.
+OFF_DEX_EXTRAS = {
+    647: {"swsh"},  # Keldeo : Etang de Chamboulier, les trois Epees dans l'equipe
+    722: {"swsh"},  # Brindibou, offert au palier de 100 Taupiqueur (Ile Solitaire)
+    723: {"swsh"},  # Effleche
+    724: {"swsh"},  # Archeduc
+    725: {"swsh"},  # Flamiaou, meme don
+    726: {"swsh"},  # Matoufeu
+    727: {"swsh"},  # Felinferno
+    728: {"swsh"},  # Otaquin, meme don
+    729: {"swsh"},  # Otarlequin
+    730: {"swsh"},  # Oratoria
+}
+
+
+def off_dex_additions():
+    """Les trois tables ci-dessus, fondues en un seul {espece: {jeux}}."""
+    extras = {}
+    for sid in DYNAMAX_ADVENTURES:
+        extras.setdefault(sid, set()).add("swsh")
+    for sid in SNACKSWORTH_TREATS:
+        extras.setdefault(sid, set()).add("sv")
+    for sid, codes in OFF_DEX_EXTRAS.items():
+        extras.setdefault(sid, set()).update(codes)
+    return extras
 
 
 def log(msg):
@@ -224,6 +335,17 @@ def build(use_cache):
             if sid <= last and sid not in BDSP_MISSING:
                 games_by_species[sid].add(code)
 
+    # Attrapables sans etre recensees : Repaire Dynamax, friandises de Jeffry
+    # Andise, dons hors Pokedex. Voir le long bloc en tete de fichier — c'est
+    # la seule chose que les Pokedex regionaux ne savent pas dire.
+    off_dex = off_dex_additions()
+    for sid, codes in sorted(off_dex.items()):
+        if sid in games_by_species:
+            games_by_species[sid].update(codes)
+        else:
+            log("    espece %d inconnue de PokeAPI : ajout manuel ignore" % sid)
+    log("    ajouts hors Pokedex : %d especes" % len(off_dex))
+
     log("    rencontres sauvages (encounters.csv)")
     vg_name = {to_int(r["id"]): r["identifier"] for r in tables["version_groups"]}
     game_of_version = {}
@@ -281,8 +403,17 @@ def build(use_cache):
                 entry["ev"] = " ".join(events)
         else:
             entry = {"gm": " ".join(codes)}
+        # Un ajout hors Pokedex ne remplit JAMAIS `wild` : l'espece s'attrape
+        # dans ce jeu, elle ne s'y croise pas dehors. Sans ce filtre, les
+        # lignes « sword-shield » que PokeAPI porte sur les especes du Repaire
+        # Dynamax passeraient toutes en rencontre sauvage.
+        manual = off_dex.get(sid, ())
         wild = sorted(
-            (c for c in wild_by_species[sid] if c in games_by_species[sid]),
+            (
+                c
+                for c in wild_by_species[sid]
+                if c in games_by_species[sid] and c not in manual
+            ),
             key=lambda c: order.get(c, 99),
         )
         if wild:

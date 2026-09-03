@@ -39,7 +39,7 @@ function loadOptional(path, fallback) {
 }
 
 export async function loadDataset() {
-  const [manifest, typesRef, gensRef, gamesRef, huntRef, locksRef, formDetails, cosmeticRef, goRef, famillesRef] =
+  const [manifest, typesRef, gensRef, gamesRef, huntRef, locksRef, formDetails, cosmeticRef, goRef, famillesRef, dlcRef] =
     await Promise.all([
       loadJson("pokemon/manifest.json"),
       loadJson("reference/types.json"),
@@ -55,6 +55,16 @@ export async function loadDataset() {
       // donnee de collection. S il manque, la vue par boites garde son
       // rangement par numero et rien d autre ne bouge.
       loadOptional("reference/familles.json", { chaines: [] }),
+      // Ce que chaque contenu telechargeable apporte, et lui seul : de quoi
+      // poser le logo du DLC a cote de l embleme du jeu sur une fiche.
+      // `loadOptional` comme familles.json juste au-dessus, et pour la meme
+      // raison : c est un ORNEMENT. Le fichier n apprend rien de neuf sur la
+      // disponibilite — data/availability place deja l espece dans
+      // Epee/Bouclier ou Ecarlate/Violet sans lui —, il precise seulement
+      // qu il y faut le DLC. S il manque, une fiche perd un logo et RIEN
+      // d autre : ni case, ni compteur, ni jeu dans la liste des presences.
+      // Un tel detail n a pas a emporter le chargement de tout le site.
+      loadOptional("reference/dlc.json", { dlc: [] }),
     ]);
 
   const gens = manifest.generations.map((g) => g.gen);
@@ -159,6 +169,19 @@ export async function loadDataset() {
      * `evolves_from_species_id` et `evolution_chain_id`.
      */
     chaines: famillesRef.chaines || [],
+    /**
+     * Les quatre DLC et, pour chacun, les especes qu il apporte a LUI SEUL :
+     * l Ile Solitaire de l Armure et les Terres Enneigees de la Couronne pour
+     * Epee/Bouclier, le Tresor Enfoui de la Zone Zero pour Ecarlate/Violet,
+     * Mega-Dimension pour Legendes Z-A.
+     *
+     * La liste est deja debarrassee de ce que le jeu de base contient : une
+     * espece n y figure que si le DLC est la seule facon de l obtenir. C est
+     * tout l interet du fichier, et c est ce qui autorise a afficher son logo
+     * sans se poser de question. Voir data/reference/dlc.json, qui dit d ou
+     * viennent les numeros et comment la soustraction est faite.
+     */
+    dlc: dlcRef.dlc || [],
   };
 }
 

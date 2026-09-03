@@ -39,6 +39,33 @@ export const PAR_BOITE = 30;
 export const COLONNES = 6;
 
 /**
+ * Les formes qu'on ne veut pas voir dans les boîtes.
+ *
+ * POURQUOI LES GIGAMAX SE RETIRENT, ET PAS LES AUTRES FORMES.
+ *
+ * Cette vue existe pour RANGER de vraies boîtes de HOME en s'y comparant. Or un
+ * Gigamax n'occupe pas de boîte : ce n'est pas un Pokémon de plus, c'est un
+ * pouvoir porté par un Pokémon qu'on a déjà — le même individu, sur la même
+ * case, avec ou sans son facteur. Les trente-quatre cases Gigamax décalaient
+ * donc tout le rangement d'autant, et la boîte à l'écran cessait de ressembler
+ * à celle du jeu.
+ *
+ * Un Miaouss d'Alola, lui, EST une boîte de plus : deux créatures distinctes
+ * qui coexistent. C'est pourquoi le retrait vise `gmax` et rien d'autre.
+ *
+ * Le choix reste une OPTION et non une règle : le Pokédex, lui, continue de les
+ * compter — les retirer du décompte aurait fait mentir la progression.
+ */
+const FORMES_RETIREES = { gmax: (forme) => forme.kind === "gmax" };
+
+/** Le filtre effectif, ou `null` quand tout doit passer. */
+function tamis(options) {
+  const retires = Object.entries(FORMES_RETIREES).filter(([cle]) => options && options[cle]);
+  if (!retires.length) return null;
+  return (forme) => retires.some(([, test]) => test(forme));
+}
+
+/**
  * TOUTES les cases cochables d'une espèce, dans l'ordre où on les remplit.
  *
  * PAS SEULEMENT LE NORMAL ET LE CHROMATIQUE DE BASE. Un living dex range aussi
@@ -54,8 +81,11 @@ export const COLONNES = 6;
  * forme —, et c'est la seule chose que `requiredSlots` ne donne pas. On refait
  * donc ici le même parcours que `domain/completion.js`, pour cette raison-là et
  * pas une autre.
+ *
+ * @param {Object} [options]  `{ gmax: true }` retire les formes Gigamax.
  */
-export function casesDe(espece) {
+export function casesDe(espece, options) {
+  const retirer = tamis(options);
   const cases = [];
   const pousser = (slot, chromatique, sujet, extra, genre) =>
     cases.push({ espece, slot, chromatique, sujet, genre: genre || null, ...extra });
@@ -83,6 +113,7 @@ export function casesDe(espece) {
 
   for (const forme of espece.forms) {
     if (!forme.entry) continue;
+    if (retirer && retirer(forme)) continue;
     // Même règle que pour la base : le sexe avant la teinte, pour que la paire
     // reste « un Pokémon, ses deux teintes ».
     pousser(forme.slot, false, "forme", { forme }, forme.gendered ? "m" : null);
@@ -102,13 +133,38 @@ export function casesDe(espece) {
  * Pas de regroupement par famille ici, et c'est voulu — cette vue existe pour
  * ressembler à HOME, où l'ordre est celui du Pokédex national et rien d'autre.
  */
-export function rangerEnBoites(especes) {
-  const cases = [...especes].sort((a, b) => a.id - b.id).flatMap(casesDe);
+export function rangerEnBoites(especes, options) {
+  const cases = [...especes].sort((a, b) => a.id - b.id).flatMap((e) => casesDe(e, options));
   const boites = [];
+  /*
+   * LA GENERATION QUE CETTE BOITE FAIT APPARAITRE, ou `null`.
+   *
+   * Une boite tient trente cases et se moque des frontieres : celle qui finit
+   * Mew commence deja Germignon. On ne peut donc pas dire « cette boite EST de
+   * la Gen. II » — on peut seulement dire ou la Gen. II se montre pour la
+   * premiere fois, et c'est bien la question qu'on se pose en cherchant sa
+   * place dans HOME.
+   *
+   * Le repere se pose donc AVANT la boite qui contient la premiere case de la
+   * generation, meme si cette boite commence encore dans la precedente. C'est
+   * exactement la convention qu'on emploie en rangeant pour de vrai — « Johto
+   * commence dans la boite 12 » — et la seule qui ne mente pas.
+   *
+   * Chaque generation compte au plus 70 especes, donc 140 cases au minimum :
+   * aucune boite de trente ne peut en faire apparaitre deux. On n'en garde
+   * qu'une, sans avoir a s'en inquieter.
+   */
+  let vueMax = 0;
   for (let i = 0; i < cases.length; i += PAR_BOITE) {
     const lot = cases.slice(i, i + PAR_BOITE);
+    let genNouvelle = null;
+    for (const k of lot) {
+      if (!k || k.espece.gen <= vueMax) continue;
+      if (genNouvelle === null) genNouvelle = k.espece.gen;
+      vueMax = Math.max(vueMax, k.espece.gen);
+    }
     while (lot.length < PAR_BOITE) lot.push(null);
-    boites.push({ numero: boites.length + 1, cases: lot });
+    boites.push({ numero: boites.length + 1, cases: lot, genNouvelle });
   }
   return boites;
 }
@@ -127,13 +183,13 @@ export function rangerEnBoites(especes) {
  * boîtes sous une même espèce — Miaouss de Kanto, d'Alola et de Galar — et
  * comparer l'espèce les aurait fondues en un seul bloc de six cases sans nom.
  */
-export function rangerEnFamilles(especes, chaines) {
+export function rangerEnFamilles(especes, chaines, options) {
   const parId = new Map(especes.map((e) => [e.id, e]));
   return lignerParFamille(
     [...parId.values()],
     chaines,
     (espece) => espece.id,
-    (espece) => [{ espece, entree: null, cases: casesDe(espece) }]
+    (espece) => [{ espece, entree: null, cases: casesDe(espece, options) }]
   );
 }
 
@@ -183,10 +239,23 @@ export function casesDeGo(entree) {
 export function rangerGoEnBoites(entrees) {
   const cases = entrees.flatMap(casesDeGo);
   const boites = [];
+  // MÊME REPÈRE QUE DANS L'AUTRE POKÉDEX. Il manquait ici, et le résultat était
+  // pire qu'une absence : la vue GO par FAMILLES, elle, recevait bien ses
+  // bandes — `lignerParFamille` est partagé — pendant que la vue par BOÎTES
+  // n'en montrait aucune. Deux vues sœurs, deux comportements, aucun voulu.
+  // La règle est celle de `rangerEnBoites` : voir son commentaire, qui explique
+  // pourquoi le repère se pose devant la boîte où la génération APPARAÎT.
+  let vueMax = 0;
   for (let i = 0; i < cases.length; i += PAR_BOITE) {
     const lot = cases.slice(i, i + PAR_BOITE);
+    let genNouvelle = null;
+    for (const k of lot) {
+      if (!k || k.espece.gen <= vueMax) continue;
+      if (genNouvelle === null) genNouvelle = k.espece.gen;
+      vueMax = Math.max(vueMax, k.espece.gen);
+    }
     while (lot.length < PAR_BOITE) lot.push(null);
-    boites.push({ numero: boites.length + 1, cases: lot });
+    boites.push({ numero: boites.length + 1, cases: lot, genNouvelle });
   }
   return boites;
 }
@@ -243,9 +312,26 @@ function lignerParFamille(elements, chaines, numero, membrer) {
     lignes.push(ligne([elem]));
   }
   // Rangées par le premier numéro : la liste se parcourt comme le Pokédex.
-  return lignes
+  const rangees = lignes
     .filter((l) => l.membres.length)
     .sort((a, b) => a.membres[0].espece.id - b.membres[0].espece.id);
+
+  /*
+   * LA GENERATION D'UNE LIGNEE EST CELLE DE SA BASE, et le repere se pose sur
+   * la premiere lignee qui l'inaugure.
+   *
+   * Plus simple que pour les boites : une lignee ne se coupe pas en deux. Elle
+   * peut en revanche TRAVERSER les generations — Evoli est de la Gen. I,
+   * Phyllali de la IV, Nymphali de la VI — et c'est bien pour ca qu'on prend la
+   * base : la famille se range la ou elle commence, comme dans le Pokedex.
+   */
+  let vueMax = 0;
+  for (const ligne of rangees) {
+    const gen = ligne.membres[0].espece.gen;
+    ligne.genNouvelle = gen > vueMax ? gen : null;
+    if (gen > vueMax) vueMax = gen;
+  }
+  return rangees;
 }
 
 /**

@@ -46,7 +46,7 @@ import { tapCase, tapComplet, tapAnnule } from "./ui/haptics.js";
 import { initLangue, initBoutonLangue } from "./ui/langue.js";
 import { nomEspece, nomForme, t } from "./core/i18n.js";
 
-const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view", "mode"];
+const FILTER_KEYS = ["search", "type", "gen", "game", "form", "sort", "status", "view", "mode", "sansGmax"];
 /** Les filtres du Pokedex GO, qui ne pilotent que sa grille a lui. */
 const GO_KEYS = ["goSearch", "goGen", "goStatus", "goType", "goMode"];
 
@@ -137,6 +137,10 @@ function start(dataset) {
     // Elle vit dans les filtres enregistres comme le tri et la vue, parce que
     // c est le meme genre de reglage — on la retrouve en revenant.
     mode: "grille",
+    // Retirer les Gigamax du rangement en boites. Un Gigamax n occupe pas de
+    // boite dans HOME : c est un pouvoir porte par un Pokemon deja range, pas
+    // une creature de plus. Voir domain/livingdex.js.
+    sansGmax: false,
     selectedId: 25,
     goSearch: "",
     goGen: "all",
@@ -672,6 +676,9 @@ function start(dataset) {
     if (store.state.tab === "maj") renderMaj(panels.maj);
   }
 
+  /** La bulle « Masquer les formes Gigamax », construite une seule fois. */
+  let bulleOptions = null;
+
   function renderList() {
     visible = applyFilters(dataset.species, store.state, collection, complete, planner);
 
@@ -689,6 +696,10 @@ function start(dataset) {
       grid.render(visible);
       return;
     }
+    // La bulle est construite UNE fois et DÉPLACÉE dans la liste a chaque
+    // rendu : `renderLivingDex` la pose a droite de la premiere bande de
+    // generation. Elle n existe que dans les vues en boites.
+    const entete = peindreOptionsDesBoites();
     // LES BOÎTES IGNORENT LES FILTRES, et c'est le point. Une boîte de HOME a
     // trente cases : en retirer vingt parce qu'un filtre de type est actif
     // détruirait le seul intérêt de la vue, qui est de montrer les trous À LEUR
@@ -706,7 +717,57 @@ function start(dataset) {
       // meme selection, meme feuille qui monte sur telephone, et meme reponse
       // quand la fiche affichee est deja celle-la.
       surFiche: (id) => ctx.onSelect(id),
+      // Retirer les Gigamax du RANGEMENT, pas du Pokédex : la progression, les
+      // succès et la grille continuent de les compter. Voir
+      // `domain/livingdex.js` pour la raison du choix.
+      sansGmax: Boolean(store.state.sansGmax),
+      // LE MÊME LIBELLÉ QUE LA GRILLE, et il vient de la même table : sans
+      // elle, `separateurGeneration` retombe sur son texte de secours et écrit
+      // « Génération 12 » au lieu de « GÉNÉRATION I — KANTO ». Le repli existe
+      // pour une table absente, pas pour une table qu'on a oublié de passer.
+      entete,
+      generations: dataset.generations,
+      // Le compte à droite du nom, celui de la grille. `progressOf` parcourt
+      // les 1025 espèces : c'est exactement ce que `dex-grid.js` fait déjà une
+      // fois par rendu, et pour le même bandeau.
+      avancement: progressOf(dataset.species, collection).gens,
     });
+  }
+
+  /**
+   * La bande au-dessus des boîtes : pour l'instant, une seule case.
+   *
+   * ELLE SE DESSINE UNE FOIS ET SE CORRIGE ENSUITE. La reconstruire à chaque
+   * rendu aurait remplacé la case au moment même où le doigt appuie dessus —
+   * c'est le défaut que `dex-grid.js` documente déjà pour ses vignettes. On ne
+   * touche donc qu'à `checked` quand la bande existe déjà.
+   *
+   * ELLE VIT AU MÊME NIVEAU QUE LA BANDE DE GÉNÉRATION de la grille, et lui
+   * emprunte son allure : même pilule collante en haut, même fond opaque. Ce
+   * sont deux repères de même nature — ce qu'on regarde, et comment c'est rangé.
+   */
+  function peindreOptionsDesBoites() {
+    if (bulleOptions) {
+      // On ne la reconstruit JAMAIS : elle est déplacée dans la liste à chaque
+      // rendu, et la chercher dans son conteneur d'origine — désormais vide —
+      // en aurait fabriqué une deuxième à chaque fois. Seul son état se remet
+      // d'accord avec le store.
+      bulleOptions.querySelector("input").checked = Boolean(store.state.sansGmax);
+      return bulleOptions;
+    }
+    const id = "ldx-sans-gmax";
+    bulleOptions = el(
+      "label.ldx-bulle",
+      { for: id, title: t("Un Gigamax n'occupe pas de boîte dans HOME : c'est un pouvoir porté par un Pokémon déjà rangé.") },
+      el("input", {
+        type: "checkbox",
+        id,
+        checked: Boolean(store.state.sansGmax),
+        onchange: (e) => store.set({ sansGmax: e.target.checked }),
+      }),
+      el("span", t("Masquer les formes Gigamax"))
+    );
+    return bulleOptions;
   }
 
   function renderDetail(reveal = false) {
@@ -1004,6 +1065,10 @@ const FILTRES_GARDES = [
   // qu on la retrouvait en revenant — elle ne figurait simplement pas ici, et
   // chaque visite repartait donc en grille. `goMode` arrive avec la sienne.
   "mode", "goMode",
+  // Une option de RANGEMENT, pas un filtre : elle ne retire rien du Pokedex,
+  // elle change la facon dont les boites sont composees. Gardee pour la meme
+  // raison que la disposition — on la retrouve en revenant.
+  "sansGmax",
 ];
 /** Le dernier Pokemon consulte : rouvrir le site le retrouve ouvert. */
 const DERNIER = "selectedId";
@@ -1014,7 +1079,12 @@ function loadFilters() {
     if (!saved) return {};
     const out = {};
     for (const key of FILTRES_GARDES) {
-      if (typeof saved[key] === "string") out[key] = saved[key];
+      // LES BOOLEENS AUSSI, depuis que `sansGmax` existe. Le test ne gardait que
+      // les chaines — ce qui suffisait tant que tous les reglages retenus etaient
+      // des valeurs de filtre —, et une case cochee serait donc revenue decochee
+      // a chaque visite, sans que rien ne le signale.
+      const v = saved[key];
+      if (typeof v === "string" || typeof v === "boolean") out[key] = v;
     }
     if (Number.isInteger(saved[DERNIER])) out[DERNIER] = saved[DERNIER];
     return out;

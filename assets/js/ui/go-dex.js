@@ -156,6 +156,14 @@ export function createGoDex(ctx) {
           dex: "go",
           entrees: dataset.goEntries,
           chaines: dataset.chaines,
+          // LES MÊMES BANDES QUE LE POKÉDEX HOME, et pour la même raison : on
+          // fait défiler cinq cents lignées au pouce, et rien ne dit où Johto
+          // commence. Sans ces deux-là, `separateurGeneration` retombe sur son
+          // libellé de secours et écrit « Génération 2 » au lieu de
+          // « GÉNÉRATION II — JOHTO » — une chaîne composée à l'exécution, que
+          // `t()` ne trouve donc jamais et qui reste en français en anglais.
+          generations: dataset.generations,
+          avancement: goProgressOf(dataset.goEntries, collection).gens,
           collection,
           ordre: mode === "familles" ? "famille" : "numero",
           // Le clic COCHE, et il passe par le même chemin que les boutons de la

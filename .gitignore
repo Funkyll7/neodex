@@ -55,3 +55,16 @@ assets/img/sources/laurier pixel art.jpg
 # ne nous appartient pas, elle est floue (capture upscalee), et un dessin
 # vectoriel reste net a n'importe quelle taille de carte.
 assets/img/sources/postcard background.png
+
+# Les quatre logos d'extension, meme raison que pokemon-home.png et
+# pokemon-go.png plus haut : 376 Ko de sources pour 34 Ko de vignettes servies.
+# Les quatre PNG de assets/img/dlc/ sont versionnes, prets a l'emploi, et
+# tools/crop_dlc_logos.ps1 refabrique tout en une commande le jour ou l'on veut
+# une autre taille — a condition de retelecharger ces sources, ce qui prend dix
+# secondes. Les garder ici alourdirait chaque clone pour toujours.
+# Celle de l'Ile de l'Armure pese a elle seule 160 Ko : c'est une illustration
+# complete, un paysage de Galar dont on n'extrait que le blason.
+assets/img/sources/logo dlc the crown thundra.png
+assets/img/sources/isle armor dlc logo.jpg
+assets/img/sources/dlc zone zero.png
+assets/img/sources/logo mega dimension.avif

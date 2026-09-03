@@ -46,13 +46,37 @@ export function goProgressOf(entries, collection) {
   // listes sont relevées sur Serebii, voir data/reference/go.json.
   let total = 0;
   let shinyTotal = 0;
+  /**
+   * Le même décompte, replié par génération.
+   *
+   * Il sert aux bandes « GÉNÉRATION I — KANTO · 12 / 40 » des vues en boîtes du
+   * Pokédex GO. Ses grandeurs sont celles de la barre juste au-dessus — des
+   * CASES, attrapé et chromatique confondus —, et surtout pas des espèces :
+   * deux nombres qui se ressemblent et ne comptent pas la même chose, à trois
+   * centimètres l'un de l'autre, se lisent comme une erreur.
+   *
+   * Les noms `done` et `total` sont ceux que `separateurGeneration` attend, et
+   * ils sont partagés avec le Pokédex HOME : la bande est la même fonction, elle
+   * ne doit pas savoir lequel des deux Pokédex l'a appelée.
+   */
+  const gens = {};
+  const seau = (gen) => gens[gen] || (gens[gen] = { done: 0, total: 0 });
   for (const entry of entries) {
     if (!entry.released) continue;
+    const g = seau(entry.species.gen);
     total += 1;
-    if (collection.has(entry.id, entry.slot)) owned += 1;
+    g.total += 1;
+    if (collection.has(entry.id, entry.slot)) {
+      owned += 1;
+      g.done += 1;
+    }
     if (!entry.shiny) continue;
     shinyTotal += 1;
-    if (collection.has(entry.id, entry.shinySlot)) shiny += 1;
+    g.total += 1;
+    if (collection.has(entry.id, entry.shinySlot)) {
+      shiny += 1;
+      g.done += 1;
+    }
   }
   const cases = total + shinyTotal;
   return {
@@ -67,6 +91,8 @@ export function goProgressOf(entries, collection) {
     cases,
     pct: cases ? Math.round(((owned + shiny) / cases) * 100) : 0,
     pctOwned: total ? Math.round((owned / total) * 100) : 0,
+    /** Le decompte par generation, pour les bandes des vues en boites. */
+    gens,
   };
 }
 

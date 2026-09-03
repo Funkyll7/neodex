@@ -23,6 +23,9 @@
  */
 
 import { langueCourante, nomCosmetique, nomForme, t } from "../core/i18n.js";
+// `casesDe` enumere toutes les cases cochables d une espece, Gigamax exclus sur
+// demande. `domain/livingdex.js` n importe rien : aucun cycle possible.
+import { casesDe } from "./livingdex.js";
 
 /**
  * Les cases exigees par une espece ne dependent que du jeu de donnees et de la
@@ -182,4 +185,38 @@ export function countComplete(speciesList, collection) {
     if (isComplete(species, collection)) count += 1;
   }
   return count;
+}
+
+/**
+ * Reste-t-il un chromatique à chasser chez cette espèce ?
+ *
+ * ELLE VIT ICI ET NON DANS LE PANNEAU, comme sa voisine
+ * `neManqueQueLeChromatique`. Elle décide quelles cases comptent comme un
+ * chromatique — c'est une règle de jeu, et `buildSlots` dit plus haut, en toutes
+ * lettres, que ce verdict « est posé ICI et nulle part ailleurs ». Écrite dans
+ * `ui/detail-panel.js`, elle était exactement le second endroit à tenir
+ * d'accord que ce commentaire interdit.
+ *
+ * LA QUESTION N'EST PAS « EN A-T-IL UN ». On lisait `collection.isShiny()`, qui
+ * répond vrai dès qu'UNE case chromatique est cochée — `sm`, `sf`, ou n'importe
+ * quelle cosmétique. Un Florizarre dont on a la femelle chromatique mais pas le
+ * mâle était donc déclaré fait, et le bouton « Chasser celui-ci » disparaissait
+ * au moment précis où il servait. Cent deux espèces à dimorphisme étaient dans
+ * ce cas.
+ *
+ * LES GIGAMAX NE COMPTENT PAS. Un Gigamax n'est pas une chasse : c'est un
+ * pouvoir qu'on pose sur un chromatique qu'on a déjà. Les compter aurait fait
+ * réapparaître le bouton sur quatorze espèces terminées — Dracaufeu, Tortank,
+ * Papilusion, Lokhlass… — en leur promettant une chasse qui n'existe pas.
+ * `casesDe` sait déjà les écarter, et c'est la même exclusion que celle des
+ * boîtes : une seule définition de « ce qui est un Pokémon de plus ».
+ *
+ * @param {Object} species
+ * @param {Object} collection
+ * @returns {boolean}
+ */
+export function resteUnChromatique(species, collection) {
+  return casesDe(species, { gmax: true }).some(
+    (k) => k.chromatique && !collection.has(species.id, k.slot)
+  );
 }

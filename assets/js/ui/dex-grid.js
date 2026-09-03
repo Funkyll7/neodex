@@ -148,7 +148,7 @@ export function createGrid(ctx) {
 
     for (const species of next) {
       if (parNumero && species.gen !== derniereGen) {
-        noeuds.push(separateurGeneration(species.gen, ctx, avancementParGen));
+        noeuds.push(separateurGeneration(species.gen, ctx.dataset.generations, avancementParGen));
         derniereGen = species.gen;
       }
       noeuds.push(card(species, ctx));
@@ -409,8 +409,8 @@ export function createGrid(ctx) {
  * Trie par nom ou par statistiques, un bandeau « Génération III » au milieu de
  * la liste ne voudrait rien dire.
  */
-function separateurGeneration(gen, ctx, avancement) {
-  const info = ctx.dataset.generations[gen] || {};
+export function separateurGeneration(gen, generations, avancement) {
+  const info = (generations && generations[gen]) || {};
   const titre = info.region ? `${t(info.label)} — ${t(info.region)}` : t(info.label || `${t("Génération")} ${gen}`);
 
   // Le compte de la génération, à droite du nom.

@@ -47,6 +47,12 @@ import {
   rangerGoEnFamilles,
   compter,
 } from "../domain/livingdex.js";
+// LA MÊME BANDE QUE LA GRILLE, et non une copie. « GÉNÉRATION I — KANTO » se
+// lit exactement pareil ici : c'est le même repère, il doit avoir le même
+// dessin, le même compte et le même comportement collant. Deux fabriques
+// auraient fini par diverger sur un détail — et c'est toujours celui qu'on
+// remarque.
+import { separateurGeneration } from "./dex-grid.js";
 
 /**
  * Dessine la vue.
@@ -66,8 +72,44 @@ import {
  */
 export function renderLivingDex(racine, ctx) {
   if (!racine) return;
-  const { dex = "home", especes, entrees, chaines, collection, ordre, surChoix, surFiche } = ctx;
+  const { dex = "home", especes, entrees, chaines, collection, ordre, surChoix, surFiche, sansGmax,
+          generations, avancement, entete } = ctx;
   const go = dex === "go";
+  /**
+   * La bande de génération, posée devant ce qui l'inaugure.
+   *
+   * ELLE MANQUAIT ICI, et c'était un oubli et non un choix : on parcourt
+   * quatre-vingt-douze boîtes ou cinq cent quarante et une lignées au pouce,
+   * exactement le défilement pour lequel la grille s'était vu poser ce repère.
+   * Sans lui, rien ne dit où Johto commence — et c'est justement ce qu'on
+   * cherche en rangeant ses vraies boîtes.
+   */
+  /*
+   * LA PREMIÈRE BANDE PARTAGE SA LIGNE AVEC LES OPTIONS.
+   *
+   * La case « Masquer les formes Gigamax » occupait une barre pleine largeur au
+   * -dessus de la liste, et ça mangeait une ligne entière pour une seule case à
+   * cocher. Elle vient donc se poser À DROITE de « GÉNÉRATION I — KANTO », dans
+   * une bulle de même facture : deux pastilles distinctes sur une même ligne —
+   * un repère à gauche, un réglage à droite — au lieu d'une barre et d'une
+   * pastille empilées.
+   *
+   * `entete` est un nœud construit UNE FOIS par l'appelant et simplement
+   * déplacé ici : on ne le reconstruit pas à chaque rendu, sans quoi la case
+   * serait remplacée sous le doigt à l'instant où on la coche.
+   */
+  let entetePlacee = false;
+  const bande = (gen) => {
+    if (!gen) return null;
+    const pastille = separateurGeneration(gen, generations, avancement);
+    if (entetePlacee || !entete) return pastille;
+    entetePlacee = true;
+    return el("div.ldx-rang", pastille, entete);
+  };
+  // Le Pokédex GO ne connaît pas les Gigamax : l'option n'a de sens que pour
+  // l'autre, et la lui passer quand même n'aurait rien retiré — mais aurait
+  // laissé croire qu'elle joue ici aussi.
+  const options = go ? null : { gmax: Boolean(sansGmax) };
 
   // UNE CASE DE LA VUE EST UNE CASE DE LA COLLECTION. Pas d'agrégat, pas de
   // « au moins une des deux » : on lit exactement le créneau que la case porte,
@@ -76,17 +118,24 @@ export function renderLivingDex(racine, ctx) {
 
   racine.dataset.ordre = ordre;
   if (ordre === "famille") {
-    const lignes = go ? rangerGoEnFamilles(entrees, chaines) : rangerEnFamilles(especes, chaines);
-    fill(racine, lignes.map((ligne) => ligneDeFamille(ligne, pris, surChoix, surFiche)));
+    const lignes = go
+      ? rangerGoEnFamilles(entrees, chaines)
+      : rangerEnFamilles(especes, chaines, options);
+    fill(
+      racine,
+      lignes.map((ligne) => [bande(ligne.genNouvelle), ligneDeFamille(ligne, pris, surChoix, surFiche)])
+    );
     return;
   }
 
-  const boites = go ? rangerGoEnBoites(entrees) : rangerEnBoites(especes);
+  const boites = go ? rangerGoEnBoites(entrees) : rangerEnBoites(especes, options);
   fill(
     racine,
     boites.map((boite) => {
       const c = compter(boite.cases, pris);
-      return el(
+      return [
+        bande(boite.genNouvelle),
+        el(
         "section.boite",
         el(
           "header.boite__tete",
@@ -101,7 +150,8 @@ export function renderLivingDex(racine, ctx) {
           { role: "list" },
           boite.cases.map((k) => caseOuVide(k, pris, surChoix, surFiche))
         )
-      );
+        ),
+      ];
     })
   );
 }

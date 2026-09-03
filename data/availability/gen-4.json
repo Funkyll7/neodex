@@ -372,15 +372,15 @@
   "wild": "pt xy swsh bdsp pla sv za"
  },
  "480": {
-  "gm": "dp pt bdsp pla",
+  "gm": "dp pt swsh bdsp pla",
   "wild": "dp pt"
  },
  "481": {
-  "gm": "dp pt bdsp pla",
+  "gm": "dp pt swsh bdsp pla",
   "wild": "dp pt"
  },
  "482": {
-  "gm": "dp pt bdsp pla",
+  "gm": "dp pt swsh bdsp pla",
   "wild": "dp pt"
  },
  "483": {
@@ -388,27 +388,28 @@
   "wild": "dp pt"
  },
  "484": {
-  "gm": "dp pt bdsp pla",
+  "gm": "dp pt swsh bdsp pla",
   "wild": "dp pt"
  },
  "485": {
-  "gm": "bdsp pla za"
+  "gm": "swsh bdsp pla za"
  },
  "486": {
   "gm": "bdsp pla"
  },
  "487": {
-  "gm": "pt bdsp pla",
+  "gm": "pt swsh bdsp pla",
   "wild": "pt"
  },
  "488": {
-  "gm": "bdsp pla"
+  "gm": "swsh bdsp pla"
  },
  "489": {
-  "ev": "pla"
+  "gm": "pla"
  },
  "490": {
-  "ev": "dp pt bdsp pla"
+  "gm": "pla",
+  "ev": "dp pt bdsp"
  },
  "491": {
   "gm": "za",

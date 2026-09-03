@@ -46,6 +46,21 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "5.3",
+    date: "2026-09-03",
+    titre: "Les DLC comptent enfin",
+    notes: [
+      ["ajout", "Les Pokémon des DLC sont recensés par jeu : les 42 légendaires du Repaire Dynamax, les friandises de Jeffry Andise, le Pokédex Hyperespace, Phione et Manaphy."],
+      ["ajout", "Le logo du DLC s'affiche à côté du jeu, dans « Où le trouver », quand l'espèce ne s'obtient que par lui."],
+      ["ajout", "Une case « Masquer les formes Gigamax » dans les vues Boîtes et Familles : un Gigamax n'occupe pas de boîte dans HOME, il décalait le rangement de trente-quatre cases."],
+      ["ajout", "Les bandes de génération reviennent dans les Boîtes et les Familles, comme dans la grille."],
+      ["amelioration", "« Ce qu'il me reste » devient « Ce qu'il reste par jeu »."],
+      ["amelioration", "La reproduction par DV de la Gén. II ne remporte plus le « meilleur taux » : son 1/64 envoyait toute chasse vers Or/Argent ou Cristal."],
+      ["correction", "« Chasser celui-ci » manquait sur les cent deux espèces à dimorphisme : avoir le chromatique ♀ suffisait à faire croire que le ♂ était pris."],
+      ["correction", "En fenêtre réduite, les onglets se chevauchaient — le compteur de Quêtes se posait sur le logo des Mises à jour."],
+    ],
+  },
+  {
     version: "5.2",
     date: "2026-09-03",
     titre: "Ce qui manquait, ce qui clochait",

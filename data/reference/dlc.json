@@ -1,0 +1,96 @@
+{
+ "_comment": "Ce que chaque contenu telechargeable apporte, et lui SEUL. Sert a poser le logo du DLC a cote de l'embleme du jeu sur la fiche d'une espece, pour dire « celle-ci, tu ne l'as que si tu as le DLC ». Un enregistrement par DLC : 'code' l'identifie, 'game' renvoie au code de data/reference/games.json, 'name' est le nom francais officiel (il s'affiche, il passe donc par t() et sa cle vit dans data/i18n/en.json), 'species' liste les numeros nationaux et 'count' les compte.",
+ "_source": "tools/.cache/pokemon_dex_numbers.csv croise avec tools/.cache/pokedexes.csv (PokeAPI) : Pokedex 28 isle-of-armor, 29 crown-tundra, 32 kitakami et 33 blueberry, 35 hyperspace.",
+ "_methode": "Pokedex du DLC, PLUS les especes qu'on y attrape sans qu'elles y soient recensees, MOINS tout ce qui figure deja au Pokedex du jeu de base. Les hors-Pokedex sortent des tables DYNAMAX_ADVENTURES, SNACKSWORTH_TREATS et OFF_DEX_EXTRAS de tools/build_availability.py, reparties ici : le Repaire Dynamax et Keldeo aux Terres Enneigees, les starters d'Alola a l'Ile Solitaire, les friandises de Jeffry Andise au Disque Indigo donc a zone-zero. La soustraction, elle, est le coeur du fichier — Pokedex galar (27) pour swsh, paldea (31) pour sv, lumiose-city (34) pour za : une espece qu'on obtient deja dans le jeu de base ne doit porter aucun logo de DLC. Elle retire 101 entrees a l'Ile Solitaire, 135 aux Terres Enneigees, 166 a la Zone Zero, et aucune a Mega-Dimension dont le Pokedex Hyperespace ne recoupe jamais celui de Lumiose.",
+ "_notes": "zone-zero couvre les DEUX parties du Tresor Enfoui de la Zone Zero, le Masque Turquoise (Pokedex kitakami) et le Disque Indigo (Pokedex blueberry, plus les friandises de Jeffry Andise) : le DLC s'achete d'un bloc, on ne le coupe donc pas en deux. Une espece peut relever de DEUX DLC du meme jeu, et une seule le fait — Drakkarmin (621), a l'Ile Solitaire comme aux Terres Enneigees : l'un OU l'autre suffit a l'obtenir, l'affichage doit donc savoir montrer deux logos. Enfin ce fichier dit D'OU vient une espece, pas COMMENT on l'obtient : Zarude (893) figure au Pokedex de l'Ile Solitaire alors que data/availability le donne en 'ev', c'est-a-dire en distribution — les deux se lisent ensemble.",
+ "dlc": [
+  {
+   "code": "isle-armor",
+   "game": "swsh",
+   "name": "L'Île Solitaire de l'Armure",
+   "count": 119,
+   "species": [
+     1, 2, 3, 7, 8, 9, 27, 28, 39, 40, 54, 55,
+     60, 61, 62, 63, 64, 65, 72, 73, 79, 80, 81, 82,
+     102, 103, 104, 105, 108, 113, 114, 115, 116, 117, 120, 121,
+     123, 127, 128, 137, 174, 183, 184, 186, 199, 206, 212, 214,
+     227, 230, 233, 241, 242, 293, 294, 295, 298, 318, 319, 403,
+     404, 405, 427, 428, 440, 462, 463, 465, 474, 506, 507, 508,
+     543, 544, 545, 548, 549, 551, 552, 553, 570, 571, 587, 590,
+     591, 619, 620, 621, 626, 636, 637, 661, 662, 663, 690, 691,
+     692, 693, 702, 707, 722, 723, 724, 725, 726, 727, 728, 729,
+     730, 744, 745, 753, 754, 764, 769, 770, 891, 892, 893
+   ]
+  },
+  {
+   "code": "crown-tundra",
+   "game": "swsh",
+   "name": "Les Terres Enneigées de la Couronne",
+   "count": 118,
+   "species": [
+     29, 30, 31, 32, 33, 34, 41, 42, 124, 125, 126, 138,
+     139, 140, 141, 142, 144, 145, 146, 147, 148, 149, 169, 238,
+     239, 240, 243, 244, 245, 253, 254, 256, 257, 259, 260, 304,
+     305, 306, 333, 334, 345, 346, 347, 348, 359, 363, 364, 365,
+     369, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381,
+     382, 383, 442, 443, 444, 445, 466, 467, 480, 481, 482, 484,
+     485, 487, 488, 531, 564, 565, 566, 567, 615, 621, 638, 639,
+     640, 641, 642, 645, 646, 647, 696, 697, 698, 699, 703, 716,
+     717, 718, 785, 786, 787, 788, 791, 792, 793, 794, 795, 796,
+     797, 798, 799, 805, 806, 894, 895, 896, 897, 898
+   ]
+  },
+  {
+   "code": "zone-zero",
+   "game": "sv",
+   "name": "Le Trésor Enfoui de la Zone Zéro",
+   "count": 289,
+   "species": [
+     1, 2, 3, 4, 5, 6, 7, 8, 9, 23, 24, 27,
+     28, 35, 36, 37, 38, 43, 44, 45, 60, 61, 62, 69,
+     70, 71, 72, 73, 74, 75, 76, 84, 85, 86, 87, 102,
+     103, 106, 107, 109, 110, 111, 112, 116, 117, 125, 126, 131,
+     137, 143, 144, 145, 146, 152, 153, 154, 155, 156, 157, 158,
+     159, 160, 161, 162, 163, 164, 167, 168, 170, 171, 173, 182,
+     186, 190, 193, 195, 207, 209, 210, 218, 219, 220, 221, 227,
+     230, 233, 235, 236, 237, 239, 240, 243, 244, 245, 249, 250,
+     252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 270,
+     271, 272, 273, 274, 275, 299, 311, 312, 313, 314, 328, 329,
+     330, 341, 342, 349, 350, 355, 356, 358, 374, 375, 376, 380,
+     381, 382, 383, 384, 387, 388, 389, 390, 391, 392, 393, 394,
+     395, 408, 409, 410, 411, 424, 433, 446, 464, 466, 467, 469,
+     472, 473, 474, 476, 477, 495, 496, 497, 498, 499, 500, 501,
+     502, 503, 522, 523, 529, 530, 532, 533, 534, 540, 541, 542,
+     546, 547, 559, 560, 572, 573, 577, 578, 579, 580, 581, 595,
+     596, 607, 608, 609, 619, 620, 622, 623, 629, 630, 638, 639,
+     640, 643, 644, 646, 650, 651, 652, 653, 654, 655, 656, 657,
+     658, 677, 678, 686, 687, 703, 708, 709, 722, 723, 724, 725,
+     726, 727, 728, 729, 730, 731, 732, 733, 736, 737, 738, 742,
+     743, 751, 752, 764, 774, 782, 783, 784, 791, 792, 800, 810,
+     811, 812, 813, 814, 815, 816, 817, 818, 845, 868, 869, 877,
+     884, 891, 896, 897, 900, 901, 902, 904, 1009, 1010, 1011, 1012,
+     1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024,
+     1025
+   ]
+  },
+  {
+   "code": "mega-dim",
+   "game": "za",
+   "name": "Méga-Dimension",
+   "count": 132,
+   "species": [
+     39, 40, 41, 42, 52, 53, 56, 57, 83, 104, 105, 122,
+     137, 169, 174, 211, 233, 252, 253, 254, 255, 256, 257, 258,
+     259, 260, 316, 317, 325, 326, 335, 336, 349, 350, 352, 358,
+     380, 381, 382, 383, 384, 396, 397, 398, 433, 439, 474, 479,
+     485, 491, 509, 510, 517, 518, 538, 539, 562, 563, 590, 591,
+     615, 622, 623, 638, 639, 640, 647, 648, 649, 720, 721, 739,
+     740, 767, 768, 769, 770, 778, 801, 802, 807, 808, 809, 821,
+     822, 823, 827, 828, 848, 849, 852, 853, 863, 865, 866, 867,
+     876, 877, 900, 904, 926, 927, 931, 932, 933, 934, 935, 936,
+     937, 942, 943, 944, 945, 951, 952, 957, 958, 959, 967, 969,
+     970, 971, 972, 973, 977, 978, 979, 996, 997, 998, 999, 1000
+   ]
+  }
+ ]
+}

@@ -8,8 +8,35 @@
   "where": "Supermarché Abandonné, Route 14 d'Alola.",
   "gm": "sm usum swsh sv"
  },
+ "793": {
+  "stat": 1
+ },
+ "794": {
+  "stat": 1
+ },
+ "795": {
+  "stat": 1
+ },
+ "796": {
+  "stat": 1
+ },
+ "797": {
+  "stat": 1
+ },
+ "798": {
+  "stat": 1
+ },
+ "799": {
+  "stat": 1
+ },
  "800": {
   "where": "Colline Carat / Autel du Soleil ou de la Lune selon la version (Soleil/Lune).",
   "gm": "sm usum swsh"
+ },
+ "805": {
+  "stat": 1
+ },
+ "806": {
+  "stat": 1
  }
 }

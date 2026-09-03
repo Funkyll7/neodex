@@ -1,38 +1,38 @@
 {
  "722": {
-  "gm": "sm usum pla sv",
+  "gm": "sm usum swsh pla sv",
   "wild": "pla sv"
  },
  "723": {
-  "gm": "sm usum pla sv",
+  "gm": "sm usum swsh pla sv",
   "wild": "pla sv"
  },
  "724": {
-  "gm": "sm usum pla sv",
+  "gm": "sm usum swsh pla sv",
   "wild": "pla sv"
  },
  "725": {
-  "gm": "sm usum sv",
+  "gm": "sm usum swsh sv",
   "wild": "sv"
  },
  "726": {
-  "gm": "sm usum sv",
+  "gm": "sm usum swsh sv",
   "wild": "sv"
  },
  "727": {
-  "gm": "sm usum sv",
+  "gm": "sm usum swsh sv",
   "wild": "sv"
  },
  "728": {
-  "gm": "sm usum sv",
+  "gm": "sm usum swsh sv",
   "wild": "sv"
  },
  "729": {
-  "gm": "sm usum sv",
+  "gm": "sm usum swsh sv",
   "wild": "sv"
  },
  "730": {
-  "gm": "sm usum sv",
+  "gm": "sm usum swsh sv",
   "wild": "sv"
  },
  "731": {
@@ -250,19 +250,19 @@
   "wild": "sm usum swsh sv"
  },
  "785": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "786": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "787": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "788": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "789": {
@@ -272,43 +272,43 @@
   "gm": "sm usum"
  },
  "791": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh sv",
   "wild": "sm"
  },
  "792": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh sv",
   "wild": "sm"
  },
  "793": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "794": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "795": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "796": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "797": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "798": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "799": {
-  "gm": "sm usum",
+  "gm": "sm usum swsh",
   "wild": "sm usum"
  },
  "800": {
-  "gm": "sm usum",
+  "gm": "sm usum sv",
   "wild": "sm usum"
  },
  "801": {
@@ -317,7 +317,8 @@
   "wild": "usum"
  },
  "802": {
-  "ev": "sm usum za"
+  "gm": "za",
+  "ev": "sm usum"
  },
  "803": {
   "gm": "usum"
@@ -326,11 +327,11 @@
   "gm": "usum"
  },
  "805": {
-  "gm": "usum",
+  "gm": "usum swsh",
   "wild": "usum"
  },
  "806": {
-  "gm": "usum",
+  "gm": "usum swsh",
   "wild": "usum"
  },
  "807": {
@@ -338,11 +339,9 @@
   "ev": "usum"
  },
  "808": {
-  "gm": "lgpe",
-  "ev": "za"
+  "gm": "lgpe za"
  },
  "809": {
-  "gm": "lgpe",
-  "ev": "za"
+  "gm": "lgpe za"
  }
 }

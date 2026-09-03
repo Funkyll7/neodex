@@ -575,48 +575,51 @@
   "wild": "bw b2w2 usum swsh sv"
  },
  "638": {
-  "gm": "bw b2w2 swsh za",
+  "gm": "bw b2w2 swsh sv za",
   "wild": "bw b2w2 swsh"
  },
  "639": {
-  "gm": "bw b2w2 swsh za",
+  "gm": "bw b2w2 swsh sv za",
   "wild": "bw b2w2 swsh"
  },
  "640": {
-  "gm": "bw b2w2 swsh za",
+  "gm": "bw b2w2 swsh sv za",
   "wild": "bw b2w2 swsh"
  },
  "641": {
-  "gm": "bw b2w2 pla",
+  "gm": "bw b2w2 swsh pla",
   "wild": "bw"
  },
  "642": {
-  "gm": "bw b2w2 pla",
+  "gm": "bw b2w2 swsh pla",
   "wild": "bw"
  },
  "643": {
-  "gm": "bw b2w2",
+  "gm": "bw b2w2 sv",
   "wild": "bw b2w2"
  },
  "644": {
-  "gm": "bw b2w2",
+  "gm": "bw b2w2 sv",
   "wild": "bw b2w2"
  },
  "645": {
-  "gm": "bw b2w2 pla",
+  "gm": "bw b2w2 swsh pla",
   "wild": "bw"
  },
  "646": {
-  "gm": "bw b2w2",
+  "gm": "bw b2w2 swsh sv",
   "wild": "bw b2w2"
  },
  "647": {
-  "ev": "bw b2w2 za"
+  "gm": "swsh za",
+  "ev": "bw b2w2"
  },
  "648": {
-  "ev": "bw b2w2 za"
+  "gm": "za",
+  "ev": "bw b2w2"
  },
  "649": {
-  "ev": "bw b2w2 za"
+  "gm": "za",
+  "ev": "bw b2w2"
  }
 }

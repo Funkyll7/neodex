@@ -57,7 +57,7 @@ export function ouvrirReste(ctx) {
   peindre(null);
 
   return ouvrirPopup({
-    titre: t("Ce qu'il me reste"),
+    titre: t("Ce qu'il reste par jeu"),
     sousTitre: t("Par jeu, du plus rentable au moins"),
     large: true,
     corps: [corps],

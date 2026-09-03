@@ -209,3 +209,39 @@ export function embleme(code, taille = 15) {
   if (fichiers) return imageLogo(fichiers[0], taille);
   return symboleJeu(code, taille);
 }
+
+/**
+ * Le logo d'un contenu téléchargeable, à poser après l'emblème de son jeu.
+ *
+ * AUCUNE TABLE DE CORRESPONDANCE, contrairement aux jeux juste au-dessus. Les
+ * quatre fichiers d'`assets/img/dlc/` portent exactement le `code` de
+ * `data/reference/dlc.json` — isle-armor, crown-tundra, zone-zero, mega-dim —,
+ * le chemin se compose donc directement. Une table de plus n'aurait rien
+ * appris : elle aurait seulement offert un endroit de plus où se tromper le
+ * jour où un cinquième DLC arrive.
+ *
+ * L'IMAGE EST INFORMATIVE, ET SON `alt` EST DONC RENSEIGNÉ — c'est ce qui la
+ * distingue des emblèmes de jeu ci-dessus, qui sont décoratifs et portent un
+ * `alt` vide. L'emblème d'Épée/Bouclier a son nom écrit en toutes lettres à
+ * deux pixels de là ; le nom du DLC, lui, n'est écrit NULLE PART ailleurs dans
+ * la ligne. Le laisser décoratif aurait donc retiré l'information à qui n'y
+ * voit pas, alors même qu'elle est le seul intérêt de cette image.
+ *
+ * L'appelant fournit le libellé déjà traduit et déjà composé : la traduction et
+ * la ponctuation d'une phrase sont son affaire, pas celle d'une fabrique
+ * d'images.
+ */
+export function logoDlc(code, libelle, taille = 17) {
+  const img = document.createElement("img");
+  img.src = `assets/img/dlc/${code}.png`;
+  img.width = taille;
+  img.height = taille;
+  img.className = "sym-dlc";
+  // Comme les logos de jeux : le tableau en aligne vingt-trois lignes dont on
+  // ne voit d'abord que le haut.
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.alt = libelle;
+  img.title = libelle;
+  return img;
+}

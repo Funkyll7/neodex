@@ -264,24 +264,24 @@
   "wild": "usum swsh sv za"
  },
  "716": {
-  "gm": "xy za",
+  "gm": "xy swsh za",
   "wild": "xy"
  },
  "717": {
-  "gm": "xy za",
+  "gm": "xy swsh za",
   "wild": "xy"
  },
  "718": {
-  "gm": "xy sm usum za",
+  "gm": "xy sm usum swsh za",
   "wild": "xy usum"
  },
  "719": {
   "ev": "za"
  },
  "720": {
-  "ev": "za"
+  "gm": "za"
  },
  "721": {
-  "ev": "za"
+  "gm": "za"
  }
 }

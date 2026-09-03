@@ -2,13 +2,13 @@
   "_comment": "Tout ce qui concerne la chasse au chromatique. 'byGame' = methode par defaut dans chaque jeu. 'templates' = methodes generiques, avec des variables {cible}, {nom}, {jeu} remplacees a l'affichage. 'rules' = listes d'exceptions.",
 
   "byGame": {
-    "gs": { "name": "Reproduction par DV (gène chromatique)", "odds": "1/64", "steps": [
+    "gs": { "ecartee": 1, "name": "Reproduction par DV (gène chromatique)", "odds": "1/64", "steps": [
       "En Gén. II la chromaticité découle des DV, pas d'une valeur cachée : un parent porteur les transmet.",
       "Procure-toi le Léviator rouge du Lac Colère, ou mieux un Métamorph à gène chromatique.",
       "Reproduis-le avec l'espèce visée : 1/64 avec le Métamorph, 1/64 à 1/256 avec le Léviator selon le ratio de genre.",
       "Faute de parent porteur, il reste la rencontre sauvage en boucle, à 1/8192."
     ]},
-    "c": { "name": "Reproduction par DV (gène chromatique)", "odds": "1/64", "steps": [
+    "c": { "ecartee": 1, "name": "Reproduction par DV (gène chromatique)", "odds": "1/64", "steps": [
       "Même principe qu'Or/Argent : les DV du parent décident, donc un porteur transmet sa chance.",
       "Le Léviator rouge du Lac Colère est le porteur le plus accessible ; un Métamorph à gène chromatique vaut mieux encore.",
       "1/64 par œuf avec le Métamorph — 128 fois mieux que la rencontre sauvage à 1/8192."
