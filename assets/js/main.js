@@ -573,6 +573,13 @@ function start(dataset) {
     // `renderCounts` et non `sidebar.render()` : celui-ci attend les trois jeux
     // de compteurs, que seul le premier sait calculer.
     renderCounts();
+    // LES PASTILLES DE FILTRE AUSSI, et elles manquaient. `ui/langue.js` ne les
+    // retraduit pas depuis le DOM — `#active-filters` est dans ses ZONES
+    // DYNAMIQUES, justement parce qu'il passe deja par `t()` a la source. Mais
+    // encore faut-il le redessiner : sans cet appel, basculer en anglais
+    // laissait « Génération VI » au-dessus d'une grille devenue anglaise, et le
+    // libellé restait faux jusqu'au prochain changement de filtre.
+    activeFilters.render();
   });
 
   window.addEventListener("online", () => {

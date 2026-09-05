@@ -1688,6 +1688,20 @@
 .fchip__x { font-size: 10px; opacity: .75; }
 .fchip--clear { background: transparent; border-color: var(--border-strong); color: var(--text-muted); }
 
+/* « sans effet sur les boîtes » — une PHRASE, pas une pastille. Les vues en
+   boîtes ignorent les filtres par choix, mais les pastilles continuaient de
+   s'afficher au-dessus des quatre-vingt-quatorze boîtes : elles affirmaient
+   quelque chose de faux, à l'endroit même qui existe pour qu'un filtre oublié
+   ne trompe personne. Elle est en retrait — ni bordure, ni fond, ni accent —
+   parce qu'elle ne se clique pas et n'annonce aucun filtre de plus : elle
+   qualifie ceux qui sont à sa gauche. */
+.fchip-note {
+  align-self: center;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-ghost);
+}
+
 /* Compteur sur le bouton « Filtres » : la seule chose visible quand la colonne
    est repliée. Un filtre oublié faisait croire à un Pokédex amputé. */
 .nav-toggle__count {
@@ -6709,6 +6723,15 @@ body::before {
     align-items: start;
   }
   .livingdex[data-ordre="numero"] .boite { max-width: 500px; }
+  /* LA BANDE DE TÊTE TRAVERSE LA RANGÉE, ET IL FAUT LE DIRE ICI.
+     `.gen-sep` porte son propre `grid-column: 1 / -1` — les huit bandes de
+     génération se placent donc seules. La PREMIÈRE, elle, est emballée dans un
+     `.ldx-rang` avec la case « Masquer les formes Gigamax », et c'est cet
+     emballage qui devient l'élément de grille : la règle du `.gen-sep` se
+     retrouve dans un conteneur qui n'est plus une grille, donc inerte.
+     Résultat, la bande occupait UNE cellule et la première boîte se glissait à
+     côté d'elle, laissant un vide de la hauteur d'une boîte entière. */
+  .livingdex[data-ordre="numero"] > .ldx-rang { grid-column: 1 / -1; }
 }
 
 /* ------------------------- Une lignée par ligne ------------------------- */

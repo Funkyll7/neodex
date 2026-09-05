@@ -51,6 +51,33 @@ export function createActiveFilters(ctx) {
       .map(([cle]) => cle);
   }
 
+  /**
+   * La vue affichee range-t-elle en boites ?
+   *
+   * ═══ POURQUOI CETTE QUESTION SE POSE ICI ═══
+   *
+   * Les vues en boites IGNORENT les filtres, et c'est voulu : une boite de HOME
+   * a trente cases, en retirer vingt parce qu'un filtre de type est actif
+   * detruirait le seul interet de la vue, qui est de montrer les trous A LEUR
+   * PLACE. Voir `renderList()` dans main.js, qui range toujours les 1025.
+   *
+   * Mais les pastilles, elles, continuaient de s'afficher. Une pastille
+   * « Generation VI » posee au-dessus des quatre-vingt-quatorze boites de Kanto
+   * a Paldea affirme quelque chose de faux, et c'est exactement ce que cette
+   * barre existe pour eviter : son en-tete dit qu'elle est la pour qu'un filtre
+   * oublie ne fasse pas passer le Pokedex pour ampute.
+   *
+   * ON NE RETIRE PAS LES PASTILLES POUR AUTANT. Le filtre n'est pas annule, il
+   * est seulement sans effet ICI : il reprend des qu'on revient a la grille.
+   * Les effacer aurait donc menti dans l'autre sens, et fait perdre un reglage
+   * a chaque aller-retour entre les deux vues. On ajoute une phrase, on ne
+   * retire rien.
+   */
+  function enBoites() {
+    const mode = store.state.tab === "go" ? store.state.goMode : store.state.mode;
+    return Boolean(mode) && mode !== "grille";
+  }
+
   function render() {
     const cles = actifs();
 
@@ -90,6 +117,13 @@ export function createActiveFilters(ctx) {
               onclick: () => store.set({ ...NEUTRE }),
             },
             "Tout effacer"
+          )
+        : null,
+      enBoites()
+        ? el(
+            "span.fchip-note",
+            { title: t("Une boîte garde ses trente cases : filtrer les déplacerait, et c'est leur place qu'on vient lire.") },
+            t("sans effet sur les boîtes")
           )
         : null
     );

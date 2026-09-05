@@ -46,6 +46,16 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "5.7",
+    date: "2026-09-05",
+    titre: "La bande, la pastille et la langue",
+    notes: [
+      ["correction", "La bande « Génération I — Kanto » occupait une seule colonne depuis que les boîtes se posent en grille : elle laissait un vide de la hauteur d'une boîte entière, et la première boîte se glissait à côté d'elle. Elle traverse de nouveau la rangée."],
+      ["correction", "Les vues en boîtes ignorent les filtres — c'est voulu, une boîte doit garder ses trente cases pour montrer les trous à leur place. Mais les pastilles de filtre restaient affichées au-dessus, à affirmer quelque chose de faux. Elles le disent maintenant."],
+      ["correction", "Les pastilles de filtre ne suivaient pas le changement de langue : « Génération VI » restait en français au-dessus d'une grille passée à l'anglais, jusqu'au prochain changement de filtre."],
+    ],
+  },
+  {
     version: "5.6",
     date: "2026-09-05",
     titre: "Ce qui ne disparaît plus",
