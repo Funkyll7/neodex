@@ -26,12 +26,19 @@
  * construction et a chaque import. Une marque heritee qu'aucune forme ne peut
  * accueillir est laissee intacte plutot que posee au hasard.
  *
- * Deux sources empilees :
- *   - data/collection.json  la reference commitee dans le depot
- *   - localStorage          les cases cochees depuis ce navigateur
- * La seconde ecrase la premiere, espece par espece. « Exporter » aplatit les
- * deux pour produire un nouveau collection.json, « Reinitialiser » jette la
- * couche locale.
+ * Deux sources empilees, et un troisieme terme qu'on avait oublie :
+ *   - data/collection.json          la reference commitee dans le depot
+ *   - localStorage `marks`          les cases cochees depuis ce navigateur
+ *   - localStorage `base`           L'ANCETRE : ce que le depot contenait quand
+ *                                   `marks` a ete ecrite
+ * La couche locale ecrase la reference ESPECE PAR ESPECE — l'entree entiere,
+ * pas case par case. C'est ce qui rend l'ancetre indispensable : sans lui, on
+ * ne peut pas distinguer « cette case, je l'ai decochee ici » de « cette case,
+ * je ne l'avais simplement pas encore ». Le constructeur developpe le degat que
+ * son absence a cause.
+ *
+ * « Exporter » aplatit reference et couche locale pour produire un nouveau
+ * collection.json, « Reinitialiser » jette la couche locale.
  */
 
 import { CONFIG } from "../config.js";
@@ -127,9 +134,52 @@ export class Collection {
    * @param {object} [dataset] jeu de donnees fusionne, pour convertir les
    *   anciennes cases positionnelles. Sans lui, elles restent en l'etat.
    */
+  /**
+   * ═══ L'ANCETRE NE PEUT PAS ETRE LE FICHIER QU'ON VIENT DE LIRE ═══
+   *
+   * `this.base` est l'ANCETRE de la fusion a trois voies : ce que le depot
+   * contenait quand la couche locale a ete ecrite. Il etait pris du fichier
+   * FRAICHEMENT charge, ce qui parait naturel et ne l'est pas : `local` survit
+   * dans le localStorage pendant que `base` est relu du reseau a chaque
+   * ouverture de page. L'ancetre avancait donc SOUS la couche locale, et
+   * l'invariant sur lequel repose toute la fusion tombait sans un mot.
+   *
+   * LE DEGAT, MESURE. `get()` rend `local[id] || base[id]` : la couche locale
+   * remplace l'entree ENTIERE d'une espece. Une vieille entree `{om:1}` ecrite
+   * ici masquait donc le `{om:1, sm:1}` que le depot avait recu du telephone —
+   * la case chromatique disparaissait de l'ecran. Pire, `toExport()` la
+   * reecrivait telle quelle : la synchronisation suivante EFFACAIT du depot ce
+   * qui avait ete coche ailleurs. Un ecart de dix-sept especes s'est constate
+   * ainsi entre un telephone et un ordinateur.
+   *
+   * L'ancetre est donc retenu a cote de la couche locale, et la reconciliation
+   * a lieu ICI, au chargement, contre le fichier qu'on vient de lire.
+   *
+   * ═══ LA PREMIERE VISITE N'A PAS D'ANCETRE, ET C'EST LE CAS DELICAT ═══
+   *
+   * Aucun navigateur n'en a jamais ecrit avant cette version. On repart alors
+   * d'un ancetre VIDE, et ce n'est pas un pis-aller : avec `a = 0` partout, la
+   * regle `n === l ? n : a === l ? n : l` degenere exactement en UNION. Une case
+   * cochee d'un cote ou de l'autre est gardee.
+   *
+   * L'union est le bon defaut parce que les deux erreurs possibles ne se valent
+   * pas. Garder une case que l'utilisateur avait decochee ici se voit et se
+   * defait d'un clic ; perdre une case cochee ailleurs ne se voit pas du tout.
+   * On ne peut pas distinguer les deux sans ancetre — alors on choisit celle
+   * qui se repare.
+   *
+   * Des la premiere ecriture, l'ancetre existe et la fusion redevient exacte :
+   * une case decochee ici est de nouveau reconnue comme telle.
+   *
+   * @param {object} base     contenu de data/collection.json
+   * @param {object} [dataset] jeu de donnees fusionne, pour convertir les
+   *   anciennes cases positionnelles. Sans lui, elles restent en l'etat.
+   */
   constructor(base, dataset = null) {
     this.dataset = dataset;
-    this.base = sanitize(base && base.marks);
+    const distant = sanitize(base && base.marks);
+    const ancetre = readBase();
+    this.base = ancetre || {};
     this.local = readLocal();
 
     // Le carnet vit a cote, jamais dedans. `quetesEnvoyees` est ce que le depot
@@ -139,7 +189,21 @@ export class Collection {
     this.quetesEnvoyees = sanitizeQuetes(base && base.quetes);
     this.quetes = joinQuetes(this.quetesEnvoyees, lireQuetesLocales());
 
+    // AVANT la reconciliation : les deux couches peuvent dater d'avant la
+    // migration des cases heritees, et fusionner un `vo` avec un `f10161` les
+    // aurait comptes comme deux cases distinctes.
     this.migrateLegacySlots();
+
+    // LA RECONCILIATION, A CHAQUE CHARGEMENT. `adopterDistant` fait exactement
+    // ce qu'il faut et il existait deja : fusion a trois voies, le depot
+    // devient le nouvel ancetre, et la couche locale ne garde que ce qui l'en
+    // ecarte. On ne le rappelle ici que parce que personne ne le faisait au
+    // demarrage — « Recharger » etait le seul chemin, et il fallait y penser.
+    //
+    // Aucune notification n'en sort : `surEcritureLocale` n'est pas encore
+    // branche a la construction, et c'est tant mieux — il n'y a rien a
+    // annoncer, on remet seulement les compteurs d'accord avec le depot.
+    this.adopterDistant(distant);
   }
 
   /**
@@ -373,6 +437,10 @@ export class Collection {
     const distant = sanitize(distantMarks);
     if (this.dataset) migrateLayer(distant, this.dataset);
     this.base = distant;
+    // L'ancetre change : il doit survivre a la fermeture de l'onglet, sans quoi
+    // la visite suivante relirait la couche locale contre un fichier qu'elle
+    // n'a jamais vu. C'est tout le defaut que cette version corrige.
+    writeBase(this.base);
 
     const local = {};
     for (const id of new Set([...Object.keys(fusionne), ...Object.keys(distant)])) {
@@ -520,6 +588,9 @@ export class Collection {
     // « Recharger » ramene le fichier du depot, qui peut etre plus ancien que
     // la migration des cases heritees.
     if (this.dataset) migrateLayer(this.base, this.dataset);
+    // Meme raison que dans `adopterDistant` : ce qu'on vient d'ecrire dans le
+    // depot est le nouvel ancetre, et il doit survivre a l'onglet.
+    writeBase(this.base);
     this.local = {};
     writeLocal(this.local);
     // « depot », meme raison que dans `adopterDistant` : l'ancetre a bouge.
@@ -588,6 +659,39 @@ function writeLocal(marks) {
     localStorage.setItem(CONFIG.storage.marks, JSON.stringify(marks));
   } catch {
     // Quota depasse ou stockage bloque : on continue sans persister.
+  }
+}
+
+/**
+ * L'ancetre retenu de la derniere lecture, ou `null` s'il n'y en a pas.
+ *
+ * `null` et non `{}` : les deux se comportent pareil dans la fusion, mais
+ * l'appelant doit pouvoir distinguer « aucun ancetre connu » — le premier
+ * chargement apres la mise a jour — de « le depot etait vide ». Le premier
+ * demande une reprise prudente, le second non.
+ */
+function readBase() {
+  try {
+    const brut = localStorage.getItem(CONFIG.storage.base);
+    return brut ? sanitize(JSON.parse(brut)) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Retient ce que le depot contient, pour que la prochaine visite sache contre
+ * QUOI la couche locale a ete ecrite.
+ *
+ * L'echec est sans gravite et c'est voulu : quota depasse, stockage bloque,
+ * navigation privee. La visite suivante ne trouvera pas d'ancetre et repartira
+ * sur la reprise prudente, qui ne perd rien — voir `constructor`.
+ */
+function writeBase(marks) {
+  try {
+    localStorage.setItem(CONFIG.storage.base, JSON.stringify(marks));
+  } catch {
+    // Voir ci-dessus : on degrade vers la reprise prudente, jamais vers la perte.
   }
 }
 

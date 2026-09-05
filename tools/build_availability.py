@@ -128,6 +128,31 @@ VG_TO_GAME = {
 # effet la quasi-totalite de leur Pokedex dans le decor.
 NO_ENCOUNTER_DATA = ["bdsp", "pla", "sv", "za"]
 
+# L'EXCEPTION A LA REGLE CI-DESSUS. « Toute espece non legendaire presente dans
+# le jeu » est une approximation, et elle a un angle mort : les Pokemon de
+# depart. On les recoit, puis on les fait evoluer — on ne les croise nulle part.
+#
+# Le cout n'etait pas cosmetique. `domain/hunt.js` lit `wild` pour choisir une
+# methode de chasse : les trois lignees de Paldea se voyaient proposer
+# « apparition massive + sandwich Encens Eclatant », une chasse qui n'existe
+# pas, et « Manquant par jeu » les comptait comme rencontrables d'une soiree.
+#
+# LE COMMIT a40f158 AVAIT CORRIGE CA A LA MAIN, dans data/availability/gen-9.json
+# — c'est-a-dire dans un fichier dont l'en-tete dit « ecrase a chaque
+# execution ». Relancer ce script ressuscitait donc le bug, sans un mot. La
+# table est ici pour que la correction survive a la regeneration.
+#
+# Le meme retrait est ecrit DEUX FOIS, et c'est voulu : `nowild: "sv"` dans
+# data/details/gen-9.json couvre le jeu de donnees que le site fusionne, cette
+# table couvre le fichier genere lui-meme. Les deux couches sont independantes
+# — l'une survit a la regeneration, l'autre la corrige — et se valider l'une
+# l'autre ne coute rien.
+#
+# On ne liste QUE ce qui est etabli. Les autres starters des jeux sans table de
+# rencontres gardent leur `wild` tel que le script le deduit : personne ne l'a
+# verifie, et inventer ici serait exactement l'erreur qu'on repare.
+NO_WILD = {sid: ("sv",) for sid in range(906, 915)}
+
 # Ordre d'affichage : celui de data/reference/games.json.
 GAME_ORDER = [
     "rb", "y", "gs", "c", "rs", "e", "frlg", "col", "dp", "pt", "hgss",
@@ -468,11 +493,18 @@ def build(use_cache):
         # lignes « sword-shield » que PokeAPI porte sur les especes du Repaire
         # Dynamax passeraient toutes en rencontre sauvage.
         manual = off_dex.get(sid, ())
+        # `NO_WILD` passe par le meme goulet que `manual` : c'est le seul
+        # endroit que TOUTES les sources de `wild` traversent — la table des
+        # rencontres de PokeAPI comme la deduction de NO_ENCOUNTER_DATA. Le
+        # poser plus haut n'aurait couvert qu'une des deux.
+        jamais_sauvage = NO_WILD.get(sid, ())
         wild = sorted(
             (
                 c
                 for c in wild_by_species[sid]
-                if c in games_by_species[sid] and c not in manual
+                if c in games_by_species[sid]
+                and c not in manual
+                and c not in jamais_sauvage
             ),
             key=lambda c: order.get(c, 99),
         )

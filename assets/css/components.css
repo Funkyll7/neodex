@@ -6667,6 +6667,50 @@ body::before {
   gap: 6px;
 }
 
+/* ═══ PLUSIEURS BOÎTES DE FRONT, ET DES CASES QUI CESSENT DE GONFLER ═══
+ *
+ * La colonne était une pile : UNE boîte par rangée, large de tout l'espace
+ * disponible. Sur téléphone c'est juste — 341 px de large, des cases de 52 px.
+ * Sur un écran de 1920, la même règle donnait une boîte de 1140 × 986 px et des
+ * cases de 181 px : une seule boîte remplissait l'écran, et il fallait faire
+ * défiler quatre-vingt-quatorze fois pour parcourir sa collection.
+ *
+ * Or cette vue existe pour se COMPARER À HOME, boîte par boîte. Une boîte qui
+ * ne tient pas à côté de sa voisine interdit exactement la comparaison qu'on
+ * vient faire. Les grandes cases ne montraient rien de plus : le sprite est le
+ * même, il était seulement plus gros.
+ *
+ * DEUX BORNES, ET IL FAUT LES DEUX :
+ *
+ *   la grille    `auto-fill` pose autant de boîtes que la largeur en accepte —
+ *                quatre sur 1920, deux sur un portable, une sur téléphone. Rien
+ *                n'est codé en dur : la vue suit l'écran.
+ *   `max-width`  une boîte seule ne peut plus s'étaler. Sans elle, la largeur
+ *                intermédiaire — celle où une seule colonne tient encore —
+ *                retrouvait des cases de 95 px, c'est-à-dire le défaut qu'on
+ *                vient de corriger, un cran plus bas.
+ *
+ * `align-items: start` parce qu'une boîte de fin de génération peut être
+ * incomplète : sans lui, elle s'étirerait sur la hauteur de ses voisines et ses
+ * cases cesseraient d'être carrées.
+ *
+ * `.gen-sep` porte déjà `grid-column: 1 / -1` — la bande traverse donc la
+ * rangée entière, comme dans la grille du Pokédex, sans une ligne de plus.
+ *
+ * LES DEUX NOMBRES SONT CHOISIS POUR LA CASE, PAS POUR LA BOÎTE. Une boîte fait
+ * six cases plus ses gouttières et son rembourrage — 6 × 74 + 5 × 6 + 2 × 12 =
+ * 498. Le minimum de piste et le plafond encadrent donc la case autour de 74 px,
+ * et ils le font que la fiche soit ouverte ou fermée : sans le plafond, refermer
+ * la fiche élargissait la colonne et regonflait les cases d'un tiers. */
+@media (min-width: 700px) {
+  .livingdex[data-ordre="numero"] {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    align-items: start;
+  }
+  .livingdex[data-ordre="numero"] .boite { max-width: 500px; }
+}
+
 /* ------------------------- Une lignée par ligne ------------------------- */
 
 /* RANGÉES EN BOÎTES, LES FAMILLES NE SE VOYAIENT PAS : rien ne disait où l'une

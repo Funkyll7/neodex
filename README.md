@@ -185,7 +185,8 @@ certains dossiers.
 - `photo/` — les captures d'écran de Pokémon HOME. GitHub Pages sert le dépôt
   tel quel : les versionner reviendrait à les publier. Elles restent en local ;
   seul leur résultat, `data/collection.json`, est versionné. Pour relancer
-  `tools/read_screenshots.py`, remets tes captures dans ce dossier.
+  `tools/read_screenshots.py`, remets tes captures dans ce dossier — mais le
+  bouton « Lire des captures » du site fait la même chose sans rien écraser.
 - `tools/.cache/` — plus de 300 Mo de sprites et de CSV, reconstruits par
   `fetch_sprites.py` et `build_dataset.py`.
 

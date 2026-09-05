@@ -113,7 +113,7 @@ Projet Poke/
 │   ├── build_forms.py          régénère data/forms/ + vérifie chaque sprite
 │   ├── build_availability.py   régénère data/availability/ (Pokédex + rencontres)
 │   ├── fetch_sprites.py        remplit le cache de sprites (pour la lecture d'écrans)
-│   ├── read_screenshots.py     lit photo/ et en déduit data/collection.json
+│   ├── read_screenshots.py     lit photo/ → tools/.cache/collection-lue.json (§ 5)
 │   └── .cache/                 (ignoré par git) CSV PokeAPI, sprites, rapport
 │
 └── photo/                      (ignoré par git) captures Pokémon HOME à relire
@@ -136,7 +136,7 @@ demande un arbitrage humain est **écrit à la main**.
 | **Disponibilité** | `data/availability/gen-*.json` | Pokédex régionaux + table des rencontres, via `build_availability.py` | `gm` (jeux où on l'obtient), `ev` (événement), `wild` (jeux où on le croise dehors) |
 | **Détails** | `data/details/*.json` | écrit à la main | corrections et textes : `where`, `gm`, `nogm`, `ev`, `note`, `hab`, `gift`, `stat`, `wild` — et `forms.json` pour les formes |
 | **Cosmétiques** | `data/details/cosmetic-forms.json` | écrit à la main | les formes sans entrée `/pokemon` chez PokeAPI : 28 Zarbi, 20 Prismillon, 63 Charmilly, 10 Couafarel, 5 Flabébé × 3 espèces, saisons, capes, mers, formes de thé |
-| **Collection** | `data/collection.json` | `read_screenshots.py` puis corrections | `om`, `of`, `sm`, `sf`, `f<id>`, `f<id>s`, `x<n>-<clef>`, `y<n>-<clef>` par espèce |
+| **Collection** | `data/collection.json` | le site (synchronisation, « Lire des captures ») | `om`, `of`, `sm`, `sf`, `f<id>`, `f<id>s`, `x<n>-<clef>`, `y<n>-<clef>` par espèce |
 
 `assets/js/core/data.js` les fusionne au chargement, plus les tables de
 `data/reference/`. Les 1025 espèces ont désormais une disponibilité : le
@@ -462,6 +462,9 @@ C'est `data/availability` qui tranche, ici comme partout.
 | couper le cache hors ligne partout | `assets/js/config.js` (`offline: false`) |
 | changer le dépôt de synchronisation | `assets/js/config.js` (bloc `github`) |
 | corriger une case cochée à tort | dans le site : la synchronisation s'en occupe (§ 6) |
+| dire qu'une espèce n'est pas rencontrable dans un jeu | `data/details/gen-N.json`, champ `nowild` (§ 5) |
+| changer la taille des boîtes du Living Dex | bloc « Plusieurs boîtes de front » de `components.css` |
+| toucher à la fusion des trois couches de collection | `domain/collection.js` (`constructor`, `fusionnerAvec`, `adopterDistant`) — lire § 6 d'abord |
 | vérifier que les données se tiennent | `python tools/check_data.py` |
 
 **Règles de tenue du code**
@@ -745,7 +748,7 @@ python tools/build_dataset.py      # data/pokemon/       (~30 s)
 python tools/build_forms.py        # data/forms/         (~2 min, vérifie les sprites)
 python tools/build_availability.py # data/availability/  (~30 s)
 python tools/fetch_sprites.py      # tools/.cache/sprites/  (~300 Mo, ~5 min)
-python tools/read_screenshots.py   # data/collection.json  (~10 min)
+python tools/read_screenshots.py   # tools/.cache/collection-lue.json (~10 min)
 ```
 
 Les trois premiers sont ceux qui font tourner le site ; ils acceptent tous
@@ -804,6 +807,49 @@ Les deux cases masquées par les boutons flottants de HOME (ligne 7, colonnes 3
 et 5) sont ignorées : les captures se chevauchent d'une ligne, elles
 réapparaissent intactes dans la suivante.
 
+**Il n'écrit plus `data/collection.json`.** Il a servi une fois, pour monter la
+collection depuis 61 captures ; le site fait désormais la même lecture avec
+« Lire des captures » (`ui/import-photos.js` + `domain/reco.js`), sans rien
+écraser et en connaissant le Pokédex GO.
+
+Le laisser pointer sur le fichier de collection était une mine : il écrivait
+**sans jamais lire l'existant**, et son vocabulaire se limite à `om` et `sm`.
+Une exécution distraite aurait effacé, sur le fichier d'aujourd'hui, 135 cases
+de forme, 60 femelles, 23 chromatiques femelles, 183 cases GO, 40 chromatiques
+GO, 18 formes GO, 94 variantes cosmétiques et le carnet de quêtes — sans
+confirmation ni sauvegarde. Et le garde-fou naturel ne jouait pas : `photo/` ne
+contient plus que quelques captures, donc `if not photos` ne se déclenchait pas,
+et le résultat aurait été une collection presque vide plutôt qu'une erreur.
+
+Il écrit donc dans `tools/.cache/collection-lue.json`, et le dit à l'écran.
+L'import se fait par le site, où il passe par la même fusion que le reste.
+
+### La régénération ne ressuscite plus les starters de Paldéa
+
+PokeAPI n'a pas de table de rencontres pour BDSP, Légendes Arceus,
+Écarlate/Violet ni Légendes Z-A : `build_availability.py` y déclare donc sauvage
+**toute espèce non légendaire présente dans le jeu** (`NO_ENCOUNTER_DATA`). Juste
+pour la quasi-totalité de ces Pokédex, faux pour les Pokémon de départ, qu'on
+reçoit puis fait évoluer.
+
+Le coût n'était pas cosmétique : `domain/hunt.js` lit `wild` pour choisir une
+méthode, et les trois lignées de Paldéa se voyaient proposer « apparition
+massive + sandwich », une chasse qui n'existe pas. Le commit `a40f158` avait
+corrigé ça **à la main dans le fichier généré**, que la régénération écrase — le
+bug serait revenu sans un mot.
+
+Le retrait est maintenant écrit **deux fois**, et c'est voulu :
+
+- `nowild: "sv"` sur les entrées 906-914 de `data/details/gen-9.json` — la
+  couche que le site fusionne, et que rien ne régénère. C'est le **premier
+  emploi** de ce champ, documenté depuis toujours et jamais utilisé ;
+- la table `NO_WILD` de `build_availability.py`, appliquée au même goulet que
+  `manual` — le seul endroit que **toutes** les sources de `wild` traversent.
+
+On n'y liste que ce qui est établi. Les autres starters des jeux sans table de
+rencontres gardent leur `wild` tel que le script le déduit : personne ne l'a
+vérifié, et inventer ici serait exactement l'erreur qu'on répare.
+
 ---
 
 ## 6. Sauvegarde de la collection
@@ -811,6 +857,40 @@ réapparaissent intactes dans la suivante.
 `data/collection.json` est la **référence**, versionnée dans git. Les cases
 cochées vont d'abord dans le **localStorage**, par-dessus. Deux façons de faire
 redescendre le localStorage dans le dépôt.
+
+### Trois couches, pas deux : l'ancêtre
+
+| Clé | Contenu |
+|---|---|
+| `data/collection.json` | la référence, dans le dépôt |
+| `funkylldex.marks.v1` | les cases cochées depuis ce navigateur |
+| `funkylldex.base.v1` | **l'ancêtre** : ce que le dépôt contenait quand `marks` a été écrite |
+
+La couche locale écrase la référence **espèce par espèce** — l'entrée entière,
+pas case par case. C'est ce qui rend l'ancêtre indispensable : sans lui, on ne
+peut pas distinguer *« cette case, je l'ai décochée ici »* de *« cette case, je
+ne l'avais simplement pas encore »*.
+
+**Le défaut que ça corrige, mesuré.** L'ancêtre était pris du fichier
+fraîchement chargé, ce qui paraît naturel et ne l'est pas : `marks` survit dans
+le localStorage pendant que la référence est relue du réseau à chaque ouverture.
+L'ancêtre avançait donc **sous** la couche locale. Une vieille entrée `{om:1}`
+masquait le `{om:1, sm:1}` que le dépôt avait reçu du téléphone — la case
+chromatique disparaissait de l'écran, et `toExport()` la réécrivait telle
+quelle : **la synchronisation suivante effaçait du dépôt ce qui avait été coché
+ailleurs.** Un écart de dix-sept espèces s'est constaté ainsi entre un téléphone
+et un ordinateur.
+
+La réconciliation a donc lieu **à chaque chargement**, dans le constructeur, par
+`adopterDistant()` — la fusion à trois voies qui existait déjà, mais que seul
+« Recharger » déclenchait, et à laquelle il fallait penser.
+
+**Le premier chargement n'a pas d'ancêtre**, aucun navigateur n'en ayant écrit
+avant. On repart d'un ancêtre vide, et ce n'est pas un pis-aller : avec `a = 0`
+partout, la règle `n === l ? n : a === l ? n : l` dégénère exactement en
+**union**. Les deux erreurs possibles ne se valent pas — garder une case décochée
+ici se voit et se défait d'un clic, perdre une case cochée ailleurs ne se voit
+pas. Dès la première écriture l'ancêtre existe, et la fusion redevient exacte.
 
 ### Synchronisation directe (le chemin normal)
 

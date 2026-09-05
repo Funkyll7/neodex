@@ -46,6 +46,17 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "5.6",
+    date: "2026-09-05",
+    titre: "Ce qui ne disparaît plus",
+    notes: [
+      ["amelioration", "Les boîtes tiennent à plusieurs par rangée sur ordinateur. Une seule remplissait l'écran, avec des cases de 181 pixels ; elles en font 74, et on compare enfin une boîte à sa voisine."],
+      ["correction", "Un appareil pouvait afficher moins de cases qu'un autre, et pire : la synchronisation suivante effaçait du dépôt ce qui avait été coché ailleurs. Le site retient désormais l'état du dépôt à la dernière lecture, et réconcilie à chaque chargement au lieu de laisser la couche locale écraser l'espèce entière."],
+      ["correction", "Régénérer les données de disponibilité ressuscitait une erreur corrigée à la main : les Pokémon de départ de Paldéa redevenaient chassables en apparition massive, ce qui n'existe pas."],
+      ["correction", "L'outil de lecture des captures n'écrit plus par-dessus la collection. Il ne connaît que les cases normale et chromatique de base : il aurait effacé les formes, les femelles, les cosmétiques, le Pokédex GO et le carnet de quêtes."],
+    ],
+  },
+  {
     version: "5.5",
     date: "2026-09-05",
     titre: "Ce qui manque, case par case",

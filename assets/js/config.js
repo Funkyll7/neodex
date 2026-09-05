@@ -137,6 +137,17 @@ export const CONFIG = {
    */
   storage: {
     marks: "funkylldex.marks.v1",
+    /**
+     * L'ANCETRE DE LA FUSION A TROIS VOIES : ce que data/collection.json
+     * contenait la derniere fois qu'on l'a lu ou ecrit.
+     *
+     * Sans lui, `marks` etait interpretee contre le fichier FRAICHEMENT
+     * charge, alors qu'elle avait ete ecrite contre un autre — l'ancetre
+     * avancait sous la couche locale a chaque ouverture de page. Voir
+     * l'en-tete de domain/collection.js : c'est ce decalage qui faisait
+     * disparaitre, sur un appareil, les cases cochees sur un autre.
+     */
+    base: "funkylldex.base.v1",
     /** Le carnet de chasses pas encore envoye. Voir domain/quetes.js. */
     quetes: "funkylldex.quetes.v1",
     quest: "funkylldex.quest.v1",

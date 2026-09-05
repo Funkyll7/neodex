@@ -36,7 +36,30 @@ PHOTOS = ROOT / "photo"
 SPRITES = ROOT / "tools" / ".cache" / "sprites"
 FORMS = ROOT / "tools" / ".cache" / "forms.json"
 REPORT = ROOT / "tools" / ".cache" / "screenshots_report.txt"
-OUT = ROOT / "data" / "collection.json"
+# ═══ IL N'ECRIT PLUS data/collection.json, ET C'EST UN GARDE-FOU ═══
+#
+# Ce script a servi UNE FOIS, pour monter la collection depuis 61 captures. Il
+# est depuis remplace par `ui/import-photos.js` + `domain/reco.js`, qui font la
+# meme lecture DANS le site : non destructive par construction, et au courant du
+# Pokedex GO. `data/collection.json` porte d'ailleurs « source: site Funkylldex
+# · telephone », plus « captures Pokemon HOME ».
+#
+# Le laisser pointer sur le fichier de collection etait une mine. Il ecrivait
+# `payload` SANS JAMAIS LIRE l'existant, et son vocabulaire se limite a `om` et
+# `sm` : une execution distraite aurait efface, sur le fichier d'aujourd'hui,
+# 135 cases de forme, 60 femelles, 23 chromatiques femelles, 183 cases GO, 40
+# chromatiques GO, 18 formes GO, 94 variantes cosmetiques et le carnet de
+# quetes. Sans confirmation, sans sauvegarde, sans rien a l'ecran.
+#
+# Et le garde-fou naturel ne jouait pas : `photo/` ne contient plus que quelques
+# captures, donc le test `if not photos` ne se declenchait pas — le resultat
+# aurait ete une collection presque vide, pas une erreur.
+#
+# Il ecrit donc a cote, et l'import se fait par le site : « Importer » passe par
+# la meme fusion que tout le reste. Rien n'est perdu de ce que le script sait
+# faire ; on lui retire seulement le droit d'ecraser ce qu'il ne sait pas lire.
+OUT = ROOT / "tools" / ".cache" / "collection-lue.json"
+COLLECTION = ROOT / "data" / "collection.json"
 
 # --- Geometrie de la grille, mesuree sur les captures 1080x2412 --------------
 SCREEN = (1080, 2412)
@@ -474,8 +497,19 @@ def main():
         "source": "captures Pokémon HOME (%d images)" % len(photos),
         "marks": {str(pid): marks[pid] for pid in species},
     }
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print("Ecrit : %s" % OUT)
+    # On le dit en toutes lettres, parce que le nom de fichier ne suffit pas a
+    # prevenir : quelqu'un qui vient de lancer ce script s'attend a voir sa
+    # collection changer, et il faut qu'il sache pourquoi elle n'a pas bouge.
+    print()
+    print("Ce fichier ne remplace PAS %s." % COLLECTION.relative_to(ROOT))
+    print("Il ne connait que les cases « om » et « sm » : l'ecraser perdrait les")
+    print("formes, les femelles, les cosmetiques, le Pokedex GO et le carnet de")
+    print("quetes. Passe-le par « Importer » dans le site, qui fusionne au lieu")
+    print("de remplacer — ou sers-toi de « Lire des captures », qui fait la meme")
+    print("lecture directement dans la page.")
     return 0
 
 

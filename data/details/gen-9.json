@@ -2,12 +2,31 @@
  "906": {
   "where": "Pokémon de départ remis chez soi à Poco Path (Écarlate/Violet).",
   "gm": "sv",
-  "gift": 1
+  "gift": 1,
+  "nowild": "sv"
  },
+ "907": { "nowild": "sv" },
+ "908": { "nowild": "sv" },
+ "909": {
+  "where": "Pokémon de départ remis chez soi à Poco Path (Écarlate/Violet).",
+  "gm": "sv",
+  "gift": 1,
+  "nowild": "sv"
+ },
+ "910": { "nowild": "sv" },
  "911": {
   "where": "Évolution de Crocogril au niveau 36 (Écarlate/Violet).",
-  "gm": "sv"
+  "gm": "sv",
+  "nowild": "sv"
  },
+ "912": {
+  "where": "Pokémon de départ remis chez soi à Poco Path (Écarlate/Violet).",
+  "gm": "sv",
+  "gift": 1,
+  "nowild": "sv"
+ },
+ "913": { "nowild": "sv" },
+ "914": { "nowild": "sv" },
  "1000": {
   "where": "Faire évoluer Mordudor en possédant 999 Pièces Gigéas.",
   "gm": "sv"
