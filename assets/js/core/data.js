@@ -518,8 +518,45 @@ function mergeForm(form, species, context) {
  * reutilise les cases `om` / `sm` au lieu d'en creer de nouvelles, sans quoi on
  * cocherait deux fois la meme chose.
  */
+/**
+ * Les jeux d'une variante cosmetique.
+ *
+ * ═══ UN CHAMP QUE LE FORMAT DOCUMENTAIT SANS QUE PERSONNE NE LE LISE ═══
+ *
+ * L'en-tete de data/details/cosmetic-forms.json annonce depuis toujours
+ * « gm/nogm (jeux, sinon suit l'espece) ». Le code, lui, ne les lisait pas : une
+ * variante cosmetique suivait donc l'espece SANS EXCEPTION POSSIBLE.
+ *
+ * Le prix se voyait sur les Pikachu a casquette. Ils ne sont pas des formes —
+ * les quatorze entrees `cap` de PokeAPI sont `hidden: 1` dans
+ * data/details/forms.json, regroupees ici en variantes cosmetiques — et ils
+ * heritaient donc des jeux de Pikachu, c'est-a-dire de presque tous. « Manquant
+ * par jeu » les proposait ainsi dans Ecarlate/Violet, ou aucune distribution
+ * n'a jamais eu lieu. Une case qu'on ne peut pas obtenir, listee comme a
+ * prendre : exactement ce que ce panneau doit eviter.
+ *
+ * LA PRECEDENCE EST CELLE DE `spriteSet`, juste en dessous : la variante prime
+ * sur le groupe, le groupe sur l'espece. C'est l'idiome deja etabli dans ce
+ * fichier, et il vaut ici pour la meme raison — les huit casquettes n'ont pas
+ * toutes ete distribuees dans les memes jeux, mais elles partagent un defaut.
+ *
+ * `nogm` SEUL RETRANCHE DU DEFAUT au lieu de repartir de rien : ecrire
+ * « comme l'espece, sauf Ecarlate/Violet » ne doit pas obliger a recopier les
+ * vingt-deux autres codes, qui se seraient mis a diverger au premier jeu ajoute.
+ */
+function jeuxCosmetiques(source, defaut) {
+  const set = source.gm !== undefined ? codeSet(source.gm) : new Set(defaut);
+  for (const code of codeSet(source.nogm)) set.delete(code);
+  return set;
+}
+
 function cosmeticGroup(group, species, goSet, goShinySet) {
   if (!group || !Array.isArray(group.forms)) return null;
+
+  // Le defaut du groupe, calcule une fois : sans `gm` ni `nogm`, c'est
+  // exactement `species.games`, donc le comportement d'avant pour les dix-sept
+  // groupes qui n'en portent pas.
+  const jeuxDuGroupe = jeuxCosmetiques(group, species.games);
 
   const variants = group.forms.map((raw) => {
     const isBase = raw.key === group.base;
@@ -553,6 +590,13 @@ function cosmeticGroup(group, species, goSet, goShinySet) {
        * la variante peut le contredire quand elle seule fait exception.
        */
       spriteSet: raw.spriteSet || group.spriteSet || "home",
+      /**
+       * Les jeux ou CETTE variante s'obtient. Voir `jeuxCosmetiques` : elle
+       * suit l'espece tant que rien ne dit le contraire, et c'est le cas de
+       * dix-sept groupes sur dix-huit — un motif de Prismillon existe bien
+       * partout ou Prismillon existe.
+       */
+      games: jeuxCosmetiques(raw, jeuxDuGroupe),
       slot: isBase ? "om" : `x${species.id}-${raw.key}`,
       shinySlot: isBase ? "sm" : `y${species.id}-${raw.key}`,
       shinyEntry: !group.info && !noShiny,
@@ -561,7 +605,7 @@ function cosmeticGroup(group, species, goSet, goShinySet) {
        * Pokemon GO range certaines de ces variantes dans une boite a part —
        * les motifs de Prismillon, les coupes de Couafarel, les couleurs de
        * Flabebe. Cases distinctes de celles de HOME : avoir la Prismillon
-       * Motif Savane dans GO ne la met pas dans une boite de HOME.
+       * Motif Mangrove dans GO ne la met pas dans une boite de HOME.
        */
       goReleased: goSet.has(`c:${species.id}-${raw.key}`),
       goShiny: goShinySet.has(`c:${species.id}-${raw.key}`),

@@ -1,9 +1,10 @@
 {
- "_comment": "Formes cosmetiques : celles que PokeAPI n'expose pas comme des entrees /pokemon distinctes (elles n'ont pas d'id > 10000) et que tools/build_forms.py ne peut donc pas generer. Ecrit a la main. Cle = numero national. Champs d'un groupe : title, base (la variante qui EST la forme par defaut de l'espece — elle reutilise les cases om/sm au lieu d'avoir les siennes), where, note, layout ('compact' | 'wide'), fold (replie par defaut), info (1 = aucune case a cocher), spriteSet ('classic' = sprites/pokemon/ au lieu des sprites HOME ; posable aussi sur une variante, qui prime alors sur le groupe), gm/nogm (jeux, sinon suit l'espece). Champs d'une variante : key (suffixe du sprite PokeAPI), name, short (libelle de la grille), where, noshiny (1 = verrouille chromatique), nosprite (1 = aucun sprite propre, on retombe sur l'espece).",
+ "_comment": "Formes cosmetiques : celles que PokeAPI n'expose pas comme des entrees /pokemon distinctes (elles n'ont pas d'id > 10000) et que tools/build_forms.py ne peut donc pas generer. Ecrit a la main. Cle = numero national. Champs d'un groupe : title, base (la variante qui EST la forme par defaut de l'espece — elle reutilise les cases om/sm au lieu d'avoir les siennes), where, note, layout ('compact' | 'wide'), fold (replie par defaut), info (1 = aucune case a cocher), spriteSet ('classic' = sprites/pokemon/ au lieu des sprites HOME ; posable aussi sur une variante, qui prime alors sur le groupe), gm/nogm (jeux ou le groupe s'obtient ; sans eux il suit l'espece). Champs d'une variante : key (suffixe du sprite PokeAPI), name, short (libelle de la grille), where, noshiny (1 = verrouille chromatique), nosprite (1 = aucun sprite propre, on retombe sur l'espece), noentry (1 = la variante s'affiche mais n'entre pas dans HOME), gm/nogm (ils priment sur ceux du groupe, comme spriteSet). La precedence est donc variante > groupe > espece : les Pikachu a casquette n'ont ete distribues ni dans les memes jeux ni tous ensemble, et sans elle ils heritaient des jeux de Pikachu, c'est-a-dire de presque tous. LES `name` SONT CEUX DES JEUX, JAMAIS UNE TRADUCTION : ils se relisent dans tools/.cache/pokemon_form_names.csv (langue 5 = francais, 9 = anglais), la meme table dont tools/build_forms.py tire le francais des 304 formes. Le nom vaut `<espece> <form_name>`. Traduire l'anglais donne des noms faux et personne ne s'en apercoit : Savanna se dit Mangrove, Ocean se dit Soleil Levant, Sun se dit Zenith, Alcremie tient du Lait et non de la Creme. Quatre-vingt-un noms avaient ete inventes ainsi. Les `key`, elles, sont les suffixes de sprite PokeAPI (anglais) : elles nomment les cases x<id>-/y<id>- de la collection et ne doivent JAMAIS changer, sous peine d'orpheliner ce qui est coche.",
  "groups": {
   "25": {
    "title": "Casquettes et tenues de Pikachu",
    "layout": "wide",
+   "gm": "sm usum",
    "where": "Toutes ces tenues viennent de distributions officielles : aucune ne se rencontre en jeu. Les casquettes rejouent celles de Sacha dans chaque région, la série Cosplayeur vient des Concours de Hoenn dans Rubis Oméga / Saphir Alpha.",
    "note": "Trois régimes différents. Les six Pikachu Cosplayeur des Concours de Hoenn ne peuvent ni évoluer, ni être échangés, ni quitter Rubis Oméga / Saphir Alpha : ils n'entrent pas dans HOME, il n'y a rien à cocher. Les sept casquettes régionales n'ont été distribuées qu'en version normale, leur case chromatique reste barrée. Seul le Pikachu Casquette Partenaire a un chromatique distribué : un chromatique qui ne change aucune couleur, mais qui déclenche bien les particules.",
    "forms": [
@@ -57,6 +58,7 @@
     },
     {
      "key": "world-cap",
+     "gm": "swsh",
      "name": "Pikachu Casquette Monde",
      "short": "Casq. Monde",
      "sprite": "10160",
@@ -65,6 +67,7 @@
     },
     {
      "key": "partner-cap",
+     "gm": "usum",
      "name": "Pikachu Casquette Partenaire",
      "short": "Casq. Partenaire",
      "sprite": "10148",
@@ -72,6 +75,7 @@
     },
     {
      "key": "rock-star",
+     "gm": "oras",
      "name": "Pikachu Rockeur",
      "short": "Rockeur",
      "sprite": "10080",
@@ -81,6 +85,7 @@
     },
     {
      "key": "belle",
+     "gm": "oras",
      "name": "Pikachu Lady",
      "short": "Lady",
      "sprite": "10081",
@@ -90,6 +95,7 @@
     },
     {
      "key": "pop-star",
+     "gm": "oras",
      "name": "Pikachu Star",
      "short": "Star",
      "sprite": "10082",
@@ -99,6 +105,7 @@
     },
     {
      "key": "phd",
+     "gm": "oras",
      "name": "Pikachu Docteur",
      "short": "Docteur",
      "sprite": "10083",
@@ -108,6 +115,7 @@
     },
     {
      "key": "libre",
+     "gm": "oras",
      "name": "Pikachu Catcheur",
      "short": "Catcheur",
      "sprite": "10084",
@@ -117,6 +125,7 @@
     },
     {
      "key": "cosplay",
+     "gm": "oras",
      "name": "Pikachu Cosplayeur",
      "short": "Cosplayeur",
      "sprite": "10085",
@@ -416,12 +425,13 @@
    "base": "meadow",
    "layout": "wide",
    "where": "Le motif dépend de la région du monde réel où la console a été enregistrée : il se fixe à la première partie et ne change plus. Les vingt motifs se collectionnent donc par échange ou via HOME.",
-   "note": "Le motif se transmet par la mère à l'élevage : un œuf pondu par une Prismillon Savane donnera une Prismillon Savane, quelle que soit la console.",
+   "note": "Le motif se transmet par la mère à l'élevage : un œuf pondu par une Prismillon Mangrove donnera une Prismillon Mangrove, quelle que soit la console.",
+   "_noms": "Les noms français sont ceux des jeux, relevés dans tools/.cache/pokemon_form_names.csv (langue 5). Ils ne traduisent PAS l'anglais : Savanna se dit Mangrove, Ocean se dit Soleil Levant, Sun se dit Zénith. Quatorze des vingt avaient été traduits littéralement, donc faux. Ne jamais deviner un nom de motif — le relire dans le CSV. Les `key`, elles, sont les suffixes de sprite PokeAPI (anglais) : elles nomment les cases x666-/y666- de la collection et ne doivent JAMAIS changer.",
    "forms": [
     {
      "key": "meadow",
-     "name": "Prismillon Motif Floral",
-     "short": "Floral",
+     "name": "Prismillon Motif Floraison",
+     "short": "Floraison",
      "where": "Motif de départ dans une grande partie de l'Europe de l'Ouest."
     },
     {
@@ -438,26 +448,26 @@
     },
     {
      "key": "elegant",
-     "name": "Prismillon Motif Élégance",
-     "short": "Élégance",
+     "name": "Prismillon Motif Monarchie",
+     "short": "Monarchie",
      "where": "Japon."
     },
     {
      "key": "garden",
-     "name": "Prismillon Motif Jardin",
-     "short": "Jardin",
+     "name": "Prismillon Motif Verdure",
+     "short": "Verdure",
      "where": "Îles Britanniques."
     },
     {
      "key": "high-plains",
-     "name": "Prismillon Motif Plaine",
-     "short": "Plaine",
+     "name": "Prismillon Motif Sécheresse",
+     "short": "Sécheresse",
      "where": "Grandes plaines d'Amérique du Nord."
     },
     {
      "key": "icy-snow",
-     "name": "Prismillon Motif Banquise",
-     "short": "Banquise",
+     "name": "Prismillon Motif Blizzard",
+     "short": "Blizzard",
      "where": "Grand Nord : Alaska, Sibérie, Groenland."
     },
     {
@@ -468,8 +478,8 @@
     },
     {
      "key": "marine",
-     "name": "Prismillon Motif Marine",
-     "short": "Marine",
+     "name": "Prismillon Motif Rivage",
+     "short": "Rivage",
      "where": "Côtes d'Europe du Nord et Nouvelle-Zélande."
     },
     {
@@ -480,26 +490,26 @@
     },
     {
      "key": "monsoon",
-     "name": "Prismillon Motif Mousson",
-     "short": "Mousson",
+     "name": "Prismillon Motif Cyclone",
+     "short": "Cyclone",
      "where": "Asie du Sud : Inde, Bangladesh."
     },
     {
      "key": "ocean",
-     "name": "Prismillon Motif Océan",
-     "short": "Océan",
+     "name": "Prismillon Motif Soleil Levant",
+     "short": "Soleil Levant",
      "where": "Îles du Pacifique, Hawaï."
     },
     {
      "key": "polar",
-     "name": "Prismillon Motif Pôle",
-     "short": "Pôle",
+     "name": "Prismillon Motif Banquise",
+     "short": "Banquise",
      "where": "Canada, Scandinavie."
     },
     {
      "key": "river",
-     "name": "Prismillon Motif Rivière",
-     "short": "Rivière",
+     "name": "Prismillon Motif Delta",
+     "short": "Delta",
      "where": "France, Benelux."
     },
     {
@@ -510,20 +520,20 @@
     },
     {
      "key": "savanna",
-     "name": "Prismillon Motif Savane",
-     "short": "Savane",
+     "name": "Prismillon Motif Mangrove",
+     "short": "Mangrove",
      "where": "Afrique australe, Amérique du Sud."
     },
     {
      "key": "sun",
-     "name": "Prismillon Motif Soleil",
-     "short": "Soleil",
+     "name": "Prismillon Motif Zénith",
+     "short": "Zénith",
      "where": "Sud de l'Europe et Afrique du Nord."
     },
     {
      "key": "tundra",
-     "name": "Prismillon Motif Toundra",
-     "short": "Toundra",
+     "name": "Prismillon Motif Glace",
+     "short": "Glace",
      "where": "Nord-Est de l'Asie."
     },
     {
@@ -768,386 +778,386 @@
    "base": "vanilla-cream-strawberry-sweet",
    "layout": "wide",
    "fold": 1,
-   "where": "Charmilly s'obtient en faisant tourner la console pendant l'évolution de Sucreine : le sens, la durée et l'heure décident de la crème, la Douceur tenue décide de la décoration. Neuf crèmes × sept douceurs = 63 entrées distinctes dans HOME.",
-   "note": "Seule la crème dépend de la manipulation ; la Douceur est un objet à faire tenir. Les Douceurs se trouvent aux Terres Sauvages et à la boutique de Motefranche.",
+   "where": "Charmilly s'obtient en faisant tourner la console pendant l'évolution de Sucreine : le sens, la durée et l'heure décident du lait ou du mélange, l'objet tenu décide de la décoration. Neuf laits et mélanges × sept objets en sucre = 63 entrées distinctes dans HOME.",
+   "note": "Seul le lait ou le mélange dépend de la manipulation ; la décoration est un objet à faire tenir. Ces objets en sucre se trouvent aux Terres Sauvages et à la boutique de Motefranche.",
    "forms": [
     {
      "key": "vanilla-cream-strawberry-sweet",
-     "name": "Charmilly Crème Vanille · Douceur Fraise",
-     "short": "Vanille · Fraise",
-     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Vanille Fraise en Sucre",
+     "short": "Lait Vanille · Fraise",
+     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "vanilla-cream-berry-sweet",
-     "name": "Charmilly Crème Vanille · Douceur Baies",
-     "short": "Vanille · Baies",
-     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Vanille Baie en Sucre",
+     "short": "Lait Vanille · Baie",
+     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "vanilla-cream-love-sweet",
-     "name": "Charmilly Crème Vanille · Douceur Cœur",
-     "short": "Vanille · Cœur",
-     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Vanille Cœur en Sucre",
+     "short": "Lait Vanille · Cœur",
+     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "vanilla-cream-star-sweet",
-     "name": "Charmilly Crème Vanille · Douceur Étoile",
-     "short": "Vanille · Étoile",
-     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Vanille Étoile en Sucre",
+     "short": "Lait Vanille · Étoile",
+     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "vanilla-cream-clover-sweet",
-     "name": "Charmilly Crème Vanille · Douceur Trèfle",
-     "short": "Vanille · Trèfle",
-     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Vanille Trèfle en Sucre",
+     "short": "Lait Vanille · Trèfle",
+     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "vanilla-cream-flower-sweet",
-     "name": "Charmilly Crème Vanille · Douceur Fleur",
-     "short": "Vanille · Fleur",
-     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Vanille Fleur en Sucre",
+     "short": "Lait Vanille · Fleur",
+     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "vanilla-cream-ribbon-sweet",
-     "name": "Charmilly Crème Vanille · Douceur Ruban",
-     "short": "Vanille · Ruban",
-     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Vanille Ruban en Sucre",
+     "short": "Lait Vanille · Ruban",
+     "where": "Toupie dans le sens horaire, moins de 5 s, de jour. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-cream-strawberry-sweet",
-     "name": "Charmilly Crème Rubis · Douceur Fraise",
-     "short": "Rubis · Fraise",
-     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Ruby Fraise en Sucre",
+     "short": "Lait Ruby · Fraise",
+     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-cream-berry-sweet",
-     "name": "Charmilly Crème Rubis · Douceur Baies",
-     "short": "Rubis · Baies",
-     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Ruby Baie en Sucre",
+     "short": "Lait Ruby · Baie",
+     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-cream-love-sweet",
-     "name": "Charmilly Crème Rubis · Douceur Cœur",
-     "short": "Rubis · Cœur",
-     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Ruby Cœur en Sucre",
+     "short": "Lait Ruby · Cœur",
+     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-cream-star-sweet",
-     "name": "Charmilly Crème Rubis · Douceur Étoile",
-     "short": "Rubis · Étoile",
-     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Ruby Étoile en Sucre",
+     "short": "Lait Ruby · Étoile",
+     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-cream-clover-sweet",
-     "name": "Charmilly Crème Rubis · Douceur Trèfle",
-     "short": "Rubis · Trèfle",
-     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Ruby Trèfle en Sucre",
+     "short": "Lait Ruby · Trèfle",
+     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-cream-flower-sweet",
-     "name": "Charmilly Crème Rubis · Douceur Fleur",
-     "short": "Rubis · Fleur",
-     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Ruby Fleur en Sucre",
+     "short": "Lait Ruby · Fleur",
+     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-cream-ribbon-sweet",
-     "name": "Charmilly Crème Rubis · Douceur Ruban",
-     "short": "Rubis · Ruban",
-     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Ruby Ruban en Sucre",
+     "short": "Lait Ruby · Ruban",
+     "where": "Toupie dans le sens antihoraire, moins de 5 s, de jour. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "matcha-cream-strawberry-sweet",
-     "name": "Charmilly Crème Matcha · Douceur Fraise",
-     "short": "Matcha · Fraise",
-     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Matcha Fraise en Sucre",
+     "short": "Lait Matcha · Fraise",
+     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "matcha-cream-berry-sweet",
-     "name": "Charmilly Crème Matcha · Douceur Baies",
-     "short": "Matcha · Baies",
-     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Matcha Baie en Sucre",
+     "short": "Lait Matcha · Baie",
+     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "matcha-cream-love-sweet",
-     "name": "Charmilly Crème Matcha · Douceur Cœur",
-     "short": "Matcha · Cœur",
-     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Matcha Cœur en Sucre",
+     "short": "Lait Matcha · Cœur",
+     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "matcha-cream-star-sweet",
-     "name": "Charmilly Crème Matcha · Douceur Étoile",
-     "short": "Matcha · Étoile",
-     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Matcha Étoile en Sucre",
+     "short": "Lait Matcha · Étoile",
+     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "matcha-cream-clover-sweet",
-     "name": "Charmilly Crème Matcha · Douceur Trèfle",
-     "short": "Matcha · Trèfle",
-     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Matcha Trèfle en Sucre",
+     "short": "Lait Matcha · Trèfle",
+     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "matcha-cream-flower-sweet",
-     "name": "Charmilly Crème Matcha · Douceur Fleur",
-     "short": "Matcha · Fleur",
-     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Matcha Fleur en Sucre",
+     "short": "Lait Matcha · Fleur",
+     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "matcha-cream-ribbon-sweet",
-     "name": "Charmilly Crème Matcha · Douceur Ruban",
-     "short": "Matcha · Ruban",
-     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Matcha Ruban en Sucre",
+     "short": "Lait Matcha · Ruban",
+     "where": "Toupie antihoraire, entre 5 et 10 s, de jour. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "mint-cream-strawberry-sweet",
-     "name": "Charmilly Crème Menthe · Douceur Fraise",
-     "short": "Menthe · Fraise",
-     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Menthe Fraise en Sucre",
+     "short": "Lait Menthe · Fraise",
+     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "mint-cream-berry-sweet",
-     "name": "Charmilly Crème Menthe · Douceur Baies",
-     "short": "Menthe · Baies",
-     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Menthe Baie en Sucre",
+     "short": "Lait Menthe · Baie",
+     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "mint-cream-love-sweet",
-     "name": "Charmilly Crème Menthe · Douceur Cœur",
-     "short": "Menthe · Cœur",
-     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Menthe Cœur en Sucre",
+     "short": "Lait Menthe · Cœur",
+     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "mint-cream-star-sweet",
-     "name": "Charmilly Crème Menthe · Douceur Étoile",
-     "short": "Menthe · Étoile",
-     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Menthe Étoile en Sucre",
+     "short": "Lait Menthe · Étoile",
+     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "mint-cream-clover-sweet",
-     "name": "Charmilly Crème Menthe · Douceur Trèfle",
-     "short": "Menthe · Trèfle",
-     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Menthe Trèfle en Sucre",
+     "short": "Lait Menthe · Trèfle",
+     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "mint-cream-flower-sweet",
-     "name": "Charmilly Crème Menthe · Douceur Fleur",
-     "short": "Menthe · Fleur",
-     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Menthe Fleur en Sucre",
+     "short": "Lait Menthe · Fleur",
+     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "mint-cream-ribbon-sweet",
-     "name": "Charmilly Crème Menthe · Douceur Ruban",
-     "short": "Menthe · Ruban",
-     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Menthe Ruban en Sucre",
+     "short": "Lait Menthe · Ruban",
+     "where": "Toupie horaire, entre 5 et 10 s, de jour. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "lemon-cream-strawberry-sweet",
-     "name": "Charmilly Crème Citron · Douceur Fraise",
-     "short": "Citron · Fraise",
-     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Citron Fraise en Sucre",
+     "short": "Lait Citron · Fraise",
+     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "lemon-cream-berry-sweet",
-     "name": "Charmilly Crème Citron · Douceur Baies",
-     "short": "Citron · Baies",
-     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Citron Baie en Sucre",
+     "short": "Lait Citron · Baie",
+     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "lemon-cream-love-sweet",
-     "name": "Charmilly Crème Citron · Douceur Cœur",
-     "short": "Citron · Cœur",
-     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Citron Cœur en Sucre",
+     "short": "Lait Citron · Cœur",
+     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "lemon-cream-star-sweet",
-     "name": "Charmilly Crème Citron · Douceur Étoile",
-     "short": "Citron · Étoile",
-     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Citron Étoile en Sucre",
+     "short": "Lait Citron · Étoile",
+     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "lemon-cream-clover-sweet",
-     "name": "Charmilly Crème Citron · Douceur Trèfle",
-     "short": "Citron · Trèfle",
-     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Citron Trèfle en Sucre",
+     "short": "Lait Citron · Trèfle",
+     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "lemon-cream-flower-sweet",
-     "name": "Charmilly Crème Citron · Douceur Fleur",
-     "short": "Citron · Fleur",
-     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Citron Fleur en Sucre",
+     "short": "Lait Citron · Fleur",
+     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "lemon-cream-ribbon-sweet",
-     "name": "Charmilly Crème Citron · Douceur Ruban",
-     "short": "Citron · Ruban",
-     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Citron Ruban en Sucre",
+     "short": "Lait Citron · Ruban",
+     "where": "Toupie horaire, plus de 10 s, de jour. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "salted-cream-strawberry-sweet",
-     "name": "Charmilly Crème Salée · Douceur Fraise",
-     "short": "Salée · Fraise",
-     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Salé Fraise en Sucre",
+     "short": "Lait Salé · Fraise",
+     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "salted-cream-berry-sweet",
-     "name": "Charmilly Crème Salée · Douceur Baies",
-     "short": "Salée · Baies",
-     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Salé Baie en Sucre",
+     "short": "Lait Salé · Baie",
+     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "salted-cream-love-sweet",
-     "name": "Charmilly Crème Salée · Douceur Cœur",
-     "short": "Salée · Cœur",
-     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Salé Cœur en Sucre",
+     "short": "Lait Salé · Cœur",
+     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "salted-cream-star-sweet",
-     "name": "Charmilly Crème Salée · Douceur Étoile",
-     "short": "Salée · Étoile",
-     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Salé Étoile en Sucre",
+     "short": "Lait Salé · Étoile",
+     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "salted-cream-clover-sweet",
-     "name": "Charmilly Crème Salée · Douceur Trèfle",
-     "short": "Salée · Trèfle",
-     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Salé Trèfle en Sucre",
+     "short": "Lait Salé · Trèfle",
+     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "salted-cream-flower-sweet",
-     "name": "Charmilly Crème Salée · Douceur Fleur",
-     "short": "Salée · Fleur",
-     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Salé Fleur en Sucre",
+     "short": "Lait Salé · Fleur",
+     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "salted-cream-ribbon-sweet",
-     "name": "Charmilly Crème Salée · Douceur Ruban",
-     "short": "Salée · Ruban",
-     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Lait Salé Ruban en Sucre",
+     "short": "Lait Salé · Ruban",
+     "where": "Toupie antihoraire, plus de 10 s, de jour. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-swirl-strawberry-sweet",
-     "name": "Charmilly Duo Rubis · Douceur Fraise",
-     "short": "Rubis · Fraise",
-     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Ruby Fraise en Sucre",
+     "short": "Mélange Ruby · Fraise",
+     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-swirl-berry-sweet",
-     "name": "Charmilly Duo Rubis · Douceur Baies",
-     "short": "Rubis · Baies",
-     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Ruby Baie en Sucre",
+     "short": "Mélange Ruby · Baie",
+     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-swirl-love-sweet",
-     "name": "Charmilly Duo Rubis · Douceur Cœur",
-     "short": "Rubis · Cœur",
-     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Ruby Cœur en Sucre",
+     "short": "Mélange Ruby · Cœur",
+     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-swirl-star-sweet",
-     "name": "Charmilly Duo Rubis · Douceur Étoile",
-     "short": "Rubis · Étoile",
-     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Ruby Étoile en Sucre",
+     "short": "Mélange Ruby · Étoile",
+     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-swirl-clover-sweet",
-     "name": "Charmilly Duo Rubis · Douceur Trèfle",
-     "short": "Rubis · Trèfle",
-     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Ruby Trèfle en Sucre",
+     "short": "Mélange Ruby · Trèfle",
+     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-swirl-flower-sweet",
-     "name": "Charmilly Duo Rubis · Douceur Fleur",
-     "short": "Rubis · Fleur",
-     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Ruby Fleur en Sucre",
+     "short": "Mélange Ruby · Fleur",
+     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "ruby-swirl-ribbon-sweet",
-     "name": "Charmilly Duo Rubis · Douceur Ruban",
-     "short": "Rubis · Ruban",
-     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Ruby Ruban en Sucre",
+     "short": "Mélange Ruby · Ruban",
+     "where": "Toupie horaire, moins de 5 s, la nuit. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "caramel-swirl-strawberry-sweet",
-     "name": "Charmilly Duo Caramel · Douceur Fraise",
-     "short": "Caramel · Fraise",
-     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Caramel Fraise en Sucre",
+     "short": "Mélange Caramel · Fraise",
+     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "caramel-swirl-berry-sweet",
-     "name": "Charmilly Duo Caramel · Douceur Baies",
-     "short": "Caramel · Baies",
-     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Caramel Baie en Sucre",
+     "short": "Mélange Caramel · Baie",
+     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "caramel-swirl-love-sweet",
-     "name": "Charmilly Duo Caramel · Douceur Cœur",
-     "short": "Caramel · Cœur",
-     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Caramel Cœur en Sucre",
+     "short": "Mélange Caramel · Cœur",
+     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "caramel-swirl-star-sweet",
-     "name": "Charmilly Duo Caramel · Douceur Étoile",
-     "short": "Caramel · Étoile",
-     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Caramel Étoile en Sucre",
+     "short": "Mélange Caramel · Étoile",
+     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "caramel-swirl-clover-sweet",
-     "name": "Charmilly Duo Caramel · Douceur Trèfle",
-     "short": "Caramel · Trèfle",
-     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Caramel Trèfle en Sucre",
+     "short": "Mélange Caramel · Trèfle",
+     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "caramel-swirl-flower-sweet",
-     "name": "Charmilly Duo Caramel · Douceur Fleur",
-     "short": "Caramel · Fleur",
-     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Caramel Fleur en Sucre",
+     "short": "Mélange Caramel · Fleur",
+     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "caramel-swirl-ribbon-sweet",
-     "name": "Charmilly Duo Caramel · Douceur Ruban",
-     "short": "Caramel · Ruban",
-     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Caramel Ruban en Sucre",
+     "short": "Mélange Caramel · Ruban",
+     "where": "Toupie antihoraire, moins de 5 s, la nuit. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "rainbow-swirl-strawberry-sweet",
-     "name": "Charmilly Duo Arc-en-Ciel · Douceur Fraise",
-     "short": "Arc-en-Ciel · Fraise",
-     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Fraise à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Tricolore Fraise en Sucre",
+     "short": "Mélange Tricolore · Fraise",
+     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Fraise en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "rainbow-swirl-berry-sweet",
-     "name": "Charmilly Duo Arc-en-Ciel · Douceur Baies",
-     "short": "Arc-en-Ciel · Baies",
-     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Baies à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Tricolore Baie en Sucre",
+     "short": "Mélange Tricolore · Baie",
+     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Baie en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "rainbow-swirl-love-sweet",
-     "name": "Charmilly Duo Arc-en-Ciel · Douceur Cœur",
-     "short": "Arc-en-Ciel · Cœur",
-     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Cœur à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Tricolore Cœur en Sucre",
+     "short": "Mélange Tricolore · Cœur",
+     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir le Cœur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "rainbow-swirl-star-sweet",
-     "name": "Charmilly Duo Arc-en-Ciel · Douceur Étoile",
-     "short": "Arc-en-Ciel · Étoile",
-     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Étoile à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Tricolore Étoile en Sucre",
+     "short": "Mélange Tricolore · Étoile",
+     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir l'Étoile en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "rainbow-swirl-clover-sweet",
-     "name": "Charmilly Duo Arc-en-Ciel · Douceur Trèfle",
-     "short": "Arc-en-Ciel · Trèfle",
-     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Trèfle à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Tricolore Trèfle en Sucre",
+     "short": "Mélange Tricolore · Trèfle",
+     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir le Trèfle en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "rainbow-swirl-flower-sweet",
-     "name": "Charmilly Duo Arc-en-Ciel · Douceur Fleur",
-     "short": "Arc-en-Ciel · Fleur",
-     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Fleur à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Tricolore Fleur en Sucre",
+     "short": "Mélange Tricolore · Fleur",
+     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Fleur en Sucre à Sucreine avant l'évolution."
     },
     {
      "key": "rainbow-swirl-ribbon-sweet",
-     "name": "Charmilly Duo Arc-en-Ciel · Douceur Ruban",
-     "short": "Arc-en-Ciel · Ruban",
-     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir la Douceur Ruban à Sucreine avant l'évolution."
+     "name": "Charmilly Mélange Tricolore Ruban en Sucre",
+     "short": "Mélange Tricolore · Ruban",
+     "where": "Toupie horaire, plus de 10 s, la nuit — la plus difficile à obtenir. Faire tenir le Ruban en Sucre à Sucreine avant l'évolution."
     }
    ]
   },
@@ -1159,14 +1169,14 @@
    "forms": [
     {
      "key": "counterfeit",
-     "name": "Poltchageist Forme Contrefaçon",
-     "short": "Contrefaçon",
+     "name": "Poltchageist Forme Imitation",
+     "short": "Imitation",
      "nosprite": 1
     },
     {
      "key": "artisan",
-     "name": "Poltchageist Forme Artisanale",
-     "short": "Artisanale",
+     "name": "Poltchageist Forme Onéreuse",
+     "short": "Onéreuse",
      "nosprite": 1
     }
    ]
@@ -1179,14 +1189,14 @@
    "forms": [
     {
      "key": "unremarkable",
-     "name": "Théffroyable Forme Quelconque",
-     "short": "Quelconque",
+     "name": "Théffroyable Forme Médiocre",
+     "short": "Médiocre",
      "nosprite": 1
     },
     {
      "key": "masterpiece",
-     "name": "Théffroyable Forme Chef-d'œuvre",
-     "short": "Chef-d'œuvre",
+     "name": "Théffroyable Forme Exceptionnelle",
+     "short": "Exceptionnelle",
      "nosprite": 1
     }
    ]

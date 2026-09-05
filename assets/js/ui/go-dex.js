@@ -4,7 +4,7 @@
  * Un Pokédex volontairement plus simple que l'autre. On y range des BOÎTES :
  * les 1025 espèces, plus les 161 formes que le jeu propose — dans GO, un
  * Miaouss d'Alola occupe une boîte à lui, exactement comme celui de Kanto, et
- * une Prismillon Motif Savane aussi. Deux cases par boîte, attrapé et
+ * une Prismillon Motif Mangrove aussi. Deux cases par boîte, attrapé et
  * chromatique, et rien de plus : pas de case ♂ / ♀, pas de Méga, pas de
  * Gigamax. Recopier la vignette du Pokédex HOME aurait affiché six cases dont
  * quatre n'existent pas dans le jeu.

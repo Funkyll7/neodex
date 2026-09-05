@@ -247,6 +247,33 @@
       <button type="button" id="courbe-btn" class="progress-card__courbe" hidden>Voir la courbe</button>
     </section>
 
+    <!-- ══════════════════════ Les deux vues d'ensemble ══════════════════════
+         Elles étaient rangées dans « Sauvegarde et synchronisation », et le
+         commentaire qui les y accompagnait disait déjà pourquoi c'était une
+         erreur : « on ne va pas chercher un plaisir dans un menu de
+         sauvegarde ». Il plaidait pour les séparer d'« Exporter / Importer »,
+         mais les laissait dans le même repli — donc repliées, donc invisibles,
+         donc jamais ouvertes. Exporter et Réinitialiser sont des gestes de
+         gestion, qu'on fait deux fois par an ; ces deux-là se REGARDENT, et
+         elles répondent à la question qu'on se pose en ouvrant le site.
+
+         Leur place est ici, sous la progression : le pourcentage dit COMBIEN il
+         reste, le mur dit ce qui est déjà fait, « Manquant par jeu » dit OÙ
+         aller le chercher. Les trois se lisent d'affilée, sans rien déplier. -->
+    <section class="panel vitrine" aria-label="Vues d'ensemble">
+      <h2 class="panel__label">Vues d'ensemble</h2>
+      <div class="btn-row">
+        <button type="button" id="mur-btn" class="btn btn--ghost"
+                title="Tous tes chromatiques, en grand, et rien d'autre">
+          <span class="mur__btn-ico" aria-hidden="true">✦</span> Mur des chromatiques
+        </button>
+        <button type="button" id="reste-btn" class="btn btn--ghost"
+                title="Case par case, ce qui te manque dans chaque jeu et chaque DLC">
+          Manquant par jeu
+        </button>
+      </div>
+    </section>
+
     <!-- Les filtres passent AVANT les statistiques détaillées. On consulte sa
          progression de temps en temps, on filtre en permanence — et sur
          téléphone toute cette colonne devient un panneau déroulant : les
@@ -352,25 +379,6 @@
         <button type="button" id="sync-now" class="btn btn--ghost">Enregistrer</button>
         <button type="button" id="sync-pull" class="btn btn--ghost">Recharger</button>
         <button type="button" id="sync-forget" class="btn btn--ghost btn--danger">Oublier</button>
-      </div>
-    </section>
-
-    <!-- La vitrine a sa propre section, et non un bouton glissé sous
-         « Fichier ». Exporter, importer et réinitialiser sont des gestes de
-         gestion ; le mur ne gère rien, il se regarde. Les ranger ensemble
-         aurait rendu le mur invisible, parce qu'on ne va pas chercher un
-         plaisir dans un menu de sauvegarde. -->
-    <section class="field" aria-label="Vitrine">
-      <h3 class="field__label">Vitrine</h3>
-      <div class="btn-row">
-        <button type="button" id="mur-btn" class="btn btn--ghost"
-                title="Tous tes chromatiques, en grand, et rien d'autre">
-          <span class="mur__btn-ico" aria-hidden="true">✦</span> Mur des chromatiques
-        </button>
-        <button type="button" id="reste-btn" class="btn btn--ghost"
-                title="Quel jeu ressortir : ce qu'il te manque, jeu par jeu">
-          Ce qu'il reste par jeu
-        </button>
       </div>
     </section>
 

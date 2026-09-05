@@ -31,7 +31,7 @@ paires ♂ / ♀, chromatiques.
 
 La recherche accepte le numéro tel qu'il est affiché (`0025`), le nom en
 français ou en anglais, et **le nom d'une forme** : `alola`, `gigamax`,
-`savane`, `noyeau`. Les flèches `‹ ›` de la fiche — ou les touches `←` / `→` —
+`mangrove`, `noyeau`. Les flèches `‹ ›` de la fiche — ou les touches `←` / `→` —
 passent au Pokémon suivant **de la liste filtrée** : filtrer sur « À terminer »
 puis avancer de fiche en fiche remonte une boîte de HOME sans jamais revenir à
 la grille. `/` va à la recherche.

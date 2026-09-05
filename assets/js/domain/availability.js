@@ -202,6 +202,14 @@ const ABSENTE = Object.freeze({
  * ne l'apporte pas prend `ABSENTE`, la meme absence que les vingt jeux qui n'ont
  * pas l'espece : tiret, tiret, pas de couleur.
  *
+ * « QUI APPORTE L'ESPECE » SE LIT LARGEMENT, et c'est le point le plus
+ * important de cette fonction. Un DLC apporte l'espece s'il la recense, OU si
+ * le jeu de base la donne deja : on ne joue pas au DLC, on joue au jeu avec le
+ * DLC installe, et l'achat n'a jamais retire une rencontre. Sans cette seconde
+ * branche, la Mega-Dimension declarait Bulbizarre indisponible alors qu'il se
+ * chasse dans Legendes Z-A — et dans ses propres failles. Le corps de la
+ * fonction dit pourquoi aucun champ de donnees ne pouvait couvrir ce cas.
+ *
  * ═══ POURQUOI DEUX QUESTIONS, ET DONC DEUX FONCTIONS DE `dlc.js` ═══
  *
  * La bascule de la ligne du jeu lit `dlcRequis`, qui interroge le champ
@@ -305,6 +313,43 @@ export function availabilityRows(species, games, dlcs = VIDE) {
     const contenus = dlcDuJeu(game.code, dlcs);
     if (!contenus.length) return ligne;
 
+    // LA BASCULE DE LA LIGNE DU JEU ne regarde PAS ce que les DLC contiennent :
+    // elle regarde ce qu'ils rendent OBLIGATOIRE. Un Pikachu que les deux DLC
+    // recensent laisse sa ligne intacte — il est dans la cartouche —, un
+    // Rayquaza qu'ils sont seuls a donner la fait basculer. C'est exactement la
+    // difference entre `toutes` et `species`, et donc entre les deux fonctions
+    // de `domain/dlc.js`.
+    const requis = dlcRequis(species, game.code, dlcs);
+
+    // ═══ UN DLC N'ENLEVE JAMAIS LE JEU DE BASE ═══
+    //
+    // C'est la regle, et elle etait fausse. La sous-ligne ne repondait oui que
+    // si le Pokedex DU DLC recensait l'espece ; elle disait donc « — » pour tout
+    // ce que la cartouche donne deja. Or on ne joue pas « au DLC » : on joue au
+    // jeu AVEC le DLC installe, et rien de ce qu'on pouvait attraper avant ne
+    // disparait en l'achetant. Bulbizarre est dans Legendes Z-A, chromatique
+    // compris ; sa ligne Mega-Dimension annoncait pourtant « indisponible ».
+    //
+    // MEGA-DIMENSION EST LE CAS QUI LE PROUVE. Son `toutes` compte 132 numeros —
+    // exactement son `species` : la soustraction n'a rien retire, parce que le
+    // Pokedex Hyperespace ne recense QUE ses nouveautes. Les failles
+    // extradimensionnelles, elles, rejouent une grande partie du jeu de base,
+    // triees par type — Bulbizarre, Herbizarre et Florizarre se croisent dans
+    // les failles Poison. Aucun champ du fichier de reference ne le dit, et
+    // aucun ne le dira : `build_availability.py` deduit les DLC des Pokedex, et
+    // un Pokedex de DLC n'a aucune obligation de relister le jeu de base. L'Ile
+    // Solitaire le fait (220 numeros contre 119 exclusifs), l'Hyperespace non.
+    //
+    // D'OU LA REGLE, QUI NE DEPEND PLUS DE CETTE INEGALITE : une sous-ligne dit
+    // oui si son DLC apporte l'espece, OU si le jeu de base la donne deja. La
+    // seconde branche n'est pas une approximation, c'est le fait le plus solide
+    // des deux — posseder le DLC implique posseder le jeu.
+    //
+    // `requis.length` est exactement « le jeu de base ne suffit pas » : c'est
+    // deja ce qui fait basculer la ligne du jeu, et s'en servir ici garde les
+    // deux lectures d'accord par construction.
+    const baseDonne = present && !requis.length;
+
     // UNE SOUS-LIGNE PAR CONTENU, QU'IL APPORTE L'ESPECE OU NON.
     //
     // Celle qui l'apporte est `ligne` elle-meme — la ligne du jeu AVANT la
@@ -320,17 +365,11 @@ export function availabilityRows(species, games, dlcs = VIDE) {
     // disent la meme chose et il n'y a rien a arbitrer ; mais si `toutes`
     // pretendait le contraire, c'est `data/availability` qui l'emporterait —
     // voir l'en-tete, une sous-ligne ne peut jamais affirmer plus que son jeu.
+    // `baseDonne` exige `present` pour la meme raison.
     const dlcRows = contenus.map((dlc) =>
-      dlcApporte(dlc, species) ? { ...ligne, dlc } : { ...ligne, ...ABSENTE, dlc }
+      baseDonne || dlcApporte(dlc, species) ? { ...ligne, dlc } : { ...ligne, ...ABSENTE, dlc }
     );
 
-    // LA BASCULE DE LA LIGNE DU JEU, elle, ne regarde PAS ce que les DLC
-    // contiennent : elle regarde ce qu'ils rendent OBLIGATOIRE. Un Pikachu que
-    // les deux DLC recensent laisse sa ligne intacte — il est dans la cartouche
-    // —, un Rayquaza qu'ils sont seuls a donner la fait basculer. C'est
-    // exactement la difference entre `toutes` et `species`, et donc entre les
-    // deux fonctions de `domain/dlc.js`.
-    const requis = dlcRequis(species, game.code, dlcs);
     if (!requis.length) return { ...ligne, dlcRows };
 
     return { ...ligne, ...ABSENTE, dlcRows };

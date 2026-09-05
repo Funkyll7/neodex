@@ -75,6 +75,9 @@ Projet Poke/
 │           ├── active-filters.js pastilles des filtres actifs + compteur du menu
 │           ├── undo.js         bandeau « Annuler » et pile des cases cochées
 │           ├── haptics.js      retour vibrant sur les cases (suit « mouvement réduit »)
+│           ├── mur.js          le mur des chromatiques (vue d'ensemble)
+│           ├── reste.js        « Manquant par jeu » : case par case, jeu et DLC
+│           ├── popup.js        la coquille commune des panneaux qui s'ouvrent par-dessus
 │           └── common.js       fragments partagés (pastilles de type, liens)
 │
 ├── data/
@@ -93,6 +96,7 @@ Projet Poke/
 │   │   ├── games.json          23 jeux de la série principale (+ version groups)
 │   │   ├── hunt.json           méthodes de shiny hunt, taux, règles d'exception
 │   │   ├── shiny-locks.json    verrou chromatique par jeu, + `noShiny` (jamais nulle part)
+│   │   ├── dlc.json            les 4 contenus téléchargeables : `toutes` et `species` (§ 3 bis)
 │   │   └── go.json             Pokémon GO : les 73 espèces pas encore obtenables
 │   │                           et les 889 chromatiques (relevé Serebii)
 │   ├── details/                ✎ écrit à la main, enrichissement par Pokémon
@@ -177,7 +181,7 @@ Le verrouillage chromatique ne se met **plus** ici : il vit dans
 | `sm` / `sf` | chromatique, mâle / femelle |
 | `f<id>` / `f<id>s` | forme alternative n° `<id>` (id PokeAPI), normale / chromatique |
 | `f<id>f` / `f<id>sf` | la même en femelle, pour les formes à dimorphisme (Farfuret de Hisui) |
-| `x<n>-<clef>` / `y<n>-<clef>` | forme cosmétique — `x201-b` = Zarbi B, `y666-savanna` = Prismillon Savane chromatique |
+| `x<n>-<clef>` / `y<n>-<clef>` | forme cosmétique — `x201-b` = Zarbi B, `y666-savanna` = Prismillon Mangrove chromatique |
 | `vo` / `vs` / `vof` / `vsf` | ancien schéma, **supprimé** — voir ci-dessous |
 
 `of` et `sf` ne sont proposées que si l'espèce a `gd: 1` (dimorphisme visible).
@@ -204,7 +208,7 @@ plutôt que posée au hasard.
 raccourci affiché sur la vignette : il ne décide plus d'aucun nom de case.
 
 Chez les espèces à formes cosmétiques, **la variante de base réutilise `om` /
-`sm`** : le Zarbi A, la Prismillon Motif Floral, la Flabébé Fleur Rouge *sont*
+`sm`** : le Zarbi A, la Prismillon Motif Floraison, la Flabébé Fleur Rouge *sont*
 la forme par défaut de l'espèce. Sans cela on cocherait deux fois la même
 chose, et `isOwned()` ne saurait plus quoi regarder.
 
@@ -367,6 +371,56 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 
 ---
 
+## 3 bis. Les contenus téléchargeables
+
+`data/reference/dlc.json` porte quatre enregistrements — l'Île Solitaire de
+l'Armure et les Terres Enneigées de la Couronne (Épée/Bouclier), le Trésor
+Enfoui de la Zone Zéro (Écarlate/Violet), la Méga-Dimension (Légendes Z-A). Un
+DLC porte **deux listes d'espèces**, et il faut les deux parce qu'on pose au
+fichier deux questions différentes :
+
+| Champ | Contenu | Répond à |
+|---|---|---|
+| `toutes` | le Pokédex du DLC plus ses hors-dex, **sans rien retirer** | « ce contenu recense-t-il cette espèce ? » |
+| `species` | la même liste, **moins** ce que le Pokédex du jeu de base donne déjà | « faut-il acheter quelque chose pour l'avoir ici ? » |
+
+`domain/dlc.js` les lit — `dlcApporte()` pour la première, `dlcRequis()` pour
+la seconde — et ne recalcule jamais rien : `species` est produit par
+soustraction à la génération, la refaire ici aurait créé un second endroit à
+tenir d'accord avec le premier.
+
+### Les deux règles du tableau « Où le trouver »
+
+`domain/availability.js` en tire vingt-sept lignes : les vingt-trois jeux, plus
+une sous-ligne par DLC sous les trois jeux qui en ont, **toujours affichées**,
+même pour dire non.
+
+1. **La ligne du jeu bascule en « indisponible »** quand `dlcRequis()` renvoie
+   quelque chose — c'est-à-dire quand la cartouche seule ne suffit pas. Rayquaza
+   dans Écarlate/Violet affiche donc un tiret, et le Trésor Enfoui juste dessous
+   affiche « Disponible ».
+2. **Une sous-ligne de DLC dit oui si son DLC apporte l'espèce, OU si le jeu de
+   base la donne déjà.** On ne joue pas « au DLC » : on joue au jeu **avec** le
+   DLC installé, et l'achat n'a jamais retiré une rencontre.
+
+**La seconde règle ne se déduit d'aucun champ, et c'est pourquoi elle est
+écrite dans le code.** Le `toutes` de la Méga-Dimension compte 132 numéros —
+exactement son `species` : le Pokédex Hyperespace ne recense que ses
+nouveautés. Ses **failles extradimensionnelles**, elles, rejouent une grande
+part du jeu de base, triées par type — Bulbizarre, Herbizarre et Florizarre se
+croisent dans les failles Poison. Le Pokédex de l'Île Solitaire relistait le
+jeu de base (220 numéros contre 119 exclusifs), celui de l'Hyperespace non :
+`build_availability.py` déduit les DLC des Pokédex, et **un Pokédex de DLC n'a
+aucune obligation de relister le jeu de base**. Sans la seconde règle, la
+Méga-Dimension déclarait Bulbizarre indisponible alors qu'il s'y chasse.
+
+Une sous-ligne ne peut en revanche **jamais contredire son jeu** : elle est
+bâtie par étalement de la ligne du jeu, donc quand `data/availability` dit que
+l'espèce n'est pas là, la sous-ligne l'est aussi, quoi que `toutes` prétende.
+C'est `data/availability` qui tranche, ici comme partout.
+
+---
+
 ## 4. Où ajouter quoi
 
 | Je veux… | Fichier à toucher |
@@ -377,6 +431,7 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | retirer les cases d'une forme (pas transférable dans HOME) | `data/details/forms.json`, champ `entry: 0` |
 | supprimer une forme en double | `data/details/forms.json`, champ `hidden: 1` |
 | ajouter une forme cosmétique (motif, couleur, saison…) | `data/details/cosmetic-forms.json` |
+| limiter une forme cosmétique à certains jeux | `data/details/cosmetic-forms.json`, `gm` / `nogm` (variante ou groupe) |
 | dire qu'une espèce n'a **aucun** chromatique | `data/reference/shiny-locks.json`, bloc `noShiny` |
 | corriger un verrouillage chromatique par jeu | `data/reference/shiny-locks.json`, bloc `byGame` |
 | ajouter un jeu à la série | `data/reference/games.json` (dont ses `vg`) |
@@ -394,6 +449,10 @@ sur l'espèce se propage automatiquement à toutes ses formes.
 | ajouter un thème | un bloc dans `theme.css` + une ligne dans `ui/themes-list.js` |
 | toucher au Pokédex Pokémon GO | `ui/go-dex.js` + `applyGoFilters` et `goProgressOf` |
 | mettre à jour ce que GO propose | `data/reference/go.json` (blocs `absents` et `shiny`) |
+| ajouter un contenu téléchargeable | `data/reference/dlc.json` (les DEUX listes, § 3 bis) |
+| changer ce qu'un DLC déclare apporter | `domain/availability.js` (`availabilityRows`) + `domain/dlc.js` |
+| changer ce que « Manquant par jeu » compte | `domain/reste.js` (`obtenableDans`, `casesManquantes`) |
+| retoucher le panneau « Manquant par jeu » | `ui/reste.js` + bloc « Manquant par jeu » de `components.css` |
 | changer ce qui compte comme « possédé » | `domain/collection.js` (`isOwned`) + `domain/display.js` |
 | retoucher la feuille mobile | `ui/detail-panel.js` (`createSheet`) + bloc « Feuille mobile » de `components.css` |
 | changer la source des images | `assets/js/config.js` (`spriteBase`) |
@@ -510,6 +569,103 @@ présente et allongeait une colonne déjà chargée. Ses deux chiffres propres
 (paires normal + chromatique, chromatiques obtenus) restent calculés dans
 `progress.kinds.gmax`.
 
+### Les deux vues d'ensemble
+
+Sous la progression, un panneau **Vues d'ensemble** ouvre deux pop-up qui ne
+gèrent rien et se regardent : le **Mur des chromatiques** (`ui/mur.js`) et
+**Manquant par jeu** (`ui/reste.js`).
+
+Ils étaient rangés dans le repli « Sauvegarde et synchronisation ». Le
+commentaire qui les y accompagnait disait déjà pourquoi c'était une erreur — « on
+ne va pas chercher un plaisir dans un menu de sauvegarde » — mais il les
+laissait dans le même repli, donc repliés, donc jamais ouverts. Exporter et
+Réinitialiser sont des gestes de gestion qu'on fait deux fois par an ; ces
+deux-là répondent à la question qu'on se pose en ouvrant le site. Ils se lisent
+donc à la suite de la progression : le pourcentage dit **combien** il reste, le
+mur ce qui est **déjà fait**, « Manquant par jeu » **où** aller le chercher.
+
+**« Manquant par jeu » compte des CASES, pas des espèces.** C'est son
+changement de fond. Il comptait une case par espèce — « il te manque sa case de
+base » — et un Pokémon dont il ne manque que le chromatique, c'est-à-dire le
+vrai travail, ne comptait pour rien. Il dit maintenant, pour chaque espèce,
+**exactement** ce qui manque : normal ♂ / ♀, chromatique ♂ / ♀, chaque forme,
+chaque variante cosmétique, chaque Gigamax.
+
+Une case manquante est rattachée à un jeu quand **ce jeu peut la donner** :
+
+- case de l'espèce — `espece.games`, et `canShinyIn()` pour un chromatique ;
+- case de forme — **`forme.games`**, que `core/data.js` pose sur chaque forme
+  (`sinceOnwards()` part du jeu qui l'a introduite), et `forme.shinyLocked`
+  pour son chromatique. C'est ce qui empêche de promettre un Miaouss d'Alola
+  dans Rouge/Bleu ;
+- case cosmétique — **`variant.games`**, qui suit l'espèce tant que
+  `cosmetic-forms.json` ne dit pas le contraire (voir juste dessous).
+
+Ce que le jeu **ne peut pas** donner n'est pas jeté : il est compté à part, en
+« + n ailleurs ». Le taire aurait laissé croire qu'un Pokémon à deux cases ici
+est à deux cases d'être complet.
+
+**Chaque espèce dit aussi comment on l'obtient là** — `methodeDobtention()` :
+`sauvage`, `evenement`, `cadeau`, `fixe`, `evolution`, `reproduction`,
+`echange`, dans cet ordre de priorité, du moins cher au plus cher. La fonction
+rend une **clé**, jamais un libellé : la règle est du métier, le mot est de
+l'affichage et se traduit. Le sprite de l'espèce a disparu de la ligne — le nom
+la désigne déjà, et l'image entrait en concurrence avec les seules qui comptent,
+celles des formes qui manquent.
+
+#### Les noms viennent des jeux, jamais d'une traduction
+
+**`tools/.cache/pokemon_form_names.csv` fait foi** — langue 5 pour le français,
+9 pour l'anglais. C'est déjà la table dont `build_forms.py` tire le français des
+304 formes ; les cosmétiques doivent la lire aussi. Un nom vaut
+`<espèce> <form_name>`.
+
+Traduire l'anglais donne des noms faux, et rien ne le signale. **81 noms**
+avaient été inventés ainsi :
+
+| Anglais | Traduction inventée | Nom du jeu |
+|---|---|---|
+| Savanna | Motif Savane | **Motif Mangrove** |
+| Ocean | Motif Océan | **Motif Soleil Levant** |
+| Sun | Motif Soleil | **Motif Zénith** |
+| Polar | Motif Pôle | **Motif Banquise** |
+| Icy Snow | Motif Banquise | **Motif Blizzard** |
+| Vanilla Cream | Crème Vanille | **Lait Vanille** |
+| Strawberry Sweet | Douceur Fraise | **Fraise en Sucre** |
+| Artisan Form | Forme Artisanale | **Forme Onéreuse** |
+
+Le piège du renommage : « Banquise » désignait *Icy Snow* et doit désigner
+*Polar*. Un chercher-remplacer séquentiel écrase les deux — il faut remplacer le
+`name` et le `short` **ensemble**, en s'appuyant sur la clé.
+
+**Les `key` ne changent jamais.** Ce sont les suffixes de sprite PokeAPI, et
+elles nomment les cases `x<id>-` / `y<id>-` de la collection : les renommer
+orphelinerait tout ce qui est coché.
+
+#### `gm` / `nogm` sur une forme cosmétique
+
+Le format de `cosmetic-forms.json` annonçait ces deux champs depuis toujours ;
+`core/data.js` ne les lisait pas. Une variante cosmétique suivait donc l'espèce
+**sans exception possible**.
+
+Les Pikachu à casquette en payaient le prix. Ils ne sont pas des formes — les
+quatorze entrées `cap` de PokeAPI sont `hidden: 1` dans `details/forms.json`,
+regroupées en variantes cosmétiques — et ils héritaient donc des jeux de
+Pikachu, c'est-à-dire de presque tous. « Manquant par jeu » les proposait dans
+Écarlate/Violet, où aucune distribution n'a jamais eu lieu.
+
+La précédence est **variante > groupe > espèce**, la même que `spriteSet` :
+les huit casquettes n'ont pas été distribuées dans les mêmes jeux (Casquette
+Monde dans Épée/Bouclier, Partenaire dans Ultra-Soleil/Ultra-Lune, les six de
+2017 dans Soleil/Lune et Ultra-Soleil/Ultra-Lune) mais partagent un défaut.
+`nogm` seul **retranche** du défaut au lieu de repartir de rien.
+
+Sous chaque jeu, une espèce tombe dans **exactement un groupe** : la cartouche,
+ou le DLC sans lequel on ne l'a pas — `dlcRequis()`, la même fonction que la
+fiche. Drakkarmin, seule espèce relevant de deux DLC du même jeu, apparaît sous
+les deux ; le total du jeu repart donc des espèces distinctes, sans quoi il le
+compterait deux fois.
+
 ### La feuille mobile
 
 C'est là qu'on utilise le site le plus souvent, et elle avait un défaut de
@@ -559,7 +715,7 @@ première place quel que soit le tri.
 **Tout le reste cherche dans `species.search`**, construit une fois pour toutes
 par `core/data.js` : nom FR et EN, catégorie, noms de formes, clés PokeAPI,
 titres et variantes cosmétiques. C'est ce qui permet de taper « alola »,
-« gigamax » ou « savane ». Ajouter une source de texte à la recherche se fait
+« gigamax » ou « mangrove ». Ajouter une source de texte à la recherche se fait
 là, dans `searchIndex()`, et nulle part ailleurs.
 
 **« Suivant » suit la liste filtrée, pas le Pokédex.** Les flèches `‹ ›` de la

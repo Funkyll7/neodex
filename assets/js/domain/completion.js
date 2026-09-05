@@ -78,7 +78,7 @@ function buildSlots(species) {
   const shiny = !species.noShiny;
   const cos = species.cosmetic;
   // Chez les espèces à formes cosmétiques, la case de base n'est pas
-  // « Normal » : c'est le Zarbi A, la Prismillon Motif Floral, la Flabébé
+  // « Normal » : c'est le Zarbi A, la Prismillon Motif Floraison, la Flabébé
   // Fleur Rouge. On la nomme pour que l'infobulle reste lisible.
   const baseName = cos && cos.baseVariant ? nomCosmetique(cos.baseVariant.name) : "";
   const normal = t("Normal");

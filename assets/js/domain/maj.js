@@ -46,6 +46,22 @@ export const NATURES = {
  */
 export const VERSIONS = [
   {
+    version: "5.5",
+    date: "2026-09-05",
+    titre: "Ce qui manque, case par case",
+    notes: [
+      ["ajout", "« Manquant par jeu » remplace « Ce qu'il reste par jeu » : il dit désormais, pour chaque espèce, ce qui manque exactement — le normal, le chromatique, telle forme, telle variante — au lieu de la compter pour une seule case."],
+      ["ajout", "Chaque espèce y annonce comment on l'obtient dans ce jeu-là : sauvage, événement, cadeau, rencontre fixe, évolution, reproduction ou échange."],
+      ["ajout", "Sous chaque jeu, ce que la cartouche donne et ce qu'il faut acheter sont séparés : un groupe par contenu téléchargeable."],
+      ["amelioration", "Le mur des chromatiques et « Manquant par jeu » sortent du repli « Sauvegarde et synchronisation », où ils étaient invisibles, et se lisent sous la progression."],
+      ["amelioration", "Ce qu'un jeu ne peut pas donner n'est plus passé sous silence : il est compté à part, en « + n ailleurs »."],
+      ["correction", "Un contenu téléchargeable n'enlève jamais le jeu de base : la Méga-Dimension déclarait Bulbizarre indisponible alors qu'il se chasse dans Légendes Z-A, et jusque dans ses failles."],
+      ["correction", "Les Pikachu à casquette étaient proposés dans Écarlate/Violet, où aucune distribution n'a jamais eu lieu. Une forme cosmétique peut enfin être limitée à certains jeux."],
+      ["correction", "Les cinq couleurs de Flabébé manquaient au Pokédex GO, alors que Floette et Florges avaient les leurs."],
+      ["donnees", "Quatre-vingt-un noms de formes cosmétiques étaient traduits de l'anglais au lieu d'être ceux des jeux : Prismillon Motif Savane était en réalité Motif Mangrove, Charmilly Crème Vanille du Lait Vanille. Les noms se relisent maintenant dans la table de PokeAPI."],
+    ],
+  },
+  {
     version: "5.4",
     date: "2026-09-03",
     titre: "Chaque DLC sur sa ligne",

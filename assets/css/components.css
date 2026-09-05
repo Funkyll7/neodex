@@ -6900,7 +6900,7 @@ body::before {
   .mur__nom { font-size: 10.5px; }
 }
 
-/* ========================= Ce qu'il me reste ============================= */
+/* ========================= Manquant par jeu ============================== */
 
 .reste { display: flex; flex-direction: column; gap: var(--sp-3); }
 .reste__chapeau { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--text-faint); }
@@ -6932,13 +6932,15 @@ body::before {
 .reste__total { font-size: 12px; font-weight: 800; text-align: right; color: var(--accent); }
 .reste__chevron { font-size: 10px; color: var(--text-ghost); }
 
-/* DEUX BARRES ACCOLÉES, PAS UNE. Le sauvage et le reste sont deux efforts
-   différents : une soirée de jeu contre vingt échanges. Une seule barre les
-   aurait additionnés, ce qui est exactement l'erreur qu'on veut éviter. */
+/* DEUX BARRES ACCOLÉES, PAS UNE. Le normal et le chromatique sont deux
+   efforts sans commune mesure — une capture contre une chasse. Une seule barre
+   les aurait additionnés, ce qui est exactement l'erreur qu'on veut éviter :
+   « quarante cases » ne veut pas dire la même chose selon qu'il s'agit de
+   quarante rencontres ou de quarante chasses. */
 .reste__barres { display: flex; height: 8px; border-radius: var(--r-pill); background: var(--bg-inset); overflow: hidden; }
 .reste__barre { height: 100%; }
-.reste__barre--sauvage { background: var(--accent); }
-.reste__barre--autre { background: color-mix(in srgb, var(--accent) 32%, transparent); }
+.reste__barre--normal { background: color-mix(in srgb, var(--accent) 32%, transparent); }
+.reste__barre--shiny { background: var(--accent); }
 
 .reste__detail {
   display: flex;
@@ -6948,31 +6950,84 @@ body::before {
   border-left: 2px solid var(--accent-border);
   margin: 4px 0 6px var(--sp-2);
 }
-.reste__paquet-tete { display: flex; align-items: baseline; gap: var(--sp-2); }
+
+/* La ligne de comptes du jeu : les mêmes nombres que la barre, mais écrits.
+   La barre se compare d'un jeu à l'autre, les nombres se lisent. */
+.reste__resume { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0; font-size: 11px; color: var(--text-ghost); }
+.reste__compte-n { color: var(--text); font-weight: 800; }
+
+.reste__paquet { display: flex; flex-direction: column; }
+.reste__paquet-tete { display: flex; align-items: center; gap: var(--sp-2); }
 .reste__paquet-titre { margin: 0; font-size: 12px; font-weight: 800; color: var(--text); }
 .reste__paquet-compte { font-size: 11px; font-weight: 800; color: var(--accent); }
 .reste__paquet-aide { margin: 1px 0 7px; font-size: 11px; color: var(--text-ghost); }
 
-.reste__especes { display: flex; flex-wrap: wrap; gap: 5px; }
+/* UNE ESPÈCE PAR LIGNE, ET NON UNE GRILLE DE PASTILLES. Les cases manquantes
+   d'une même espèce doivent se lire ensemble — « il me manque les deux
+   femelles » est une phrase, pas quatre pastilles éparpillées entre deux
+   voisins. Chaque espèce forme donc son propre bloc. */
+.reste__especes { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .reste__espece {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 9px 3px 3px;
+  padding: 6px 8px;
   border: 1px solid var(--border);
-  border-radius: var(--r-pill);
+  border-radius: var(--r-md);
   background: var(--bg-raised);
 }
-.reste__img { width: 26px; height: 26px; object-fit: contain; }
-.reste__espece-nom { font-size: 11px; font-weight: 700; color: var(--text-soft); }
-/* Le sauvage est mis en avant jusque dans la pastille : c'est la liste sur
+/* Le sauvage est mis en avant jusque dans la bordure : c'est la liste sur
    laquelle on agit ce soir. */
-.reste__especes[data-genre="sauvage"] .reste__espece { border-color: var(--accent-border); }
+.reste__espece--sauvage { border-color: var(--accent-border); }
+
+.reste__espece-tete { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+.reste__espece-nom { font-size: 11.5px; font-weight: 800; color: var(--text); }
+.reste__methode,
+.reste__ailleurs {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+}
+/* COMMENT ON L'OBTIENT, ET NON UN SPRITE DE PLUS. Le nom désigne déjà l'espèce ;
+   cette pastille dit la seule chose qu'on ne peut pas en déduire — le travail
+   que ça demande. Voir `rangeeEspece` dans ui/reste.js.
+
+   Le sauvage porte seul l'accent : c'est la voie qui ne dépend de personne, donc
+   la seule sur laquelle on peut décider d'agir ce soir. Donner la même couleur
+   aux sept méthodes aurait rendu la distinction invisible, ce qui revenait à ne
+   pas la faire. */
+.reste__methode { color: var(--text-ghost); background: var(--bg-inset); }
+.reste__methode--sauvage { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+/* « +3 ailleurs » n'est pas une proposition : c'est un avertissement discret
+   sur ce que ce jeu NE peut PAS donner. Il ne prend donc pas l'accent, qui est
+   réservé à ce sur quoi on peut agir ici. */
+.reste__ailleurs { color: var(--text-ghost); background: var(--bg-inset); margin-left: auto; }
+
+.reste__cases { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.reste__case {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--bg-inset);
+}
+.reste__case-img { width: 22px; height: 22px; object-fit: contain; flex: none; }
+.reste__case-nom { font-size: 10.5px; font-weight: 700; color: var(--text-soft); }
+/* LE CHROMATIQUE SE REPÈRE SANS SE LIRE. Il porte l'accent du site, comme
+   partout ailleurs — c'est ce qui permet de voir « il ne me manque que des
+   shinies » sans lire un seul libellé. */
+.reste__case--shiny { border-color: var(--accent-border); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.reste__case--shiny .reste__case-nom { color: var(--accent); }
 
 @media (max-width: 480px) {
   .reste__entete { grid-template-columns: minmax(72px, 1fr) minmax(48px, 1.4fr) 28px 12px; }
-  .reste__espece-nom { display: none; }
-  .reste__espece { padding: 3px; }
+  .reste__detail { padding-right: 0; margin-left: 4px; }
+  /* Le libellé tombe, l'image reste : sur un écran étroit, quatre pastilles
+     nommées tenaient sur quatre lignes. L'infobulle garde le texte, et le
+     sprite suffit à reconnaître la forme. */
+  .reste__case-nom { display: none; }
+  .reste__case { padding: 2px; }
 }
 
 /* ============ La ligne d'en-tête des boîtes : repère + réglage ============ */
