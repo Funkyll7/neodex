@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-09-06T13:41:06.275Z",
+ "updatedAt": "2026-09-06T13:41:20.239Z",
  "source": "site Funkylldex · ordinateur fixe",
  "marks": {
   "1": {
@@ -1778,7 +1778,8 @@
   },
   "422": {
    "om": 1,
-   "x422-east": 1
+   "x422-east": 1,
+   "gc422-east": 1
   },
   "423": {
    "om": 1,
