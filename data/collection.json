@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": "2026-09-06T13:45:27.007Z",
+ "updatedAt": "2026-09-06T13:45:40.350Z",
  "source": "site Funkylldex · ordinateur fixe",
  "marks": {
   "1": {
@@ -3384,7 +3384,8 @@
    "f10214": 1
   },
   "835": {
-   "om": 1
+   "om": 1,
+   "gn": 1
   },
   "836": {
    "om": 1
